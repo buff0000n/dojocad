@@ -17,7 +17,7 @@ var roomList = Array();
 function setViewP(newViewPX, newViewPY) {
 	viewPX = newViewPX;
 	viewPY = newViewPY;
-	document.body.style.backgroundPosition = viewPX + "px " + viewPY + "px";
+	document.getElementById("grid").style.backgroundPosition = viewPX + "px " + viewPY + "px";
 
     for (var r = 0; r < roomList.length; r++) {
         roomList[r].updateView();
@@ -58,10 +58,11 @@ function mouseDown(e) {
     mouseDownTargetStartPX = e.clientX;
     mouseDownTargetStartPY = e.clientY;
 
-    if (!e.currentTarget.room && !e.shiftKey && !e.ctrlKey) {
+    if (!e.shiftKey && !e.ctrlKey) {
         startViewDrag();
+    }
 
-    } else if (e.currentTarget.room) {
+    if (e.currentTarget.room) {
         roomDragTarget = e.currentTarget;
         if (e.shiftKey) {
 			startRoomDragImmediate(roomDragTarget);

@@ -9,86 +9,164 @@
 <!-- embedded favicon because why not -->
 <link href="data:image/png;base64,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" rel="icon" type="image/png" />
 <style type="text/css">
-/* common formatting */
-* {
-    font-family: sans-serif;
-    color: #B0B0B0;
-}
+    /* common formatting */
 
-/* remove borders from the body, add a background image */
-body {
-    padding: 0;
-    border: 0;
-    background-image: url("img5x/bg-grid.png");
-    background-repeat: repeat;
-    background-position: 0px 0px;
-}
+    * {
+        font-family: sans-serif;
+        color: #B0B0B0;
+    }
 
-/* remove borders from the body and document, disable scrollbars */
-html, body {
-    margin: 0;
-    height: 100%;
-    overflow: hidden
-}
+    /************************************************************
+     * key element formatting
+     ************************************************************/
 
-/* footer and header float over every thing else and take up the full width */
-#footer {
-    background-color: #404040;
-    position: absolute;
-    bottom: 1ex;
-    left: 1ex;
-    right: 1ex;
-    margin: 0;
-    padding: 1ex;
-    border-radius: 1ex;
-}
+    /* remove borders from the body */
+    body {
+        padding: 0;
+        border: 0;
+    }
 
-/* header at the top */
-#header {
-    background-color: #404040;
-    position: absolute;
-    left: 2ex;
-    right: 2ex;
-    top: 2ex;
-    margin: 0;
-    padding: 2ex;
-    border-radius: 1ex;
-}
+    /* remove borders from the body and document, disable scrollbars */
+    html, body {
+        margin: 0;
+        height: 100%;
+        overflow: hidden
+    }
 
-/* footer at the bottom */
-#footer {
-    bottom: 2ex;
-}
+    /* grid div, fill the window with no border and add a repeating background image.
+       the position of the image is changed as the background is dragged */
+    #grid {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        padding: 0;
+        border: 0;
+        background-image: url("img5x/bg-grid.png");
+        background-repeat: repeat;
+        background-position: 0px 0px;
+    }
 
-#footer span {
-    padding: 0 2ex;
-}
+    /* floating header at the top */
+    #header {
+        background-color: #404040;
+        position: absolute;
+        left: 2ex;
+        right: 2ex;
+        top: 2ex;
+        margin: 0;
+        padding: 2ex;
+        border-radius: 1ex;
+    }
 
-.button {
-    margin: 1ex 1ex 1ex 1ex;
-    cursor: pointer;
-    background-color: #808080;
-    border: none;
-    color: #FFFFFF;
-    padding: 1ex;
-    text-align: center;
-    text-decoration: none;
-    font-size: 100%;
-    border-radius: 1ex;
-}
+    /* floating footer at the bottom */
+    #footer {
+        background-color: #404040;
+        position: absolute;
+        bottom: 2ex;
+        left: 2ex;
+        right: 2ex;
+        margin: 0;
+        padding: 1ex;
+        border-radius: 1ex;
+    }
 
-.menu {
-    margin: 1ex 1ex 1ex 1ex;
-    background-color: #202020;
-    border: none;
-    color: #FFFFFF;
-    padding: 0;
-    margin: 0;
-    text-decoration: none;
-    font-size: 100%;
-    border-radius: 1ex;
-    position: absolute;
-}
+    /* put some spacing between footer elements */
+    /* todo: how the heck can I center these inside an absolutely positioned div ? */
+    #footer span {
+        padding: 0 2ex;
+    }
+
+    /* floating help container, fills the right side up to a max width */
+    #help {
+        background-color: #404040;
+        position: absolute;
+        right: 2ex;
+        top: 10ex;
+        bottom: 10ex;
+        max-width: 75ex;
+        margin: 0 0 0 2ex;
+        padding: 2ex;
+        border-radius: 1ex;
+        visibility: hidden;
+    }
+
+    /* absolutely position the help show/hide button in the upper right corner */
+    #helpToggle {
+        position: absolute;
+        right: 2ex;
+        top: 2ex;
+    }
+
+    /* help box fills the help container and contains its own scrollbar */
+    .helpBox {
+        height: 100%;
+        border-radius: 1ex;
+        background: #000000;
+        overflow: auto;
+    }
+    .helpContainer {
+        padding: 1ex;
+    }
+
+    /************************************************************
+     * help section formatting
+     ************************************************************/
+
+    h1, h2, h3, h4 {
+        color: A0C0F0;
+    }
+    strong {
+        color: 6080B0;
+    }
+    .warn, .warn * {
+        color: D06040;
+    }
+    #TOC li {
+        margin: 0;
+    }
+
+    /************************************************************
+     * generic element formatting
+     ************************************************************/
+
+    .button {
+        margin: 1ex 1ex 1ex 1ex;
+        cursor: pointer;
+        background-color: #808080;
+        border: none;
+        color: #FFFFFF;
+        padding: 1ex;
+        text-align: center;
+        text-decoration: none;
+        font-size: 100%;
+        border-radius: 1ex;
+    }
+
+    .docButton {
+        margin: 0;
+        background-color: #808080;
+        border: none;
+        color: #FFFFFF;
+        padding: 0.1ex 0.5ex;
+        text-decoration: none;
+        font-size: 100%;
+        border-radius: 0.5ex;
+    }
+
+    .menu {
+        margin: 1ex 1ex 1ex 1ex;
+        background-color: #202020;
+        border: none;
+        color: #FFFFFF;
+        padding: 0;
+        margin: 0;
+        text-decoration: none;
+        font-size: 100%;
+        border-radius: 1ex;
+        position: absolute;
+    }
 
 
 </style>
@@ -98,18 +176,166 @@ html, body {
 <script type="text/javascript" language="javascript" src="js/main.js"></script>
 <script type="text/javascript" language="javascript">
 
+    function toggleHelp() {
+        var help = document.getElementById("help");
+        if (help.style.visibility == "visible") {
+            document.getElementById("help").style.visibility = "hidden";
+            document.getElementById("helpToggle").innerHTML = "Show Help"
+
+        } else {
+            document.getElementById("help").style.visibility = "visible";
+            document.getElementById("helpToggle").innerHTML = "Hide Help"
+        }
+    }
 
 </script>
-<body onload="initModel()" onmousedown="mouseDown()">
+<body onload="initModel()">
 
+<!-- Grid background -->
+<div id="grid" onmousedown="mouseDown()"></div>
+
+<!-- Container for room elements -->
 <div id="roomContainer"></div>
 
+<!-- floating header bar -->
 <div id="header">
     <span id="addRoomButton" class="button" onclick="doAddButton(this)">Add Room</span>
 </div>
 
+<!-- floating help button in the corner -->
+<div id="helpToggle" class="button" onclick="toggleHelp()">Show Help</div>
+
+<!-- floating help window, hidden by default -->
+<div id="help">
+    <!-- getting padding and sizing correct requires two wrapper divs -->
+    <div class="helpBox">
+        <div class="helpContainer">
+            <h1>What is this?</h1>
+            <p>
+                This is a half-assed Dojo builder. It's still a work in progress.
+            </p>
+            <h1>Getting started</h1>
+            <p>
+                The starter <strong>Clan Hall</strong> is already added by default.
+            </p>
+            <p>
+                Click the <span class="docButton">Add Room</span> button to select a category and room to add.
+                The drag and click where the room should be placed.
+            </p>
+
+            <h1>Table of Contents</h1>
+            <ul id="TOC">
+                <li>
+                    <a href="#Navigation">Navigation</a>
+                </li>
+                <li>
+                    <a href="#Editing">Editing</a>
+                    <ul>
+                        <li><a href="#AddingARoom">Adding a Room</a></li>
+                    </ul>
+                    <ul>
+                        <li><a href="#MovingARoom">Moving and Rotation</a></li>
+                    </ul>
+                    <ul>
+                        <li><a href="#DeletingARoom">Deleting a Room</a></li>
+                    </ul>
+                </li>
+                <li><a href="#ToDo">To Do</a></li>
+                <li><a href="#KnownIssues">Known Issues</a></li>
+            </ul>
+
+            <h1 id="Navigation">Navigation</h1>
+            <p>
+                Click anywhere in the grid area and drag to move around.
+            </p>
+            <p>
+                This includes clicking on a room, as long as you don't hold too long before dragging
+                (see <a href=""#MovingARoom>Moving And Rotation</a>).
+            </p>
+
+            <h1 id="Editing">Editing</h1>
+
+            <h1 id="AddingARoom">Adding a Room</h1>
+            <p>
+                Click the <span class="docButton">Add Room</span> button to show a menu of room categories.  Click
+                one of these categories to show a menu of rooms.  Click one of those rooms to add one under your
+                cursor.  Move the cursor where you want the room and click to drop it.
+            </p>
+            <p>
+                If you have already added a room once, then the <span class="docButton">Add Room</span> menu will
+                contain a quick option for that room at the top, before the categories.
+            </p>
+
+            <h1 id="MovingARoom">Moving and Rotation</h1>
+            <p>
+                Click and hold on a room for half a second, then dragging will move the room rather than
+                dragging the view.
+            </p>
+            <p>
+                Click and release on a room without dragging will rotate it 90 degrees.
+            </p>
+            <p>
+                Hold down <strong>Shift</strong> and click on a room to start moving it immediately, without
+                having to hold it for half a second.
+            </p>
+            <p>
+                Hold down <strong>Shift</strong> while dragging a room to snap its position to the nearest 8 meters
+                on the grid.  Otherwise the room's position is snapped to the nearest meter.
+            </p>
+            <p>
+                Note that <strong>Shift</strong>-dragging a newly created room also snaps.
+            </p>
+
+            <h1 id="DeletingARoom">Deleting a Room</h1>
+            <p>
+                Holding down <strong>Alt</strong> and click on a room will delete it.
+            </p>
+
+            <h1 id="ToDo">To Do</h1>
+            <ul>
+                <li>
+                    Door snapping
+                </li>
+                <li>
+                    Bounds checking
+                </li>
+                <li>
+                    Capacity/Energy tracking
+                </li>
+                <li>
+                    Tree structure like a real dojo
+                    <ul>
+                        Detaching/reattaching subtrees
+                    </ul>
+                </li>
+                <li>
+                    Saving/loading (URL generation)
+                </li>
+                <li>
+                    Multi-floor support
+                </li>
+                <li>
+                    Icons?
+                </li>
+                <li>
+                    World peace
+                </li>
+            </ul>
+
+
+            <h1 id="KnownIssues">Known Issues</h1>
+            <ul>
+                <li>
+                    Nothing, it's perfect :)
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<!-- floating footer bar -->
 <div id="footer">
-    <span>v0.0.2: 2019-12-03</span>
+    <span>v0.0.3: 2019-12-03</span>
     <span><img src="https://i.imgur.com/b5pNXKU.png" srcset="https://i.imgur.com/z6U8Oxs.png 2x"/></span>
     <span><a href="https://github.com/buff0000n/dojoarch">Source</a>
         <a href="https://github.com/buff0000n/dojoarch/issues/1">Feedback</a></span>
