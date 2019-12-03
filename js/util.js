@@ -28,6 +28,17 @@ function setOpacity(e, opacity) {
     e.style.filter = "opacity(" + opacity + ")"
 }
 
+function removeFromList(list, item) {
+	var index = list.indexOf(item);
+	if (index >= 0) {
+		list.splice(index, 1);
+		return true;
+
+	} else {
+		return false;
+	}
+}
+
 class Vect {
     constructor(x, y) {
         this.x = x;

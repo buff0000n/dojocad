@@ -25,7 +25,7 @@ function setViewP(newViewPX, newViewPY) {
 }
 
 function removeRoom(room) {
-	roomList.splice(roomList.indexOf(room), 1);
+	removeFromList(roomList, room);
 	room.removeDisplay();
 }
 
@@ -47,6 +47,13 @@ function mouseDown(e) {
     e = e || window.event;
     e.preventDefault();
 
+	if (mouseDownTarget != null) {
+		return;
+
+	} else if (!menuBeingClicked) {
+	    clearMenus(0);
+	}
+
     // get the mouse cursor position at startup:
     mouseDownTargetStartPX = e.clientX;
     mouseDownTargetStartPY = e.clientY;
@@ -57,8 +64,7 @@ function mouseDown(e) {
     } else if (e.currentTarget.room) {
         roomDragTarget = e.currentTarget;
         if (e.shiftKey) {
-            roomDragFuture = "shift";
-			startRoomDrag();
+			startRoomDragImmediate(roomDragTarget);
 
         } else if (e.altKey) {
             removeRoom(roomDragTarget.room);
@@ -68,8 +74,13 @@ function mouseDown(e) {
         }
     }
 }
+function startRoomDragImmediate(target) {
+    roomDragTarget = target;
+    roomDragFuture = "shift";
+	startRoomDrag();
+}
 
-function startRoomDrag(target) {
+function startRoomDrag() {
 	if (roomDragFuture != null) {
 		roomDragFuture = null;
 
@@ -94,7 +105,7 @@ function dragRoom(e) {
 	    var offsetPY = e.clientY - mouseDownTargetStartPY;
 
 	    // set the element's new position:
-	    room.setViewOffset(offsetPX, offsetPY);
+	    room.setDragOffset(offsetPX, offsetPY, e.shiftKey ? 8 : 1);
 	    room.updateView();
 	    dragged = true;
     }
@@ -106,7 +117,7 @@ function cancelRoomDrag() {
         mouseDownTarget = null;
         mouseDownTargetStartPX = 0;
         mouseDownTargetStartPY = 0;
-        room.setViewOffset(0, 0)
+        room.setDragOffset(0, 0)
 	    room.updateView();
     }
 }
@@ -117,7 +128,7 @@ function endRoomDrag(e) {
 	    mouseDownTarget = null;
 	    mouseDownTargetStartPX = 0;
 	    mouseDownTargetStartPY = 0;
-	    room.dropViewOffset();
+	    room.dropDragOffset();
 	    room.updateView();
 	    dragged = false;
 	}
@@ -178,16 +189,152 @@ function endViewDrag(e) {
 }
 
 //==============================================================
+// Menu handling
+//==============================================================
+
+var lastAdded = null;
+
+var roomMenuData = null;
+var menus = Array();
+var addRoomMenu = null;
+var lastAddedRoomMetadata = null;
+
+var menuBeingClicked = false;
+
+function getRoomMenuData() {
+    if (!roomMenuData) {
+        roomMenuData = Array();
+        for (var r = 0; r < roomMetadata.rooms.length; r++) {
+            var rmd = roomMetadata.rooms[r];
+            var cat = roomMenuData[rmd.category];
+            if (!cat) {
+                cat = Array();
+                roomMenuData[rmd.category] = cat;
+            }
+            cat.push(rmd);
+        }
+
+        for (var cat in roomMenuData) {
+            roomMenuData[cat].sort( function(a, b) {
+                return a.name.localeCompare(b.name)
+            } );
+        }
+    }
+    return roomMenuData;
+}
+
+function clearMenus(leave) {
+    while (menus.length > leave) {
+        var menu = menus.pop();
+        menu.remove();
+    }
+}
+
+function setMenuBeingClicked() {
+    menuBeingClicked = true;
+}
+
+function doAddButton(element) {
+    menuBeingClicked = false;
+
+    var e = e || window.event;
+    e.preventDefault();
+
+    clearMenus(0);
+
+    var rmd = getRoomMenuData();
+    var bcr = element.getBoundingClientRect();
+    var menuDiv = document.createElement("div");
+    menuDiv.className = "menu";
+    menuDiv.style.left = bcr.left;
+    menuDiv.style.top = bcr.bottom;
+
+    if (lastAddedRoomMetadata) {
+	    var roomButtonDiv = buildAddRoomButton(lastAddedRoomMetadata);
+        menuDiv.appendChild(roomButtonDiv);
+    }
+
+    for (var cat in rmd) {
+        var catButtonDiv = document.createElement("div");
+        catButtonDiv.className = "button";
+        catButtonDiv.innerHTML = cat;
+        catButtonDiv.roomList = rmd[cat];
+        catButtonDiv.onmousedown = setMenuBeingClicked;
+        catButtonDiv.onclick = doAddCategoryButton;
+        menuDiv.appendChild(catButtonDiv);
+    }
+    document.body.appendChild(menuDiv);
+    menus.push(menuDiv);
+}
+
+function doAddCategoryButton(e) {
+    menuBeingClicked = false;
+
+    e = e || window.event;
+    e.preventDefault();
+
+    clearMenus(1);
+
+    var catButton = e.currentTarget;
+    var roomList = catButton.roomList;
+    var bcr = catButton.getBoundingClientRect();
+
+    var menuDiv = document.createElement("div");
+    menuDiv.className = "menu";
+    menuDiv.style.left = bcr.right;
+    menuDiv.style.top = bcr.top;
+    for (var r in roomList) {
+	    var roomMetadata = roomList[r];
+	    var roomButtonDiv = buildAddRoomButton(roomMetadata);
+        menuDiv.appendChild(roomButtonDiv);
+    }
+    document.body.appendChild(menuDiv);
+    menus.push(menuDiv);
+}
+
+function buildAddRoomButton(roomMetadata) {
+    var roomButtonDiv = document.createElement("div");
+    roomButtonDiv.className = "button";
+    roomButtonDiv.innerHTML = roomMetadata.name;
+    roomButtonDiv.roomMetadata = roomMetadata;
+    roomButtonDiv.onmousedown = setMenuBeingClicked;
+    roomButtonDiv.onclick = doAddRoomButton;
+    return roomButtonDiv;
+}
+
+function doAddRoomButton(e) {
+    menuBeingClicked = false;
+
+    e = e || window.event;
+    e.preventDefault();
+
+    clearMenus(0);
+
+    var roomButton = e.currentTarget;
+    var roomMetadata = roomButton.roomMetadata;
+    var bcr = roomButton.getBoundingClientRect();
+
+	lastAddedRoomMetadata = roomMetadata;
+
+    var room = new Room(roomMetadata);
+    roomList.push(room);
+    room.addDisplay(document.getElementById("roomContainer"));
+
+    // not quite sure why this works
+    mouseDownTargetStartPX = viewPX;
+    mouseDownTargetStartPY = viewPY;
+
+    startRoomDragImmediate(room.element);
+    dragRoom(e);
+}
+
+//==============================================================
 // State, initialization
 //==============================================================
 
 function initModel() {
     var roomViewContainer = document.getElementById("roomContainer");
-    roomList.push(new Room(getRoomMetadata("cc"), 64, 64));
-    roomList.push(new Room(getRoomMetadata("cb"), 64, 64));
-    roomList.push(new Room(getRoomMetadata("cs"), 64, 64));
-    roomList.push(new Room(getRoomMetadata("cx"), 64, 64));
-    roomList.push(new Room(getRoomMetadata("ct"), 64, 64));
+    roomList.push(new Room(getRoomMetadata("h1"), 64, 64));
 
     for (var r = 0; r < roomList.length; r++) {
         roomList[r].addDisplay(roomViewContainer);

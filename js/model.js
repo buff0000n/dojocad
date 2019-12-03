@@ -27,6 +27,7 @@ class Door {
         this.metadata = doorMetadata;
 
         this.otherDoor = null;
+        this.incoming = false;
     }
 
     updatePosition() {
@@ -60,8 +61,8 @@ class Room {
 
         this.element = null;
 
-        this.viewOffsetPX = 0;
-        this.viewOffsetPY = 0;
+        this.dragOffsetMX = 0;
+        this.dragOffsetMY = 0;
 
         this.setPosition(mx, my, f, r);
         this.calculateAnchor();
@@ -108,17 +109,26 @@ class Room {
         this.setPosition(this.mv.x, this.mv.y, this.floor, (this.rotation + 90) % 360);
     }
 
-    setViewOffset(offsetPX, offsetPY) {
-        this.viewOffsetPX = offsetPX;
-        this.viewOffsetPY = offsetPY;
+    setDragOffset(offsetPX, offsetPY, snap) {
+        // start by snapping to the nearest meter
+        this.dragOffsetMX = Math.round(offsetPX / viewScale);
+        this.dragOffsetMY = Math.round(offsetPY / viewScale);
+        if (snap > 1) {
+            var mx = this.mv.x + this.dragOffsetMX;
+            var mx2 = Math.round(mx / snap) * snap;
+            this.dragOffsetMX = this.dragOffsetMX + (mx2 - mx); 
+            var my = this.mv.y + this.dragOffsetMY;
+            var my2 = Math.round(my / snap) * snap;
+            this.dragOffsetMY = this.dragOffsetMY + (my2 - my); 
+        }
     }
 
-    dropViewOffset() {
-        if (this.viewOffsetPX != 0 || this.viewOffsetPY != 0) {
-            var nmx = this.mv.x + Math.round((this.viewOffsetPX * 1.0) / viewScale);
-            var nmy = this.mv.y + Math.round((this.viewOffsetPY * 1.0) / viewScale);
-            this.viewOffsetPX = 0;
-            this.viewOffsetPY = 0;
+    dropDragOffset() {
+        if (this.dragOffsetMX != 0 || this.dragOffsetMY != 0) {
+            var nmx = this.mv.x + this.dragOffsetMX;
+            var nmy = this.mv.y + this.dragOffsetMY;
+            this.dragOffsetMX = 0;
+            this.dragOffsetMY = 0;
             this.setPosition(nmx, nmy, this.floor, this.rotation);
         }
     }
@@ -148,8 +158,8 @@ class Room {
     updateView() {
         if (this.element) {
             // transform the anchor coords to pixel coords
-            var roomViewPX = ((this.mv.x + this.anchorMX) * viewScale) + viewPX + this.viewOffsetPX;
-            var roomViewPY = ((this.mv.y + this.anchorMY) * viewScale) + viewPY + this.viewOffsetPY;
+            var roomViewPX = ((this.mv.x + this.dragOffsetMX + this.anchorMX) * viewScale) + viewPX;
+            var roomViewPY = ((this.mv.y + this.dragOffsetMY + this.anchorMY) * viewScale) + viewPY;
 
             // update the image position and rotation
             this.element.style.left = roomViewPX + "px";
