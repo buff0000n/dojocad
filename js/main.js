@@ -121,6 +121,7 @@ function cancelRoomDrag() {
         mouseDownTargetStartPX = 0;
         mouseDownTargetStartPY = 0;
         selectedRoom.setDragOffset(0, 0)
+	    selectedRoom.dropDragOffset();
 	    selectedRoom.updateView();
     }
     mouseDownTarget = null;
@@ -210,6 +211,18 @@ function endViewDrag(e) {
     document.onmouseup = null;
     document.onmousemove = null;
     mouseDownTarget = null;
+}
+
+//==============================================================
+// key event handling
+//==============================================================
+
+function keyDown(e) {
+    e = e || window.event;
+	if ("Escape" == e.code) {
+	    clearMenus(0);
+	    cancelRoomDrag();
+	}
 }
 
 //==============================================================
