@@ -140,7 +140,7 @@
     }
 
     /************************************************************
-     * generic element formatting
+     * button/menu formatting
      ************************************************************/
 
     .button {
@@ -178,6 +178,14 @@
         font-size: 100%;
         border-radius: 1ex;
         position: absolute;
+        z-index: 5;
+    }
+
+    .menuDivider {
+        margin: 1ex 1ex 1ex 1ex;
+        background-color: #404040;
+        padding: 1ex;
+        border-radius: 1ex;
     }
 
 
@@ -211,7 +219,7 @@
 
 <!-- floating header bar -->
 <div id="header">
-    <span id="addRoomButton" class="button" onclick="doAddButton(this)">Add Room</span>
+    <span id="addRoomButton" class="button" onclick="doAddMenu(this)">Add Room</span>
 </div>
 
 <!-- floating help button in the corner -->
@@ -246,7 +254,13 @@
                         <li><a href="#AddingARoom">Adding a Room</a></li>
                     </ul>
                     <ul>
-                        <li><a href="#MovingARoom">Moving and Rotation</a></li>
+                        <li><a href="#SelectingARoom">Selecting a Room</a></li>
+                    </ul>
+                    <ul>
+                        <li><a href="#MovingARoom">Moving a Room</a></li>
+                    </ul>
+                    <ul>
+                        <li><a href="#MovingARoom">Rotating a Room</a></li>
                     </ul>
                     <ul>
                         <li><a href="#DeletingARoom">Deleting a Room</a></li>
@@ -261,8 +275,8 @@
                 Click anywhere in the grid area and drag to move around.
             </p>
             <p>
-                This includes clicking on a room, as long as you don't hold too long before dragging
-                (see <a href="#MovingARoom">Moving And Rotation</a>).
+                This includes clicking on a room, as long as that room isn't currently selected (see
+                <a href="#SelectingARoom">Selecting a Room</a>).
             </p>
 
             <h1 id="Editing">Editing</h1>
@@ -275,20 +289,18 @@
             </p>
             <p>
                 If you have already added a room once, then the <span class="docButton">Add Room</span> menu will
-                contain a quick option for that room at the top, before the categories.
+                contain a quick option for that room at the bottom.
             </p>
 
-            <h2 id="MovingARoom">Moving and Rotation</h2>
+            <h2 id="SelectingARoom">Selecting a Room</h2>
             <p>
-                Click and hold on a room for half a second, then dragging will move the room rather than
-                dragging the view.
+                Select a room by clicking on it without dragging.  The currently selected room will have a blue
+                outline around it.
             </p>
+
+            <h2 id="MovingARoom">Moving a Room</h2>
             <p>
-                Click and release on a room without dragging will rotate it 90 degrees.
-            </p>
-            <p>
-                Hold down <strong>Shift</strong> and click on a room to start moving it immediately, without
-                having to hold it for half a second.
+                Click and drag on the currently selected room to move it.
             </p>
             <p>
                 Hold down <strong>Shift</strong> while dragging a room to snap its position to the nearest 8 meters
@@ -298,18 +310,30 @@
                 Note that <strong>Shift</strong>-dragging a newly created room also snaps.
             </p>
 
+            <h2 id="RotatingARoom">Rotating a Room</h2>
+            <p>
+                Clicking again on the currently selected room will bring up a menu.  Click
+                <span class="docButton">Rotate</span> to rotate the room 90 degrees.
+            </p>
+            <p>
+                Hold down <strong>Shift</strong> and click on the selected room to rotate it 90 degrees without
+                having to bring up a menu.
+            </p>
+
             <h2 id="DeletingARoom">Deleting a Room</h2>
             <p>
-                Holding down <strong>Alt</strong> and click on a room will delete it.
+                Clicking again on the currently selected room will bring up a menu.  Click
+                <span class="docButton">Delete</span> to delete the room.
+            </p>
+            <p>
+                Hold down <strong>Alt</strong> and click on the selected room to delete it without having to bring up a
+                menu.
             </p>
 
             <h1 id="ToDo">To Do</h1>
             <ul>
                 <li>
                     Door snapping
-                </li>
-                <li>
-                    Separate room images into display, bounds outline, and bounds grid fill to show state a little better
                 </li>
                 <li>
                     Zooming

@@ -59,7 +59,10 @@ class Room {
             this.doors.push(new Door(this, this.metadata.doors[i]));
         }
 
-        this.element = null;
+		this.viewContainer = null;
+        this.display = null;
+        this.outline = null;
+        this.grid = null;
 
         this.dragOffsetMX = 0;
         this.dragOffsetMY = 0;
@@ -105,11 +108,29 @@ class Room {
         this.anchorMY = minBoundsMY - this.mv.y;
     }
 
+    select() {
+        if (!this.outline) {
+	        this.outline = this.addDisplayElement("-line-blue.png", 2);
+	        this.updateView();
+        }
+    }
+
+    deselect() {
+        this.outline = this.removeDisplayElement(this.outline);
+    }
+
+    isSelected() {
+        return this.outline != null
+    }
+
     rotate() {
         this.setPosition(this.mv.x, this.mv.y, this.floor, (this.rotation + 90) % 360);
     }
 
     setDragOffset(offsetPX, offsetPY, snap) {
+        if (!this.grid) {
+	        this.grid = this.addDisplayElement("-bounds-blue.png", 1);
+        }
         // start by snapping to the nearest meter
         this.dragOffsetMX = Math.round(offsetPX / viewScale);
         this.dragOffsetMY = Math.round(offsetPY / viewScale);
@@ -131,40 +152,63 @@ class Room {
             this.dragOffsetMY = 0;
             this.setPosition(nmx, nmy, this.floor, this.rotation);
         }
+        if (this.grid) {
+	        this.grid = this.removeDisplayElement(this.grid);
+        }
     }
 
-    addDisplay(parent) {
-        //parent.innerHTML += `<img style="position: absolute;" id="` + this.id + `" src="img/` + this.metadata.image + `.png" onmousedown="mouseDown();"/>`;
-        //this.element = document.getElementById(this.id);
-
-        // Ugh, have to build the <img> element the hard way
-        this.element = document.createElement("img");
-        this.element.style = "position: absolute;";
-        this.element.style.transformOrigin = (-this.anchorMX * viewScale) + "px " + (-this.anchorMY * viewScale) + "px";
-        this.element.id = this.id;
-        this.element.onmousedown = mouseDown;
-        this.element.src = "img" + viewScale + "x/" + this.metadata.image + ".png";
-        this.element.room = this;
-        parent.appendChild(this.element);
-
+    addDisplay(viewContainer) {
+        this.viewContainer = viewContainer;
+        this.display = this.addDisplayElement("-display.png", 2);
         this.updateView();
     }
 
+    addDisplayElement(imageSuffix, zIndex = 0) {
+        // Ugh, have to build the <img> element the hard way
+        var element = document.createElement("img");
+        element.style = "position: absolute;";
+        // Need to do some voodoo to get it to rotate around the correct point
+        element.style.transformOrigin = (-this.anchorMX * viewScale) + "px " + (-this.anchorMY * viewScale) + "px";
+        element.style.zIndex = zIndex;
+        element.id = this.id;
+        element.onmousedown = mouseDown;
+        element.src = "img" + viewScale + "x/" + this.metadata.image + imageSuffix;
+        element.room = this;
+        this.viewContainer.appendChild(element);
+        return element;
+    }
+
     removeDisplay() {
-        this.element.remove();
-        this.element = null;
+	    this.display = this.removeDisplayElement(this.display);
+	    this.outline = this.removeDisplayElement(this.outline);
+	    this.grid = this.removeDisplayElement(this.grid);
+    }
+
+    removeDisplayElement(element) {
+	    if (element) {
+            element.remove();
+        }
+        return null;
     }
 
     updateView() {
-        if (this.element) {
+        if (this.display) {
             // transform the anchor coords to pixel coords
             var roomViewPX = ((this.mv.x + this.dragOffsetMX + this.anchorMX) * viewScale) + viewPX;
             var roomViewPY = ((this.mv.y + this.dragOffsetMY + this.anchorMY) * viewScale) + viewPY;
 
+			this.updateViewElement(this.display, roomViewPX, roomViewPY);
+			this.updateViewElement(this.outline, roomViewPX, roomViewPY);
+			this.updateViewElement(this.grid, roomViewPX, roomViewPY);
+        }
+    }
+
+    updateViewElement(element, roomViewPX, roomViewPY) {
+        if (element) {
             // update the image position and rotation
-            this.element.style.left = roomViewPX + "px";
-            this.element.style.top = roomViewPY + "px";
-            setImgRotation(this.element, this.rotation);
+            element.style.left = roomViewPX + "px";
+            element.style.top = roomViewPY + "px";
+            setImgRotation(element, this.rotation);
         }
     }
 

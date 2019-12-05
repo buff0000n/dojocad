@@ -1,21 +1,7 @@
-function getRoomMetadata(id) {
-    var rmd = roomMetadata.rooms.find(room => room.id == id);
-    if (!rmd) {
-        throw "Unknown room id: " + id
-    }
-    return rmd;
-}
 
 function setImgRotation(e, rotation) {
     // https://www.w3schools.com/cssref/css3_pr_transform.asp
     e.style.transform = "rotate(" + rotation + "deg)"
-
-    // todo: need these?
-    //-webkit-transform:rotate(180deg);
-    //-moz-transform: rotate(180deg);
-    //-ms-transform: rotate(180deg);
-    //-o-transform: rotate(180deg);
-    //transform: rotate(180deg);
 }
 
 function setHue(e, hue) {
