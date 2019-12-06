@@ -249,14 +249,17 @@ function dropEvent(e) {
 		}
 
 	} else {
-		if (!dragged && mouseDownTarget && mouseDownTarget.room) {
+		if (!dragged) {
 			if (selectedRoom) {
 				selectedRoom.deselect();
 			    selectedRoom.updateView();
+			    selectedRoom = null;
 			}
-			selectedRoom = mouseDownTarget.room;
-			selectedRoom.select();
-		    selectedRoom.updateView();
+			if (mouseDownTarget && mouseDownTarget.room) {
+				selectedRoom = mouseDownTarget.room;
+				selectedRoom.select();
+			    selectedRoom.updateView();
+		    }
 		}
 
 	    mouseDownTargetStartPX = 0;
