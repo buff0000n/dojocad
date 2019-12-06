@@ -172,6 +172,7 @@ class Room {
         element.style.zIndex = zIndex;
         element.id = this.id;
         element.onmousedown = mouseDown;
+        element.ontouchstart = touchStart;
         element.src = "img" + viewScale + "x/" + this.metadata.image + imageSuffix;
         element.room = this;
         this.viewContainer.appendChild(element);

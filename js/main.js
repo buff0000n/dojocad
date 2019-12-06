@@ -24,6 +24,14 @@ function setViewP(newViewPX, newViewPY) {
     }
 }
 
+function getRoomMetadata(id) {
+    var rmd = roomMetadata.rooms.find(room => room.id == id);
+    if (!rmd) {
+        throw "Unknown room id: " + id
+    }
+    return rmd;
+}
+
 function removeRoom(room) {
 	removeFromList(roomList, room);
 	room.removeDisplay();
@@ -33,31 +41,121 @@ function getRoomContainer() {
 	return document.getElementById("roomContainer");
 }
 
-function getRoomMetadata(id) {
-    var rmd = roomMetadata.rooms.find(room => room.id == id);
-    if (!rmd) {
-        throw "Unknown room id: " + id
-    }
-    return rmd;
+function rotateSelectedRoom() {
+    selectedRoom.rotate();
+    selectedRoom.updateView();
 }
 
-//==============================================================
-// Mouse event handling
-//==============================================================
+function deleteSelectedRoom() {
+    removeRoom(selectedRoom);
+    selectedRoom = null;
+    clearMenus(0);
+}
 
-var roomDragDelay = 500;
+
+//==============================================================
+// Mouse/touch event handling
+//==============================================================
 
 var mouseDownTarget = null;
 var mouseDownTargetStartPX = 0;
 var mouseDownTargetStartPY = 0;
 var selectedRoom = null;
 var dragged = false;
+var newRoom = false;
 
-// adapted from https://www.w3schools.com/howto/howto_js_draggable.asp
+var dragThreshold = 64; // 8px^2
+
+class MTEvent {
+	constructor(currentTarget, clientX, clientY, altKey, shiftKey) {
+		this.currentTarget = currentTarget;
+		this.clientX = clientX;
+		this.clientY = clientY;
+		this.altKey = altKey;
+		this.shiftKey = shiftKey;
+	}
+}
+
+function mouseEventToMTEvent(e) {
+	return new MTEvent(e.currentTarget, e.clientX, e.clientY, e.altKey, e.shiftKey);
+}
+
+var lastTouchEvent = null;
+
+function touchEventToMTEvent(e) {
+    var first = e.touches[0];
+    if (first) {
+        lastTouchEvent = new MTEvent(first.target, first.clientX, first.clientY, e.altKey, e.shiftKey)
+	    return lastTouchEvent;
+
+    } else if (lastTouchEvent != null) {
+	    return lastTouchEvent;
+
+    } else {
+        // probably going to fail
+        // todo: remove eventually
+        showDebug("Generating bogus touch event");
+	    return new MTEvent(null, 0, 0, false, false);
+    }
+}
+
+function touchStart(e) {
+    e = e || window.event;
+    e.preventDefault();
+
+    if (e.touches.length == 1) {
+	    downEvent(touchEventToMTEvent(e));
+    }
+}
+
+function touchMove(e) {
+    e = e || window.event;
+    e.preventDefault();
+
+    if (e.touches.length == 1) {
+	    dragEvent(touchEventToMTEvent(e));
+    }
+}
+
+function touchEnd(e) {
+    e = e || window.event;
+    e.preventDefault();
+
+    if (e.touches.length == 0) {
+        dropEvent(touchEventToMTEvent(e));
+    }
+}
+
+function touchCancel(e) {
+    e = e || window.event;
+    e.preventDefault();
+
+	cancelRoomDrag();
+}
+
 function mouseDown(e) {
     e = e || window.event;
     e.preventDefault();
 
+    downEvent(mouseEventToMTEvent(e));
+}
+
+function mouseMove(e) {
+    e = e || window.event;
+    e.preventDefault();
+
+    dragEvent(mouseEventToMTEvent(e));
+}
+
+function mouseUp(e) {
+    e = e || window.event;
+    e.preventDefault();
+
+    dropEvent(mouseEventToMTEvent(e));
+}
+
+// adapted from https://www.w3schools.com/howto/howto_js_draggable.asp
+function downEvent(e) {
 	if (mouseDownTarget != null) {
 		return;
 	}
@@ -70,17 +168,13 @@ function mouseDown(e) {
 
     if (e.currentTarget.room) {
         mouseDownTarget = e.currentTarget;
+        newRoom = false;
     }
 
-    if (selectedRoom && e.currentTarget.room == selectedRoom) {
-        startRoomDrag();
-
-    } else {
-		startViewDrag();
-    }
+	startDrag();
 }
 
-function startRoomDragImmediate(target) {
+function startNewRoomDrag(e, target) {
 	if (selectedRoom) {
 		selectedRoom.deselect();
 	    selectedRoom.updateView();
@@ -88,50 +182,53 @@ function startRoomDragImmediate(target) {
     mouseDownTarget = target;
     selectedRoom = target.room;
     selectedRoom.select();
+    newRoom = true;
 
-	startRoomDrag();
+	startDrag();
+	// force the room to start under the cursor
+	dragEvent(e);
 }
 
-function startRoomDrag() {
+function startDrag() {
     // call a function when the cursor moves:
-    document.onmousemove = dragRoom;
+    document.onmousemove = mouseMove;
     // call a function when the button is released:
-    document.onmouseup = endRoomDrag;
+    document.onmouseup = mouseUp;
+
+	dragTarget = document;
+    // call a function when a finger moves:
+    dragTarget.ontouchmove = touchMove;
+    // call a function when a finger leaves:
+    dragTarget.ontouchend = touchEnd;
 }
 
-function dragRoom(e) {
+function dragEvent(e) {
+    // calculate the new cursor position:
+    var offsetPX = e.clientX - mouseDownTargetStartPX;
+    var offsetPY = e.clientY - mouseDownTargetStartPY;
+
+    if (!dragged && ((offsetPX * offsetPX) + (offsetPY * offsetPY) < dragThreshold)) {
+        return;
+    }
+
+    dragged = true;
+
     if (mouseDownTarget && mouseDownTarget.room && mouseDownTarget.room == selectedRoom) {
-	    e = e || window.event;
-	    e.preventDefault();
-
-	    // calculate the new cursor position:
-	    var offsetPX = e.clientX - mouseDownTargetStartPX;
-	    var offsetPY = e.clientY - mouseDownTargetStartPY;
-
 	    // set the element's new position:
 	    selectedRoom.setDragOffset(offsetPX, offsetPY, e.shiftKey ? 8 : 1);
 	    selectedRoom.updateView();
-	    dragged = true;
+
+    } else {
+		mouseDownTarget = null;
+	    mouseDownTargetStartPX = e.clientX;
+	    mouseDownTargetStartPY = e.clientY;
+
+		setViewP(viewPX + offsetPX, viewPY + offsetPY);
     }
 }
 
-function cancelRoomDrag() {
+function dropEvent(e) {
     if (mouseDownTarget && mouseDownTarget.room && mouseDownTarget.room == selectedRoom) {
-        mouseDownTarget = null;
-        mouseDownTargetStartPX = 0;
-        mouseDownTargetStartPY = 0;
-        selectedRoom.setDragOffset(0, 0)
-	    selectedRoom.dropDragOffset();
-	    selectedRoom.updateView();
-    }
-    mouseDownTarget = null;
-}
-
-function endRoomDrag(e) {
-    if (mouseDownTarget && mouseDownTarget.room && mouseDownTarget.room == selectedRoom) {
-	    e = e || window.event;
-	    e.preventDefault();
-
 	    mouseDownTarget = null;
 	    mouseDownTargetStartPX = 0;
 	    mouseDownTargetStartPY = 0;
@@ -148,69 +245,56 @@ function endRoomDrag(e) {
 			deleteSelectedRoom();
 
 		} else {
-			doRoomMenu(selectedRoom.display);
+			doRoomMenu(e, selectedRoom.display);
 		}
-	}
 
-    /* stop moving when mouse button is released:*/
-    document.onmouseup = null;
-    document.onmousemove = null;
-    mouseDownTarget = null;
-}
-
-function rotateSelectedRoom() {
-    selectedRoom.rotate();
-    selectedRoom.updateView();
-}
-
-function deleteSelectedRoom() {
-    removeRoom(selectedRoom);
-    selectedRoom = null;
-    clearMenus(0);
-}
-
-function startViewDrag() {
-    // call a function when the cursor moves:
-    document.onmousemove = dragView;
-    // call a function when the button is released:
-    document.onmouseup = endViewDrag;
-}
-
-function dragView(e) {
-    e = e || window.event;
-    e.preventDefault();
-
-    // calculate the new cursor position:
-    var offsetPX = e.clientX - mouseDownTargetStartPX;
-    var offsetPY = e.clientY - mouseDownTargetStartPY;
-
-	mouseDownTarget = null;
-    mouseDownTargetStartPX = e.clientX;
-    mouseDownTargetStartPY = e.clientY;
-
-	setViewP(viewPX + offsetPX, viewPY + offsetPY);
-	dragged = true;
-}
-
-function endViewDrag(e) {
-	if (!dragged && mouseDownTarget && mouseDownTarget.room) {
-		if (selectedRoom) {
-			selectedRoom.deselect();
+	} else {
+		if (!dragged && mouseDownTarget && mouseDownTarget.room) {
+			if (selectedRoom) {
+				selectedRoom.deselect();
+			    selectedRoom.updateView();
+			}
+			selectedRoom = mouseDownTarget.room;
+			selectedRoom.select();
 		    selectedRoom.updateView();
 		}
-		selectedRoom = mouseDownTarget.room;
-		selectedRoom.select();
-	    selectedRoom.updateView();
-	}
 
-    mouseDownTargetStartPX = 0;
-    mouseDownTargetStartPY = 0;
-    dragged = false;
+	    mouseDownTargetStartPX = 0;
+	    mouseDownTargetStartPY = 0;
+	    dragged = false;
+	}
 
     /* stop moving when mouse button is released:*/
     document.onmouseup = null;
     document.onmousemove = null;
+    document.ontouchend = null;
+    document.ontouchmove = null;
     mouseDownTarget = null;
+}
+
+function cancelRoomDrag() {
+    if (mouseDownTarget && mouseDownTarget.room && mouseDownTarget.room == selectedRoom) {
+        mouseDownTarget = null;
+        mouseDownTargetStartPX = 0;
+        mouseDownTargetStartPY = 0;
+		if (newRoom) {
+			removeRoom(selectedRoom);
+		    selectedRoom = null;
+
+		} else {
+	        selectedRoom.setDragOffset(0, 0)
+		    selectedRoom.dropDragOffset();
+		    selectedRoom.updateView();
+		}
+
+	    mouseDownTarget = null;
+	    dragged = false;
+
+	    document.onmouseup = null;
+	    document.onmousemove = null;
+	    document.ontouchend = null;
+	    document.ontouchmove = null;
+    }
 }
 
 //==============================================================
@@ -263,6 +347,8 @@ function clearMenus(leave) {
         var menu = menus.pop();
         menu.remove();
     }
+    // might as well clear all popups
+	clearErrors();
 }
 
 function buildMenu() {
@@ -361,13 +447,11 @@ function doAddRoomButton(e) {
     mouseDownTargetStartPX = viewPX;
     mouseDownTargetStartPY = viewPY;
 
-    startRoomDragImmediate(room.display);
-    dragRoom(e);
+    startNewRoomDrag(e, room.display);
 }
 
-function doRoomMenu(element) {
+function doRoomMenu(e, element) {
     var e = e || window.event;
-    e.preventDefault();
 
     clearMenus(0);
 

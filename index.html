@@ -58,6 +58,7 @@
         margin: 0;
         padding: 2ex;
         border-radius: 1ex;
+        z-index: 5;
     }
 
     /* floating footer at the bottom */
@@ -65,17 +66,18 @@
         background-color: #404040;
         position: absolute;
         bottom: 2ex;
-        left: 2ex;
         right: 2ex;
+        max-width: 75ex;
         margin: 0;
         padding: 1ex;
         border-radius: 1ex;
+        z-index: 5;
     }
-
-    /* put some spacing between footer elements */
-    /* todo: how the heck can I center these inside an absolutely positioned div ? */
-    #footer span {
-        padding: 0 2ex;
+    #footerToggle {
+        cursor: pointer;
+    }
+    #footerHidden {
+        display: none;
     }
 
     /* floating help container, fills the right side up to a max width */
@@ -90,6 +92,7 @@
         padding: 2ex;
         border-radius: 1ex;
         visibility: hidden;
+        z-index: 5;
     }
 
     /* absolutely position the help show/hide button in the upper right corner */
@@ -97,6 +100,7 @@
         position: absolute;
         right: 2ex;
         top: 2ex;
+        z-index: 5;
     }
 
     /* help box fills the help container and contains its own scrollbar */
@@ -178,7 +182,7 @@
         font-size: 100%;
         border-radius: 1ex;
         position: absolute;
-        z-index: 5;
+        z-index: 6;
     }
 
     .menuDivider {
@@ -188,6 +192,44 @@
         border-radius: 1ex;
     }
 
+    /************************************************************
+     * error/debug formatting
+     ************************************************************/
+
+    #errorBar {
+        background-color: #B00000;
+	    font-weight: bold;
+	    text-align: left;
+	    color: #FFFFFF;
+        position: absolute;
+        left: 2ex;
+        right: 2ex;
+        top: 10ex;
+        margin: 0;
+        padding: 2ex;
+        border-radius: 1ex;
+        z-index: 7;
+    }
+
+    #debugBar {
+        background-color: #0000B0;
+	    font-weight: bold;
+	    text-align: left;
+	    color: #FFFFFF;
+        position: absolute;
+        left: 2ex;
+        right: 2ex;
+        bottom: 2ex;
+        margin: 0;
+        padding: 2ex;
+        border-radius: 1ex;
+        z-index: 7;
+        visibility: hidden;
+    }
+
+    #errorBar *, #debugBar * {
+	    color: #FFFFFF;
+    }
 
 </style>
 <script type="text/javascript" language="javascript" src="js/room-metadata.js" ></script>
@@ -196,23 +238,100 @@
 <script type="text/javascript" language="javascript" src="js/main.js"></script>
 <script type="text/javascript" language="javascript">
 
+    /************************************************************
+     * Dynamic panels
+     ************************************************************/
+
     function toggleHelp() {
         var help = document.getElementById("help");
+        var helpToggle = document.getElementById("helpToggle");
+
         if (help.style.visibility == "visible") {
-            document.getElementById("help").style.visibility = "hidden";
-            document.getElementById("helpToggle").innerHTML = "Show Help"
+            help.style.visibility = "hidden";
+            helpToggle.innerHTML = "Show Help"
 
         } else {
-            document.getElementById("help").style.visibility = "visible";
-            document.getElementById("helpToggle").innerHTML = "Hide Help"
+            help.style.visibility = "visible";
+            helpToggle.innerHTML = "Hide Help"
         }
     }
 
+    function toggleFooter() {
+        var footer = document.getElementById("footerHidden");
+        if (footer.style.display == "inline") {
+            footer.style.display = "none";
+
+        } else {
+            footer.style.display = "inline";
+        }
+    }
+
+    /************************************************************
+     * Error and debug bars
+     ************************************************************/
+
+    function windowOnError(msg, url, lineNo, columnNo, error) {
+        var html = url + ": " + lineNo + ":" + columnNo + "<br/>";
+        var html = html + msg.replace("Uncaught ", "");
+        showError(html);
+        return false;
+    }
+
+    function showError(html) {
+        var errorBarElement = document.getElementById("errorBar");
+        errorBarElement.innerHTML = html;
+        errorBarElement.style.visibility = "visible";
+
+        return false;
+    }
+
+    function clearErrors() {
+        // find the error bar and clear it out
+        var errorBarElement = document.getElementById("errorBar");
+        if (errorBarElement.style.visibility != "hidden") {
+            errorBarElement.innerHTML = "";
+            errorBarElement.style.visibility = "hidden";
+        }
+    }
+
+    var debugCount = 0;
+
+    function showDebug(html) {
+        var debugBarElement = document.getElementById("debugBar");
+
+        while (debugBarElement.childElementCount >= 5) {
+            debugBarElement.firstElementChild.remove();
+        }
+        var div = document.createElement("div");
+        debugCount++;
+        div.innerHTML = debugCount + ". " + html;
+        debugBarElement.appendChild(div);
+
+        debugBarElement.style.visibility = "visible";
+
+        return false;
+    }
+
+    /************************************************************
+     * init
+     ************************************************************/
+
+    function init() {
+        // set up the error listener
+        window.onerror = windowOnError;
+
+        // javascript is working
+        clearErrors();
+
+        // init the model
+        initModel();
+    }
+
 </script>
-<body onload="initModel()" onkeydown="keyDown()">
+<body onload="init()" onkeydown="keyDown()">
 
 <!-- Grid background -->
-<div id="grid" onmousedown="mouseDown()"></div>
+<div id="grid" onmousedown="mouseDown()" ontouchstart="touchStart()" ontouchcancel="touchCancel()"></div>
 
 <!-- Container for room elements -->
 <div id="roomContainer"></div>
@@ -224,6 +343,11 @@
 
 <!-- floating help button in the corner -->
 <div id="helpToggle" class="button" onclick="toggleHelp()">Show Help</div>
+
+<!-- floating error bar -->
+<div id="errorBar">
+    Javascript must be enabled
+</div>
 
 <!-- floating help window, hidden by default -->
 <div id="help">
@@ -345,9 +469,6 @@
                     Add the rest of the rooms
                 </li>
                 <li>
-                    Capacity/Energy tracking
-                </li>
-                <li>
                     Tree structure like a real dojo
                     <ul>
                         <li>Detaching/reattaching subtrees</li>
@@ -355,6 +476,9 @@
                 </li>
                 <li>
                     Saving/loading (URL generation)
+                </li>
+                <li>
+                    Capacity/Energy tracking
                 </li>
                 <li>
                     Multi-floor support
@@ -374,17 +498,23 @@
                     Nothing, it's perfect :)
                 </li>
             </ul>
+
         </div>
     </div>
 </div>
 
+<div id="debugBar">
+</div>
+
 <!-- floating footer bar -->
 <div id="footer">
-    <span>v0.0.3: 2019-12-03</span>
-    <span><img src="https://i.imgur.com/b5pNXKU.png" srcset="https://i.imgur.com/z6U8Oxs.png 2x"/></span>
-    <span><a href="https://github.com/buff0000n/dojoarch">Source</a>
-        <a href="https://github.com/buff0000n/dojoarch/issues/1">Feedback</a></span>
-    <span>Thanks: <a href="https://www.reddit.com/user/AeliosZero">AeliosZero</a></span>
+    <span id="footerToggle" onclick="toggleFooter()"><img src="https://i.imgur.com/b5pNXKU.png" srcset="https://i.imgur.com/z6U8Oxs.png 2x"/></span>
+    <span id="footerHidden">
+        <span>v0.1.0: 2019-12-06</span>
+        <span><a href="https://github.com/buff0000n/dojoarch">Source</a>
+            <a href="https://github.com/buff0000n/dojoarch/issues/1">Feedback</a></span>
+        <span>Thanks: <a href="https://www.reddit.com/user/AeliosZero">AeliosZero</a></span>
+    </span>
 </div>
 
 </body>
