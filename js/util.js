@@ -1,9 +1,4 @@
 
-function setImgRotation(e, rotation) {
-    // https://www.w3schools.com/cssref/css3_pr_transform.asp
-    e.style.transform = "rotate(" + rotation + "deg)"
-}
-
 function setHue(e, hue) {
     // https://www.w3schools.com/cssref/css3_pr_filter.asp
     e.style.filter = "hue-rotate(" + hue + "deg)"

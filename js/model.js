@@ -1,7 +1,14 @@
 class Bound {
-    constructor(room, doorMetadata) {
+    constructor(room, doorMetadata, debug = false) {
         this.room = room;
         this.metadata = doorMetadata;
+        this.debugBorder = null;
+
+		if (debug) {
+	        this.debugBorder = document.createElement("div");
+	        this.debugBorder.className = "debugBounds";
+			this.debugBorder.style.position = "absolute";
+		}
     }
 
     updatePosition() {
@@ -18,6 +25,27 @@ class Bound {
         // calcuate the floor and ceiling Z coordinates relative to the room's floor
         this.z1 = (this.room.floor * roomMetadata.general.floor_distance) + this.metadata.floor;
         this.z2 = (this.room.floor * roomMetadata.general.floor_distance) + this.metadata.ceil;
+    }
+    
+    addDisplay(viewContainer) {
+        if (this.debugBorder) {
+            viewContainer.appendChild(this.debugBorder);
+        }
+    }
+
+    updateView() {
+        if (this.debugBorder) {
+			this.debugBorder.style.left = (this.mx1 * viewScale) + viewPX;
+			this.debugBorder.style.top = (this.my1 * viewScale) + viewPY;
+			this.debugBorder.style.width = (this.mx2 - this.mx1) * viewScale;
+			this.debugBorder.style.height = (this.my2 - this.my1) * viewScale;
+        }
+    }
+
+    removeDisplay() {
+        if (this.debugBorder) {
+            this.debugBorder.remove();
+        }
     }
 }
 
@@ -46,13 +74,13 @@ class Door {
 var roomIdCount = 0;
 
 class Room {
-    constructor(metadata, mx = 0, my = 0, f = 0, r = 0) {
+    constructor(metadata, mx = 0, my = 0, f = 0, r = 0, debug = false) {
         this.metadata = metadata;
         this.id = "room" + (roomIdCount++);
 
         this.bounds = Array();
         for (var i = 0; i < this.metadata.bounds.length; i++) {
-            this.bounds.push(new Bound(this, this.metadata.bounds[i]));
+            this.bounds.push(new Bound(this, this.metadata.bounds[i], debug));
         }
         this.doors = Array();
         for (var i = 0; i < this.metadata.doors.length; i++) {
@@ -160,6 +188,9 @@ class Room {
     addDisplay(viewContainer) {
         this.viewContainer = viewContainer;
         this.display = this.addDisplayElement("-display.png", 2);
+		for (var b = 0; b < this.bounds.length; b++) {
+			this.bounds[b].addDisplay(viewContainer);
+		}
         this.updateView();
     }
 
@@ -168,21 +199,29 @@ class Room {
         var element = document.createElement("img");
         element.style = "position: absolute;";
         // Need to do some voodoo to get it to rotate around the correct point
-        element.style.transformOrigin = (-this.anchorMX * viewScale) + "px " + (-this.anchorMY * viewScale) + "px";
+        // I guess we actually don't need this?
+        //element.style.transformOrigin = (-this.anchorMX * imgScale) + "px " + (-this.anchorMY * imgScale) + "px";
         element.style.zIndex = zIndex;
         element.id = this.id;
-        element.onmousedown = mouseDown;
-        element.ontouchstart = touchStart;
-        element.src = "img" + viewScale + "x/" + this.metadata.image + imageSuffix;
+		// have to explicitly tell Chrome that none of these listeners are passive or it will cry
+        element.addEventListener("mousedown", mouseDown, { passive: false });
+        element.addEventListener("touchstart", touchStart, { passive: false });
+        element.addEventListener("wheel", wheel, { passive: false });
+        element.src = "img" + imgScale + "x/" + this.metadata.image + imageSuffix;
         element.room = this;
         this.viewContainer.appendChild(element);
         return element;
     }
 
     removeDisplay() {
+        // remove the three images, whichever ones are presesnt
 	    this.display = this.removeDisplayElement(this.display);
 	    this.outline = this.removeDisplayElement(this.outline);
 	    this.grid = this.removeDisplayElement(this.grid);
+	    // remove bounds debug boxes, if present
+		for (var b = 0; b < this.bounds.length; b++) {
+			this.bounds[b].removeDisplay();
+		}
     }
 
     removeDisplayElement(element) {
@@ -195,22 +234,31 @@ class Room {
     updateView() {
         if (this.display) {
             // transform the anchor coords to pixel coords
-            var roomViewPX = ((this.mv.x + this.dragOffsetMX + this.anchorMX) * viewScale) + viewPX;
-            var roomViewPY = ((this.mv.y + this.dragOffsetMY + this.anchorMY) * viewScale) + viewPY;
+			var roomViewCenterPX = ((this.mv.x + this.dragOffsetMX) * viewScale) + viewPX;
+			var roomViewCenterPY = ((this.mv.y + this.dragOffsetMY) * viewScale) + viewPY;
+			// we have to add the anchor points scaled by the image scale rather than the view scale in order for the
+			// css transform to put the room in the right place.  so much trial and error to get this rght...
+            var roomViewPX = roomViewCenterPX + (this.anchorMX * imgScale);
+            var roomViewPY = roomViewCenterPY + (this.anchorMY * imgScale);
 
-			this.updateViewElement(this.display, roomViewPX, roomViewPY);
-			this.updateViewElement(this.outline, roomViewPX, roomViewPY);
-			this.updateViewElement(this.grid, roomViewPX, roomViewPY);
+			// final scaling of the image
+			var scale = viewScale / imgScale;
+			// update the three images, whichever ones are present
+			this.updateViewElement(this.display, roomViewPX, roomViewPY, this.rotation, scale);
+			this.updateViewElement(this.outline, roomViewPX, roomViewPY, this.rotation, scale);
+			this.updateViewElement(this.grid, roomViewPX, roomViewPY, this.rotation, scale);
+			// update debug bounds views, if present
+			for (var b = 0; b < this.bounds.length; b++) {
+				this.bounds[b].updateView(roomViewCenterPX, roomViewCenterPY);
+			}
         }
     }
 
-    updateViewElement(element, roomViewPX, roomViewPY) {
-        if (element) {
-            // update the image position and rotation
-            element.style.left = roomViewPX + "px";
-            element.style.top = roomViewPY + "px";
-            setImgRotation(element, this.rotation);
+    updateViewElement(e, px, py, rotation, scale) {
+        if (e) {
+		    // https://www.w3schools.com/cssref/css3_pr_transform.asp
+		    // translate() need to be before rotate() and scale()
+		    e.style.transform = "translate(" + px + "px, " + py + "px) rotate(" + rotation + "deg) scale(" + scale + ", " + scale + ")"
         }
     }
-
 }

@@ -46,6 +46,7 @@
         background-image: url("img5x/bg-grid.png");
         background-repeat: repeat;
         background-position: 0px 0px;
+        background-size: 160px 160px;
     }
 
     /* floating header at the top */
@@ -231,6 +232,15 @@
 	    color: #FFFFFF;
     }
 
+    .debugBounds {
+        position: absolute;
+        border-style: solid;
+        border-width: 1px;
+        border-color: #00FF00;
+        z-index: 10;
+        pointer-events: none;
+    }
+
 </style>
 <script type="text/javascript" language="javascript" src="js/room-metadata.js" ></script>
 <script type="text/javascript" language="javascript" src="js/util.js"></script>
@@ -320,6 +330,14 @@
         // set up the error listener
         window.onerror = windowOnError;
 
+        // we have to do this with addEventListener() instead of directly on the <div> so we can tell stupid Chrome that
+        // none of these event handlers are passive
+        var grid = document.getElementById("grid");
+        grid.addEventListener("mousedown", mouseDown, { passive: false });
+        grid.addEventListener("wheel", wheel, { passive: false });
+        grid.addEventListener("touchstart", touchStart, { passive: false });
+        grid.addEventListener("touchcancel", touchCancel, { passive: false });
+
         // javascript is working
         clearErrors();
 
@@ -331,7 +349,7 @@
 <body onload="init()" onkeydown="keyDown()">
 
 <!-- Grid background -->
-<div id="grid" onmousedown="mouseDown()" ontouchstart="touchStart()" ontouchcancel="touchCancel()"></div>
+<div id="grid"></div>
 
 <!-- Container for room elements -->
 <div id="roomContainer"></div>
@@ -371,6 +389,9 @@
             <ul id="TOC">
                 <li>
                     <a href="#Navigation">Navigation</a>
+                    <ul>
+                        <li><a href="#Xooming">Zooming</a></li>
+                    </ul>
                 </li>
                 <li>
                     <a href="#Editing">Editing</a>
@@ -401,6 +422,11 @@
             <p>
                 This includes clicking on a room, as long as that room isn't currently selected (see
                 <a href="#SelectingARoom">Selecting a Room</a>).
+            </p>
+
+            <h2 id="Xooming">Zooming</h2>
+            <p>
+                Use the mouse wheel to zoom in and out.  The cursor marks the center point for zooming.
             </p>
 
             <h1 id="Editing">Editing</h1>
@@ -461,10 +487,10 @@
             <h1 id="ToDo">To Do</h1>
             <ul>
                 <li>
-                    Door snapping
+                    Zooming with touch controls
                 </li>
                 <li>
-                    Zooming
+                    Door snapping
                 </li>
                 <li>
                     Bounds checking
@@ -475,7 +501,7 @@
                 <li>
                     Tree structure like a real dojo
                     <ul>
-                        <li>Detaching/reattaching subtrees</li>
+                        <li>Detaching, reattaching, copying, deleting subtrees</li>
                     </ul>
                 </li>
                 <li>
@@ -483,6 +509,9 @@
                 </li>
                 <li>
                     Capacity/Energy tracking
+                </li>
+                <li>
+                    Level of Detail images for zoom levels
                 </li>
                 <li>
                     Multi-floor support
@@ -514,7 +543,7 @@
 <div id="footer">
     <span id="footerToggle" onclick="toggleFooter()"><img src="https://i.imgur.com/b5pNXKU.png" srcset="https://i.imgur.com/z6U8Oxs.png 2x"/></span>
     <span id="footerHidden">
-        <span>v0.1.0: 2019-12-06</span>
+        <span>v0.1.1: 2019-12-07</span>
         <span><a href="https://github.com/buff0000n/dojoarch">Source</a>
             <a href="https://github.com/buff0000n/dojoarch/issues/1">Feedback</a></span>
         <span>Thanks: <a href="https://www.reddit.com/user/AeliosZero">AeliosZero</a></span>

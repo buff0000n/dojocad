@@ -10,18 +10,33 @@ var viewScale = 5;
 var viewPX = 0;
 var viewPY = 0;
 
+var imgScale = 5;
+var bg_grid_width = 160;
+
+var maxViewScale = 60;
+var minViewScale = 0.625;
+
 // Model state
 
 var roomList = Array();
 
-function setViewP(newViewPX, newViewPY) {
+function setViewP(newViewPX, newViewPY, newViewScale) {
 	viewPX = newViewPX;
 	viewPY = newViewPY;
-	document.getElementById("grid").style.backgroundPosition = viewPX + "px " + viewPY + "px";
+	viewScale = newViewScale;
+
+	var grid = document.getElementById("grid");
+	grid.style.backgroundPosition = viewPX + "px " + viewPY + "px";
+	// We can't just use background-size because it blurs the image for no good reason
+	// so we have to know the exact size of bg-grid.png
+	var w = (bg_grid_width * viewScale / imgScale);
+    grid.style.backgroundSize = w + "px " + w + "px";
 
     for (var r = 0; r < roomList.length; r++) {
         roomList[r].updateView();
     }
+
+    //showDebug("scale: " + newViewScale);
 }
 
 function getRoomMetadata(id) {
@@ -54,17 +69,8 @@ function deleteSelectedRoom() {
 
 
 //==============================================================
-// Mouse/touch event handling
+// Mouse/touch event handling wrapper layer
 //==============================================================
-
-var mouseDownTarget = null;
-var mouseDownTargetStartPX = 0;
-var mouseDownTargetStartPY = 0;
-var selectedRoom = null;
-var dragged = false;
-var newRoom = false;
-
-var dragThreshold = 64; // 8px^2
 
 class MTEvent {
 	constructor(currentTarget, clientX, clientY, altKey, shiftKey) {
@@ -154,6 +160,31 @@ function mouseUp(e) {
     dropEvent(mouseEventToMTEvent(e));
 }
 
+// delta
+var wheel2xZoomScale = 200;
+
+function wheel(e) {
+    e = e || window.event;
+    e.preventDefault();
+
+	var factor = Math.pow(2, -e.deltaY / wheel2xZoomScale)
+
+	zoom(e.clientX, e.clientY, factor);
+}
+
+//==============================================================
+// Unified event handling
+//==============================================================
+
+var mouseDownTarget = null;
+var mouseDownTargetStartPX = 0;
+var mouseDownTargetStartPY = 0;
+var selectedRoom = null;
+var dragged = false;
+var newRoom = false;
+
+var dragThresholdSquared = 8 * 8;
+
 // adapted from https://www.w3schools.com/howto/howto_js_draggable.asp
 function downEvent(e) {
 	if (mouseDownTarget != null) {
@@ -207,7 +238,7 @@ function dragEvent(e) {
     var offsetPX = e.clientX - mouseDownTargetStartPX;
     var offsetPY = e.clientY - mouseDownTargetStartPY;
 
-    if (!dragged && ((offsetPX * offsetPX) + (offsetPY * offsetPY) < dragThreshold)) {
+    if (!dragged && ((offsetPX * offsetPX) + (offsetPY * offsetPY) < dragThresholdSquared)) {
         return;
     }
 
@@ -223,7 +254,7 @@ function dragEvent(e) {
 	    mouseDownTargetStartPX = e.clientX;
 	    mouseDownTargetStartPY = e.clientY;
 
-		setViewP(viewPX + offsetPX, viewPY + offsetPY);
+		setViewP(viewPX + offsetPX, viewPY + offsetPY, viewScale);
     }
 }
 
@@ -300,15 +331,39 @@ function cancelRoomDrag() {
     }
 }
 
+function zoom(px, py, factor) {
+	var mx = (px - viewPX) / viewScale;
+	var my = (py - viewPY) / viewScale;
+
+	var newViewScale = viewScale * factor;
+	if (newViewScale > maxViewScale) {
+		newViewScale = maxViewScale;
+	} else if (newViewScale < minViewScale) {
+        newViewScale = minViewScale;
+    }
+	var newViewPX = px - (mx * newViewScale);
+	var newViewPY = py - (my * newViewScale);
+
+	setViewP(newViewPX, newViewPY, newViewScale);
+}
+
 //==============================================================
 // key event handling
 //==============================================================
 
 function keyDown(e) {
     e = e || window.event;
-	if ("Escape" == e.code) {
-	    clearMenus(0);
-	    cancelRoomDrag();
+    switch (e.code) {
+		case "Escape" :
+		    clearMenus(0);
+		    cancelRoomDrag();
+		    break;
+		case "ArrowUp" :
+			setViewP(viewPX, viewPY, viewScale * 2);
+		    break;
+		case "ArrowDown" :
+			setViewP(viewPX, viewPY, viewScale * 0.5);
+		    break;
 	}
 }
 
@@ -481,6 +536,8 @@ function doRoomMenu(e, room) {
 //==============================================================
 
 function initModel() {
+	setViewP(viewPX, viewPY, viewScale);
+
     roomList.push(new Room(getRoomMetadata("h1"), 64, 64));
 
     for (var r = 0; r < roomList.length; r++) {
