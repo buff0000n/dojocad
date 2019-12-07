@@ -491,9 +491,10 @@ function doAddCategoryMenu(e) {
     menus.push(menuDiv);
 }
 
-function buildAddRoomButton(roomMetadata, name = null) {
-    var roomButtonDiv = buildMenuButton(name != null ? name : roomMetadata.name, doAddRoomButton);
+function buildAddRoomButton(roomMetadata, room = null) {
+    var roomButtonDiv = buildMenuButton(room != null ? "Duplicate" : roomMetadata.name, doAddRoomButton);
     roomButtonDiv.roomMetadata = roomMetadata;
+    roomButtonDiv.room = room;
     return roomButtonDiv;
 }
 
@@ -510,6 +511,9 @@ function doAddRoomButton(e) {
 	lastAddedRoomMetadata = roomMetadata;
 
     var room = new Room(roomMetadata);
+    if (roomButton.room) {
+        room.rotation = roomButton.room.rotation;
+    }
     if (debugEnabled) {
         room.setDebug(true);
     }
@@ -536,7 +540,7 @@ function doRoomMenu(e, room) {
 
     menuDiv.appendChild(buildMenuButton("Rotate", rotateSelectedRoom));
 
-    menuDiv.appendChild(buildAddRoomButton(room.metadata, "Duplicate"));
+    menuDiv.appendChild(buildAddRoomButton(room.metadata, room));
 
     menuDiv.appendChild(buildMenuDivider());
 
