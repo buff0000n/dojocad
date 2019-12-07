@@ -72,7 +72,7 @@
         margin: 0;
         padding: 1ex;
         border-radius: 1ex;
-        z-index: 5;
+        z-index: 8;
     }
     #footerToggle {
         cursor: pointer;
@@ -267,12 +267,31 @@
     }
 
     function toggleFooter() {
+        if (window.event && window.event.altKey) {
+            // Shhh super secret debug mode don't tell anyone okay
+            toggleDebug();
+            return;
+        }
         var footer = document.getElementById("footerHidden");
         if (footer.style.display == "inline") {
             footer.style.display = "none";
 
         } else {
             footer.style.display = "inline";
+        }
+    }
+
+    function toggleDebug() {
+        if (debugEnabled) {
+            debugEnabled = false;
+            setModelDebug(false);
+            showDebug("Debug: off");
+            hideDebug();
+
+        } else {
+            debugEnabled = true;
+            setModelDebug(true);
+            showDebug("Debug: on");
         }
     }
 
@@ -318,8 +337,12 @@
         debugBarElement.appendChild(div);
 
         debugBarElement.style.visibility = "visible";
+    }
 
-        return false;
+    function hideDebug() {
+        var debugBarElement = document.getElementById("debugBar");
+
+        debugBarElement.style.visibility = "hidden";
     }
 
     /************************************************************

@@ -1,21 +1,15 @@
 class Bound {
-    constructor(room, doorMetadata, debug = false) {
+    constructor(room, doorMetadata) {
         this.room = room;
         this.metadata = doorMetadata;
         this.debugBorder = null;
-
-		if (debug) {
-	        this.debugBorder = document.createElement("div");
-	        this.debugBorder.className = "debugBounds";
-			this.debugBorder.style.position = "absolute";
-		}
     }
 
     updatePosition() {
         // rotate the bound corners and translate by the room position
         var rotation = this.room.rotation;
-        var mv1 = new Vect(this.metadata.x1, this.metadata.y1).rotate(rotation).add(this.room.mv);
-        var mv2 = new Vect(this.metadata.x2, this.metadata.y2).rotate(rotation).add(this.room.mv);
+        var mv1 = new Vect(this.metadata.x1, this.metadata.y1).rotate(rotation).add(this.room.mv).add(this.room.mdragOffset);
+        var mv2 = new Vect(this.metadata.x2, this.metadata.y2).rotate(rotation).add(this.room.mv).add(this.room.mdragOffset);
 
         // calculate the min and max X and Y coords
         this.mx1 = mv1.x < mv2.x ? mv1.x : mv2.x;
@@ -27,6 +21,20 @@ class Bound {
         this.z2 = (this.room.floor * roomMetadata.general.floor_distance) + this.metadata.ceil;
     }
     
+	setDebug(debug) {
+		if (debug) {
+	        this.debugBorder = document.createElement("div");
+	        this.debugBorder.className = "debugBounds";
+			this.debugBorder.style.position = "absolute";
+			if (this.room.display) {
+				this.room.display.parentElement.appendChild(this.debugBorder);
+			}
+		} else {
+			this.debugBorder.remove();
+			this.debugBorder = null;
+		}
+	}
+
     addDisplay(viewContainer) {
         if (this.debugBorder) {
             viewContainer.appendChild(this.debugBorder);
@@ -66,21 +74,33 @@ class Door {
         this.floor = this.room.floor + this.metadata.floor;
     }
 
+	setDebug(debug) {
+		// todo
+	}
+
+    addDisplay(viewContainer) {
+		// todo
+    }
+
     updateView() {
-        // todo
+		// todo
+    }
+
+    removeDisplay() {
+		// todo
     }
 }
 
 var roomIdCount = 0;
 
 class Room {
-    constructor(metadata, mx = 0, my = 0, f = 0, r = 0, debug = false) {
+    constructor(metadata, mx = 0, my = 0, f = 0, r = 0) {
         this.metadata = metadata;
         this.id = "room" + (roomIdCount++);
 
         this.bounds = Array();
         for (var i = 0; i < this.metadata.bounds.length; i++) {
-            this.bounds.push(new Bound(this, this.metadata.bounds[i], debug));
+            this.bounds.push(new Bound(this, this.metadata.bounds[i]));
         }
         this.doors = Array();
         for (var i = 0; i < this.metadata.doors.length; i++) {
@@ -92,11 +112,19 @@ class Room {
         this.outline = null;
         this.grid = null;
 
-        this.dragOffsetMX = 0;
-        this.dragOffsetMY = 0;
+        this.mdragOffset = new Vect(0, 0);
 
         this.setPosition(mx, my, f, r);
         this.calculateAnchor();
+    }
+
+    setDebug(debug) {
+        for (var i = 0; i < this.doors.length; i++) {
+            this.doors[i].setDebug(debug);
+        }
+        for (var i = 0; i < this.bounds.length; i++) {
+            this.bounds[i].setDebug(debug);
+        }
     }
 
     setPosition(nmx, nmy, nf, nr) {
@@ -104,12 +132,15 @@ class Room {
         this.floor = nf;
         this.rotation = nr;
 
+		this.updateLeafPositions();
+    }
 
+    updateLeafPositions() {
         // update door positions
         for (var i = 0; i < this.doors.length; i++) {
             this.doors[i].updatePosition();
         }
-
+		// update bounds positions
         for (var i = 0; i < this.bounds.length; i++) {
             this.bounds[i].updatePosition();
         }
@@ -160,25 +191,25 @@ class Room {
 	        this.grid = this.addDisplayElement("-bounds-blue.png", 1);
         }
         // start by snapping to the nearest meter
-        this.dragOffsetMX = Math.round(offsetPX / viewScale);
-        this.dragOffsetMY = Math.round(offsetPY / viewScale);
+        this.mdragOffset.set(Math.round(offsetPX / viewScale), Math.round(offsetPY / viewScale));
         if (snap > 1) {
-            var mx = this.mv.x + this.dragOffsetMX;
+            var mx = this.mv.x + this.mdragOffset.x;
             var mx2 = Math.round(mx / snap) * snap;
-            this.dragOffsetMX = this.dragOffsetMX + (mx2 - mx); 
-            var my = this.mv.y + this.dragOffsetMY;
+
+            var my = this.mv.y + this.mdragOffset.y;
             var my2 = Math.round(my / snap) * snap;
-            this.dragOffsetMY = this.dragOffsetMY + (my2 - my); 
+
+            this.mdragOffset.addTo(mx2 - mx, my2 - my);
         }
+
+        this.updateLeafPositions();
     }
 
     dropDragOffset() {
-        if (this.dragOffsetMX != 0 || this.dragOffsetMY != 0) {
-            var nmx = this.mv.x + this.dragOffsetMX;
-            var nmy = this.mv.y + this.dragOffsetMY;
-            this.dragOffsetMX = 0;
-            this.dragOffsetMY = 0;
-            this.setPosition(nmx, nmy, this.floor, this.rotation);
+        if (this.mdragOffset.x != 0 || this.mdragOffset.y!= 0) {
+            var nmv = this.mv.add(this.mdragOffset);
+            this.mdragOffset.set(0, 0);
+            this.setPosition(nmv.x, nmv.y, this.floor, this.rotation);
         }
         if (this.grid) {
 	        this.grid = this.removeDisplayElement(this.grid);
@@ -188,6 +219,9 @@ class Room {
     addDisplay(viewContainer) {
         this.viewContainer = viewContainer;
         this.display = this.addDisplayElement("-display.png", 2);
+		for (var b = 0; b < this.doors.length; b++) {
+			this.doors[b].addDisplay(viewContainer);
+		}
 		for (var b = 0; b < this.bounds.length; b++) {
 			this.bounds[b].addDisplay(viewContainer);
 		}
@@ -198,9 +232,8 @@ class Room {
         // Ugh, have to build the <img> element the hard way
         var element = document.createElement("img");
         element.style = "position: absolute;";
-        // Need to do some voodoo to get it to rotate around the correct point
-        // I guess we actually don't need this?
-        //element.style.transformOrigin = (-this.anchorMX * imgScale) + "px " + (-this.anchorMY * imgScale) + "px";
+        // Need to explicitly set the transform origin for off-center rooms
+        element.style.transformOrigin = (-this.anchorMX * imgScale) + "px " + (-this.anchorMY * imgScale) + "px";
         element.style.zIndex = zIndex;
         element.id = this.id;
 		// have to explicitly tell Chrome that none of these listeners are passive or it will cry
@@ -219,6 +252,9 @@ class Room {
 	    this.outline = this.removeDisplayElement(this.outline);
 	    this.grid = this.removeDisplayElement(this.grid);
 	    // remove bounds debug boxes, if present
+		for (var b = 0; b < this.doors.length; b++) {
+			this.doors[b].removeDisplay();
+		}
 		for (var b = 0; b < this.bounds.length; b++) {
 			this.bounds[b].removeDisplay();
 		}
@@ -234,8 +270,8 @@ class Room {
     updateView() {
         if (this.display) {
             // transform the anchor coords to pixel coords
-			var roomViewCenterPX = ((this.mv.x + this.dragOffsetMX) * viewScale) + viewPX;
-			var roomViewCenterPY = ((this.mv.y + this.dragOffsetMY) * viewScale) + viewPY;
+			var roomViewCenterPX = ((this.mv.x + this.mdragOffset.x) * viewScale) + viewPX;
+			var roomViewCenterPY = ((this.mv.y + this.mdragOffset.y) * viewScale) + viewPY;
 			// we have to add the anchor points scaled by the image scale rather than the view scale in order for the
 			// css transform to put the room in the right place.  so much trial and error to get this rght...
             var roomViewPX = roomViewCenterPX + (this.anchorMX * imgScale);
@@ -248,8 +284,11 @@ class Room {
 			this.updateViewElement(this.outline, roomViewPX, roomViewPY, this.rotation, scale);
 			this.updateViewElement(this.grid, roomViewPX, roomViewPY, this.rotation, scale);
 			// update debug bounds views, if present
+			for (var b = 0; b < this.doors.length; b++) {
+				this.doors[b].updateView();
+			}
 			for (var b = 0; b < this.bounds.length; b++) {
-				this.bounds[b].updateView(roomViewCenterPX, roomViewCenterPY);
+				this.bounds[b].updateView();
 			}
         }
     }

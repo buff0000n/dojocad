@@ -16,6 +16,8 @@ var bg_grid_width = 160;
 var maxViewScale = 60;
 var minViewScale = 0.625;
 
+var debugEnabled = false;
+
 // Model state
 
 var roomList = Array();
@@ -37,6 +39,10 @@ function setViewP(newViewPX, newViewPY, newViewScale) {
     }
 
     //showDebug("scale: " + newViewScale);
+}
+
+function redraw() {
+	setViewP(viewPX, viewPY, viewScale);
 }
 
 function getRoomMetadata(id) {
@@ -344,6 +350,12 @@ function zoom(px, py, factor) {
 	var newViewPX = px - (mx * newViewScale);
 	var newViewPY = py - (my * newViewScale);
 
+	if (mouseDownTarget) {
+		// Oh god we're dragging and zooming at the same time *sweats profusely*
+		mouseDownTargetStartPX = (mouseDownTargetStartPX - viewPX) * (newViewScale / viewScale) + newViewPX;
+		mouseDownTargetStartPY = (mouseDownTargetStartPY - viewPY) * (newViewScale / viewScale) + newViewPY;
+	}
+
 	setViewP(newViewPX, newViewPY, newViewScale);
 }
 
@@ -358,12 +370,12 @@ function keyDown(e) {
 		    clearMenus(0);
 		    cancelRoomDrag();
 		    break;
-		case "ArrowUp" :
-			setViewP(viewPX, viewPY, viewScale * 2);
-		    break;
-		case "ArrowDown" :
-			setViewP(viewPX, viewPY, viewScale * 0.5);
-		    break;
+//		case "ArrowUp" :
+//			setViewP(viewPX, viewPY, viewScale * 2);
+//		    break;
+//		case "ArrowDown" :
+//			setViewP(viewPX, viewPY, viewScale * 0.5);
+//		    break;
 	}
 }
 
@@ -498,6 +510,9 @@ function doAddRoomButton(e) {
 	lastAddedRoomMetadata = roomMetadata;
 
     var room = new Room(roomMetadata);
+    if (debugEnabled) {
+        room.setDebug(true);
+    }
     roomList.push(room);
     room.addDisplay(getRoomContainer());
 
@@ -532,15 +547,26 @@ function doRoomMenu(e, room) {
 }
 
 //==============================================================
+// Misc
+//==============================================================
+
+function setModelDebug(debug) {
+    for (var r = 0; r < roomList.length; r++) {
+        roomList[r].setDebug(debug);
+    }
+    redraw();
+}
+
+//==============================================================
 // State, initialization
 //==============================================================
 
 function initModel() {
-	setViewP(viewPX, viewPY, viewScale);
-
     roomList.push(new Room(getRoomMetadata("h1"), 64, 64));
 
     for (var r = 0; r < roomList.length; r++) {
         roomList[r].addDisplay(getRoomContainer());
     }
+
+    redraw();
 }

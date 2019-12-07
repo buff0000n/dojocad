@@ -3,7 +3,8 @@ var roomMetadata =
 "rooms": [
 {"id": "cc", "image": "cross-connector", "name": "Cross Connector", "category": "Connectors", "prereq": null, "capacity": -10, "energy": -3, "maxnum": null, "floor": 0, "ceil": 8,
 	"bounds": [
-		{"x1": -16, "y1": -16, "x2": 16, "y2": 16, "floor": 0, "ceil": 8}],
+		{"x1": -16, "y1": -8, "x2": 16, "y2": 8, "floor": 0, "ceil": 8},
+		{"x1": -8, "y1": -16, "x2": 8, "y2": 16, "floor": 0, "ceil": 8}],
 	"doors": [
 		{"x": 0, "y": 16, "floor": 0, "outx": 0, "outy": 1},
 		{"x": 16, "y": 0, "floor": 0, "outx": 1, "outy": 0},

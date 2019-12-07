@@ -26,6 +26,11 @@ class Vect {
         this.y = y;
     }
 
+    set(x, y) {
+        this.x = x;
+        this.y = y;
+    }
+
     rotate(rotation) {
         // let's keep real simple
         switch (rotation) {
@@ -39,5 +44,11 @@ class Vect {
 
     add(v) {
         return new Vect(this.x + v.x, this.y + v.y);
+    }
+
+    addTo(x, y) {
+        this.x += x;
+        this.y += y;
+        return this;
     }
 }
