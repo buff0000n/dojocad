@@ -61,6 +61,7 @@ class Door {
     constructor(room, doorMetadata) {
         this.room = room;
         this.metadata = doorMetadata;
+        this.debugBorder = null;
 
         this.otherDoor = null;
         this.incoming = false;
@@ -68,26 +69,51 @@ class Door {
 
     updatePosition() {
         this.rotation = this.room.rotation;
-        this.mv = new Vect(this.metadata.x, this.metadata.y).rotate(this.rotation).add(this.room.mv);
+        this.mv = new Vect(this.metadata.x, this.metadata.y).rotate(this.rotation).add(this.room.mv).add(this.room.mdragOffset);;
         this.outv = new Vect(this.metadata.outx, this.metadata.outy).rotate(this.rotation);
-
         this.floor = this.room.floor + this.metadata.floor;
+        
+        var width = doorSnapPixels / viewScale;
+
+        this.mx1 = this.mv.x - width;
+        this.mx2 = this.mv.x + width;
+        this.my1 = this.mv.y - width;
+        this.my2 = this.mv.y + width;
     }
 
 	setDebug(debug) {
-		// todo
+		if (debug) {
+	        this.debugBorder = document.createElement("div");
+	        this.debugBorder.className = "debugDoorBounds";
+			this.debugBorder.style.position = "absolute";
+			if (this.room.display) {
+				this.room.display.parentElement.appendChild(this.debugBorder);
+			}
+		} else {
+			this.debugBorder.remove();
+			this.debugBorder = null;
+		}
 	}
 
     addDisplay(viewContainer) {
-		// todo
+        if (this.debugBorder) {
+            viewContainer.appendChild(this.debugBorder);
+        }
     }
 
     updateView() {
-		// todo
+        if (this.debugBorder) {
+			this.debugBorder.style.left = (this.mx1 * viewScale) + viewPX;
+			this.debugBorder.style.top = (this.my1 * viewScale) + viewPY;
+			this.debugBorder.style.width = (this.mx2 - this.mx1) * viewScale;
+			this.debugBorder.style.height = (this.my2 - this.my1) * viewScale;
+        }
     }
 
     removeDisplay() {
-		// todo
+        if (this.debugBorder) {
+            this.debugBorder.remove();
+        }
     }
 }
 
@@ -135,14 +161,21 @@ class Room {
 		this.updateLeafPositions();
     }
 
+	updatePosition() {
+		// for a pure view update, just worry about doors because their snap bounds depend on the zoon
+        for (var d = 0; d < this.doors.length; d++) {
+            this.doors[d].updatePosition();
+        }
+	}
+
     updateLeafPositions() {
         // update door positions
-        for (var i = 0; i < this.doors.length; i++) {
-            this.doors[i].updatePosition();
+        for (var d = 0; d < this.doors.length; d++) {
+            this.doors[d].updatePosition();
         }
 		// update bounds positions
-        for (var i = 0; i < this.bounds.length; i++) {
-            this.bounds[i].updatePosition();
+        for (var b = 0; b < this.bounds.length; b++) {
+            this.bounds[b].updatePosition();
         }
     }
 
@@ -284,8 +317,8 @@ class Room {
 			this.updateViewElement(this.outline, roomViewPX, roomViewPY, this.rotation, scale);
 			this.updateViewElement(this.grid, roomViewPX, roomViewPY, this.rotation, scale);
 			// update debug bounds views, if present
-			for (var b = 0; b < this.doors.length; b++) {
-				this.doors[b].updateView();
+			for (var d = 0; d < this.doors.length; d++) {
+				this.doors[d].updateView();
 			}
 			for (var b = 0; b < this.bounds.length; b++) {
 				this.bounds[b].updateView();

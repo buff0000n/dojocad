@@ -15,6 +15,9 @@ var bg_grid_width = 160;
 
 var maxViewScale = 60;
 var minViewScale = 0.625;
+var wheel2xZoomScale = 200;
+var dragThresholdSquared = 8 * 8;
+var doorSnapPixels = 50;
 
 var debugEnabled = false;
 
@@ -35,6 +38,7 @@ function setViewP(newViewPX, newViewPY, newViewScale) {
     grid.style.backgroundSize = w + "px " + w + "px";
 
     for (var r = 0; r < roomList.length; r++) {
+        roomList[r].updatePosition();
         roomList[r].updateView();
     }
 
@@ -166,9 +170,6 @@ function mouseUp(e) {
     dropEvent(mouseEventToMTEvent(e));
 }
 
-// delta
-var wheel2xZoomScale = 200;
-
 function wheel(e) {
     e = e || window.event;
     e.preventDefault();
@@ -188,8 +189,6 @@ var mouseDownTargetStartPY = 0;
 var selectedRoom = null;
 var dragged = false;
 var newRoom = false;
-
-var dragThresholdSquared = 8 * 8;
 
 // adapted from https://www.w3schools.com/howto/howto_js_draggable.asp
 function downEvent(e) {
