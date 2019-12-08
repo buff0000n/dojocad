@@ -61,6 +61,7 @@ function getRoomContainer() {
 //==============================================================
 
 var roomList = Array();
+
 function getRoomMetadata(id) {
     var rmd = roomMetadata.rooms.find(room => room.id == id);
     if (!rmd) {
@@ -337,6 +338,7 @@ function downEvent(e) {
 
     if (e.currentTarget.room) {
         mouseDownTarget = e.currentTarget;
+        mouseDownTarget.room.setClickPoint(mouseDownTargetStartPX, mouseDownTargetStartPY);
         newRoom = false;
     }
 
@@ -350,6 +352,7 @@ function startNewRoomDrag(e, target) {
 	}
     mouseDownTarget = target;
     selectedRoom = target.room;
+    selectedRoom.setClickPoint(e.clientX, e.clientY);
     selectedRoom.select();
     newRoom = true;
 

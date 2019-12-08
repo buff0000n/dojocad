@@ -12,10 +12,10 @@ class Bound {
         var mv2 = new Vect(this.metadata.x2, this.metadata.y2).rotate(rotation).add(this.room.mv).add(this.room.mdragOffset);
 
         // calculate the min and max X and Y coords
-        this.mx1 = mv1.x < mv2.x ? mv1.x : mv2.x;
-        this.mx2 = mv1.x > mv2.x ? mv1.x : mv2.x;
-        this.my1 = mv1.y < mv2.y ? mv1.y : mv2.y;
-        this.my2 = mv1.y > mv2.y ? mv1.y : mv2.y;
+        this.x1 = mv1.x < mv2.x ? mv1.x : mv2.x;
+        this.x2 = mv1.x > mv2.x ? mv1.x : mv2.x;
+        this.y1 = mv1.y < mv2.y ? mv1.y : mv2.y;
+        this.y2 = mv1.y > mv2.y ? mv1.y : mv2.y;
         // calcuate the floor and ceiling Z coordinates relative to the room's floor
         this.z1 = (this.room.floor * roomMetadata.general.floor_distance) + this.metadata.floor;
         this.z2 = (this.room.floor * roomMetadata.general.floor_distance) + this.metadata.ceil;
@@ -43,10 +43,10 @@ class Bound {
 
     updateView() {
         if (this.debugBorder) {
-			this.debugBorder.style.left = (this.mx1 * viewScale) + viewPX;
-			this.debugBorder.style.top = (this.my1 * viewScale) + viewPY;
-			this.debugBorder.style.width = (this.mx2 - this.mx1) * viewScale;
-			this.debugBorder.style.height = (this.my2 - this.my1) * viewScale;
+			this.debugBorder.style.left = (this.x1 * viewScale) + viewPX;
+			this.debugBorder.style.top = (this.y1 * viewScale) + viewPY;
+			this.debugBorder.style.width = (this.x2 - this.x1) * viewScale;
+			this.debugBorder.style.height = (this.y2 - this.y1) * viewScale;
         }
     }
 
@@ -61,30 +61,36 @@ class Door {
     constructor(room, doorMetadata) {
         this.room = room;
         this.metadata = doorMetadata;
+        this.metadataRotation = new Vect(this.metadata.outx, this.metadata.outy).toRotation();
         this.debugBorder = null;
+
+        this.collisions = Array();
 
         this.otherDoor = null;
         this.incoming = false;
+        this.crossBranch = false;
     }
 
     updatePosition() {
-        this.rotation = this.room.rotation;
-        this.mv = new Vect(this.metadata.x, this.metadata.y).rotate(this.rotation).add(this.room.mv).add(this.room.mdragOffset);;
-        this.outv = new Vect(this.metadata.outx, this.metadata.outy).rotate(this.rotation);
+        this.mv = new Vect(this.metadata.x, this.metadata.y).rotate(this.room.rotation).add(this.room.mv).add(this.room.mdragOffset);;
+        this.outv = new Vect(this.metadata.outx, this.metadata.outy).rotate(this.room.rotation);
+        this.rotation = this.outv.toRotation();
         this.floor = this.room.floor + this.metadata.floor;
         
         var width = doorSnapPixels / viewScale;
 
-        this.mx1 = this.mv.x - width;
-        this.mx2 = this.mv.x + width;
-        this.my1 = this.mv.y - width;
-        this.my2 = this.mv.y + width;
+        this.x1 = this.mv.x - width;
+        this.x2 = this.mv.x + width;
+        this.y1 = this.mv.y - width;
+        this.y2 = this.mv.y + width;
+        this.z1 = this.room.floor * roomMetadata.general.floor_distance;
+        this.z2 = this.z1 + 1;
     }
 
 	setDebug(debug) {
 		if (debug) {
 	        this.debugBorder = document.createElement("div");
-	        this.debugBorder.className = "debugDoorBounds";
+	        this.debugBorder.className = this.collisions.length ==  0 ? "debugDoorBounds" : "debugOverlapDoorBounds";
 			this.debugBorder.style.position = "absolute";
 			if (this.room.display) {
 				this.room.display.parentElement.appendChild(this.debugBorder);
@@ -92,6 +98,30 @@ class Door {
 		} else {
 			this.debugBorder.remove();
 			this.debugBorder = null;
+		}
+	}
+
+	addCollision(otherDoor) {
+		if (addToListIfNotPresent(this.collisions, otherDoor)) {
+			otherDoor.addCollision(this);
+			if (this.debugBorder && this.collisions.length == 1) {
+				this.debugBorder.className = "debugOverlapDoorBounds";
+			}
+		}
+	}
+
+	removeCollision(otherDoor) {
+		if (removeFromList(this.collisions, otherDoor)) {
+			otherDoor.removeCollision(this);
+			if (this.debugBorder && this.collisions.length == 0) {
+				this.debugBorder.className = "debugDoorBounds";
+			}
+		}
+	}
+
+	clearCollisions() {
+		while (this.collisions.length > 0) {
+			this.removeCollision(this.collisions[this.collisions.length - 1]);
 		}
 	}
 
@@ -103,10 +133,10 @@ class Door {
 
     updateView() {
         if (this.debugBorder) {
-			this.debugBorder.style.left = (this.mx1 * viewScale) + viewPX;
-			this.debugBorder.style.top = (this.my1 * viewScale) + viewPY;
-			this.debugBorder.style.width = (this.mx2 - this.mx1) * viewScale;
-			this.debugBorder.style.height = (this.my2 - this.my1) * viewScale;
+			this.debugBorder.style.left = (this.x1 * viewScale) + viewPX;
+			this.debugBorder.style.top = (this.y1 * viewScale) + viewPY;
+			this.debugBorder.style.width = (this.x2 - this.x1) * viewScale;
+			this.debugBorder.style.height = (this.y2 - this.y1) * viewScale;
         }
     }
 
@@ -132,6 +162,7 @@ class Room {
         for (var i = 0; i < this.metadata.doors.length; i++) {
             this.doors.push(new Door(this, this.metadata.doors[i]));
         }
+        this.angleToDoors = Array();
 
 		this.viewContainer = null;
         this.display = null;
@@ -158,7 +189,8 @@ class Room {
         this.floor = nf;
         this.rotation = nr;
 
-		this.updateLeafPositions();
+		this.updateDoorPositions();
+		this.updateBoundsPositions();
     }
 
 	updatePosition() {
@@ -168,11 +200,50 @@ class Room {
         }
 	}
 
-    updateLeafPositions() {
+    updateDoorPositions() {
+        // clear the angle-to-door mapping
+        this.angleToDoors = Array();
         // update door positions
         for (var d = 0; d < this.doors.length; d++) {
-            this.doors[d].updatePosition();
+            var door = this.doors[d];
+
+            door.updatePosition();
+            // re-build the angle-to-door mapping
+            var index = door.rotation/90;
+            if (!this.angleToDoors[index]) {
+                this.angleToDoors[index] = Array();
+            }
+            this.angleToDoors[index].push(door);
+            // clear the door's collisions
+            door.clearCollisions();
         }
+
+		// regenerate door collisions
+		// loop over the four possible angles
+		for (var a = 0; a < 4; a++) {
+			// see if we have any doors facing that angle
+			if (this.angleToDoors[a]) {
+				// calculate the index of the opposite angle
+				var a2 = (a + 2) % 4;
+				// iterate over the global room list
+				for (var r = 0; r < roomList.length; r++) {
+					var room = roomList[r];
+					// see if the room isn't this room and has doors facing the other direction
+					if (room != this && room.angleToDoors[a2]) {
+						// find collisions in the two sets of door boxes
+						var cols = findCollisions(this.angleToDoors[a], room.angleToDoors[a2]);
+						// iterate over the collisions
+						for (var c = 0; c <cols.length; c++) {
+							// save the collision state in each door object
+							cols[c][0].addCollision(cols[c][1]);
+						}
+					}
+				}
+			}
+		}
+    }
+
+    updateBoundsPositions() {
 		// update bounds positions
         for (var b = 0; b < this.bounds.length; b++) {
             this.bounds[b].updatePosition();
@@ -188,11 +259,11 @@ class Room {
         var minBoundsMX = this.mv.x;
         var minBoundsMY = this.mv.y;
         for (var i = 0; i < this.bounds.length; i++) {
-            if (this.bounds[i].mx1 < minBoundsMX) {
-                minBoundsMX = this.bounds[i].mx1;
+            if (this.bounds[i].x1 < minBoundsMX) {
+                minBoundsMX = this.bounds[i].x1;
             }
-            if (this.bounds[i].my1 < minBoundsMY) {
-                minBoundsMY = this.bounds[i].my1;
+            if (this.bounds[i].y1 < minBoundsMY) {
+                minBoundsMY = this.bounds[i].y1;
             }
         }
         // The min X and Y coords are what the image will be anchored to
@@ -218,35 +289,109 @@ class Room {
     rotate() {
         this.setPosition(this.mv.x, this.mv.y, this.floor, (this.rotation + 90) % 360);
     }
+    
+    setClickPoint(clickPX, clickPY) {
+        this.clickP = new Vect(((clickPX - viewPX) / viewScale), ((clickPY - viewPY) / viewScale));
+    }
 
-    setDragOffset(offsetPX, offsetPY, snap) {
+    setDragOffset(offsetPX, offsetPY, snap, roomList) {
+	    this
         if (!this.grid) {
 	        this.grid = this.addDisplayElement("-bounds-blue.png", 1);
         }
         // start by snapping to the nearest meter
         this.mdragOffset.set(Math.round(offsetPX / viewScale), Math.round(offsetPY / viewScale));
-        if (snap > 1) {
+
+		// update door positions now so we can use them to figure out door snapping
+		this.updateDoorPositions();
+
+		// calculate the click point position
+		var click = this.clickP.add(this.mdragOffset);
+		// we want the door closest to the click point
+		var doorDist = -1;
+		// these will get filled in if we find a door pair to snap to
+		var snapDoor = null;
+		var snapOtherDoor = null;
+		// iterate over our doors
+		for (var d = 0; d < this.doors.length; d++) {
+			var door = this.doors[d];
+			// see if our door has any collisions
+			if (door.collisions.length > 0) {
+				// see if this door is closer to the click point than the previous door, if any
+				var doorDist2 = click.subtract(door.mv).lengthSquared();
+				if (doorDist > -1 && doorDist < doorDist2) {
+					continue;
+				}
+				// we're snapping with this door unless we find a closer one
+				doorDist = doorDist2;
+				snapDoor = door;
+				// we want the other door that's closest to the click point
+				var otherDoorDist = -1;
+				// iterate over the other doors
+				for (var c = 0; c < door.collisions.length; c++) {
+					var otherDoor = door.collisions[c];
+					// see if this other door is closer to the click point than the previous door, if any
+					var otherDoorDist2 = click.subtract(otherDoor.mv).lengthSquared();
+					if (otherDoorDist > -1 && otherDoorDist < otherDoorDist2) {
+						continue;
+					}
+					// we're snapping to this door unless we find a closer one
+					otherDoorDist = otherDoorDist2;
+					snapOtherDoor = otherDoor;
+				}
+			}
+		}
+
+		var snapped = false;
+
+		// did we find a pair of doors to snap?
+		if (snapDoor && snapOtherDoor) {
+			// calculate the difference between the two door positions
+			var snapOffset = snapOtherDoor.mv.subtract(snapDoor.mv);
+			// adjust the drag offset
+			this.mdragOffset.addTo(snapOffset.x, snapOffset.y);
+			snapped = true;
+
+		// do we have a given snap resolution?
+		} else if (!snapped && snap > 1) {
+			// round the final x coordinate
             var mx = this.mv.x + this.mdragOffset.x;
             var mx2 = Math.round(mx / snap) * snap;
 
+			// round the final y coordinate
             var my = this.mv.y + this.mdragOffset.y;
             var my2 = Math.round(my / snap) * snap;
 
+			// adjust the drag offset
             this.mdragOffset.addTo(mx2 - mx, my2 - my);
+            snapped = true;
         }
 
-        this.updateLeafPositions();
+		if (snapped) {
+			// update the door positions again if we snapped.
+			this.updateDoorPositions();
+		}
+
+		// finally we can update the bounds positions
+		this.updateBoundsPositions();
     }
 
     dropDragOffset() {
+        // check if we actually dragged anywhere
         if (this.mdragOffset.x != 0 || this.mdragOffset.y!= 0) {
+            // calculate the new position
             var nmv = this.mv.add(this.mdragOffset);
+            // reset the drag offset
             this.mdragOffset.set(0, 0);
+            // commit the position change
             this.setPosition(nmv.x, nmv.y, this.floor, this.rotation);
         }
         if (this.grid) {
+            // remove the drag UI marker
 	        this.grid = this.removeDisplayElement(this.grid);
         }
+        // clear the click point
+        this.clickP = null;
     }
 
     addDisplay(viewContainer) {

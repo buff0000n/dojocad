@@ -232,7 +232,7 @@
 	    color: #FFFFFF;
     }
 
-    .debugBounds, .debugDoorBounds {
+    .debugBounds, .debugOverlapBounds, .debugDoorBounds, .debugOverlapDoorBounds {
         position: absolute;
         border-style: solid;
         border-width: 1px;
@@ -240,12 +240,17 @@
         pointer-events: none;
     }
     .debugBounds {
-        border-color: #FF0000;
+        border-color: #0000FF;
+    }
+    .debugOverlapBounds {
+        border-color: #FF00FF;
     }
     .debugDoorBounds {
         border-color: #00FF00;
     }
-
+    .debugOverlapDoorBounds {
+        border-color: #FFFF00;
+    }
 
 </style>
 <script type="text/javascript" language="javascript" src="js/room-metadata.js" ></script>
@@ -493,7 +498,18 @@
                 on the grid.  Otherwise the room's position is snapped to the nearest meter.
             </p>
             <p>
-                Note that <strong>Shift</strong>-dragging a newly created room also snaps.
+                If you drag the room so one of its doors is close to another room's door that's facing the opposite
+                direction, then your room will be snapped to that door.
+            </p>
+            <ul>
+                <li>The zone of sensitivity with door snapping does not change with zoom.  If you're having trouble
+                    snapping a room to the correct door then try zooming in.</li>
+                <li>You can also control the priority of door snapping by clicking the room closer to a particular
+                    door when dragging.</li>
+            </ul>
+            <p>
+                Note that <strong>Shift</strong>-dragging and door snapping also apply to newly created rooms that are
+                in the process of being placed for the first time.
             </p>
 
             <h2 id="RotatingARoom">Rotating a Room</h2>
@@ -519,10 +535,7 @@
             <h1 id="ToDo">To Do</h1>
             <ul>
                 <li>
-                    Zooming with touch controls
-                </li>
-                <li>
-                    Door snapping
+                    Door snapping: ignore doors that are already connected
                 </li>
                 <li>
                     Bounds checking
@@ -575,7 +588,7 @@
 <div id="footer">
     <span id="footerToggle" onclick="toggleFooter()"><img src="https://i.imgur.com/b5pNXKU.png" srcset="https://i.imgur.com/z6U8Oxs.png 2x"/></span>
     <span id="footerHidden">
-        <span>v0.1.2: 2019-12-07</span>
+        <span>v0.2.0: 2019-12-08</span>
         <span><a href="https://github.com/buff0000n/dojoarch">Source</a>
             <a href="https://github.com/buff0000n/dojoarch/issues/1">Feedback</a></span>
         <span>Thanks: <a href="https://www.reddit.com/user/AeliosZero">AeliosZero</a></span>
