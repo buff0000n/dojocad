@@ -46,6 +46,19 @@ class Vect {
         return new Vect(this.x + v.x, this.y + v.y);
     }
 
+    subtract(v) {
+        return new Vect(this.x - v.x, this.y - v.y);
+    }
+
+    scale(s) {
+        this.x *= s;
+        this.y *= s;
+    }
+
+    length() {
+        return Math.sqrt((this.x * this.x) + (this.y * this.y));
+    }
+
     addTo(x, y) {
         this.x += x;
         this.y += y;

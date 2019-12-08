@@ -1,29 +1,33 @@
+//==============================================================
+// view state
+//==============================================================
+
 // Coordinate convention:
 //  - mx, my, mv = measured in in-game meters
 //  - px, py, pv = measured in pixels
 
-// View state
-
-// pixels/meters
+// pixels per meter
 var viewScale = 5;
 // global view offset
 var viewPX = 0;
 var viewPY = 0;
 
+// current image set scaling and background grid image size
 var imgScale = 5;
 var bg_grid_width = 160;
 
+// max and min zoom levels
 var maxViewScale = 60;
 var minViewScale = 0.625;
+// roughly how many pixels does a mousewheel have to scroll to translate to a 2x zoom in or 0.5x zoom out
 var wheel2xZoomScale = 200;
-var dragThresholdSquared = 8 * 8;
-var doorSnapPixels = 50;
+// square of the distance the mouse/touch has to be dragged before drag kicking in
+var dragThresholdSquared = 10 * 10;
+// actual door snap sensitivity is 2x this
+var doorSnapPixels = 25;
 
+// enable the fun stuff
 var debugEnabled = false;
-
-// Model state
-
-var roomList = Array();
 
 function setViewP(newViewPX, newViewPY, newViewScale) {
 	viewPX = newViewPX;
@@ -41,14 +45,22 @@ function setViewP(newViewPX, newViewPY, newViewScale) {
         roomList[r].updatePosition();
         roomList[r].updateView();
     }
-
-    //showDebug("scale: " + newViewScale);
 }
 
 function redraw() {
+	// force an update to all positions and views
 	setViewP(viewPX, viewPY, viewScale);
 }
 
+function getRoomContainer() {
+	return document.getElementById("roomContainer");
+}
+
+//==============================================================
+// model state
+//==============================================================
+
+var roomList = Array();
 function getRoomMetadata(id) {
     var rmd = roomMetadata.rooms.find(room => room.id == id);
     if (!rmd) {
@@ -62,10 +74,6 @@ function removeRoom(room) {
 	room.removeDisplay();
 }
 
-function getRoomContainer() {
-	return document.getElementById("roomContainer");
-}
-
 function rotateSelectedRoom() {
     selectedRoom.rotate();
     selectedRoom.updateView();
@@ -77,9 +85,8 @@ function deleteSelectedRoom() {
     clearMenus(0);
 }
 
-
 //==============================================================
-// Mouse/touch event handling wrapper layer
+// wrapper for handling both mouse and touch events
 //==============================================================
 
 class MTEvent {
@@ -92,27 +99,79 @@ class MTEvent {
 	}
 }
 
-function mouseEventToMTEvent(e) {
-	return new MTEvent(e.currentTarget, e.clientX, e.clientY, e.altKey, e.shiftKey);
-}
+//==============================================================
+// Touch event wrapper layer
+//==============================================================
 
 var lastTouchEvent = null;
+var lastTouchIdentifier = null;
 
 function touchEventToMTEvent(e) {
-    var first = e.touches[0];
-    if (first) {
-        lastTouchEvent = new MTEvent(first.target, first.clientX, first.clientY, e.altKey, e.shiftKey)
+//	var show = "touch:";
+//    for (var t = 0; t < e.touches.length; t++) {
+//        show += " " + e.touches[t].clientY + " (" + e.touches[t].identifier + ")";
+//    }
+//    showDebug(show);
+
+	// this gets tricky because the first touch in the list may not necessarily be the first touch, and
+	// you can end multi-touch with a different touch than the one you started with
+	var primary = null;
+
+	if (e.touches.length > 0) {
+		// default to the touch identifier we had before
+        var identifier = lastTouchIdentifier;
+	    if (identifier != -1) {
+	        // if we have a previous identifier, then search the touch list for the corresponding touch
+	        for (var t = 0; t < e.touches.length; t++) {
+		        if (e.touches[t].identifier == identifier) {
+		            primary = e.touches[t];
+		            break;
+		        }
+	        }
+	    }
+	    // if we had no previous touch, or our previous primary touch has disappeared, fall back to the first
+	    // touch in the list
+	    if (!primary) {
+		    primary = e.touches[0];
+	    }
+	}
+
+    if (primary) {
+        // we can generate an event, yay our team
+        lastTouchEvent = new MTEvent(primary.target, primary.clientX, primary.clientY, e.altKey, e.shiftKey)
+        // save the identifier for next time
+        lastTouchIdentifier = primary.identifier;
 	    return lastTouchEvent;
 
     } else if (lastTouchEvent != null) {
+        // If a touch ends then we need to look at last event to know where the touch was when it ended
 	    return lastTouchEvent;
 
     } else {
         // probably going to fail
-        // todo: remove eventually
+        // todo: remove eventually. I'm pretty sure this can't happen any more
         showDebug("Generating bogus touch event");
 	    return new MTEvent(null, 0, 0, false, false);
     }
+}
+
+// zoom state
+var touchZooming = false;
+// center point of the zoon
+var touchZoomCenter = null;
+// distance between touches
+var touchZoomRadius = 0;
+// last distance between touches
+var lastTouchZoomRadius = 0;
+
+function calcTouchZoom(e) {
+	// calculate the midpoint between the two touches
+	var tv1 = new Vect(e.touches[0].clientX, e.touches[0].clientY)
+	var tv2 = new Vect(e.touches[1].clientX, e.touches[1].clientY)
+	touchZoomCenter = tv1.add(tv2);
+	touchZoomCenter.scale(0.5);
+	// calculate the distance between the two touches
+	touchZoomRadius = tv1.subtract(tv2).length();
 }
 
 function touchStart(e) {
@@ -120,8 +179,19 @@ function touchStart(e) {
     e.preventDefault();
 
     if (e.touches.length == 1) {
+        // just one touch, treat like a mouse down event
 	    downEvent(touchEventToMTEvent(e));
-    }
+
+    } else if (e.touches.length == 2) {
+        // double touch means it's zoom time
+        if (!touchZooming) {
+            // initialize the zoom state so we have something to compare with when the touches move
+            touchZooming = true;
+            calcTouchZoom(e);
+        }
+	}
+
+	// todo: triple-or-more touches are basically ignored, do something with those?
 }
 
 function touchMove(e) {
@@ -129,8 +199,33 @@ function touchMove(e) {
     e.preventDefault();
 
     if (e.touches.length == 1) {
+        // just one touch, treat like a mouse drag
 	    dragEvent(touchEventToMTEvent(e));
+
+    } else if (e.touches.length == 2) {
+        // double touch means it's zoom time
+        if (!touchZooming) {
+            // initialize the zoom state so we have something to compare with when the touches move again
+            // todo: does initializing here ever actually happen?
+            touchZooming = true;
+            calcTouchZoom(e);
+
+        } else {
+            // save the last zoom radius
+            lastTouchZoomRadius = touchZoomRadius;
+			// calculate the new zoom center and radius
+            calcTouchZoom(e);
+
+			// treat like a mouse/scroll at the midpoint between two zooms and a zoom factor equal to the ratio
+			// between the previous and current touch radii
+			zoom(touchZoomCenter.x, touchZoomCenter.y, touchZoomRadius/lastTouchZoomRadius);
+        }
+
+        // continue dragging with one of the touches, this magically works
+        dragEvent(touchEventToMTEvent(e));
     }
+
+	// todo: triple-or-more touches are basically ignored, do something with those?
 }
 
 function touchEnd(e) {
@@ -138,7 +233,36 @@ function touchEnd(e) {
     e.preventDefault();
 
     if (e.touches.length == 0) {
+        // no more touches, stop zooming
+        touchZooming = false;
+        // treat like a mouse up, touchEventToMTEvent() will need to refer to our last touch event to get the point
+        // at which the touch ended
         dropEvent(touchEventToMTEvent(e));
+        // clear out any lingering touch state
+        lastTouchEvent = null;
+        lastTouchIdentifier = -1;
+
+    } else if (e.touches.length == 1) {
+        // stop zooming
+        touchZooming = false;
+        if (mouseDownTarget) {
+			// we were dragging a room before
+			// leave mouseDownTargetStartPX/Y alone, the currently dragging room will magically either stay on the
+			// same touch or transfer to the new touch
+
+        } else {
+	        // we were only dragging the view, so simply reset the drag offset.
+	        // the new touch will continue the drag, whichever one it is
+		    mouseDownTargetStartPX = e.touches[0].clientX;
+		    mouseDownTargetStartPY = e.touches[0].clientY;
+        }
+
+    } else if (e.touches.length == 2) {
+		// todo: triple-or-more touches are basically ignored, do something with those?
+		// for now, just reset our zoom state if we were zooming before the triple-touch happened
+        if (touchZooming) {
+            calcTouchZoom(e);
+        }
     }
 }
 
@@ -147,6 +271,15 @@ function touchCancel(e) {
     e.preventDefault();
 
 	cancelRoomDrag();
+	touchZooming = false;
+}
+
+//==============================================================
+// Mouse event wrapper layer
+//==============================================================
+
+function mouseEventToMTEvent(e) {
+	return new MTEvent(e.currentTarget, e.clientX, e.clientY, e.altKey, e.shiftKey);
 }
 
 function mouseDown(e) {
@@ -232,9 +365,9 @@ function startDrag() {
     document.onmouseup = mouseUp;
 
 	dragTarget = document;
-    // call a function when a finger moves:
+    // call a function when a touch moves:
     dragTarget.ontouchmove = touchMove;
-    // call a function when a finger leaves:
+    // call a function when a touch leaves:
     dragTarget.ontouchend = touchEnd;
 }
 
