@@ -73,6 +73,7 @@ function getRoomMetadata(id) {
 function removeRoom(room) {
 	removeFromList(roomList, room);
 	room.removeDisplay();
+	room.disconnectAllDoors();
 }
 
 function rotateSelectedRoom() {
@@ -413,9 +414,6 @@ function dropEvent(e) {
 		} else if (e.shiftKey) {
 			rotateSelectedRoom();
 
-		} else if (e.altKey) {
-			deleteSelectedRoom();
-
 		} else {
 			doRoomMenu(e, selectedRoom);
 		}
@@ -504,6 +502,10 @@ function keyDown(e) {
 		case "Escape" :
 		    clearMenus(0);
 		    cancelRoomDrag();
+		    break;
+		case "Backspace" :
+		case "Delete" :
+			deleteSelectedRoom();
 		    break;
 //		case "ArrowUp" :
 //			setViewP(viewPX, viewPY, viewScale * 2);

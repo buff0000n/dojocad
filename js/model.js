@@ -167,7 +167,7 @@ class Door {
 		this.otherDoor = null;
 		otherDoor.disconnectFrom(this);
 
-		this.otherDoor = null;
+		this.removeCollision(otherDoor);
 
 		if (this.debugBorder && this.room.display) {
 			this.room.display.parentElement.appendChild(this.debugBorder);
@@ -378,8 +378,8 @@ class Room {
         this.clickP = new Vect(((clickPX - viewPX) / viewScale), ((clickPY - viewPY) / viewScale));
     }
 
-    setDragOffset(offsetPX, offsetPY, snap, roomList) {
-		if (!this.doorConnectionSaves && (offsetPX != 0 || offsetPY != 0)) {
+    disconnectAllDoors() {
+        if (!this.doorConnectionSaves) {
 			this.doorConnectionSaves = Array();
 			for (var d = 0; d < this.doors.length; d++) {
 				var save = this.doors[d].disconnect();
@@ -387,12 +387,24 @@ class Room {
 					this.doorConnectionSaves.push(save);
 				}
 			}
+		}
+    }
 
-		} else if (this.doorConnectionSaves && offsetPX == 0 && offsetPY == 0) {
+    reconnectAllDoors() {
+        if (this.doorConnectionSaves) {
 			for (var s = 0; s < this.doorConnectionSaves.length; s++) {
 				this.doorConnectionSaves[s][0].reconnect(this.doorConnectionSaves[s]);
 			}
 			this.doorConnectionSaves = null;
+		}
+	}
+
+    setDragOffset(offsetPX, offsetPY, snap, roomList) {
+		if (offsetPX != 0 || offsetPY != 0) {
+			this.disconnectAllDoors();
+
+		} else if (offsetPX == 0 && offsetPY == 0) {
+			this.reconnectAllDoors();
 		}
 
         if (!this.grid) {
@@ -488,13 +500,13 @@ class Room {
             for (var d = 0; d < this.doors.length; d++) {
                 this.doors[d].autoConnect();
             }
-        } else if (this.doorConnectionSaves) {
-			for (var s = 0; s < this.doorConnectionSaves.length; s++) {
-				this.doorConnectionSaves[s][0].reconnect(this.doorConnectionSaves[s]);
-			}
+            // clear any saved door connections
 			this.doorConnectionSaves = null;
+
+        } else {
+            this.reconnectAllDoors();
         }
-		this.doorConnectionSaves = null;
+
         if (this.grid) {
             // remove the drag UI marker
 	        this.grid = this.removeDisplayElement(this.grid);
