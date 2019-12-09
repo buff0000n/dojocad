@@ -92,6 +92,10 @@ class Vect {
             else return 90;
         }
     }
+
+    equals(v) {
+        return this.x == v.x && this.y == v.y;
+    }
 }
 
 /**

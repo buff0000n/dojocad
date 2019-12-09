@@ -92,7 +92,7 @@ class Door {
 	        this.debugBorder = document.createElement("div");
 	        this.debugBorder.className = this.collisions.length ==  0 ? "debugDoorBounds" : "debugOverlapDoorBounds";
 			this.debugBorder.style.position = "absolute";
-			if (this.room.display) {
+			if (this.room.display && !this.otherDoor) {
 				this.room.display.parentElement.appendChild(this.debugBorder);
 			}
 		} else {
@@ -122,6 +122,71 @@ class Door {
 	clearCollisions() {
 		while (this.collisions.length > 0) {
 			this.removeCollision(this.collisions[this.collisions.length - 1]);
+		}
+	}
+
+	autoConnect() {
+		if (this.otherDoor) {
+			return;
+		}
+		for (var c = 0; c < this.collisions.length; c++) {
+			var otherDoor = this.collisions[c];
+			if (otherDoor.mv.equals(this.mv)) {
+				this.connect(otherDoor)
+			}
+		}
+	}
+
+	connect(otherDoor, crossBranch = true, incoming = false) {
+		if (this.otherDoor == otherDoor) {
+			return;
+		}
+
+		if (this.otherdoor) {
+			this.disconnectFrom(prevOtherDoor);
+		}
+
+		this.otherDoor = otherDoor;
+		this.crossBranch = crossBranch;
+		this.incoming = incoming;
+		this.otherDoor.connect(this, crossBranch, !incoming);
+
+		if (this.debugBorder) {
+			this.removeDisplay();
+		}
+
+		this.room.doorConnected(this);
+	}
+
+	disconnectFrom(otherDoor) {
+		if (this.otherDoor != otherDoor) {
+			return;
+		}
+
+		// important to do this first
+		this.otherDoor = null;
+		otherDoor.disconnectFrom(this);
+
+		this.otherDoor = null;
+
+		if (this.debugBorder && this.room.display) {
+			this.room.display.parentElement.appendChild(this.debugBorder);
+		}
+		this.room.doorDisconnected(this);
+	}
+
+	disconnect() {
+		if (!this.otherDoor) {
+			return null;
+		}
+		var save = [this, this.otherDoor, this.crossBranch, this.incoming];
+		this.disconnectFrom(this.otherDoor);
+		return save;
+	}
+
+	reconnect(save) {
+		if (save[0] == this) {
+			this.connect(save[1], save[2], save[3]);
 		}
 	}
 
@@ -208,14 +273,18 @@ class Room {
             var door = this.doors[d];
 
             door.updatePosition();
-            // re-build the angle-to-door mapping
-            var index = door.rotation/90;
-            if (!this.angleToDoors[index]) {
-                this.angleToDoors[index] = Array();
-            }
-            this.angleToDoors[index].push(door);
+
             // clear the door's collisions
             door.clearCollisions();
+
+			if (!door.otherDoor) {
+	            // re-build the angle-to-door mapping
+	            var index = door.rotation/90;
+	            if (!this.angleToDoors[index]) {
+	                this.angleToDoors[index] = Array();
+	            }
+	            this.angleToDoors[index].push(door);
+			}
         }
 
 		// regenerate door collisions
@@ -241,6 +310,21 @@ class Room {
 				}
 			}
 		}
+    }
+
+    doorConnected(door) {
+        var index = door.rotation/90;
+        if (this.angleToDoors[index]) {
+            removeFromList(this.angleToDoors[index], door);
+        }
+    }
+
+    doorDisconnected(door) {
+        var index = door.rotation/90;
+        if (!this.angleToDoors[index]) {
+            this.angleToDoors[index] = Array();
+        }
+        addToListIfNotPresent(this.angleToDoors[index], door);
     }
 
     updateBoundsPositions() {
@@ -295,7 +379,22 @@ class Room {
     }
 
     setDragOffset(offsetPX, offsetPY, snap, roomList) {
-	    this
+		if (!this.doorConnectionSaves && (offsetPX != 0 || offsetPY != 0)) {
+			this.doorConnectionSaves = Array();
+			for (var d = 0; d < this.doors.length; d++) {
+				var save = this.doors[d].disconnect();
+				if (save) {
+					this.doorConnectionSaves.push(save);
+				}
+			}
+
+		} else if (this.doorConnectionSaves && offsetPX == 0 && offsetPY == 0) {
+			for (var s = 0; s < this.doorConnectionSaves.length; s++) {
+				this.doorConnectionSaves[s][0].reconnect(this.doorConnectionSaves[s]);
+			}
+			this.doorConnectionSaves = null;
+		}
+
         if (!this.grid) {
 	        this.grid = this.addDisplayElement("-bounds-blue.png", 1);
         }
@@ -385,7 +484,17 @@ class Room {
             this.mdragOffset.set(0, 0);
             // commit the position change
             this.setPosition(nmv.x, nmv.y, this.floor, this.rotation);
+            // connect doors
+            for (var d = 0; d < this.doors.length; d++) {
+                this.doors[d].autoConnect();
+            }
+        } else if (this.doorConnectionSaves) {
+			for (var s = 0; s < this.doorConnectionSaves.length; s++) {
+				this.doorConnectionSaves[s][0].reconnect(this.doorConnectionSaves[s]);
+			}
+			this.doorConnectionSaves = null;
         }
+		this.doorConnectionSaves = null;
         if (this.grid) {
             // remove the drag UI marker
 	        this.grid = this.removeDisplayElement(this.grid);
