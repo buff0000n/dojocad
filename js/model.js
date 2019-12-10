@@ -3,6 +3,8 @@ class Bound {
         this.room = room;
         this.metadata = doorMetadata;
         this.debugBorder = null;
+
+        this.collisions = Array();
     }
 
     updatePosition() {
@@ -32,6 +34,30 @@ class Bound {
 		} else {
 			this.debugBorder.remove();
 			this.debugBorder = null;
+		}
+	}
+
+	addCollision(otherBound) {
+		if (addToListIfNotPresent(this.collisions, otherBound)) {
+			otherBound.addCollision(this);
+			if (this.debugBorder && this.collisions.length == 1) {
+				this.debugBorder.className = "debugOverlapBounds";
+			}
+		}
+	}
+
+	removeCollision(otherBound) {
+		if (removeFromList(this.collisions, otherBound)) {
+			otherBound.removeCollision(this);
+			if (this.debugBorder && this.collisions.length == 0) {
+				this.debugBorder.className = "debugBounds";
+			}
+		}
+	}
+
+	clearCollisions() {
+		while (this.collisions.length > 0) {
+			this.removeCollision(this.collisions[this.collisions.length - 1]);
 		}
 	}
 
@@ -235,6 +261,7 @@ class Room {
         this.grid = null;
 
         this.mdragOffset = new Vect(0, 0);
+        this.dragging = false;
 
         this.setPosition(mx, my, f, r);
         this.calculateAnchor();
@@ -327,11 +354,83 @@ class Room {
         addToListIfNotPresent(this.angleToDoors[index], door);
     }
 
+    getAllCollidedRooms() {
+        // convenience method to collect all the currently detected room collisions
+        var collidedRoomList = Array();
+        for (var b = 0; b < this.bounds.length; b++) {
+            var bound = this.bounds[b];
+	        for (var c = 0; c < bound.collisions.length; c++) {
+	            addToListIfNotPresent(collidedRoomList, bound.collisions[c].room);
+	        }
+        }
+        return collidedRoomList;
+    }
+
     updateBoundsPositions() {
+        // get all the rooms we were collided with before
+		var collidedRooms = this.getAllCollidedRooms();
+
 		// update bounds positions
         for (var b = 0; b < this.bounds.length; b++) {
-            this.bounds[b].updatePosition();
+            var bound = this.bounds[b];
+            bound.updatePosition();
+
+            // clear the vound's collisions
+            bound.clearCollisions();
+
+			// iterate over the global room list
+			for (var r = 0; r < roomList.length; r++) {
+				var room = roomList[r];
+				// see if the room isn't this room
+				if (room != this) {
+					// find collisions in the two sets of bound boxes
+					var cols = findCollisions(this.bounds, room.bounds);
+					// iterate over the collisions
+					for (var c = 0; c <cols.length; c++) {
+						// save the collision state in each bound object
+						cols[c][0].addCollision(cols[c][1]);
+					}
+				}
+			}
         }
+
+        // add all the new rooms we are collided with
+ 		addAllToListIfNotPresent(collidedRooms, this.getAllCollidedRooms());
+		for (var r = 0; r < collidedRooms.length; r++) {
+			if (collidedRooms[r].checkCollided()) {
+			    collidedRooms[r].updateView();
+			}
+		}
+		this.checkCollided();
+    }
+
+    checkCollided() {
+		var collidedRooms = this.getAllCollidedRooms();
+		if (collidedRooms.length > 0) {
+			if (!this.grid) {
+		        this.grid = this.addDisplayElement("-bounds-blue.png", 1);
+			}
+		    this.grid.style.filter = "hue-rotate(120deg)";
+		    if (this.outline) {
+			    this.outline.style.filter = "hue-rotate(120deg)";
+		    }
+		    return true;
+
+		} else {
+			if (this.grid) {
+				if (this.dragging) {
+				    this.grid.style.filter = "";
+
+				} else {
+					this.grid.remove();
+				    this.grid = null;
+				}
+			}
+		    if (this.outline) {
+			    this.outline.style.filter = "";
+		    }
+			return false;
+		}
     }
 
     calculateAnchor() {
@@ -358,6 +457,9 @@ class Room {
     select() {
         if (!this.outline) {
 	        this.outline = this.addDisplayElement("-line-blue.png", 2);
+			// see if the outline should be red
+		    this.checkCollided();
+		    // todo: why is this here?
 	        this.updateView();
         }
     }
@@ -399,14 +501,28 @@ class Room {
 		}
 	}
 
+	removeCollisions() {
+		var collidedRooms = this.getAllCollidedRooms();
+		for (var r = 0; r < collidedRooms.length; r++) {
+			var room = collidedRooms[r];
+			room.updateBoundsPositions();
+			room.checkCollided();
+		}
+	}
+
     setDragOffset(offsetPX, offsetPY, snap, roomList) {
 		if (offsetPX != 0 || offsetPY != 0) {
+			// We've actually been dragged.  Set the flag and disconnect doors.
+			this.dragging = true;
 			this.disconnectAllDoors();
 
 		} else if (offsetPX == 0 && offsetPY == 0) {
+			// either dragging was canceled or we've been dragged back to our starting position.  Reconnect doors that
+			// were disconnected.
 			this.reconnectAllDoors();
 		}
 
+		// make sure we have a selection outline.
         if (!this.grid) {
 	        this.grid = this.addDisplayElement("-bounds-blue.png", 1);
         }
@@ -507,10 +623,15 @@ class Room {
             this.reconnectAllDoors();
         }
 
-        if (this.grid) {
+		// only remove the grid if we don't need ot to show a bounds collision
+        if (this.grid && !this.checkCollided()) {
             // remove the drag UI marker
 	        this.grid = this.removeDisplayElement(this.grid);
         }
+
+		// dragging is finished.
+        this.dragging = false;
+
         // clear the click point
         this.clickP = null;
     }

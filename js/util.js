@@ -33,6 +33,14 @@ function addToListIfNotPresent(list, item) {
 	}
 }
 
+function addAllToListIfNotPresent(list, list2) {
+	var ret = false;
+	for (var l = 0; l < list2.length; l++) {
+		ret |= addToListIfNotPresent(list, list2[l]);
+	}
+	return ret;
+}
+
 class Vect {
     constructor(x, y) {
         this.x = x;

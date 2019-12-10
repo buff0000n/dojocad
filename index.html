@@ -159,6 +159,7 @@
         text-decoration: none;
         font-size: 100%;
         border-radius: 1ex;
+        user-select: none;
     }
 
     .docButton {
@@ -183,6 +184,7 @@
         font-size: 100%;
         border-radius: 1ex;
         position: absolute;
+        user-select: none;
         z-index: 6;
     }
 
@@ -444,6 +446,9 @@
                     <ul>
                         <li><a href="#DeletingARoom">Deleting a Room</a></li>
                     </ul>
+                    <ul>
+                        <li><a href="#RoomBoundaries">Room Boundaries</a></li>
+                    </ul>
                 </li>
                 <li><a href="#ToDo">To Do</a></li>
                 <li><a href="#KnownIssues">Known Issues</a></li>
@@ -531,25 +536,25 @@
                 Prese the <strong>Delete</strong> key to delete the selected room without having to bring up a menu.
             </p>
 
+            <h2 id="#RoomBoundaries">Room Boundaries</h2>
+            <p>
+                If you move a room too close to another room so that their boundaries overlap then they will be
+                highlighted in red.
+            </p>
+
             <h1 id="ToDo">To Do</h1>
             <ul>
                 <li>
-                    Door snapping: ignore doors that are already connected
-                </li>
-                <li>
-                    Bounds checking
-                </li>
-                <li>
                     Add the rest of the rooms
+                </li>
+                <li>
+                    Saving/loading (URL generation)
                 </li>
                 <li>
                     Tree structure like a real dojo
                     <ul>
                         <li>Detaching, reattaching, copying, deleting subtrees</li>
                     </ul>
-                </li>
-                <li>
-                    Saving/loading (URL generation)
                 </li>
                 <li>
                     Capacity/Energy tracking
@@ -587,7 +592,7 @@
 <div id="footer">
     <span id="footerToggle" onclick="toggleFooter()"><img src="https://i.imgur.com/b5pNXKU.png" srcset="https://i.imgur.com/z6U8Oxs.png 2x"/></span>
     <span id="footerHidden">
-        <span>v0.2.1: 2019-12-09</span>
+        <span>v0.2.2: 2019-12-10</span>
         <span><a href="https://github.com/buff0000n/dojoarch">Source</a>
             <a href="https://github.com/buff0000n/dojoarch/issues/1">Feedback</a></span>
         <span>Thanks: <a href="https://www.reddit.com/user/AeliosZero">AeliosZero</a></span>

@@ -74,6 +74,7 @@ function removeRoom(room) {
 	removeFromList(roomList, room);
 	room.removeDisplay();
 	room.disconnectAllDoors();
+	room.removeCollisions();
 }
 
 function rotateSelectedRoom() {
