@@ -75,17 +75,67 @@ function removeRoom(room) {
 	room.removeDisplay();
 	room.disconnectAllDoors();
 	room.removeCollisions();
+	saveModelToUrl();
 }
 
 function rotateSelectedRoom() {
     selectedRoom.rotate();
     selectedRoom.updateView();
+	saveModelToUrl();
 }
 
 function deleteSelectedRoom() {
     removeRoom(selectedRoom);
     selectedRoom = null;
     clearMenus(0);
+	saveModelToUrl();
+}
+
+function movedSelectedRoom() {
+	saveModelToUrl();
+}
+
+function saveModelToUrl() {
+	var value = "";
+	for (var r = 0; r < roomList.length; r++) {
+		if (value.length > 0) {
+			value += "_";
+		}
+		value += roomToString(roomList[r]);
+	}
+	modifyUrlQueryParam("m", value);
+}
+
+function loadModelFromUrl() {
+    var url = window.location.href;
+	var modelString = getQueryParam(url, "m");
+	if (!modelString) {
+		return false;
+	}
+
+	var roomStrings = modelString.split("_");
+	for (var rs = 0; rs < roomStrings.length; rs++) {
+		var room = roomFromString(roomStrings[rs]);
+	    roomList.push(room);
+	    room.addDisplay(getRoomContainer());
+	    room.resetPositionAndConnectDoors();
+	}
+	return true;
+}
+
+function saveViewToUrl() {
+	var value = Math.ceil(viewScale) + "," + Math.round(viewPX) + "," + Math.round(viewPY);
+	modifyUrlQueryParam("v", value);
+}
+
+function loadViewFromUrl() {
+    var url = window.location.href;
+	var viewString = getQueryParam(url, "v");
+	if (!viewString) {
+		return false;
+	}
+	var s = viewString.split(",");
+	setViewP(parseInt(s[1]), parseInt(s[2]), parseInt(s[0]));
 }
 
 //==============================================================
@@ -313,6 +363,9 @@ function wheel(e) {
 	var factor = Math.pow(2, -e.deltaY / wheel2xZoomScale)
 
 	zoom(e.clientX, e.clientY, factor);
+	// zooms with mouse wheel are not taken care of by dropEvent()
+	// todo: some kind of delay instead of writing every change?
+	saveViewToUrl();
 }
 
 //==============================================================
@@ -419,6 +472,8 @@ function dropEvent(e) {
 			doRoomMenu(e, selectedRoom);
 		}
 
+		movedSelectedRoom();
+
 	} else {
 		if (!dragged) {
 			if (selectedRoom) {
@@ -431,6 +486,9 @@ function dropEvent(e) {
 				selectedRoom.select();
 			    selectedRoom.updateView();
 		    }
+
+		} else {
+			saveViewToUrl();
 		}
 
 	    mouseDownTargetStartPX = 0;
@@ -704,10 +762,12 @@ function setModelDebug(debug) {
 //==============================================================
 
 function initModel() {
-    roomList.push(new Room(getRoomMetadata("h1"), 64, 64));
+	loadViewFromUrl();
 
-    for (var r = 0; r < roomList.length; r++) {
-        roomList[r].addDisplay(getRoomContainer());
+    if (!loadModelFromUrl()) {
+        var starterRoom = new Room(getRoomMetadata("h1"), 64, 64);
+	    roomList.push(starterRoom);
+        starterRoom.addDisplay(getRoomContainer());
     }
 
     redraw();

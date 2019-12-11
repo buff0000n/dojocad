@@ -1,12 +1,48 @@
+var hrefUpdateDelay = 1000;
+var hrefUpdateTimeout = null;
+var hrefToUpdate = null;
 
-function setHue(e, hue) {
-    // https://www.w3schools.com/cssref/css3_pr_filter.asp
-    e.style.filter = "hue-rotate(" + hue + "deg)"
+// modify a URL parameter directly in the browser location bar
+function modifyUrlQueryParam(key, value) {
+    var href = hrefToUpdate ? hrefToUpdate : window.location.href;
+
+	if (href.match(new RegExp("[?&]" + key + "="))) {
+	    href = href.replace(new RegExp("([?&]" + key + "=)[^&#]*"), "$1" + value);
+
+	} else if (href.indexOf("?") > 0) {
+		href += "&" + key + "=" + value;
+	} else {
+		href += "?" + key + "=" + value;
+	}
+
+	if (hrefUpdateTimeout) {
+		clearTimeout(hrefUpdateTimeout);
+	}
+
+	hrefToUpdate = href;
+	hrefUpdateTimeout = setTimeout(actuallyModifyUrl, hrefUpdateDelay);
 }
 
-function setOpacity(e, opacity) {
-    // https://www.w3schools.com/cssref/css3_pr_filter.asp
-    e.style.filter = "opacity(" + opacity + ")"
+function actuallyModifyUrl() {
+	// shenanigans
+    history.replaceState( {} , document.title, hrefToUpdate );
+	hrefUpdateTimeout = null;
+	hrefToUpdate = null;
+}
+
+function getQueryParam(url, name) {
+    // from https://stackoverflow.com/questions/901115/how-can-i-get-query-string-values-in-javascript
+    // weird that there's no built in function for this
+    name = name.replace(/[\[\]]/g, '\\$&');
+    var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)');
+    var results = regex.exec(url);
+    if (!results) {
+        return null;
+    }
+    if (!results[2]) {
+        return '';
+    }
+    return decodeURIComponent(results[2].replace(/\+/g, ' '));
 }
 
 // returns true if the list was changed

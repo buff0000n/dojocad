@@ -238,6 +238,17 @@ class Door {
     }
 }
 
+
+function roomToString(room) {
+    return room.metadata.id + "," + room.mv.x + "," + room.mv.y + "," + room.floor + "," + (room.rotation / 90)
+}
+
+function roomFromString(string) {
+    var s = string.split(",");
+    var room = new Room(getRoomMetadata(s[0]), parseInt(s[1]), parseInt(s[2]), parseInt(s[3]), parseInt(s[4]) * 90);
+    return room;
+}
+
 var roomIdCount = 0;
 
 class Room {
@@ -283,6 +294,23 @@ class Room {
 
 		this.updateDoorPositions();
 		this.updateBoundsPositions();
+    }
+
+    setPositionAndConnectDoors(nmx, nmy, nf, nr) {
+        this.setPosition(nmx, nmy, nf, nr);
+        // connect doors
+        for (var d = 0; d < this.doors.length; d++) {
+            this.doors[d].autoConnect();
+        }
+        // clear any saved door connections
+		this.doorConnectionSaves = null;
+
+		// recalc bounds
+		this.updateBoundsPositions();
+    }
+
+    resetPositionAndConnectDoors() {
+        this.setPositionAndConnectDoors(this.mv.x, this.mv.y, this.floor, this.rotation);
     }
 
 	updatePosition() {
@@ -375,7 +403,7 @@ class Room {
             var bound = this.bounds[b];
             bound.updatePosition();
 
-            // clear the vound's collisions
+            // clear the bound's collisions
             bound.clearCollisions();
 
 			// iterate over the global room list
@@ -407,13 +435,15 @@ class Room {
     checkCollided() {
 		var collidedRooms = this.getAllCollidedRooms();
 		if (collidedRooms.length > 0) {
-			if (!this.grid) {
-		        this.grid = this.addDisplayElement("-bounds-blue.png", 1);
+			if (this.display) {
+				if (!this.grid) {
+			        this.grid = this.addDisplayElement("-bounds-blue.png", 1);
+				}
+			    this.grid.style.filter = "hue-rotate(120deg)";
+			    if (this.outline) {
+				    this.outline.style.filter = "hue-rotate(120deg)";
+			    }
 			}
-		    this.grid.style.filter = "hue-rotate(120deg)";
-		    if (this.outline) {
-			    this.outline.style.filter = "hue-rotate(120deg)";
-		    }
 		    return true;
 
 		} else {
@@ -610,14 +640,8 @@ class Room {
             var nmv = this.mv.add(this.mdragOffset);
             // reset the drag offset
             this.mdragOffset.set(0, 0);
-            // commit the position change
-            this.setPosition(nmv.x, nmv.y, this.floor, this.rotation);
-            // connect doors
-            for (var d = 0; d < this.doors.length; d++) {
-                this.doors[d].autoConnect();
-            }
-            // clear any saved door connections
-			this.doorConnectionSaves = null;
+	        // commit the position change
+            this.setPositionAndConnectDoors(nmv.x, nmv.y, this.floor, this.rotation);
 
         } else {
             this.reconnectAllDoors();
