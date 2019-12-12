@@ -502,10 +502,14 @@
                 Clicking again on the currently selected room will bring up a menu.  Click
                 <span class="docButton">Duplicate</span> to create a copy of that room to place somewhere else.
             </p>
+            <p>
+                Hitting <strong>Escape</strong> while dragging a newly created room for the first time will cancel the
+                add operation and remove the room.
+            </p>
 
             <h2 id="MovingARoom">Moving a Room</h2>
             <p>
-                Click and drag on the currently selected room to move it.
+                After selecting a room, click again and drag on that room to move it.
             </p>
             <p>
                 Hold down <strong>Shift</strong> while dragging a room to snap its position to the nearest 8 meters
@@ -556,10 +560,10 @@
             </p>
             <h3 id="SpecialNoteAboutDryDock">Special Note About the Dry Dock</h3>
             <p>
-                The Dry Dock is very, <strong>very big</strong>.  The outline and bounds visible on the Dry Dock do not extend all the
-                way to the back of it, which is <strong>1.4 km</strong> long.  Boundary collisions with the entire
-                length of the Dry Dock will still be detected, but it may not be obvious what's colliding unless you
-                zoom out and find the Dry Dock.
+                The Dry Dock is very, <strong>very big</strong>.  The outline and bounds visible on the Dry Dock do not
+                extend all the way to the back of it, which extends roughly 6-7 times farther than the visible size of
+                the Dry Dock.  Boundary collisions with the entire length of the Dry Dock will still be detected, but
+                it may not be obvious what's colliding unless you zoom out and find the Dry Dock.
             </p>
 
             <h1 id="SavingAndSharing">Saving And Sharing</h1>
@@ -569,7 +573,8 @@
             <ul>
                 <li>To save your layout, copy the current URL from your browser's location bar and save it somewhere.</li>
                 <li>To load your layout, paste a previously saved URL into your browser's location bar.</li>
-                <li>Going forward or backward in your browser histoy should not lose your work</li>
+                <li>If you go forward or back in your browser history, then reversing that should restore the layout and
+                    view you had previously.</li>
             </ul>
 
             <h1 id="Examples">Examples</h1>
@@ -591,6 +596,9 @@
             <h1 id="ToDo">To Do</h1>
             <ul>
                 <li>
+                    Multi-floor support
+                </li>
+                <li>
                     Explicit save button with URL popup
                 </li>
                 <li>
@@ -607,9 +615,6 @@
                 </li>
                 <li>
                     Level of Detail images for zoom levels
-                </li>
-                <li>
-                    Multi-floor support
                 </li>
                 <li>
                     Icons?

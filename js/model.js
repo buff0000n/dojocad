@@ -452,8 +452,12 @@ class Room {
 
 		} else {
 			if (this.grid) {
-				if (this.dragging) {
-				    this.grid.style.filter = "";
+				if (this.isSelected()) {
+					if (this.dragging) {
+					    this.grid.style.filter = "brightness(200%)";
+					} else {
+					    this.grid.style.filter = "";
+					}
 
 				} else {
 					this.grid.remove();
@@ -494,6 +498,9 @@ class Room {
     select() {
         if (!this.outline) {
 	        this.outline = this.addDisplayElement("-line-blue.png", 2);
+	        if (!this.grid) {
+		        this.grid = this.addDisplayElement("-bounds-blue.png", 1);
+	        }
 			// see if the outline should be red
 		    this.checkCollided();
 		    // todo: why is this here?
@@ -503,6 +510,9 @@ class Room {
 
     deselect() {
         this.outline = this.removeDisplayElement(this.outline);
+        if (!this.checkCollided()) {
+	        this.grid = this.removeDisplayElement(this.grid);
+        }
     }
 
     isSelected() {
@@ -560,10 +570,10 @@ class Room {
 			this.reconnectAllDoors();
 		}
 
-		// make sure we have a selection outline.
-        if (!this.grid) {
-	        this.grid = this.addDisplayElement("-bounds-blue.png", 1);
-        }
+		if (this.grid) {
+		    this.grid.style.filter = "brightness(200%)";
+		}
+
         // start by snapping to the nearest meter
         this.mdragOffset.set(Math.round(offsetPX / viewScale), Math.round(offsetPY / viewScale));
 
@@ -655,14 +665,11 @@ class Room {
             this.reconnectAllDoors();
         }
 
-		// only remove the grid if we don't need ot to show a bounds collision
-        if (this.grid && !this.checkCollided()) {
-            // remove the drag UI marker
-	        this.grid = this.removeDisplayElement(this.grid);
-        }
-
 		// dragging is finished.
         this.dragging = false;
+        if (this.grid) {
+            this.checkCollided();
+        }
 
         // clear the click point
         this.clickP = null;
