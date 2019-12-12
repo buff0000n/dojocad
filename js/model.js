@@ -2,6 +2,7 @@ class Bound {
     constructor(room, doorMetadata) {
         this.room = room;
         this.metadata = doorMetadata;
+        this.invisible = "true" == doorMetadata.invis;
         this.debugBorder = null;
 
         this.collisions = Array();
@@ -245,14 +246,15 @@ function roomToString(room) {
 
 function roomFromString(string) {
     var s = string.split(",");
-    var room = new Room(getRoomMetadata(s[0]), parseInt(s[1]), parseInt(s[2]), parseInt(s[3]), parseInt(s[4]) * 90);
+    var room = new Room(getRoomMetadata(s[0]));
+    room.setPosition(parseInt(s[1]), parseInt(s[2]), parseInt(s[3]), parseInt(s[4]) * 90);
     return room;
 }
 
 var roomIdCount = 0;
 
 class Room {
-    constructor(metadata, mx = 0, my = 0, f = 0, r = 0) {
+    constructor(metadata) {
         this.metadata = metadata;
         this.id = "room" + (roomIdCount++);
 
@@ -274,7 +276,9 @@ class Room {
         this.mdragOffset = new Vect(0, 0);
         this.dragging = false;
 
-        this.setPosition(mx, my, f, r);
+		// hack until I figure out something better
+		// leave rotation at 0 for the anchor calculation, then set the rotaiton for real.
+        this.setPosition(0, 0, 0, 0);
         this.calculateAnchor();
     }
 
@@ -472,6 +476,9 @@ class Room {
         var minBoundsMX = this.mv.x;
         var minBoundsMY = this.mv.y;
         for (var i = 0; i < this.bounds.length; i++) {
+            if (this.bounds[i].invisible) {
+                continue;
+            }
             if (this.bounds[i].x1 < minBoundsMX) {
                 minBoundsMX = this.bounds[i].x1;
             }

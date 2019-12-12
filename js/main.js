@@ -765,7 +765,8 @@ function initModel() {
 	loadViewFromUrl();
 
     if (!loadModelFromUrl()) {
-        var starterRoom = new Room(getRoomMetadata("h1"), 64, 64);
+        var starterRoom = new Room(getRoomMetadata("h1"));
+        starterRoom.setPosition(64, 64, 0, 0);
 	    roomList.push(starterRoom);
         starterRoom.addDisplay(getRoomContainer());
     }

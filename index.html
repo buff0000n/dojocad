@@ -393,6 +393,10 @@
 <!-- floating header bar -->
 <div id="header">
     <span id="addRoomButton" class="button" onclick="doAddMenu(this)">Add Room</span>
+    <!-- examples
+        Minimal: v=1,94,422&m=h1,64,64,0,0_re,64,112,0,2_cc,64,16,0,0_or,64,-15,0,0_cc,32,16,0,0_cc,96,16,0,0_re,96,-16,0,0_lt,96,41,0,2_lb,2,16,0,3_lc,32,-16,0,0_le,32,46,0,2_dd,240,16,0,1_lo,240,-138,0,0_cr,240,160,0,2
+        Grin Reaper clan dojo: ?v=2,749,472&m=h1,32,32,0,1_cc,80,32,0,0_cc,80,0,0,0_cc,80,64,0,0_h2,-32,32,0,1_h3,160,32,0,1_gs,112,32,0,0_re,112,0,0,1_re,112,64,0,1_or,49,64,0,3_lt,55,0,0,3_h4,80,112,0,0_h5,80,-48,0,0_cx,128,-32,0,1_cx,128,96,0,1_gl,80,176,0,0_gl,224,32,0,1_cs,224,-8,0,0_cs,224,72,0,0_cs,264,32,0,1_gs,224,-32,0,0_gs,256,-32,0,0_gs,288,-32,0,0_gs,288,0,0,0_gs,288,32,0,0_gs,288,64,0,0_gs,288,96,0,0_gs,256,96,0,0_gs,224,96,0,0_gs,192,96,0,0_gs,160,96,0,0_hi,176,-48,0,0_re,224,-64,0,0_re,256,-64,0,0_re,288,-64,0,0_re,320,-32,0,1_re,320,0,0,1_re,320,64,0,1_re,320,32,0,1_re,320,96,0,1_le,34,-32,0,3_lc,32,-64,0,3_lb,126,-64,0,1_lo,22,96,0,3_th,-96,32,0,0_gs,-144,32,0,0_gl,-96,96,0,0_gl,-96,-32,0,0_re,-144,0,0,0_re,-144,-32,0,3_re,-144,96,0,3_re,-144,64,0,2_oa,-242,32,0,3_oc,-96,226,0,2_cx,-96,-80,0,0_re,-48,96,0,1_re,-48,-32,0,1_gs,80,224,0,0_gl,80,272,0,0_gs,80,320,0,0_gl,80,368,0,0_cr,32,176,0,3_dd,80,-208,0,0_gl,-96,-128,0,0_ce,192,68,0,0_ce,256,68,0,0_ob,-208,-128,0,3
+    -->
 </div>
 
 <!-- floating help button in the corner -->
@@ -447,7 +451,12 @@
                         <li><a href="#DeletingARoom">Deleting a Room</a></li>
                     </ul>
                     <ul>
-                        <li><a href="#RoomBoundaries">Room Boundaries</a></li>
+                        <li>
+                            <a href="#RoomBoundaries">Room Boundaries</a>
+                            <ul>
+                                <li><a href="#SpecialNoteAboutDryDock">Special Note About the Dry Dock</a></li>
+                            </ul>
+                        </li>
                     </ul>
                 </li>
                 <li>
@@ -544,6 +553,13 @@
                 If you move a room too close to another room so that their boundaries overlap then they will be
                 highlighted in red.
             </p>
+            <h3 id="SpecialNoteAboutDryDock">Special Note About the Dry Dock</h3>
+            <p>
+                The Dry Dock is very, <strong>very big</strong>.  The outline and bounds visible on the Dry Dock do not extend all the
+                way to the back of it, which is <strong>1.4 km</strong> long.  Boundary collisions with the entire
+                length of the Dry Dock will still be detected, but it may not be obvious what's colliding unless you
+                zoom out and find the Dry Dock.
+            </p>
 
             <h1 id="SavingAndSharing">Saving And Sharing</h1>
             <p>
@@ -558,9 +574,6 @@
             <h1 id="ToDo">To Do</h1>
             <ul>
                 <li>
-                    Add the rest of the rooms
-                </li>
-                <li>
                     Explicit save button with URL popup
                 </li>
                 <li>
@@ -571,6 +584,9 @@
                 </li>
                 <li>
                     Capacity/Energy tracking
+                </li>
+                <li>
+                    Export as PNG
                 </li>
                 <li>
                     Level of Detail images for zoom levels
@@ -589,9 +605,7 @@
 
             <h1 id="KnownIssues">Known Issues</h1>
             <ul>
-                <li>
-                    Nothing, it's perfect :)
-                </li>
+                <li>There are still some z-index issues, basically visible as a room you're dragging appearing to go underneath other rooms.</li>
             </ul>
 
         </div>
