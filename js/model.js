@@ -443,7 +443,7 @@ class Room {
 				if (!this.grid) {
 			        this.grid = this.addDisplayElement("-bounds-blue.png", 1);
 				}
-			    this.grid.style.filter = "hue-rotate(120deg)";
+			    this.grid.style.filter = "hue-rotate(120deg) brightness(200%)";
 			    if (this.outline) {
 				    this.outline.style.filter = "hue-rotate(120deg)";
 			    }
@@ -510,7 +510,8 @@ class Room {
     }
 
     rotate() {
-        this.setPosition(this.mv.x, this.mv.y, this.floor, (this.rotation + 90) % 360);
+	    this.disconnectAllDoors();
+        this.setPositionAndConnectDoors(this.mv.x, this.mv.y, this.floor, (this.rotation + 90) % 360);
     }
     
     setClickPoint(clickPX, clickPY) {

@@ -393,10 +393,6 @@
 <!-- floating header bar -->
 <div id="header">
     <span id="addRoomButton" class="button" onclick="doAddMenu(this)">Add Room</span>
-    <!-- examples
-        Minimal: v=1,94,422&m=h1,64,64,0,0_re,64,112,0,2_cc,64,16,0,0_or,64,-15,0,0_cc,32,16,0,0_cc,96,16,0,0_re,96,-16,0,0_lt,96,41,0,2_lb,2,16,0,3_lc,32,-16,0,0_le,32,46,0,2_dd,240,16,0,1_lo,240,-138,0,0_cr,240,160,0,2
-        Grin Reaper clan dojo: ?v=2,749,472&m=h1,32,32,0,1_cc,80,32,0,0_cc,80,0,0,0_cc,80,64,0,0_h2,-32,32,0,1_h3,160,32,0,1_gs,112,32,0,0_re,112,0,0,1_re,112,64,0,1_or,49,64,0,3_lt,55,0,0,3_h4,80,112,0,0_h5,80,-48,0,0_cx,128,-32,0,1_cx,128,96,0,1_gl,80,176,0,0_gl,224,32,0,1_cs,224,-8,0,0_cs,224,72,0,0_cs,264,32,0,1_gs,224,-32,0,0_gs,256,-32,0,0_gs,288,-32,0,0_gs,288,0,0,0_gs,288,32,0,0_gs,288,64,0,0_gs,288,96,0,0_gs,256,96,0,0_gs,224,96,0,0_gs,192,96,0,0_gs,160,96,0,0_hi,176,-48,0,0_re,224,-64,0,0_re,256,-64,0,0_re,288,-64,0,0_re,320,-32,0,1_re,320,0,0,1_re,320,64,0,1_re,320,32,0,1_re,320,96,0,1_le,34,-32,0,3_lc,32,-64,0,3_lb,126,-64,0,1_lo,22,96,0,3_th,-96,32,0,0_gs,-144,32,0,0_gl,-96,96,0,0_gl,-96,-32,0,0_re,-144,0,0,0_re,-144,-32,0,3_re,-144,96,0,3_re,-144,64,0,2_oa,-242,32,0,3_oc,-96,226,0,2_cx,-96,-80,0,0_re,-48,96,0,1_re,-48,-32,0,1_gs,80,224,0,0_gl,80,272,0,0_gs,80,320,0,0_gl,80,368,0,0_cr,32,176,0,3_dd,80,-208,0,0_gl,-96,-128,0,0_ce,192,68,0,0_ce,256,68,0,0_ob,-208,-128,0,3
-    -->
 </div>
 
 <!-- floating help button in the corner -->
@@ -462,6 +458,7 @@
                 <li>
                     <a href="#SavingAndSharing">Saving And Sharing</a>
                 </li>
+                <li><a href="#Examples">Examples</a></li>
                 <li><a href="#ToDo">To Do</a></li>
                 <li><a href="#KnownIssues">Known Issues</a></li>
             </ul>
@@ -528,6 +525,10 @@
                 Note that <strong>Shift</strong>-dragging and door snapping also apply to newly created rooms that are
                 in the process of being placed for the first time.
             </p>
+            <p>
+                Hitting <strong>Escape</strong> while dragging a room will cancel the operation and return the room
+                to where it started.
+            </p>
 
             <h2 id="RotatingARoom">Rotating a Room</h2>
             <p>
@@ -569,6 +570,22 @@
                 <li>To save your layout, copy the current URL from your browser's location bar and save it somewhere.</li>
                 <li>To load your layout, paste a previously saved URL into your browser's location bar.</li>
                 <li>Going forward or backward in your browser histoy should not lose your work</li>
+            </ul>
+
+            <h1 id="Examples">Examples</h1>
+            <ul>
+                <li>
+                    <a href="?v=1,94,422&m=h1,64,64,0,0_re,64,112,0,2_cc,64,16,0,0_or,64,-15,0,0_cc,32,16,0,0_cc,96,16,0,0_re,96,-16,0,0_lt,96,41,0,2_lb,2,16,0,3_lc,32,-16,0,0_le,32,46,0,2_dd,240,16,0,1_lo,240,-138,0,0_cr,240,160,0,2">
+                        Miniman clan dojo
+                    </a>
+
+                </li>
+                <li>
+                    <a href="?v=2,749,472&m=h1,32,32,0,1_cc,80,32,0,0_cc,80,0,0,0_cc,80,64,0,0_h2,-32,32,0,1_h3,160,32,0,1_gs,112,32,0,0_re,112,0,0,1_re,112,64,0,1_or,49,64,0,3_lt,55,0,0,3_h4,80,112,0,0_h5,80,-48,0,0_cx,128,-32,0,1_cx,128,96,0,1_gl,80,176,0,0_gl,224,32,0,1_cs,224,-8,0,0_cs,224,72,0,0_cs,264,32,0,1_gs,224,-32,0,0_gs,256,-32,0,0_gs,288,-32,0,0_gs,288,0,0,0_gs,288,32,0,0_gs,288,64,0,0_gs,288,96,0,0_gs,256,96,0,0_gs,224,96,0,0_gs,192,96,0,0_gs,160,96,0,0_hi,176,-48,0,0_re,224,-64,0,0_re,256,-64,0,0_re,288,-64,0,0_re,320,-32,0,1_re,320,0,0,1_re,320,64,0,1_re,320,32,0,1_re,320,96,0,1_le,34,-32,0,3_lc,32,-64,0,3_lb,126,-64,0,1_lo,22,96,0,3_th,-96,32,0,0_gs,-144,32,0,0_gl,-96,96,0,0_gl,-96,-32,0,0_re,-144,0,0,0_re,-144,-32,0,3_re,-144,96,0,3_re,-144,64,0,2_oa,-242,32,0,3_oc,-96,226,0,2_cx,-96,-80,0,0_re,-48,96,0,1_re,-48,-32,0,1_gs,80,224,0,0_gl,80,272,0,0_gs,80,320,0,0_gl,80,368,0,0_cr,32,176,0,3_dd,80,-208,0,0_gl,-96,-128,0,0_ce,192,68,0,0_ce,256,68,0,0_ob,-208,-128,0,3">
+                        Grin Reaper clan dojo
+                    </a>
+
+                </li>
             </ul>
 
             <h1 id="ToDo">To Do</h1>
@@ -619,7 +636,7 @@
 <div id="footer">
     <span id="footerToggle" onclick="toggleFooter()"><img src="https://i.imgur.com/b5pNXKU.png" srcset="https://i.imgur.com/z6U8Oxs.png 2x"/></span>
     <span id="footerHidden">
-        <span>v0.3.0: 2019-12-11</span>
+        <span>v0.3.1: 2019-12-12</span>
         <span><a href="https://github.com/buff0000n/dojoarch">Source</a>
             <a href="https://github.com/buff0000n/dojoarch/issues/1">Feedback</a></span>
         <span>Thanks: <a href="https://www.reddit.com/user/AeliosZero">AeliosZero</a></span>
