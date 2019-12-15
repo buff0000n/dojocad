@@ -77,6 +77,28 @@ function addAllToListIfNotPresent(list, list2) {
 	return ret;
 }
 
+// from https://stackoverflow.com/questions/890807/iterate-over-a-javascript-associative-array-in-sorted-order
+function keys(map) {
+    var keys = Array();
+
+    for(var key in map) {
+        if(map.hasOwnProperty(key)) {
+            keys.push(key);
+        }
+    }
+
+    return keys;
+}
+
+function sortKeys(map) {
+	var sortedKeys = keys(map).sort();
+	var map2 = Array();
+	for (var i in sortedKeys) {
+		map2[sortedKeys[i]] = map[sortedKeys[i]];
+	}
+	return map2;
+}
+
 class Vect {
     constructor(x, y) {
         this.x = x;

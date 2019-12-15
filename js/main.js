@@ -11,6 +11,7 @@ var viewScale = 5;
 // global view offset
 var viewPX = 0;
 var viewPY = 0;
+var viewFloor = 0;
 
 // current image set scaling and background grid image size
 var imgScale = 5;
@@ -29,7 +30,7 @@ var doorSnapPixels = 25;
 // enable the fun stuff
 var debugEnabled = false;
 
-function setViewP(newViewPX, newViewPY, newViewScale) {
+function setViewP(newViewPX, newViewPY, newViewScale, newViewFloor = null) {
 	viewPX = newViewPX;
 	viewPY = newViewPY;
 	viewScale = newViewScale;
@@ -41,8 +42,12 @@ function setViewP(newViewPX, newViewPY, newViewScale) {
 	var w = (bg_grid_width * viewScale / imgScale);
     grid.style.backgroundSize = w + "px " + w + "px";
 
+	if (newViewFloor) {
+		// todo
+	}
     for (var r = 0; r < roomList.length; r++) {
-        roomList[r].updatePosition();
+        // todo: why was this here?
+        //roomList[r].updatePosition();
         roomList[r].updateView();
     }
 }
@@ -124,7 +129,10 @@ function loadModelFromUrl() {
 }
 
 function saveViewToUrl() {
-	var value = Math.ceil(viewScale) + "," + Math.round(viewPX) + "," + Math.round(viewPY);
+	var centerPX = viewPX - (window.innerWidth / 2);
+	var centerPY = viewPY - (window.innerHeight / 2);
+
+	var value = Math.ceil(viewScale) + "," + Math.round(centerPX) + "," + Math.round(centerPY) + "," + viewFloor;
 	modifyUrlQueryParam("v", value);
 }
 
@@ -135,7 +143,23 @@ function loadViewFromUrl() {
 		return false;
 	}
 	var s = viewString.split(",");
-	setViewP(parseInt(s[1]), parseInt(s[2]), parseInt(s[0]));
+	var scale = parseInt(s[0]);
+	var centerPX = parseInt(s[1]);
+	var centerPY = parseInt(s[2]);
+	var floor = s.length > 3 ? parseInt(s[3]) : 0;
+
+	var cornerPX = centerPX + (window.innerWidth / 2);
+	var cornerPY = centerPY + (window.innerHeight/ 2);
+
+	setViewP(cornerPX, cornerPY, scale, floor);
+}
+
+function centerViewOn(mx, my, scale = null, floor = null) {
+	var newScale = scale ? scale : viewScale;
+	var newfloor = floor ? floor : viewFloor;
+	var cornerPX = (mx * viewScale) + (window.innerWidth / 2);
+	var cornerPY = (my * viewScale) + (window.innerHeight/ 2);
+	setViewP(cornerPX, cornerPY, viewScale, viewFloor);
 }
 
 //==============================================================
@@ -203,6 +227,7 @@ function touchEventToMTEvent(e) {
     } else {
         // probably going to fail
         // todo: remove eventually. I'm pretty sure this can't happen any more
+        // Update, it does happen, but I only saw it once and can't replicate it
         showDebug("Generating bogus touch event");
 	    return new MTEvent(null, 0, 0, false, false);
     }
@@ -364,7 +389,8 @@ function wheel(e) {
 
 	zoom(e.clientX, e.clientY, factor);
 	// zooms with mouse wheel are not taken care of by dropEvent()
-	// todo: some kind of delay instead of writing every change?
+	// modifyUrlQueryParam() has a delay built in, so we can refresh this as often as we like without the browser
+	// yelling at us
 	saveViewToUrl();
 }
 
@@ -604,6 +630,8 @@ function getRoomMenuData() {
                 return a.name.localeCompare(b.name)
             } );
         }
+
+		roomMenuData = sortKeys(roomMenuData);
     }
     return roomMenuData;
 }
@@ -766,9 +794,10 @@ function initModel() {
 
     if (!loadModelFromUrl()) {
         var starterRoom = new Room(getRoomMetadata("h1"));
-        starterRoom.setPosition(64, 64, 0, 0);
+        starterRoom.setPosition(0, 0, 0, 0);
 	    roomList.push(starterRoom);
         starterRoom.addDisplay(getRoomContainer());
+        centerViewOn(0, 0);
     }
 
     redraw();
