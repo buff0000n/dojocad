@@ -367,6 +367,14 @@ function mouseDown(e) {
     downEvent(mouseEventToMTEvent(e));
 }
 
+function contextMenu(e) {
+    e = e || window.event;
+    e.preventDefault();
+
+    downEvent(mouseEventToMTEvent(e));
+    return false;
+}
+
 function mouseMove(e) {
     e = e || window.event;
     e.preventDefault();

@@ -697,6 +697,7 @@ class Room {
         element.id = this.id;
 		// have to explicitly tell Chrome that none of these listeners are passive or it will cry
         element.addEventListener("mousedown", mouseDown, { passive: false });
+        element.addEventListener("contextmenu", contextMenu, { passive: false });
         element.addEventListener("touchstart", touchStart, { passive: false });
         element.addEventListener("wheel", wheel, { passive: false });
         element.src = "img" + imgScale + "x/" + this.metadata.image + imageSuffix;
