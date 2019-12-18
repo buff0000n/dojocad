@@ -358,7 +358,8 @@ var roomMetadata =
 		{"resource": "Forma", "costs": [1, 1, 3, 8, 25]}]},
 {"id": "cr", "image": "crimson-branch", "name": "Crimson Branch", "category": "Interactive", "prereq": null, "capacity": -2, "energy": -4, "maxnum": null, "floor": 0, "ceil": 30,
 	"bounds": [
-		{"x1": -32, "y1": 16, "x2": 32, "y2": -30, "floor": 0, "ceil": 30}],
+		{"x1": -32, "y1":  8, "x2": 32, "y2": -30, "floor": 0, "ceil": 30},
+		{"x1": -24, "y1": 16, "x2": 24, "y2": -30, "floor": 0, "ceil": 30}],
 	"doors": [
 		{"x": 0, "y": 16, "floor": 0, "outx": 0, "outy": 1}],
 	"resources": [
