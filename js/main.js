@@ -46,8 +46,8 @@ function setViewP(newViewPX, newViewPY, newViewScale, newViewFloor = null) {
 		// todo
 	}
     for (var r = 0; r < roomList.length; r++) {
-        // todo: why was this here?
-        //roomList[r].updatePosition();
+        // We just need to update door bounding boxes when the zoom changes
+        roomList[r].updateDoorPositions();
         roomList[r].updateView();
     }
 }
@@ -370,8 +370,13 @@ function mouseDown(e) {
 function contextMenu(e) {
     e = e || window.event;
     e.preventDefault();
+    var evt = mouseEventToMTEvent(e);
 
-    downEvent(mouseEventToMTEvent(e));
+	// super hack: Treat right-click as selecting a room (click and release), and then clicking again to bring up
+	// the menu
+    downEvent(evt);
+    dropEvent(evt);
+    downEvent(evt);
     return false;
 }
 

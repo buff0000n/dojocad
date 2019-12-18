@@ -29,9 +29,7 @@ class Bound {
 	        this.debugBorder = document.createElement("div");
 	        this.debugBorder.className = "debugBounds";
 			this.debugBorder.style.position = "absolute";
-			if (this.room.display) {
-				this.room.display.parentElement.appendChild(this.debugBorder);
-			}
+			getRoomContainer().appendChild(this.debugBorder);
 		} else {
 			this.debugBorder.remove();
 			this.debugBorder = null;
@@ -119,8 +117,8 @@ class Door {
 	        this.debugBorder = document.createElement("div");
 	        this.debugBorder.className = this.collisions.length ==  0 ? "debugDoorBounds" : "debugOverlapDoorBounds";
 			this.debugBorder.style.position = "absolute";
-			if (this.room.display && !this.otherDoor) {
-				this.room.display.parentElement.appendChild(this.debugBorder);
+			if (!this.otherDoor && viewFloor == this.floor) {
+				getRoomContainer().appendChild(this.debugBorder);
 			}
 		} else {
 			this.debugBorder.remove();
@@ -196,8 +194,8 @@ class Door {
 
 		this.removeCollision(otherDoor);
 
-		if (this.debugBorder && this.room.display) {
-			this.room.display.parentElement.appendChild(this.debugBorder);
+		if (this.debugBorder) {
+			getRoomContainer().appendChild(this.debugBorder);
 		}
 		this.room.doorDisconnected(this);
 	}
