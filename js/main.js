@@ -84,16 +84,20 @@ function removeRoom(room) {
 }
 
 function rotateSelectedRoom() {
-    selectedRoom.rotate();
-    selectedRoom.updateView();
-	saveModelToUrl();
+	if (selectedRoom) {
+	    selectedRoom.rotate();
+	    selectedRoom.updateView();
+		saveModelToUrl();
+	}
 }
 
 function deleteSelectedRoom() {
-    removeRoom(selectedRoom);
-    selectedRoom = null;
-    clearMenus(0);
-	saveModelToUrl();
+	if (selectedRoom) {
+	    removeRoom(selectedRoom);
+	    selectedRoom = null;
+	    clearMenus(0);
+		saveModelToUrl();
+	}
 }
 
 function movedSelectedRoom() {
@@ -399,6 +403,10 @@ function wheel(e) {
     e.preventDefault();
 
 	var factor = Math.pow(2, -e.deltaY / wheel2xZoomScale)
+
+    if (debugEnabled) {
+        showDebug("Wheel scroll: " + e.deltaY + " => zoom factor " + factor);
+    }
 
 	zoom(e.clientX, e.clientY, factor);
 	// zooms with mouse wheel are not taken care of by dropEvent()
