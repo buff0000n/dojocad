@@ -402,11 +402,16 @@ function wheel(e) {
     e = e || window.event;
     e.preventDefault();
 
-	var factor = Math.pow(2, -e.deltaY / wheel2xZoomScale)
+    var deltaY = e.deltaY;
 
-    if (debugEnabled) {
-        showDebug("Wheel scroll: " + e.deltaY + " => zoom factor " + factor);
+	// Firefox actually uses "lines" mode instead of "pixels" mode.
+    if (e.deltaMode == 1) {
+		// Just make it similar to what Chrome puts out, because I'm not spinning up an iFrame with no CSS just to
+		// measure the system default line size.
+		deltaY *= 33;
     }
+
+	var factor = Math.pow(2, -deltaY / wheel2xZoomScale)
 
 	zoom(e.clientX, e.clientY, factor);
 	// zooms with mouse wheel are not taken care of by dropEvent()
