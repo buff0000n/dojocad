@@ -11,7 +11,7 @@ var viewScale = 5;
 // global view offset
 var viewPX = 0;
 var viewPY = 0;
-var viewFloor = 0;
+var viewFloor = null;
 
 // current image set scaling and background grid image size
 var imgScale = 5;
@@ -31,9 +31,20 @@ var doorSnapPixels = 25;
 var debugEnabled = false;
 
 function setViewP(newViewPX, newViewPY, newViewScale, newViewFloor = null) {
+	var refreshFloor = false;
+
+	clearMenus();
+
 	viewPX = newViewPX;
 	viewPY = newViewPY;
 	viewScale = newViewScale;
+	if (viewFloor == null && newViewFloor == null) {
+		newViewFloor = 0;
+	}
+	if (newViewFloor != null && newViewFloor != viewFloor) {
+		viewFloor = newViewFloor;
+		refreshFloor = true;
+	}
 
 	var grid = document.getElementById("grid");
 	grid.style.backgroundPosition = viewPX + "px " + viewPY + "px";
@@ -42,14 +53,32 @@ function setViewP(newViewPX, newViewPY, newViewScale, newViewFloor = null) {
 	var w = (bg_grid_width * viewScale / imgScale);
     grid.style.backgroundSize = w + "px " + w + "px";
 
-	if (newViewFloor) {
-		// todo
+	if (refreshFloor) {
+	    for (var r = 0; r < roomList.length; r++) {
+			roomList[r].removeDisplay();
+		}
+
+		setSelectedFloor(viewFloor);
+
+		if (selectedRoom) {
+			selectedRoom.deselect();
+		    selectedRoom = null;
+		}
 	}
+
     for (var r = 0; r < roomList.length; r++) {
-        // We just need to update door bounding boxes when the zoom changes
-        roomList[r].updateDoorPositions();
-        roomList[r].updateView();
+        var room = roomList[r];
+		if (refreshFloor) {
+		    room.addDisplay(getRoomContainer());
+
+	    } else {
+	        // We just need to update door bounding boxes when the zoom changes
+	        room.updateDoorPositions();
+	    }
+        room.updateView();
     }
+
+	saveViewToUrl();
 }
 
 function redraw() {
@@ -77,15 +106,32 @@ function getRoomMetadata(id) {
 
 function removeRoom(room) {
 	removeFromList(roomList, room);
-	room.removeDisplay();
+	removeFloorRoom(room);
 	room.disconnectAllDoors();
 	room.removeCollisions();
+	room.removeDisplay();
+	saveModelToUrl();
+}
+
+function addRoom(room) {
+	addToListIfNotPresent(roomList, room);
+	addFloorRoom(room);
 	saveModelToUrl();
 }
 
 function rotateSelectedRoom() {
 	if (selectedRoom) {
 	    selectedRoom.rotate();
+	    selectedRoom.updateView();
+		saveModelToUrl();
+	}
+}
+
+function rotateFloorSelectedRoom() {
+	if (selectedRoom) {
+	    removeFloorRoom(selectedRoom);
+	    selectedRoom.rotateFloor();
+	    addFloorRoom(selectedRoom);
 	    selectedRoom.updateView();
 		saveModelToUrl();
 	}
@@ -125,8 +171,8 @@ function loadModelFromUrl() {
 	var roomStrings = modelString.split("_");
 	for (var rs = 0; rs < roomStrings.length; rs++) {
 		var room = roomFromString(roomStrings[rs]);
-	    roomList.push(room);
-	    room.addDisplay(getRoomContainer());
+	    addRoom(room);
+//	    room.addDisplay(getRoomContainer());
 	    room.resetPositionAndConnectDoors();
 	}
 	return true;
@@ -156,6 +202,7 @@ function loadViewFromUrl() {
 	var cornerPY = centerPY + (window.innerHeight/ 2);
 
 	setViewP(cornerPX, cornerPY, scale, floor);
+	return true;
 }
 
 function centerViewOn(mx, my, scale = null, floor = null) {
@@ -414,10 +461,6 @@ function wheel(e) {
 	var factor = Math.pow(2, -deltaY / wheel2xZoomScale)
 
 	zoom(e.clientX, e.clientY, factor);
-	// zooms with mouse wheel are not taken care of by dropEvent()
-	// modifyUrlQueryParam() has a delay built in, so we can refresh this as often as we like without the browser
-	// yelling at us
-	saveViewToUrl();
 }
 
 //==============================================================
@@ -538,9 +581,6 @@ function dropEvent(e) {
 				selectedRoom.select();
 			    selectedRoom.updateView();
 		    }
-
-		} else {
-			saveViewToUrl();
 		}
 
 	    mouseDownTargetStartPX = 0;
@@ -618,12 +658,12 @@ function keyDown(e) {
 		case "Delete" :
 			deleteSelectedRoom();
 		    break;
-//		case "ArrowUp" :
-//			setViewP(viewPX, viewPY, viewScale * 2);
-//		    break;
-//		case "ArrowDown" :
-//			setViewP(viewPX, viewPY, viewScale * 0.5);
-//		    break;
+		case "ArrowUp" :
+			doFloorUp();
+		    break;
+		case "ArrowDown" :
+			doFloorDown();
+		    break;
 	}
 }
 
@@ -764,11 +804,12 @@ function doAddRoomButton(e) {
     if (roomButton.room) {
         room.rotation = roomButton.room.rotation;
     }
+    room.setFloor(viewFloor);
     if (debugEnabled) {
         room.setDebug(true);
     }
-    roomList.push(room);
-    room.addDisplay(getRoomContainer());
+    addRoom(room);
+//    room.addDisplay(getRoomContainer());
 
     // not quite sure why this works
     mouseDownTargetStartPX = viewPX;
@@ -789,6 +830,9 @@ function doRoomMenu(e, room) {
     menuDiv.style.top = e.clientY;
 
     menuDiv.appendChild(buildMenuButton("Rotate", rotateSelectedRoom));
+    if (room.multifloor) {
+	    menuDiv.appendChild(buildMenuButton("Change Floor", rotateFloorSelectedRoom));
+    }
 
     menuDiv.appendChild(buildAddRoomButton(room.metadata, room));
 
@@ -798,6 +842,184 @@ function doRoomMenu(e, room) {
 
     document.body.appendChild(menuDiv);
     menus.push(menuDiv);
+}
+
+//==============================================================
+// Floor stuff
+//==============================================================
+
+class FloorEntry {
+	constructor(floor) {
+		this.floor = floor;
+	    this.div = document.createElement("div");
+		this.div.innerHTML = floor == 0 ? "G" : floor < 0 ? ("B" + (-floor)) : floor
+		this.div.floor = this.floor;
+		this.div.addEventListener("click", function() { doSetFloor(this.floor) } );
+		this.rooms = Array();
+		this.errors = Array();
+		this.selected = false;
+		this.refresh();
+	}
+
+	setSelected(selected) {
+		this.selected = selected;
+		this.refresh();
+	}
+
+	addError(bounds) {
+		if (addToListIfNotPresent(this.errors, bounds)) {
+			this.refresh();
+		}
+	}
+
+	removeError(bounds) {
+		if (removeFromList(this.errors, bounds)) {
+			this.refresh();
+		}
+	}
+
+	addRoom(room) {
+		if (addToListIfNotPresent(this.rooms, room)) {
+			this.refresh();
+		}
+	}
+
+	removeRoom(room) {
+		if (removeFromList(this.rooms, room)) {
+			this.refresh();
+		}
+	}
+
+	refresh() {
+		if (this.selected) {
+			if (this.errors.length > 0) {
+			    this.div.className = "floor-button-error-selected";
+			} else if (this.rooms.length == 0) {
+			    this.div.className = "floor-button-empty-selected";
+			} else {
+			    this.div.className = "floor-button-selected";
+			}
+
+		} else {
+			if (this.errors.length > 0) {
+			    this.div.className = "floor-button-error";
+			} else if (this.rooms.length == 0) {
+			    this.div.className = "floor-button-empty";
+			} else {
+			    this.div.className = "floor-button";
+			}
+		}
+	}
+
+	isActive() {
+		return this.selected || this.rooms.length > 0;
+	}
+}
+
+var selectedFloorEntry = null;
+var floorEntries = Array();
+
+function doFloorUp() {
+	if (floorEntries[viewFloor + 1]) {
+		setViewP(viewPX, viewPY, viewScale, viewFloor + 1);
+	}
+}
+
+function doFloorDown() {
+	if (floorEntries[viewFloor - 1]) {
+		setViewP(viewPX, viewPY, viewScale, viewFloor - 1);
+	}
+}
+
+function doSetFloor(floor) {
+	if (floorEntries[floor]) {
+		setViewP(viewPX, viewPY, viewScale, floor);
+	}
+}
+
+function getFloorEntry(floor, add = false) {
+	if (!floorEntries[floor]) {
+		for (var f = 0; floor > 0 ? f <= floor : f >= floor; f += (floor > 0 ? 1 : -1)) {
+			if (!floorEntries[f]) {
+				floorEntries[f] = new FloorEntry(f);
+				if (floor > 0) {
+					insertAfter(floorEntries[f].div, document.getElementById("floorUpButton"));
+				} else {
+					insertBefore(floorEntries[f].div, document.getElementById("floorDownButton"));
+				}
+			}
+		}
+	}
+	return floorEntries[floor];
+}
+
+function checkInactiveFloors() {
+	checkInactiveFloors0(1);
+	checkInactiveFloors0(-1);
+
+	if (floorEntries[selectedFloorEntry.floor + 1]) {
+		document.getElementById("floorUpButton").className = "button";
+	} else {
+		document.getElementById("floorUpButton").className = "button-disabled";
+	}
+
+	if (floorEntries[selectedFloorEntry.floor - 1]) {
+		document.getElementById("floorDownButton").className = "button";
+	} else {
+		document.getElementById("floorDownButton").className = "button-disabled";
+	}
+}
+
+function checkInactiveFloors0(dir) {
+	var f = 0;
+	while (floorEntries[f]) { f += dir; }
+	f -= dir;
+	while (!floorEntries[f].isActive()) {
+		var entry = floorEntries[f];
+		floorEntries[f] = null;
+		entry.div.remove();
+		f -= dir;
+	}
+}
+
+function setSelectedFloor(floor) {
+	if (selectedFloorEntry) {
+		selectedFloorEntry.setSelected(false);
+	}
+	selectedFloorEntry = getFloorEntry(floor, true);
+	selectedFloorEntry.setSelected(true);
+	checkInactiveFloors();
+}
+
+function addFloorError(floor, bounds) {
+	getFloorEntry(floor, true).addError(bounds);
+}
+
+function removeFloorError(floor, bounds) {
+	getFloorEntry(floor).removeError(bounds);
+}
+
+function addFloorRoom(room) {
+	if (room.multifloor) {
+		var floors = room.getFloors();
+		for (var f = 0; f < floors.length; f++) {
+			getFloorEntry(floors[f], true).addRoom(room);
+		}
+	} else {
+		getFloorEntry(room.floor, true).addRoom(room);
+	}
+}
+
+function removeFloorRoom(room) {
+	if (room.multifloor) {
+		var floors = room.getFloors();
+		for (var f = 0; f < floors.length; f++) {
+			getFloorEntry(floors[f]).removeRoom(room);
+		}
+	} else {
+		getFloorEntry(room.floor).removeRoom(room);
+	}
+	checkInactiveFloors();
 }
 
 //==============================================================
@@ -816,14 +1038,22 @@ function setModelDebug(debug) {
 //==============================================================
 
 function initModel() {
-	loadViewFromUrl();
+    if (loadModelFromUrl()) {
+		if (!loadViewFromUrl()) {
+			var room = roomList[0];
+			if (room) {
+		        centerViewOn(room.mv.x, room.mv.y, 5, room.floor);
+			} else {
+		        centerViewOn(0, 0, 5, 0);
+			}
+		}
 
-    if (!loadModelFromUrl()) {
+    } else {
         var starterRoom = new Room(getRoomMetadata("h1"));
         starterRoom.setPosition(0, 0, 0, 0);
-	    roomList.push(starterRoom);
+	    addRoom(starterRoom);
         starterRoom.addDisplay(getRoomContainer());
-        centerViewOn(0, 0);
+        centerViewOn(0, 0, 5, 0);
     }
 
     redraw();

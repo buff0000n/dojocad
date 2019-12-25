@@ -29,7 +29,9 @@ class Bound {
 	        this.debugBorder = document.createElement("div");
 	        this.debugBorder.className = "debugBounds";
 			this.debugBorder.style.position = "absolute";
-			getRoomContainer().appendChild(this.debugBorder);
+	        if (this.room.isVisible()) {
+				getRoomContainer().appendChild(this.debugBorder);
+			}
 		} else {
 			this.debugBorder.remove();
 			this.debugBorder = null;
@@ -39,8 +41,11 @@ class Bound {
 	addCollision(otherBound) {
 		if (addToListIfNotPresent(this.collisions, otherBound)) {
 			otherBound.addCollision(this);
-			if (this.debugBorder && this.collisions.length == 1) {
-				this.debugBorder.className = "debugOverlapBounds";
+			if (this.collisions.length == 1) {
+				addFloorError(this.room.floor, this);
+				if (this.debugBorder) {
+					this.debugBorder.className = "debugOverlapBounds";
+				}
 			}
 		}
 	}
@@ -48,8 +53,11 @@ class Bound {
 	removeCollision(otherBound) {
 		if (removeFromList(this.collisions, otherBound)) {
 			otherBound.removeCollision(this);
-			if (this.debugBorder && this.collisions.length == 0) {
-				this.debugBorder.className = "debugBounds";
+			if (this.collisions.length == 0) {
+				removeFloorError(this.room.floor, this);
+				if (this.debugBorder) {
+					this.debugBorder.className = "debugBounds";
+				}
 			}
 		}
 	}
@@ -61,7 +69,7 @@ class Bound {
 	}
 
     addDisplay(viewContainer) {
-        if (this.debugBorder) {
+        if (this.debugBorder && this.room.isVisible()) {
             viewContainer.appendChild(this.debugBorder);
         }
     }
@@ -108,7 +116,7 @@ class Door {
         this.x2 = this.mv.x + width;
         this.y1 = this.mv.y - width;
         this.y2 = this.mv.y + width;
-        this.z1 = this.room.floor * roomMetadata.general.floor_distance;
+        this.z1 = this.floor * roomMetadata.general.floor_distance;
         this.z2 = this.z1 + 1;
     }
 
@@ -194,7 +202,7 @@ class Door {
 
 		this.removeCollision(otherDoor);
 
-		if (this.debugBorder) {
+        if (this.debugBorder && this.room.isVisible()) {
 			getRoomContainer().appendChild(this.debugBorder);
 		}
 		this.room.doorDisconnected(this);
@@ -216,7 +224,7 @@ class Door {
 	}
 
     addDisplay(viewContainer) {
-        if (this.debugBorder) {
+        if (this.debugBorder && this.room.isVisible() && !this.otherDoor && this.floor == viewFloor) {
             viewContainer.appendChild(this.debugBorder);
         }
     }
@@ -266,6 +274,9 @@ class Room {
         }
         this.angleToDoors = Array();
 
+        this.multifloor = this.metadata.floor_images != null;
+        this.floor = null;
+
 		this.viewContainer = null;
         this.display = null;
         this.outline = null;
@@ -274,10 +285,34 @@ class Room {
         this.mdragOffset = new Vect(0, 0);
         this.dragging = false;
 
-		// hack until I figure out something better
-		// leave rotation at 0 for the anchor calculation, then set the rotaiton for real.
-        this.setPosition(0, 0, 0, 0);
         this.calculateAnchor();
+    }
+
+    isVisible() {
+        if (this.floor == viewFloor) {
+            return true;
+        }
+        if (!this.multifloor) {
+            return false;
+        }
+		var displayFloor = viewFloor - this.floor;
+		for (var i = 0; i < this.metadata.floor_images.length; i++) {
+			if (this.metadata.floor_images[i].floor == displayFloor) {
+				return true;
+			}
+		}
+		return false;
+    }
+
+    getFloors() {
+        if (!this.multifloor) {
+            return [this.floor];
+        }
+        var floors = Array();
+		for (var i = 0; i < this.metadata.floor_images.length; i++) {
+			floors.push(this.floor + this.metadata.floor_images[i].floor);
+        }
+        return floors;
     }
 
     setDebug(debug) {
@@ -290,12 +325,21 @@ class Room {
     }
 
     setPosition(nmx, nmy, nf, nr) {
+        var isNewFloor =  nf != this.floor;
         this.mv = new Vect(nmx, nmy);
         this.floor = nf;
         this.rotation = nr;
 
+		if (isNewFloor) {
+			this.removeDisplay();
+			this.addDisplay(getRoomContainer());
+		}
 		this.updateDoorPositions();
 		this.updateBoundsPositions();
+    }
+
+    setFloor(floor) {
+        this.setPosition(this.mv.x, this.mv.y, floor, this.rotation);
     }
 
     setPositionAndConnectDoors(nmx, nmy, nf, nr) {
@@ -437,7 +481,7 @@ class Room {
     checkCollided() {
 		var collidedRooms = this.getAllCollidedRooms();
 		if (collidedRooms.length > 0) {
-			if (this.display) {
+			if (this.viewContainer) {
 				if (!this.grid) {
 			        this.grid = this.addDisplayElement("-bounds-blue.png", 1);
 				}
@@ -470,9 +514,13 @@ class Room {
     }
 
     calculateAnchor() {
-        // The min X and Y coords are what the image will be anchored to
-        this.anchorMX = minBoundsMX;
-        this.anchorMY = minBoundsMY;
+        // hack: set the position to 0,0 and positions the bounds so we can calculate the image anchor points
+        this.mv = new Vect(0, 0);
+        this.floor = 100;
+        this.rotation = 0;
+        for (var b = 0; b < this.bounds.length; b++) {
+            this.bounds[b].updatePosition();
+		}
 
         // update bounds and calculate overall min X and Y
         var minBoundsMX = this.mv.x;
@@ -522,6 +570,41 @@ class Room {
         this.setPositionAndConnectDoors(this.mv.x, this.mv.y, this.floor, (this.rotation + 90) % 360);
     }
     
+    rotateFloor() {
+        if (!this.multifloor) {
+            return;
+        }
+	    var currentFloor = viewFloor - this.floor;
+	    var isSelected = this.isSelected();
+
+		// find the first available floor above the current floor, and the lowest available floor
+	    var nextFloor = 100;
+	    var lowestFloor = 100;
+		for (var i = 0; i < this.metadata.floor_images.length; i++) {
+			var floor = this.metadata.floor_images[i].floor;
+			if (floor > currentFloor && floor < nextFloor) {
+				nextFloor = floor;
+			}
+			if (floor < lowestFloor) {
+				lowestFloor = floor;
+			}
+		}
+
+		var newFloor;
+		// if we have a next floor then
+		if (nextFloor != 100) {
+			newFloor = viewFloor - nextFloor;
+		} else {
+			newFloor = viewFloor - lowestFloor;
+		}
+
+	    this.disconnectAllDoors();
+        this.setPositionAndConnectDoors(this.mv.x, this.mv.y, newFloor, this.rotation);
+        if (isSelected) {
+            this.select();
+        }
+    }
+
     setClickPoint(clickPX, clickPY) {
         this.clickP = new Vect(((clickPX - viewPX) / viewScale), ((clickPY - viewPY) / viewScale));
     }
@@ -675,14 +758,18 @@ class Room {
 
     addDisplay(viewContainer) {
         this.viewContainer = viewContainer;
-        this.display = this.addDisplayElement("-display.png", 2);
-		for (var b = 0; b < this.doors.length; b++) {
-			this.doors[b].addDisplay(viewContainer);
-		}
-		for (var b = 0; b < this.bounds.length; b++) {
-			this.bounds[b].addDisplay(viewContainer);
-		}
-        this.updateView();
+        if (this.isVisible()) {
+	        this.display = this.addDisplayElement("-display.png", 2);
+			for (var b = 0; b < this.doors.length; b++) {
+				this.doors[b].addDisplay(viewContainer);
+			}
+			for (var b = 0; b < this.bounds.length; b++) {
+				this.bounds[b].addDisplay(viewContainer);
+			}
+	        this.updateView();
+        }
+
+		this.checkCollided();
     }
 
     addDisplayElement(imageSuffix, zIndex = 0) {
@@ -698,10 +785,23 @@ class Room {
         element.addEventListener("contextmenu", contextMenu, { passive: false });
         element.addEventListener("touchstart", touchStart, { passive: false });
         element.addEventListener("wheel", wheel, { passive: false });
-        element.src = "img" + imgScale + "x/" + this.metadata.image + imageSuffix;
+        element.src = "img" + imgScale + "x/" + this.getImageBase() + imageSuffix;
         element.room = this;
         this.viewContainer.appendChild(element);
         return element;
+    }
+
+    getImageBase() {
+		if (this.multifloor) {
+			var displayFloor = viewFloor - this.floor;
+			for (var i = 0; i < this.metadata.floor_images.length; i++) {
+				if (this.metadata.floor_images[i].floor == displayFloor) {
+					return this.metadata.floor_images[i].image;
+				}
+			}
+		}
+
+		return this.metadata.image
     }
 
     removeDisplay() {
@@ -726,7 +826,7 @@ class Room {
     }
 
     updateView() {
-        if (this.display) {
+        if (this.display || this.grid) {
             // transform the anchor coords to pixel coords
 			var roomViewCenterPX = ((this.mv.x + this.mdragOffset.x) * viewScale) + viewPX;
 			var roomViewCenterPY = ((this.mv.y + this.mdragOffset.y) * viewScale) + viewPY;
@@ -757,5 +857,9 @@ class Room {
 		    // translate() need to be before rotate() and scale()
 		    e.style.transform = "translate(" + px + "px, " + py + "px) rotate(" + rotation + "deg) scale(" + scale + ", " + scale + ")"
         }
+    }
+
+    toString() {
+        return this.metadata.id + ":" + this.id + ":(" + this.mv.x + ", " + this.mv.y + ", " + this.floor + ")";
     }
 }

@@ -174,9 +174,9 @@ var roomMetadata =
 	"doors": [
 		{"x": 0, "y": 12, "floor": 0, "outx": 0, "outy": 1},
 		{"x": 0, "y": 12, "floor": 1, "outx": 0, "outy": 1}],
-	"floor-images": [
-		{"floor": 0, "image": "elevator-bottom"},
-		{"floor": 1, "image": "elevator-top"}],
+	"floor_images": [
+		{"floor": 0, "image": "elevator-bottom", "icon": "elevator-bottom-icon"},
+		{"floor": 1, "image": "elevator-top", "icon": "elevator-top-icon"}],
 	"resources": [
 		{"resource": "Credits", "costs": [500, 1500, 5000, 15000, 50000]},
 		{"resource": "Salvage", "costs": [650, 1950, 6500, 19500, 65000]},

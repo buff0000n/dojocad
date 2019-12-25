@@ -77,6 +77,13 @@ function addAllToListIfNotPresent(list, list2) {
 	return ret;
 }
 
+function insertAfter(el, referenceNode) {
+    referenceNode.parentNode.insertBefore(el, referenceNode.nextSibling);
+}
+function insertBefore(el, referenceNode) {
+    referenceNode.parentNode.insertBefore(el, referenceNode);
+}
+
 // from https://stackoverflow.com/questions/890807/iterate-over-a-javascript-associative-array-in-sorted-order
 function keys(map) {
     var keys = Array();
