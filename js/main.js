@@ -866,14 +866,14 @@ class FloorEntry {
 		this.refresh();
 	}
 
-	addError(bounds) {
-		if (addToListIfNotPresent(this.errors, bounds)) {
+	addError(error) {
+		if (addToListIfNotPresent(this.errors, error)) {
 			this.refresh();
 		}
 	}
 
-	removeError(bounds) {
-		if (removeFromList(this.errors, bounds)) {
+	removeError(error) {
+		if (removeFromList(this.errors, error)) {
 			this.refresh();
 		}
 	}
@@ -991,12 +991,12 @@ function setSelectedFloor(floor) {
 	checkInactiveFloors();
 }
 
-function addFloorError(floor, bounds) {
-	getFloorEntry(floor, true).addError(bounds);
+function addFloorError(floor, error) {
+	getFloorEntry(floor, true).addError(error);
 }
 
-function removeFloorError(floor, bounds) {
-	getFloorEntry(floor).removeError(bounds);
+function removeFloorError(floor, error) {
+	getFloorEntry(floor).removeError(error);
 }
 
 function addFloorRoom(room) {

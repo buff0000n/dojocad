@@ -505,26 +505,18 @@
                     <a href="#Navigation">Navigation</a>
                     <ul>
                         <li><a href="#Xooming">Zooming</a></li>
+                        <li><a href="#ChangingFloors">Changing Floors</a></li>
                     </ul>
                 </li>
                 <li>
                     <a href="#Editing">Editing</a>
                     <ul>
                         <li><a href="#SelectingARoom">Selecting a Room</a></li>
-                    </ul>
-                    <ul>
                         <li><a href="#AddingARoom">Adding a Room</a></li>
-                    </ul>
-                    <ul>
                         <li><a href="#MovingARoom">Moving a Room</a></li>
-                    </ul>
-                    <ul>
-                        <li><a href="#MovingARoom">Rotating a Room</a></li>
-                    </ul>
-                    <ul>
+                        <li><a href="#RotatingARoom">Rotating a Room</a></li>
+                        <li><a href="#ChangingARoomsFloor">Changing an Elevator's Floor</a></li>
                         <li><a href="#DeletingARoom">Deleting a Room</a></li>
-                    </ul>
-                    <ul>
                         <li>
                             <a href="#RoomBoundaries">Room Boundaries</a>
                             <ul>
@@ -556,6 +548,24 @@
             </p>
             <p>
                 On a touch screen, pinch two fingers to zoom in or spread them to zoom out.
+            </p>
+
+            <h2 id="ChangingFloors">Changing Floors</h2>
+            <p>
+                The highlighted floor on the left side of the screen shows which floor is currently in view.
+                <strong>G</strong> is the ground floor, the starting floor.  Numbers above <strong>G</strong> are
+                floors above the ground floor, and below <strong>G</strong>, numbers starting with a <strong>B</strong>
+                are floors belof the ground floor.
+            </p>
+            <p>
+                Use the <span class="docButton">Up</span> button above the floor listing to view the next floor up.
+                Use the <span class="docButton">Down</span> button to view the next floor down.
+            </p>
+            <p>
+                You can also use the <strong>up</strong> and <strong>down</strong> arrow keys to move between floors.
+            </p>
+            <p>
+                Click on a floor to go directly to it.
             </p>
 
             <h1 id="Editing">Editing</h1>
@@ -622,6 +632,13 @@
                 having to bring up a menu.
             </p>
 
+            <h2 id="ChangingARoomsFloor">Changing an Elevator's Floor</h2>
+            <p>
+                Elevators span two floors, either going up from the current floor or going down.  To switch which
+                direction an elevator is going, select it and then click again to bring up a menu.  Select
+                <span class="docButton">Change Floor</span> to swap the direction the elevator is going.
+            </p>
+
             <h2 id="DeletingARoom">Deleting a Room</h2>
             <p>
                 Clicking again on the currently selected room will bring up a menu.  Click
@@ -635,6 +652,10 @@
             <p>
                 If you move a room too close to another room so that their boundaries overlap then they will be
                 highlighted in red.
+            </p>
+            <p>
+                Note that rooms on adjacent floors may also overlap boundaries.  If a currently visible room is
+                overlapping with a room on a different floor then you will see the other room's boundary in red.
             </p>
             <h3 id="SpecialNoteAboutDryDock">Special Note About the Dry Dock</h3>
             <p>
@@ -664,7 +685,7 @@
 
                 </li>
                 <li>
-                    <a href="file:///Users/kbow/phun/java/dojoarch/index.html?v=1,27,-21,0&m=h1,32,32,0,1_cc,80,32,0,0_cc,80,0,0,0_cc,80,64,0,0_h2,-32,32,0,1_h3,160,32,0,1_gs,112,32,0,0_re,112,0,0,1_re,112,64,0,1_or,49,64,0,3_lt,55,0,0,3_h4,80,112,0,0_h5,80,-48,0,0_cx,128,-32,0,1_cx,128,96,0,1_gl,80,176,0,0_gl,224,32,0,1_cs,224,-8,0,0_cs,224,72,0,0_cs,264,32,0,1_gs,224,-32,0,0_gs,256,-32,0,0_gs,288,-32,0,0_gs,288,0,0,0_gs,288,32,0,0_gs,288,64,0,0_gs,288,96,0,0_gs,256,96,0,0_gs,224,96,0,0_gs,192,96,0,0_gs,160,96,0,0_hi,176,-48,0,0_re,224,-64,0,0_re,256,-64,0,0_re,288,-64,0,0_re,320,-32,0,1_re,320,0,0,1_re,320,64,0,1_re,320,32,0,1_re,320,96,0,1_le,34,-32,0,3_lc,32,-64,0,3_lb,126,-64,0,1_lo,22,96,0,3_th,-96,32,0,0_gs,-144,32,0,0_gl,-96,96,0,0_gl,-96,-32,0,0_re,-144,0,0,0_re,-144,-32,0,3_re,-144,96,0,3_re,-144,64,0,2_oa,-242,32,0,3_oc,-96,226,0,2_cx,-96,-80,0,0_re,-48,96,0,1_re,-48,-32,0,1_gs,80,224,0,0_gl,80,272,0,0_gs,80,320,0,0_gl,80,368,0,0_cr,32,176,0,3_dd,80,-208,0,0_gl,-96,-128,0,0_ce,192,68,-1,0_ob,-208,-128,0,3_cx,192,96,-1,0_cx,256,96,1,0_ce,256,68,0,0">
+                    <a href="?v=1,27,-21,0&m=h1,32,32,0,1_cc,80,32,0,0_cc,80,0,0,0_cc,80,64,0,0_h2,-32,32,0,1_h3,160,32,0,1_gs,112,32,0,0_re,112,0,0,1_re,112,64,0,1_or,49,64,0,3_lt,55,0,0,3_h4,80,112,0,0_h5,80,-48,0,0_cx,128,-32,0,1_cx,128,96,0,1_gl,80,176,0,0_gl,224,32,0,1_cs,224,-8,0,0_cs,224,72,0,0_cs,264,32,0,1_gs,224,-32,0,0_gs,256,-32,0,0_gs,288,-32,0,0_gs,288,0,0,0_gs,288,32,0,0_gs,288,64,0,0_gs,288,96,0,0_gs,256,96,0,0_gs,224,96,0,0_gs,192,96,0,0_gs,160,96,0,0_hi,176,-48,0,0_re,224,-64,0,0_re,256,-64,0,0_re,288,-64,0,0_re,320,-32,0,1_re,320,0,0,1_re,320,64,0,1_re,320,32,0,1_re,320,96,0,1_le,34,-32,0,3_lc,32,-64,0,3_lb,126,-64,0,1_lo,22,96,0,3_th,-96,32,0,0_gs,-144,32,0,0_gl,-96,96,0,0_gl,-96,-32,0,0_re,-144,0,0,0_re,-144,-32,0,3_re,-144,96,0,3_re,-144,64,0,2_oa,-242,32,0,3_oc,-96,226,0,2_cx,-96,-80,0,0_re,-48,96,0,1_re,-48,-32,0,1_gs,80,224,0,0_gl,80,272,0,0_gs,80,320,0,0_gl,80,368,0,0_cr,32,176,0,3_dd,80,-208,0,0_gl,-96,-128,0,0_ce,192,68,-1,0_ob,-208,-128,0,3_cx,192,96,-1,0_cx,256,96,1,0_ce,256,68,0,0">
                         Grin Reaper clan dojo
                     </a>
 
@@ -674,10 +695,31 @@
             <h1 id="ToDo">To Do</h1>
             <ul>
                 <li>
-                    Multi-floor support
+                    Separate the Elevator up/down icon
+                </li>
+                <li>
+                    Capacity/Energy tracking
+                </li>
+                <li>
+                    Room count/prerequisite constraints, for certain rooms and overall
+                </li>
+                <li>
+                    Error list with links
                 </li>
                 <li>
                     Explicit save button with URL popup
+                </li>
+                <li>
+                    Export as PNG
+                </li>
+                <li>
+                    Icons?
+                    <ul>
+                        <li>Including room menu icons</li>
+                    </ul>
+                </li>
+                <li>
+                    Undo/Redo
                 </li>
                 <li>
                     Door markers while dragging
@@ -689,25 +731,7 @@
                     </ul>
                 </li>
                 <li>
-                    Capacity/Energy tracking
-                </li>
-                <li>
-                    Room count/prerequisite constraints, for certain rooms and overall
-                </li>
-                <li>
-                    Export as PNG
-                </li>
-                <li>
                     Level of Detail images for zoom levels
-                </li>
-                <li>
-                    Icons?
-                    <ul>
-                        <li>Including room menu icons</li>
-                    </ul>
-                </li>
-                <li>
-                    Undo/Redo
                 </li>
                 <li>
                     World peace
