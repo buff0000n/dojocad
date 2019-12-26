@@ -42,6 +42,7 @@ class Bound {
 		if (addToListIfNotPresent(this.collisions, otherBound)) {
 			otherBound.addCollision(this);
 			if (this.collisions.length == 1) {
+				this.lastFloor = this.room.floor;
 				addFloorError(this.room.floor, this);
 				if (this.debugBorder) {
 					this.debugBorder.className = "debugOverlapBounds";
@@ -54,7 +55,8 @@ class Bound {
 		if (removeFromList(this.collisions, otherBound)) {
 			otherBound.removeCollision(this);
 			if (this.collisions.length == 0) {
-				removeFloorError(this.room.floor, this);
+				removeFloorError(this.lastFloor ? this.lastFloor : this.room.floor, this);
+				this.lastFloor = null;
 				if (this.debugBorder) {
 					this.debugBorder.className = "debugBounds";
 				}
