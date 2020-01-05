@@ -1,3 +1,5 @@
+// Sorry, this is Grade-A Fancy spaghetti code
+
 class Bound {
     constructor(room, doorMetadata) {
         this.room = room;
@@ -283,12 +285,68 @@ class Room {
         this.display = null;
         this.outline = null;
         this.grid = null;
+        this.selected = false;
 
         this.mdragOffset = new Vect(0, 0);
         this.dragging = false;
 
         this.calculateAnchor();
+        this.ruleErrors = Array();
     }
+
+	addRuleError(rule) {
+		if (addToListIfNotPresent(this.ruleErrors, rule) && this.ruleErrors.length == 1) {
+			addFloorError(this.floor, this);
+			this.checkErrors();
+			this.updateView();
+		}
+	}
+
+	removeRuleError(rule) {
+		if (removeFromList(this.ruleErrors, rule) && this.ruleErrors.length == 0) {
+			removeFloorError(this.floor, this);
+			this.checkErrors();
+			this.updateView();
+		}
+	}
+
+	removeAllRuleErrors() {
+		if (this.ruleErrors.length > 0) {
+			removeFloorError(this.floor, this);
+			this.checkErrors();
+			this.updateView();
+		}
+	}
+
+	reAddAllRuleErrors() {
+		if (this.ruleErrors.length > 0) {
+			addFloorError(this.floor, this);
+			this.checkErrors();
+			this.updateView();
+		}
+	}
+
+    getAllErrors() {
+		var collidedRooms = this.getAllCollidedRooms();
+		var errors = this.ruleErrors;
+		if (collidedRooms.length > 0) {
+			var errors2 = Array();
+			if (errors) {
+				for (var e = 0; e < errors.length; e++) {
+					errors2.push(errors[e]);
+				}
+			}
+			for (var r = 0; r  < collidedRooms.length; r++) {
+				errors2.push("Collision with " + collidedRooms[r].metadata.name);
+			}
+			errors = errors2;
+		}
+		return (errors && errors.length > 0) ? errors : null;
+    }
+
+	dispose() {
+		this.removeAllRuleErrors();
+	}
 
     isVisible() {
         if (this.floor == viewFloor) {
@@ -328,6 +386,9 @@ class Room {
 
     setPosition(nmx, nmy, nf, nr) {
         var isNewFloor =  nf != this.floor;
+        if (isNewFloor) {
+			this.removeAllRuleErrors();
+        }
         this.mv = new Vect(nmx, nmy);
         this.floor = nf;
         this.rotation = nr;
@@ -335,6 +396,7 @@ class Room {
 		if (isNewFloor) {
 			this.removeDisplay();
 			this.addDisplay(getRoomContainer());
+			this.reAddAllRuleErrors();
 		}
 		this.updateDoorPositions();
 		this.updateBoundsPositions();
@@ -473,11 +535,12 @@ class Room {
         // add all the new rooms we are collided with
  		addAllToListIfNotPresent(collidedRooms, this.getAllCollidedRooms());
 		for (var r = 0; r < collidedRooms.length; r++) {
-			if (collidedRooms[r].checkCollided()) {
+			if (collidedRooms[r].checkCollided() | collidedRooms[r].checkErrors()) {
 			    collidedRooms[r].updateView();
 			}
 		}
 		this.checkCollided();
+	    this.checkErrors();
     }
 
     checkCollided() {
@@ -488,9 +551,6 @@ class Room {
 			        this.grid = this.addDisplayElement("-bounds-blue.png", 1);
 				}
 			    this.grid.style.filter = "hue-rotate(120deg) brightness(200%)";
-			    if (this.outline) {
-				    this.outline.style.filter = "hue-rotate(120deg)";
-			    }
 			}
 		    return true;
 
@@ -508,11 +568,41 @@ class Room {
 				    this.grid = null;
 				}
 			}
-		    if (this.outline) {
-			    this.outline.style.filter = "";
-		    }
 			return false;
 		}
+    }
+
+    checkErrors() {
+        var errors = this.getAllErrors();
+		if (errors) {
+			if (this.viewContainer) {
+				if (!this.outline) {
+			        this.outline = this.addDisplayElement("-line-blue.png", 3);
+				}
+			    if (this.isSelected()) {
+				    this.outline.style.filter = "hue-rotate(120deg)";
+
+			    } else if (this.isVisible()) {
+				    this.outline.style.filter = "hue-rotate(120deg) brightness(50%) saturate(200%)";
+
+			    } else {
+			        this.outline = this.removeDisplayElement(this.outline);
+				    return false;
+			    }
+			}
+		    return true;
+
+		} else if (this.isSelected()) {
+			if (!this.outline) {
+		        this.outline = this.addDisplayElement("-line-blue.png", 3);
+		    }
+		    this.outline.style.filter = "";
+
+		} else if (this.outline) {
+	        this.outline = this.removeDisplayElement(this.outline);
+		}
+
+	    return false;
     }
 
     calculateAnchor() {
@@ -544,27 +634,34 @@ class Room {
     }
 
     select() {
+        this.selected = true;
         if (!this.outline) {
-	        this.outline = this.addDisplayElement("-line-blue.png", 2);
-	        if (!this.grid) {
-		        this.grid = this.addDisplayElement("-bounds-blue.png", 1);
-	        }
-			// see if the outline should be red
-		    this.checkCollided();
-		    // todo: why is this here?
-	        this.updateView();
+	        this.outline = this.addDisplayElement("-line-blue.png", 3);
         }
+        if (!this.grid) {
+	        this.grid = this.addDisplayElement("-bounds-blue.png", 1);
+        }
+		// see if the outline should be red
+	    this.checkCollided();
+	    this.checkErrors();
+	    // todo: why is this here?
+        this.updateView();
     }
 
     deselect() {
-        this.outline = this.removeDisplayElement(this.outline);
+        this.selected = false;
+        if (!this.checkErrors()) {
+	        this.outline = this.removeDisplayElement(this.outline);
+        }
         if (!this.checkCollided()) {
 	        this.grid = this.removeDisplayElement(this.grid);
         }
+	    // todo: why is this here?
+        this.updateView();
     }
 
     isSelected() {
-        return this.outline != null
+        return this.selected;
     }
 
     rotate() {
@@ -638,6 +735,7 @@ class Room {
 			var room = collidedRooms[r];
 			room.updateBoundsPositions();
 			room.checkCollided();
+		    room.checkErrors();
 		}
 	}
 
@@ -753,6 +851,9 @@ class Room {
         if (this.grid) {
             this.checkCollided();
         }
+        if (this.outline) {
+		    this.checkErrors();
+        }
 
         // clear the click point
         this.clickP = null;
@@ -772,6 +873,7 @@ class Room {
         }
 
 		this.checkCollided();
+	    this.checkErrors();
     }
 
     addDisplayElement(imageSuffix, zIndex = 0) {
@@ -818,6 +920,7 @@ class Room {
 		for (var b = 0; b < this.bounds.length; b++) {
 			this.bounds[b].removeDisplay();
 		}
+        this.viewContainer = null;
     }
 
     removeDisplayElement(element) {

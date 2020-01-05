@@ -2,7 +2,8 @@
 <!-- Full disclosure: JavaScript is not my forte and neither is CSS. -B -->
 <!-- Also full disclosure:  In all likelihood I will never have time to make this actually useful -->
 <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
-<meta name="viewport" content="width=640, initial-scale=1">
+<!-- basically remove all user-scaling options and make the viewport size match the screen size on touch screens -->
+<meta name="viewport" content="minimal-ui, width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 <head>
     <title>Dojo CAD</title>
 </head>
@@ -13,7 +14,8 @@
 
     * {
         font-family: sans-serif;
-        color: #B0B0B0;
+        color: #A0A0C0;
+        touch-action: manipulation;
     }
 
     /************************************************************
@@ -38,9 +40,9 @@
     #grid {
         position: absolute;
         left: 0;
-        right: 0;
         top: 0;
-        bottom: 0;
+        width: 100vw;
+        height: 100vh;
         padding: 0;
         border: 0;
         background-image: url("img5x/bg-grid.png");
@@ -51,11 +53,10 @@
 
     /* floating header at the top */
     #header {
-        background-color: #404040;
+        background-color: #303050;
         position: absolute;
-        left: 50%;
+        left: 2ex;
         top: 2ex;
-        transform: translateX(-50%);
         margin: 0;
         padding: 2ex;
         border-radius: 1ex;
@@ -64,7 +65,7 @@
 
     /* floating footer at the bottom */
     #footer {
-        background-color: #404040;
+        background-color: #303050;
         position: absolute;
         bottom: 2ex;
         right: 2ex;
@@ -81,9 +82,21 @@
         display: none;
     }
 
+    /* floating stats bar at the bottom */
+    #statsBar {
+        background-color: #303050;
+        position: absolute;
+        bottom: 2ex;
+        left: 2ex;
+        margin: 0;
+        padding: 1ex;
+        border-radius: 1ex;
+        z-index: 8;
+    }
+
     /* floating sidebar */
     #sidebar {
-        background-color: #404040;
+        background-color: #303050;
         position: absolute;
         top: 50%;
         transform: translateY(-50%);
@@ -96,7 +109,7 @@
 
     /* floating help container, fills the right side up to a max width */
     #help {
-        background-color: #404040;
+        background-color: #303050;
         position: absolute;
         right: 2ex;
         top: 10ex;
@@ -161,7 +174,7 @@
      * button/menu formatting
      ************************************************************/
 
-    .button, .button-disabled {
+    .button, .button-disabled, .button-error {
         margin: 1ex 1ex 1ex 1ex;
         border: none;
         padding: 1ex;
@@ -174,18 +187,27 @@
 
     .button {
         cursor: pointer;
-        background-color: #808080;
+        background-color: #7070A0;
         color: #FFFFFF;
     }
 
     .button-disabled {
-        background-color: #404040;
+        background-color: #303050;
         color: #808080;
+    }
+
+    .button-error {
+        cursor: pointer;
+        background-color: #802020;
+        color: #FFFFFF;
+        margin: 0.5ex;
+        border: none;
+        padding: 0.5ex;
     }
 
     .docButton {
         margin: 0;
-        background-color: #808080;
+        background-color: #7070A0;
         border: none;
         color: #FFFFFF;
         padding: 0.1ex 0.5ex;
@@ -194,24 +216,80 @@
         border-radius: 0.5ex;
     }
 
-    .menu {
-        margin: 1ex 1ex 1ex 1ex;
-        background-color: #202020;
-        border: none;
+    .label {
         color: #FFFFFF;
+        user-select: none;
+    }
+
+    .field, .field-error {
+        margin: 1ex 1ex 1ex 1ex;
+        border: none;
+        padding: 1ex;
+        text-align: center;
+        text-decoration: none;
+        font-size: 100%;
+        border-radius: 1ex;
+    }
+
+    .field {
+        background-color: #202030;
+        color: #FFFFFF;
+    }
+
+    .field-error {
+        background-color: #B02020;
+        color: #FFFFFF;
+    }
+
+    .menu-table, .menu-table-error {
+        margin: 1ex 1ex 1ex 1ex;
+        color: #FFFFFF;
+        border: none;
         padding: 0;
         margin: 0;
+        border-spacing: 1ex;
+        border-collapse: separate;
         text-decoration: none;
         font-size: 100%;
         border-radius: 1ex;
         position: absolute;
         user-select: none;
-        z-index: 6;
+        z-index: 16;
     }
 
-    .menuDivider {
+    .menu-table {
+        background-color: #202030;
+    }
+
+    .menu-table-error {
+        background-color: #402020;
+    }
+
+    .menu-button, .menu-button-error {
         margin: 1ex 1ex 1ex 1ex;
-        background-color: #404040;
+        border: none;
+        padding: 1ex;
+        text-align: center;
+        text-decoration: none;
+        font-size: 100%;
+        border-radius: 1ex;
+        cursor: pointer;
+    }
+
+    .menu-button {
+        background-color: #7070A0;
+        color: #FFFFFF;
+        user-select: none;
+    }
+
+    .menu-button-error {
+        background-color: #802020;
+        color: #FFFFFF;
+    }
+
+    .menu-divider {
+        margin: 1ex 1ex 1ex 1ex;
+        background-color: #303050;
         padding: 1ex;
         border-radius: 1ex;
     }
@@ -233,19 +311,19 @@
 
     .floor-button {
         cursor: pointer;
-        background-color: #202020;
-        color: #808080;
+        background-color: #202030;
+        color: #7070A0;
     }
 
     .floor-button-selected {
-        background-color: #606060;
+        background-color: #505080;
         color: #FFFFFF;
     }
 
     .floor-button-error {
         cursor: pointer;
         background-color: #802020;
-        color: #808080;
+        color: #7070A0;
     }
 
     .floor-button-error-selected {
@@ -255,12 +333,12 @@
 
     .floor-button-empty {
         cursor: pointer;
-        background-color: #404040;
-        color: #808080;
+        background-color: #303050;
+        color: #7070A0;
     }
 
     .floor-button-empty-selected {
-        background-color: #404040;
+        background-color: #303050;
         color: #FFFFFF;
     }
 
@@ -274,7 +352,7 @@
 	    text-align: left;
 	    color: #FFFFFF;
         position: absolute;
-        left: 2ex;
+        left: 10ex;
         right: 2ex;
         top: 10ex;
         margin: 0;
@@ -289,9 +367,9 @@
 	    text-align: left;
 	    color: #FFFFFF;
         position: absolute;
-        left: 2ex;
+        left: 10ex;
         right: 2ex;
-        bottom: 2ex;
+        bottom: 10ex;
         margin: 0;
         padding: 2ex;
         border-radius: 1ex;
@@ -327,7 +405,11 @@
 <script type="text/javascript" language="javascript" src="js/room-metadata.js" ></script>
 <script type="text/javascript" language="javascript" src="js/util.js"></script>
 <script type="text/javascript" language="javascript" src="js/model.js"></script>
+<script type="text/javascript" language="javascript" src="js/rules.js"></script>
 <script type="text/javascript" language="javascript" src="js/main.js"></script>
+<script type="text/javascript" language="javascript" src="js/events.js"></script>
+<script type="text/javascript" language="javascript" src="js/elevator.js"></script>
+<script type="text/javascript" language="javascript" src="js/menus.js"></script>
 <script type="text/javascript" language="javascript">
 
     /************************************************************
@@ -555,7 +637,7 @@
                 The highlighted floor on the left side of the screen shows which floor is currently in view.
                 <strong>G</strong> is the ground floor, the starting floor.  Numbers above <strong>G</strong> are
                 floors above the ground floor, and below <strong>G</strong>, numbers starting with a <strong>B</strong>
-                are floors belof the ground floor.
+                are floors below the ground floor.
             </p>
             <p>
                 Use the <span class="docButton">Up</span> button above the floor listing to view the next floor up.
@@ -698,25 +780,25 @@
                     Separate the Elevator up/down icon
                 </li>
                 <li>
-                    Capacity/Energy tracking
+                    Thicken the selection/error outlines
                 </li>
                 <li>
-                    Room count/prerequisite constraints, for certain rooms and overall
-                </li>
-                <li>
-                    Error list with links
+                    Make menus smarter about what direction they pop up
                 </li>
                 <li>
                     Explicit save button with URL popup
-                </li>
-                <li>
-                    Export as PNG
                 </li>
                 <li>
                     Icons?
                     <ul>
                         <li>Including room menu icons</li>
                     </ul>
+                </li>
+                <li>
+                    Export as PNG
+                </li>
+                <li>
+                    Add some actions for the error menus, i.e. clicking on the "Oracle is required" error creates an Oracle room to place.
                 </li>
                 <li>
                     Undo/Redo
@@ -753,15 +835,22 @@
 <div id="debugBar">
 </div>
 
+<!-- floating stats bar -->
+<span id="statsBar">
+    <span class="statsSpan"><span class="label">Rooms:</span> <span id="numRoomsStat" class="field">0</span></span>
+    <span class="statsSpan"><span class="label">Energy:</span> <span id="energyStat" class="field">0</span></span>
+    <span class="statsSpan"><span class="label">Capacity:</span> <span id="capacityStat" class="field">0</span></span>
+</span>
+
 <!-- floating footer bar -->
 <div id="footer">
-    <span id="footerToggle" onclick="toggleFooter()"><img src="https://i.imgur.com/b5pNXKU.png" srcset="https://i.imgur.com/z6U8Oxs.png 2x"/></span>
     <span id="footerHidden">
-        <span>v0.4.0: 2019-12-24</span>
+        <span>v0.5.0: 2019-12-24</span>
         <span><a href="https://github.com/buff0000n/dojoarch">Source</a>
             <a href="https://github.com/buff0000n/dojoarch/issues/2">Feedback</a></span>
         <span>Thanks: <a href="https://www.reddit.com/user/AeliosZero">AeliosZero</a></span>
     </span>
+    <span id="footerToggle" onclick="toggleFooter()"><img src="https://i.imgur.com/b5pNXKU.png" srcset="https://i.imgur.com/z6U8Oxs.png 2x"/></span>
 </div>
 
 </body>

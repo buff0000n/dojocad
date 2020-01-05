@@ -1,5 +1,5 @@
 var roomMetadata =
-{"general": {"floor_distance": 64 },
+{"general": {"floor_distance": 64, "max_rooms": 128 },
 "rooms": [
 {"id": "du", "image": "dueling-room", "name": "Dueling Room", "category": "Interactive", "prereq": null, "capacity": -10, "energy": -10, "maxnum": null, "floor": 0, "ceil": 20,
 	"bounds": [
