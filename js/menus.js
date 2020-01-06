@@ -88,8 +88,6 @@ function doAddMenu(element) {
     var rmd = getRoomMenuData();
     var bcr = element.getBoundingClientRect();
     var menuDiv = buildMenu();
-    menuDiv.style.left = bcr.left;
-    menuDiv.style.top = bcr.bottom;
 
     for (var cat in rmd) {
         var catButtonDiv = buildMenuButton(cat, doAddCategoryMenu);
@@ -103,8 +101,7 @@ function doAddMenu(element) {
         menuDiv.appendChild(roomButtonDiv);
     }
 
-    document.body.appendChild(menuDiv);
-    menus.push(menuDiv);
+    showMenu(menuDiv, bcr.left, bcr.bottom);
 }
 
 function doAddCategoryMenu(e) {
@@ -118,15 +115,12 @@ function doAddCategoryMenu(e) {
     var bcr = catButton.getBoundingClientRect();
 
     var menuDiv = buildMenu();
-    menuDiv.style.left = bcr.right;
-    menuDiv.style.top = bcr.top;
     for (var r in roomList) {
 	    var roomMetadata = roomList[r];
 	    var roomButtonDiv = buildAddRoomButton(roomMetadata);
         menuDiv.appendChild(roomButtonDiv);
     }
-    document.body.appendChild(menuDiv);
-    menus.push(menuDiv);
+    showMenu(menuDiv, bcr.right, bcr.top);
 }
 
 function buildAddRoomButton(roomMetadata, room = null, errors = null) {
@@ -181,8 +175,6 @@ function doRoomMenu(e, room) {
     var element = room.display;
 
     var menuDiv = buildMenu();
-    menuDiv.style.left = e.clientX;
-    menuDiv.style.top = e.clientY;
 
 	var td = document.createElement("tr");
 	td.className = "label";
@@ -209,8 +201,7 @@ function doRoomMenu(e, room) {
 
     menuDiv.appendChild(buildMenuButton("Delete", deleteSelectedRoom));
 
-    document.body.appendChild(menuDiv);
-    menus.push(menuDiv);
+    showMenu(menuDiv, e.clientX, e.clientY);
 }
 
 function doShowErrors(e) {
@@ -227,13 +218,31 @@ function doShowErrors(e) {
 	clearMenus(menuLevel);
 
     var menuDiv = buildMenu(true);
-    menuDiv.style.left = bcr.right;
-    menuDiv.style.top = bcr.top;
     for (var e = 0; e < errorList.length; e++) {
 	    var error = errorList[e].toString();
 	    var errorButton = buildMenuButton(error, null, true);
 	    menuDiv.appendChild(errorButton);
     }
+
+    showMenu(menuDiv, bcr.right, bcr.top);
+}
+
+function showMenu(menuDiv, left, top) {
     document.body.appendChild(menuDiv);
+
+    var bcr = menuDiv.getBoundingClientRect();
+	var w = window.innerWidth;
+	var h = window.innerHeight;
+
+    if (left + bcr.width > w) {
+        left = Math.max(0, w - bcr.width);
+    }
+    if (top + bcr.height > h) {
+        top = Math.max(0, h - bcr.height);
+    }
+
+    menuDiv.style.left = left;
+    menuDiv.style.top = top;
+
     menus.push(menuDiv);
 }

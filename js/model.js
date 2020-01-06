@@ -337,7 +337,7 @@ class Room {
 				}
 			}
 			for (var r = 0; r  < collidedRooms.length; r++) {
-				errors2.push("Collision with " + collidedRooms[r].metadata.name);
+				errors2.push(collidedRooms[r].metadata.name + " collision");
 			}
 			errors = errors2;
 		}

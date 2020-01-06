@@ -24,6 +24,7 @@ class RoomCountRule extends RoomRule {
 		super();
 		this.maxRooms = maxRooms;
 		this.numRooms = 0;
+		this.errorMessage = maxRooms + " rooms max";
 	}
 
 	roomAdded(room) {
@@ -45,7 +46,7 @@ class RoomCountRule extends RoomRule {
 	}
 
 	toString() {
-		return "Maximum number of rooms exceeded";
+		return this.errorMessage;
 	}
 }
 
@@ -74,7 +75,7 @@ class EnergyRule extends RoomRule {
 	}
 
 	toString() {
-		return "Not enough energy";
+		return "Energy required";
 	}
 }
 
@@ -103,7 +104,7 @@ class CapacityRule extends RoomRule {
 	}
 
 	toString() {
-		return "Not enough capacity";
+		return "Capacity required";
 	}
 }
 
@@ -113,7 +114,7 @@ class MaxNumRule extends RoomRule {
 		this.id = roomMetadata.id;
 		this.maxnum = maxnum;
 		this.list = Array();
-		this.errorMessage = "Maximum number of " + roomMetadata.name + " rooms is " + maxnum;
+		this.errorMessage = "Max " + maxnum + " " + roomMetadata.name + (maxnum == 1 ? "" : " rooms");
 	}
 
 	roomAdded(room) {
@@ -165,7 +166,7 @@ class PrereqRule extends RoomRule {
 		this.prereq_id = prereqRoomMetadata.id;
 		this.room_list = Array();
 		this.prereq_list = Array();
-		this.errorMessage = roomMetadata.name + " requires " + prereqRoomMetadata.name;
+		this.errorMessage = prereqRoomMetadata.name + " required";
 	}
 
 	roomAdded(room) {
