@@ -348,14 +348,17 @@ class Room {
 		this.removeAllRuleErrors();
 	}
 
-    isVisible() {
-        if (this.floor == viewFloor) {
+    isVisible(whichFloor = null) {
+        if (whichFloor == null) {
+            whichFloor = viewFloor;
+        }
+        if (this.floor == whichFloor) {
             return true;
         }
         if (!this.multifloor) {
             return false;
         }
-		var displayFloor = viewFloor - this.floor;
+		var displayFloor = whichFloor - this.floor;
 		for (var i = 0; i < this.metadata.floor_images.length; i++) {
 			if (this.metadata.floor_images[i].floor == displayFloor) {
 				return true;
@@ -895,9 +898,12 @@ class Room {
         return element;
     }
 
-    getImageBase() {
+    getImageBase(whichFloor = null) {
+        if (whichFloor == null) {
+            whichFloor = viewFloor;
+        }
 		if (this.multifloor) {
-			var displayFloor = viewFloor - this.floor;
+			var displayFloor = whichFloor - this.floor;
 			for (var i = 0; i < this.metadata.floor_images.length; i++) {
 				if (this.metadata.floor_images[i].floor == displayFloor) {
 					return this.metadata.floor_images[i].image;
@@ -932,20 +938,11 @@ class Room {
 
     updateView() {
         if (this.display || this.grid) {
-            // transform the anchor coords to pixel coords
-			var roomViewCenterPX = ((this.mv.x + this.mdragOffset.x) * viewScale) + viewPX;
-			var roomViewCenterPY = ((this.mv.y + this.mdragOffset.y) * viewScale) + viewPY;
-			// we have to add the anchor points scaled by the image scale rather than the view scale in order for the
-			// css transform to put the room in the right place.  so much trial and error to get this rght...
-            var roomViewPX = roomViewCenterPX + (this.anchorMX * imgScale);
-            var roomViewPY = roomViewCenterPY + (this.anchorMY * imgScale);
-
-			// final scaling of the image
-			var scale = viewScale / imgScale;
+            var transform = this.getImageTransform(viewPX, viewPY, viewScale);
 			// update the three images, whichever ones are present
-			this.updateViewElement(this.display, roomViewPX, roomViewPY, this.rotation, scale);
-			this.updateViewElement(this.outline, roomViewPX, roomViewPY, this.rotation, scale);
-			this.updateViewElement(this.grid, roomViewPX, roomViewPY, this.rotation, scale);
+			this.updateViewElement(this.display, transform);
+			this.updateViewElement(this.outline, transform);
+			this.updateViewElement(this.grid, transform);
 			// update debug bounds views, if present
 			for (var d = 0; d < this.doors.length; d++) {
 				this.doors[d].updateView();
@@ -956,15 +953,156 @@ class Room {
         }
     }
 
-    updateViewElement(e, px, py, rotation, scale) {
+	getImageTransform(viewPX, viewPY, viewScale) {
+        // transform the anchor coords to pixel coords
+		var roomViewCenterPX = ((this.mv.x + this.mdragOffset.x) * viewScale) + viewPX;
+		var roomViewCenterPY = ((this.mv.y + this.mdragOffset.y) * viewScale) + viewPY;
+		// we have to add the anchor points scaled by the image scale rather than the view scale in order for the
+		// css transform to put the room in the right place.  so much trial and error to get this rght...
+        var roomViewPX = roomViewCenterPX + (this.anchorMX * imgScale);
+        var roomViewPY = roomViewCenterPY + (this.anchorMY * imgScale);
+
+		// final scaling of the image
+		var scale = viewScale / imgScale;
+
+	    // https://www.w3schools.com/cssref/css3_pr_transform.asp
+	    // translate() need to be before rotate() and scale()
+		return "translate(" + roomViewPX + "px, " + roomViewPY + "px) rotate(" + this.rotation + "deg) scale(" + scale + ", " + scale + ")";
+	}
+
+    updateViewElement(e, transform) {
         if (e) {
-		    // https://www.w3schools.com/cssref/css3_pr_transform.asp
-		    // translate() need to be before rotate() and scale()
-		    e.style.transform = "translate(" + px + "px, " + py + "px) rotate(" + rotation + "deg) scale(" + scale + ", " + scale + ")"
+		    e.style.transform = transform;
         }
     }
 
     toString() {
         return this.metadata.id + ":" + this.id + ":(" + this.mv.x + ", " + this.mv.y + ", " + this.floor + ")";
     }
+}
+
+class DojoBounds {
+	constructor() {
+		this.x1 = 100000;
+		this.x2 = -100000;
+		this.y1 = 100000;
+		this.y2 = -100000;
+		this.f1 = 100000;
+		this.f2 = -100000;
+	}
+	
+	includeAll() {
+		for (var r = 0; r < roomList.length; r++) {
+			this.includeRoom(roomList[r]);
+		}
+	}
+	
+	includeRoom(room) {
+		for (var b = 0; b < room.bounds.length; b++) {
+			var bound = room.bounds[b];
+			if (!bound.invisible) {
+				this.includeBound(bound);
+			}
+			var floors = room.getFloors();
+			for (var f = 0; f < floors.length; f++) {
+				if (floors[f] < this.f1) { this.f1 = floors[f]; }
+				if (floors[f] > this.f2) { this.f2 = floors[f]; }
+			}
+		}
+	}
+	
+	includeBound(bound) {
+		if (this.x1 > bound.x1) { this.x1 = bound.x1; }
+		if (this.x2 < bound.x2) { this.x2 = bound.x2; }
+		if (this.y1 > bound.y1) { this.y1 = bound.y1; }
+		if (this.y2 < bound.y2) { this.y2 = bound.y2; }
+	}
+	
+	width() { return Math.abs(this.x2 - this.x1); }
+
+	height() { return Math.abs(this.y2 - this.y1); }
+}
+
+function getDojoBounds() {
+	var db = new DojoBounds();
+	db.includeAll();
+	return db;
+}
+
+function convertToPngs(db, margin, scale) {
+	var canvas = document.createElement("canvas");
+	canvas.width = (db.width() * scale) + (margin * 2);
+	canvas.height = (db.height() * scale) + (margin * 2);
+
+	document.body.appendChild(canvas);
+
+	var links = Array();
+	for (var f = db.f1; f <= db.f2; f++) {
+		links.push(convertFloorToPngLink(canvas, db, margin, scale, f));
+	}
+
+	canvas.remove();
+
+	return links;
+}
+
+function convertFloorToPngLink(canvas, db, margin, scale, f) {
+    // get the graphics context, this is what we'll do all our work in
+    var context = canvas.getContext("2d");
+
+    // fill the whole canvas with a background color, otherwise it will be transparent
+    context.fillStyle = "#000000";
+    context.fillRect(0, 0, canvas.width, canvas.height);
+
+	// calculate the point in the image that represents (0, 0) in meter-space
+    var roomViewCenterPX = margin + (-db.x1 * scale);
+    var roomViewCenterPY = margin + (-db.y1 * scale);
+
+	for (var r = 0; r < roomList.length; r++) {
+		var room = roomList[r];
+		// check if the room is visible on the given floor
+		if (room.isVisible(f)) {
+			// build an image link because that's what context.drawImage wants
+            var img = document.createElement("img");
+            img.src = "img" + imgScale + "x/" + room.getImageBase(f) + "-display.png";
+
+			// start by putting the anchor into a vect
+			var av = new Vect(room.anchorMX, room.anchorMY);
+			// rotate the anchor point by the room's rotation
+            av = av.rotate(room.rotation)
+                // add to the room's position
+                .add(room.mv)
+                // scale by the scale, they are now pixel coords
+                .scale(scale)
+                // add to the center point
+                .addTo(roomViewCenterPX, roomViewCenterPY);
+
+			// calculate basis vectors starting from the transformed anchor point
+            var vx = new Vect(scale / imgScale, 0).rotate(room.rotation);
+            var vy = new Vect(0, scale / imgScale).rotate(room.rotation);
+            // set the transform with the two basis vectors and the translate vector
+            context.setTransform(vx.x, vx.y, vy.x, vy.y, av.x, av.y);
+			// draw the image at the center of the new coordinate space
+			context.drawImage(img, 0, 0);
+			// reset the transform
+			context.resetTransform();
+		}
+	}
+
+	var floorName = getFloorName(f);
+
+    // set up the title text
+    context.font = (16 * scale) + "px Arial";
+    context.textAlign = "left";
+    context.fillStyle = "#8080FF";
+    // title
+    context.fillText("Floor " + floorName, 8*scale, 24*scale);
+
+//	context.beginPath();
+//	context.strokeStyle = "#FF0000";
+//	context.lineWidth = 5;
+//	context.rect(margin, margin, canvas.width - (margin * 2), canvas.height - (margin * 2));
+//	context.stroke();
+
+	return convertToPngLink(canvas, "dojo-floor-" + floorName);
 }

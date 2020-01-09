@@ -245,6 +245,8 @@ function wheel(e) {
 
 	var factor = Math.pow(2, -deltaY / wheel2xZoomScale)
 
+    clearMenus(0);
+
 	zoom(e.clientX, e.clientY, factor);
 }
 

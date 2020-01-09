@@ -45,6 +45,29 @@ function getQueryParam(url, name) {
     return decodeURIComponent(results[2].replace(/\+/g, ' '));
 }
 
+function buildQueryUrl(query) {
+    // get the current URL and strip out any query string
+    var url = window.location.href;
+    url = url.replace(/\?.*/, "");
+    // append our parameters
+    url += query;
+
+    return url;
+}
+
+function convertToPngLink(canvas, name) {
+    // builds a huuuuge URL with the base-64 encoded PNG data embedded inside it
+    var src = canvas.toDataURL();
+    // generate a file name
+    var fileName = name + ".png";
+
+    var a = document.createElement("a");
+    a.download = fileName;
+    a.href = src;
+    a.innerHTML = fileName;
+    return a;
+}
+
 // returns true if the list was changed
 function removeFromList(list, item) {
 	var index = list.indexOf(item);
@@ -139,6 +162,7 @@ class Vect {
     scale(s) {
         this.x *= s;
         this.y *= s;
+        return this;
     }
 
     length() {

@@ -33,7 +33,7 @@ function getRoomMenuData() {
     return roomMenuData;
 }
 
-function clearMenus(leave) {
+function clearMenus(leave = 0) {
     while (menus.length > leave) {
         var menu = menus.pop();
         menu.remove();
@@ -245,4 +245,175 @@ function showMenu(menuDiv, left, top) {
     menuDiv.style.top = top;
 
     menus.push(menuDiv);
+}
+
+function buildMenuField(label, ) {
+    var buttonDiv = document.createElement("td");
+    buttonDiv.className = error ? "menu-button-error" : "menu-button";
+    buttonDiv.innerHTML = label;
+    buttonDiv.onclick = callback;
+
+    var tr = document.createElement("tr");
+    tr.appendChild(buttonDiv);
+
+    return tr;
+}
+
+function doSave(element) {
+    var e = e || window.event;
+    e.preventDefault();
+
+    clearMenus(1);
+
+    var saveButton = e.currentTarget;
+    var bcr = saveButton.getBoundingClientRect();
+
+    var menuDiv = buildMenu();
+
+	var url = buildQueryUrl(buildUrlParams());
+
+    // find the pop-up URL text field and set its contents
+
+	// <input id="urlHolder" type="text" size="60" onblur="hideUrlPopup()"/>
+	var input = document.createElement("input");
+	input.type = "text";
+	input.id = "urlCopy";
+	input.class = "field";
+	input.size = "60";
+	input.onblur = clearMenus;
+    input.value = url;
+
+    var tr = buildMenuButton("Copy", doUrlCopy);
+
+    var td = document.createElement("td");
+    td.appendChild(input);
+    tr.appendChild(td);
+    menuDiv.appendChild(tr);
+
+    showMenu(menuDiv, bcr.left, bcr.bottom);
+
+    // focus and select the contents of the text field
+    input.focus();
+    input.select();
+}
+
+function doUrlCopy() {
+	var element = document.getElementById("urlCopy")
+
+	element.select();
+	element.setSelectionRange(0, 99999); /*For mobile devices*/
+
+	/* Copy the text inside the text field */
+	document.execCommand("copy");
+}
+
+function buildMenuInput(label, input) {
+    var tr = document.createElement("tr");
+
+    var td1 = document.createElement("td");
+    td1.className = "inputLabel";
+    td1.innerHTML = label + ":";
+    tr.appendChild(td1);
+
+    var td2 = document.createElement("td");
+    td2.appendChild(input);
+    tr.appendChild(td2);
+
+    return tr;
+}
+
+function pngScaleChanged() {
+    clearMenus(1);
+
+    var scaleInput = document.getElementById("png-scale");
+	var scale = scaleInput.value;
+	var db = scaleInput.dojoBounds;
+
+	var sizeElement = document.getElementById("png-size");
+	if (scale < 1 || scale > 10) {
+		sizeElement.innerHTML = "Invalid";
+
+	} else {
+		sizeElement.innerHTML = ((db.width() + 64) * scale) + " x " + ((db.height() + 64) * scale);
+	}
+}
+
+function doPngMenu(element) {
+    var e = e || window.event;
+    e.preventDefault();
+
+    clearMenus(0);
+
+    var pngButton = e.currentTarget;
+    var bcr = pngButton.getBoundingClientRect();
+
+    var menuDiv = buildMenu();
+
+    var db = getDojoBounds();
+
+	var scaleInput = document.createElement("input");
+    scaleInput.id = "png-scale";
+    scaleInput.class = "field";
+    scaleInput.type = "number";
+    scaleInput.step = 1;
+    scaleInput.min = 1;
+    scaleInput.max = 10;
+    scaleInput.value = 1;
+    scaleInput.onchange = pngScaleChanged;
+    scaleInput.dojoBounds = db;
+    menuDiv.appendChild(buildMenuInput("Scale", scaleInput));
+
+	var sizeDisplay = document.createElement("div");
+    sizeDisplay.id = "png-size";
+    sizeDisplay.class = "field";
+    menuDiv.appendChild(buildMenuInput("Size", sizeDisplay));
+
+    menuDiv.appendChild(buildMenuButton("Create", doPngLinkMenu));
+
+    showMenu(menuDiv, bcr.left, bcr.bottom);
+	pngScaleChanged();
+}
+
+function doPngLinkMenu(element) {
+    var e = e || window.event;
+    e.preventDefault();
+
+    var embed = e.altKey;
+
+    clearMenus(1);
+
+    var menuDiv = buildMenu();
+
+    var pngButton = e.currentTarget;
+    var bcr = pngButton.getBoundingClientRect();
+
+    var scaleInput = document.getElementById("png-scale");
+	var scale = scaleInput.value;
+	var db = scaleInput.dojoBounds;
+
+	if (scale < 1 || scale > 10) {
+		return;
+	}
+
+	var margin = 32 * scale;
+
+	var links = convertToPngs(db, margin, scale);
+
+	for (var f = 0; f < links.length; f++) {
+	    var td = document.createElement("td");
+	    if (embed) {
+	        var img = document.createElement("img");
+	        img.src = links[f].href;
+		    td.appendChild(img);
+
+	    } else {
+		    td.appendChild(links[f]);
+	    }
+
+	    var tr = document.createElement("tr");
+	    tr.appendChild(td);
+	    menuDiv.appendChild(tr);
+	}
+
+    showMenu(menuDiv, bcr.left, bcr.bottom);
 }

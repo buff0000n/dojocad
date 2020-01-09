@@ -2,11 +2,15 @@
 // Floor stuff
 //==============================================================
 
+function getFloorName(floor) {
+	return floor == 0 ? "G" : floor < 0 ? ("B" + (-floor)) : floor
+}
+
 class FloorEntry {
 	constructor(floor) {
 		this.floor = floor;
 	    this.div = document.createElement("div");
-		this.div.innerHTML = floor == 0 ? "G" : floor < 0 ? ("B" + (-floor)) : floor
+		this.div.innerHTML = getFloorName(floor);
 		this.div.floor = this.floor;
 		this.div.addEventListener("click", function() { doSetFloor(this.floor) } );
 		this.rooms = Array();

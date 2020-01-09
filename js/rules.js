@@ -114,7 +114,7 @@ class MaxNumRule extends RoomRule {
 		this.id = roomMetadata.id;
 		this.maxnum = maxnum;
 		this.list = Array();
-		this.errorMessage = "Max " + maxnum + " " + roomMetadata.name + (maxnum == 1 ? "" : " rooms");
+		this.errorMessage = "Limit " + maxnum + " " + roomMetadata.name + (maxnum == 1 ? "" : " rooms");
 	}
 
 	roomAdded(room) {
@@ -142,6 +142,8 @@ class MaxNumRule extends RoomRule {
 				for (var r = 0; r < this.list.length; r++) {
 					this.list[r].removeRuleError(this);
 				}
+			} else if (newLength > this.maxnum) {
+				room.addRuleError(this);
 			}
 		}
 	}

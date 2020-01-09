@@ -154,7 +154,7 @@ function movedSelectedRoom() {
 	saveModelToUrl();
 }
 
-function saveModelToUrl() {
+function buildModelParam() {
 	var value = "";
 	for (var r = 0; r < roomList.length; r++) {
 		if (value.length > 0) {
@@ -162,7 +162,11 @@ function saveModelToUrl() {
 		}
 		value += roomToString(roomList[r]);
 	}
-	modifyUrlQueryParam("m", value);
+	return value;
+}
+
+function saveModelToUrl() {
+	modifyUrlQueryParam("m", buildModelParam());
 }
 
 function loadModelFromUrl() {
@@ -182,12 +186,16 @@ function loadModelFromUrl() {
 	return true;
 }
 
-function saveViewToUrl() {
+function buildViewParam() {
 	var centerPX = viewPX - (window.innerWidth / 2);
 	var centerPY = viewPY - (window.innerHeight / 2);
 
 	var value = Math.ceil(viewScale) + "," + Math.round(centerPX) + "," + Math.round(centerPY) + "," + viewFloor;
-	modifyUrlQueryParam("v", value);
+	return value;
+}
+
+function saveViewToUrl() {
+	modifyUrlQueryParam("v", buildViewParam());
 }
 
 function loadViewFromUrl() {
@@ -209,12 +217,16 @@ function loadViewFromUrl() {
 	return true;
 }
 
+function buildUrlParams() {
+	return "?v=" + buildViewParam() + "&m=" + buildModelParam();
+}
+
 function centerViewOn(mx, my, scale = null, floor = null) {
 	var newScale = scale ? scale : viewScale;
 	var newfloor = floor ? floor : viewFloor;
-	var cornerPX = (mx * viewScale) + (window.innerWidth / 2);
-	var cornerPY = (my * viewScale) + (window.innerHeight/ 2);
-	setViewP(cornerPX, cornerPY, viewScale, viewFloor);
+	var cornerPX = (mx * newScale) + (window.innerWidth / 2);
+	var cornerPY = (my * newScale) + (window.innerHeight/ 2);
+	setViewP(cornerPX, cornerPY, newScale, viewFloor);
 }
 
 //==============================================================
@@ -250,7 +262,7 @@ function initModel() {
         starterRoom.setPosition(0, 0, 0, 0);
 	    addRoom(starterRoom);
         starterRoom.addDisplay(getRoomContainer());
-        centerViewOn(0, 0, 5, 0);
+        centerViewOn(0, 0, 2, 0);
     }
 
     redraw();
