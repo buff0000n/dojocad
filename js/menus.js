@@ -209,7 +209,7 @@ function doShowErrors(e) {
     e.preventDefault();
 
     var errButton = e.currentTarget;
-    clearMenus(errButton.menuDepth);
+    clearMenus(errButton.menuLevel);
     var errorList = errButton.errors;
     var menuLevel = errButton.menuLevel;
     var roomMetadata = errButton.roomMetadata

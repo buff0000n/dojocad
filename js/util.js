@@ -190,6 +190,10 @@ class Vect {
         }
     }
 
+    copy() {
+        return new Vect(this.x, this.y);
+    }
+
     equals(v) {
         return this.x == v.x && this.y == v.y;
     }

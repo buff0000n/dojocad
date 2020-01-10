@@ -67,7 +67,7 @@ var roomMetadata =
 		{"resource": "Circuits", "costs": [350, 1050, 3500, 10500, 35000]},
 		{"resource": "Polymer Bundle", "costs": [350, 1050, 3500, 10500, 35000]},
 		{"resource": "Forma", "costs": [1, 1, 2, 5, 20]}]},
-{"id": "lt", "image": "tenno2-lab", "name": "Tenno Lab", "category": "Labs", "prereq": "or", "capacity": -2, "energy": -5, "maxnum": null, "floor": 0, "ceil": 8,
+{"id": "lt", "image": "tenno-lab2", "name": "Tenno Lab", "category": "Labs", "prereq": "or", "capacity": -2, "energy": -5, "maxnum": null, "floor": 0, "ceil": 8,
 	"bounds": [
 		{"x1": -10, "y1": -9, "x2": 10, "y2": 9, "floor": 0, "ceil": 8}],
 	"doors": [
@@ -175,8 +175,8 @@ var roomMetadata =
 		{"x": 0, "y": 12, "floor": 0, "outx": 0, "outy": 1},
 		{"x": 0, "y": 12, "floor": 1, "outx": 0, "outy": 1}],
 	"floor_images": [
-		{"floor": 0, "image": "elevator-bottom", "icon": "elevator-bottom-icon"},
-		{"floor": 1, "image": "elevator-top", "icon": "elevator-top-icon"}],
+		{"floor": 0, "image": "elevator-bottom", "marker_image": "marker-elevator-bottom"},
+		{"floor": 1, "image": "elevator-bottom", "marker_image": "marker-elevator-top"}],
 	"resources": [
 		{"resource": "Credits", "costs": [500, 1500, 5000, 15000, 50000]},
 		{"resource": "Salvage", "costs": [650, 1950, 6500, 19500, 65000]},

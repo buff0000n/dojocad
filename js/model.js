@@ -285,6 +285,7 @@ class Room {
         this.display = null;
         this.outline = null;
         this.grid = null;
+        this.marker = null;
         this.selected = false;
 
         this.mdragOffset = new Vect(0, 0);
@@ -583,10 +584,10 @@ class Room {
 			        this.outline = this.addDisplayElement("-line-blue.png", 3);
 				}
 			    if (this.isSelected()) {
-				    this.outline.style.filter = "hue-rotate(120deg)";
+				    this.outline.style.filter = "hue-rotate(120deg) saturate(50%) brightness(250%)";
 
 			    } else if (this.isVisible()) {
-				    this.outline.style.filter = "hue-rotate(120deg) brightness(50%) saturate(200%)";
+				    this.outline.style.filter = "hue-rotate(120deg)";
 
 			    } else {
 			        this.outline = this.removeDisplayElement(this.outline);
@@ -866,6 +867,7 @@ class Room {
         this.viewContainer = viewContainer;
         if (this.isVisible()) {
 	        this.display = this.addDisplayElement("-display.png", 2);
+	        this.marker = this.addDisplayElement(".png", 3, true);
 			for (var b = 0; b < this.doors.length; b++) {
 				this.doors[b].addDisplay(viewContainer);
 			}
@@ -879,12 +881,18 @@ class Room {
 	    this.checkErrors();
     }
 
-    addDisplayElement(imageSuffix, zIndex = 0) {
+    addDisplayElement(imageSuffix, zIndex = 0, marker = false) {
+        var imageBase = marker ? this.getMarkerImageBase() : this.getImageBase();
+        if (!imageBase) {
+            return null;
+        }
         // Ugh, have to build the <img> element the hard way
         var element = document.createElement("img");
         element.style = "position: absolute;";
-        // Need to explicitly set the transform origin for off-center rooms
-        element.style.transformOrigin = (-this.anchorMX * imgScale) + "px " + (-this.anchorMY * imgScale) + "px";
+        if (!marker) {
+	        // Need to explicitly set the transform origin for off-center rooms
+	        element.style.transformOrigin = (-this.anchorMX * imgScale) + "px " + (-this.anchorMY * imgScale) + "px";
+        }
         element.style.zIndex = zIndex;
         element.id = this.id;
 		// have to explicitly tell Chrome that none of these listeners are passive or it will cry
@@ -892,7 +900,7 @@ class Room {
         element.addEventListener("contextmenu", contextMenu, { passive: false });
         element.addEventListener("touchstart", touchStart, { passive: false });
         element.addEventListener("wheel", wheel, { passive: false });
-        element.src = "img" + imgScale + "x/" + this.getImageBase() + imageSuffix;
+        element.src = "img" + imgScale + "x/" + imageBase + imageSuffix;
         element.room = this;
         this.viewContainer.appendChild(element);
         return element;
@@ -914,9 +922,26 @@ class Room {
 		return this.metadata.image
     }
 
+    getMarkerImageBase(whichFloor = null) {
+        if (whichFloor == null) {
+            whichFloor = viewFloor;
+        }
+		if (this.multifloor) {
+			var displayFloor = whichFloor - this.floor;
+			for (var i = 0; i < this.metadata.floor_images.length; i++) {
+				if (this.metadata.floor_images[i].floor == displayFloor) {
+					return this.metadata.floor_images[i].marker_image;
+				}
+			}
+		}
+
+		return null;
+    }
+
     removeDisplay() {
-        // remove the three images, whichever ones are presesnt
+        // remove the images, whichever ones are presesnt
 	    this.display = this.removeDisplayElement(this.display);
+	    this.marker = this.removeDisplayElement(this.marker);
 	    this.outline = this.removeDisplayElement(this.outline);
 	    this.grid = this.removeDisplayElement(this.grid);
 	    // remove bounds debug boxes, if present
@@ -943,6 +968,10 @@ class Room {
 			this.updateViewElement(this.display, transform);
 			this.updateViewElement(this.outline, transform);
 			this.updateViewElement(this.grid, transform);
+			if (this.marker) {
+	            var transform2 = this.getMarkerImageTransform(viewPX, viewPY, viewScale);
+				this.updateViewElement(this.marker, transform2);
+			}
 			// update debug bounds views, if present
 			for (var d = 0; d < this.doors.length; d++) {
 				this.doors[d].updateView();
@@ -968,6 +997,18 @@ class Room {
 	    // https://www.w3schools.com/cssref/css3_pr_transform.asp
 	    // translate() need to be before rotate() and scale()
 		return "translate(" + roomViewPX + "px, " + roomViewPY + "px) rotate(" + this.rotation + "deg) scale(" + scale + ", " + scale + ")";
+	}
+
+	getMarkerImageTransform(viewPX, viewPY, viewScale) {
+        // transform the room center coords to pixel coords
+		var roomViewCenterPX = ((this.mv.x + this.mdragOffset.x) * viewScale) + viewPX;
+		var roomViewCenterPY = ((this.mv.y + this.mdragOffset.y) * viewScale) + viewPY;
+
+		// final scaling of the image
+		var scale = viewScale / imgScale;
+
+		// translate by the pixel coords, and then back by 50% to center the image
+		return "translate(" + roomViewCenterPX + "px, " + roomViewCenterPY + "px) translate(-50%, -50%) scale(" + scale + ", " + scale + ")";
 	}
 
     updateViewElement(e, transform) {
@@ -1086,6 +1127,29 @@ function convertFloorToPngLink(canvas, db, margin, scale, f) {
 			context.drawImage(img, 0, 0);
 			// reset the transform
 			context.resetTransform();
+
+			// see if the room has a marker
+			var markerImageBase = room.getMarkerImageBase(f);
+			if (markerImageBase) {
+	            var img2 = document.createElement("img");
+	            img2.src = "img" + imgScale + "x/" + markerImageBase + ".png";
+				// the marker is a little simpler because we don't have to rotate it and it's always centered
+				// start with the room coords
+				var av2 = room.mv.copy()
+	                // scale by the scale, they are now pixel coords
+	                .scale(scale)
+	                // add to the center point
+	                .addTo(roomViewCenterPX, roomViewCenterPY)
+	                // center the image
+	                .addTo(-img2.width * (scale / imgScale) / 2, -img2.height * (scale / imgScale) / 2);
+
+	            // set the transform with the two basis vectors and the translate vector
+	            context.setTransform(scale / imgScale, 0, 0, scale / imgScale, av2.x, av2.y);
+				// draw the image at the center of the new coordinate space
+				context.drawImage(img2, 0, 0);
+				// reset the transform
+				context.resetTransform();
+			}
 		}
 	}
 
