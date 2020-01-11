@@ -8,15 +8,24 @@ class RoomRule {
 	getRoomWarning(roomMetaData) {
 	}
 
+	getGlobalError() {
+		return null;
+	}
+
 	toString() {
 		return "Rule";
 	}
 }
 
-function updateStat(id, value, error) {
+function updateStat(id, value, error, rule) {
 	var node = document.getElementById(id)
 	node.innerHTML = value
-	node.className = error ? "field-error" : "field";
+	node.parentElement.className = error ? "field-error" : "field";
+	if (error) {
+		addAllError(rule.toString());
+	} else {
+		removeAllError(rule.toString());
+	}
 }
 
 class RoomCountRule extends RoomRule {
@@ -29,12 +38,12 @@ class RoomCountRule extends RoomRule {
 
 	roomAdded(room) {
 		this.numRooms++;
-		updateStat("numRoomsStat", this.numRooms, this.numRooms > this.maxRooms);
+		updateStat("numRoomsStat", this.numRooms, this.numRooms > this.maxRooms, this);
 	}
 
 	roomRemoved(room) {
 		this.numRooms--;
-		updateStat("numRoomsStat", this.numRooms, this.numRooms > this.maxRooms);
+		updateStat("numRoomsStat", this.numRooms, this.numRooms > this.maxRooms, this);
 	}
 
 	getRoomWarning(roomMetaData) {
@@ -43,6 +52,10 @@ class RoomCountRule extends RoomRule {
 		} else {
 			return null;
 		}
+	}
+
+	getGlobalError() {
+		return this.numRooms > this.maxRooms ? errorMessage : null;
 	}
 
 	toString() {
@@ -58,12 +71,12 @@ class EnergyRule extends RoomRule {
 
 	roomAdded(room) {
 		this.energy += room.metadata.energy;
-		updateStat("energyStat", this.energy, this.energy < 0);
+		updateStat("energyStat", this.energy, this.energy < 0, this);
 	}
 
 	roomRemoved(room) {
 		this.energy -= room.metadata.energy;
-		updateStat("energyStat", this.energy, this.energy < 0);
+		updateStat("energyStat", this.energy, this.energy < 0, this);
 	}
 
 	getRoomWarning(roomMetaData) {
@@ -72,6 +85,10 @@ class EnergyRule extends RoomRule {
 		} else {
 			return null;
 		}
+	}
+
+	getGlobalError() {
+		return this.energy < 0 ? this.toString() : null;
 	}
 
 	toString() {
@@ -87,12 +104,12 @@ class CapacityRule extends RoomRule {
 
 	roomAdded(room) {
 		this.capacity += room.metadata.capacity;
-		updateStat("capacityStat", this.capacity, this.capacity < 0);
+		updateStat("capacityStat", this.capacity, this.capacity < 0, this);
 	}
 
 	roomRemoved(room) {
 		this.capacity -= room.metadata.capacity;
-		updateStat("capacityStat", this.capacity, this.capacity < 0);
+		updateStat("capacityStat", this.capacity, this.capacity < 0, this);
 	}
 
 	getRoomWarning(roomMetaData) {
@@ -101,6 +118,10 @@ class CapacityRule extends RoomRule {
 		} else {
 			return null;
 		}
+	}
+
+	getGlobalError() {
+		return this.capacity < 0 ? this.toString() : null;
 	}
 
 	toString() {
@@ -256,6 +277,17 @@ function getNewRoomWarnings(roomMetaData) {
 	var errors = Array();
 	for (var i = 0; i < roomRules.length; i++) {
 		var warning = roomRules[i].getRoomWarning(roomMetaData);
+		if (warning) {
+			errors.push(warning);
+		}
+	}
+	return errors.length > 0 ? errors : null;
+}
+
+function getGlobalErrors() {
+	var errors = Array();
+	for (var i = 0; i < roomRules.length; i++) {
+		var error = roomRules[i].getGlobalError();
 		if (warning) {
 			errors.push(warning);
 		}

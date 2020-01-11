@@ -33,8 +33,12 @@ function getRoomMenuData() {
     return roomMenuData;
 }
 
+function getCurrentMenuLevel() {
+	return menus.length;
+}
+
 function clearMenus(leave = 0) {
-    while (menus.length > leave) {
+    while (getCurrentMenuLevel() > leave) {
         var menu = menus.pop();
         menu.remove();
     }
@@ -53,6 +57,7 @@ function buildMenuButton(label, callback, error = false) {
     buttonDiv.className = error ? "menu-button-error" : "menu-button";
     buttonDiv.innerHTML = label;
     buttonDiv.onclick = callback;
+    buttonDiv.menuLevel = getCurrentMenuLevel() + 1;
 
     var tr = document.createElement("tr");
     tr.appendChild(buttonDiv);
@@ -60,13 +65,25 @@ function buildMenuButton(label, callback, error = false) {
     return tr;
 }
 
-function buildErrorPopup(errors, span = true, menuLevel = 1) {
+function buildLinkMenuButton(label, link, error = false) {
+    var buttonDiv = document.createElement("td");
+    buttonDiv.className = error ? "menu-button-error" : "menu-button";
+    buttonDiv.innerHTML = `<a class="link-button" href="${link}">${label}</a>`;
+    buttonDiv.menuLevel = getCurrentMenuLevel() + 1;
+
+    var tr = document.createElement("tr");
+    tr.appendChild(buttonDiv);
+
+    return tr;
+}
+
+function buildErrorPopup(errors, span = true) {
     var buttonDiv = document.createElement(span ? "span" : "td");
-    buttonDiv.className = "menu-button-error";
-    buttonDiv.innerHTML = "!";
+    buttonDiv.className = "menu-button-clear";
+    buttonDiv.innerHTML = `<img src="icons/icon-error.png" srcset="icons2x/icon-error.png 2x" title="Error"/>`
     buttonDiv.roomMetadata = roomMetadata;
     buttonDiv.errors = errors;
-    buttonDiv.menuLevel = menuLevel;
+    buttonDiv.menuLevel = getCurrentMenuLevel() + 1;
     buttonDiv.onclick = doShowErrors;
     return buttonDiv;
 }
@@ -79,14 +96,65 @@ function buildMenuDivider() {
     return tr;
 }
 
-function doAddMenu(element) {
-    var e = e || window.event;
+function getMenuTarget() {
+   var e = window.event;
     e.preventDefault();
+    var element = e.currentTarget;
+    var menuLevel = element.menuLevel ? element.menuLevel : 0;
+    clearMenus(menuLevel);
+    return element;
+}
 
-    clearMenus(0);
+function showMenuAt(menuDiv, left, top) {
+    document.body.appendChild(menuDiv);
+
+    var bcr = menuDiv.getBoundingClientRect();
+	var w = window.innerWidth;
+	var h = window.innerHeight;
+
+    if (left + bcr.width > w) {
+        left = Math.max(0, w - bcr.width);
+    }
+    if (top + bcr.height > h) {
+        top = Math.max(0, h - bcr.height);
+    }
+
+    menuDiv.style.left = left;
+    menuDiv.style.top = top;
+
+    menus.push(menuDiv);
+}
+
+function showMenu(menuDiv, element) {
+	var elementBcr = element.getBoundingClientRect();
+	if (getCurrentMenuLevel() == 0) {
+		var left = elementBcr.left;
+		var top = elementBcr.bottom;
+
+	} else {
+		var left = elementBcr.right;
+		var top = elementBcr.top;
+	}
+
+	showMenuAt(menuDiv, left, top);
+}
+
+function doBurgerMenu() {
+	var element = getMenuTarget();
+
+    var menuDiv = buildMenu();
+
+    menuDiv.appendChild(buildMenuButton("Save", doSave));
+    menuDiv.appendChild(buildMenuButton("PNG", doPngMenu));
+    menuDiv.appendChild(buildLinkMenuButton("New", "index.html"));
+
+    showMenu(menuDiv, element);
+}
+
+function doAddMenu() {
+	var element = getMenuTarget();
 
     var rmd = getRoomMenuData();
-    var bcr = element.getBoundingClientRect();
     var menuDiv = buildMenu();
 
     for (var cat in rmd) {
@@ -101,16 +169,12 @@ function doAddMenu(element) {
         menuDiv.appendChild(roomButtonDiv);
     }
 
-    showMenu(menuDiv, bcr.left, bcr.bottom);
+    showMenu(menuDiv, element);
 }
 
-function doAddCategoryMenu(e) {
-    e = e || window.event;
-    e.preventDefault();
+function doAddCategoryMenu() {
+	var catButton = getMenuTarget();
 
-    clearMenus(1);
-
-    var catButton = e.currentTarget;
     var roomList = catButton.roomList;
     var bcr = catButton.getBoundingClientRect();
 
@@ -120,7 +184,7 @@ function doAddCategoryMenu(e) {
 	    var roomButtonDiv = buildAddRoomButton(roomMetadata);
         menuDiv.appendChild(roomButtonDiv);
     }
-    showMenu(menuDiv, bcr.right, bcr.top);
+    showMenu(menuDiv, catButton);
 }
 
 function buildAddRoomButton(roomMetadata, room = null, errors = null) {
@@ -137,11 +201,10 @@ function buildAddRoomButton(roomMetadata, room = null, errors = null) {
     return roomButtonDiv;
 }
 
-function doAddRoomButton(e) {
-    e = e || window.event;
+function doAddRoomButton() {
+    var e = window.event;
     e.preventDefault();
-
-    clearMenus(0);
+    clearMenus();
 
     var roomButton = e.currentTarget;
     var roomMetadata = roomButton.roomMetadata;
@@ -170,7 +233,7 @@ function doAddRoomButton(e) {
 function doRoomMenu(e, room) {
     var e = e || window.event;
 
-    clearMenus(0);
+    clearMenus();
 
     var element = room.display;
 
@@ -201,57 +264,35 @@ function doRoomMenu(e, room) {
 
     menuDiv.appendChild(buildMenuButton("Delete", deleteSelectedRoom));
 
-    showMenu(menuDiv, e.clientX, e.clientY);
+    showMenuAt(menuDiv, e.clientX, e.clientY);
 }
 
-function doShowErrors(e) {
-    e = e || window.event;
-    e.preventDefault();
+function doShowErrors() {
+	var errButton = getMenuTarget();
 
-    var errButton = e.currentTarget;
-    clearMenus(errButton.menuLevel);
     var errorList = errButton.errors;
-    var menuLevel = errButton.menuLevel;
     var roomMetadata = errButton.roomMetadata
-    var bcr = errButton.getBoundingClientRect();
 
-	clearMenus(menuLevel);
+    if (errorList && errorList.length > 0) {
+	    var menuDiv = buildMenu(true);
+	    for (var e = 0; e < errorList.length; e++) {
+		    var error = errorList[e].toString();
+		    var errorButton = buildMenuButton(error, null, true);
+		    menuDiv.appendChild(errorButton);
+	    }
 
-    var menuDiv = buildMenu(true);
-    for (var e = 0; e < errorList.length; e++) {
-	    var error = errorList[e].toString();
-	    var errorButton = buildMenuButton(error, null, true);
-	    menuDiv.appendChild(errorButton);
+    } else {
+	    var menuDiv = buildMenu(false);
+	    menuDiv.appendChild(buildMenuField("No errors found"));
     }
 
-    showMenu(menuDiv, bcr.right, bcr.top);
+    showMenu(menuDiv, errButton);
 }
 
-function showMenu(menuDiv, left, top) {
-    document.body.appendChild(menuDiv);
-
-    var bcr = menuDiv.getBoundingClientRect();
-	var w = window.innerWidth;
-	var h = window.innerHeight;
-
-    if (left + bcr.width > w) {
-        left = Math.max(0, w - bcr.width);
-    }
-    if (top + bcr.height > h) {
-        top = Math.max(0, h - bcr.height);
-    }
-
-    menuDiv.style.left = left;
-    menuDiv.style.top = top;
-
-    menus.push(menuDiv);
-}
-
-function buildMenuField(label, ) {
+function buildMenuField(label) {
     var buttonDiv = document.createElement("td");
-    buttonDiv.className = error ? "menu-button-error" : "menu-button";
+    buttonDiv.className = "menu-button-clear";
     buttonDiv.innerHTML = label;
-    buttonDiv.onclick = callback;
 
     var tr = document.createElement("tr");
     tr.appendChild(buttonDiv);
@@ -259,14 +300,8 @@ function buildMenuField(label, ) {
     return tr;
 }
 
-function doSave(element) {
-    var e = e || window.event;
-    e.preventDefault();
-
-    clearMenus(1);
-
-    var saveButton = e.currentTarget;
-    var bcr = saveButton.getBoundingClientRect();
+function doSave() {
+	var saveButton = getMenuTarget();
 
     var menuDiv = buildMenu();
 
@@ -290,7 +325,7 @@ function doSave(element) {
     tr.appendChild(td);
     menuDiv.appendChild(tr);
 
-    showMenu(menuDiv, bcr.left, bcr.bottom);
+    showMenu(menuDiv, saveButton);
 
     // focus and select the contents of the text field
     input.focus();
@@ -319,11 +354,13 @@ function buildMenuInput(label, input) {
     td2.appendChild(input);
     tr.appendChild(td2);
 
+    input.menuLevel = getCurrentMenuLevel() + 1;
+
     return tr;
 }
 
 function pngScaleChanged() {
-    clearMenus(1);
+    clearMenus(document.getElementById("png-scale").menuLevel);
 
     var scaleInput = document.getElementById("png-scale");
 	var scale = scaleInput.value;
@@ -338,14 +375,8 @@ function pngScaleChanged() {
 	}
 }
 
-function doPngMenu(element) {
-    var e = e || window.event;
-    e.preventDefault();
-
-    clearMenus(0);
-
-    var pngButton = e.currentTarget;
-    var bcr = pngButton.getBoundingClientRect();
+function doPngMenu() {
+	var pngButton = getMenuTarget();
 
     var menuDiv = buildMenu();
 
@@ -370,17 +401,15 @@ function doPngMenu(element) {
 
     menuDiv.appendChild(buildMenuButton("Create", doPngLinkMenu));
 
-    showMenu(menuDiv, bcr.left, bcr.bottom);
+    showMenu(menuDiv, pngButton);
 	pngScaleChanged();
 }
 
-function doPngLinkMenu(element) {
+function doPngLinkMenu() {
+	var pngButton = getMenuTarget();
+
     var e = e || window.event;
-    e.preventDefault();
-
     var embed = e.altKey;
-
-    clearMenus(1);
 
     var menuDiv = buildMenu();
 
@@ -415,5 +444,65 @@ function doPngLinkMenu(element) {
 	    menuDiv.appendChild(tr);
 	}
 
-    showMenu(menuDiv, bcr.left, bcr.bottom);
+    showMenu(menuDiv, pngButton);
+}
+
+var errorRoomList = Array();
+
+function addAllError(error) {
+	var element = document.getElementById("allErrorsButton");
+	var errorList = element.errorList;
+	if (!errorList) {
+		errorList = Array();
+		element.errorList = errorList;
+	}
+
+	if (errorList.length == 0) {
+		element.innerHTML = `<img src="icons/icon-error.png" srcset="icons2x/icon-error.png 2x" title="Errors"/>`;
+	}
+
+	addToListIfNotPresent(errorList, error);
+}
+
+function removeAllError(error) {
+	var element = document.getElementById("allErrorsButton");
+	var errorList = element.errorList;
+	if (!errorList) {
+		errorList = Array();
+		element.errorList = errorList;
+	}
+
+	if (removeFromList(errorList, error)) {
+		if (errorList.length == 0) {
+			element.innerHTML = `<img src="icons/icon-ok.png" srcset="icons2x/icon-ok.png 2x" title="OK"/>`;
+		}
+	}
+}
+
+function doShowAllErrors() {
+	var errorButton = getMenuTarget();
+
+	var errors = errorButton.errorList;
+	var errorList = Array();
+
+	if (errors) {
+		for (var e = 0; e < errors.length; e++) {
+			var error = errors[e];
+			var room = error.room ? error.room : error;
+			if (room.getAllErrors) {
+				var roomErrors = room.getAllErrors();
+				var roomErrorStrings = Array();
+				// for now, just use the error strings and consolidate
+				for (var re = 0; re < roomErrors.length; re++) {
+					roomErrorStrings.push(roomErrors[re].toString());
+				}
+				addAllToListIfNotPresent(errorList, roomErrorStrings);
+			} else {
+				addToListIfNotPresent(errorList, error.toString());
+			}
+		}
+	}
+
+	errorButton.errors = errorList;
+	doShowErrors()
 }

@@ -115,16 +115,18 @@ function checkInactiveFloors() {
 	checkInactiveFloors0(1);
 	checkInactiveFloors0(-1);
 
-	if (floorEntries[selectedFloorEntry.floor + 1]) {
-		document.getElementById("floorUpButton").className = "button";
-	} else {
-		document.getElementById("floorUpButton").className = "button-disabled";
-	}
+	if (selectedFloorEntry) {
+		if (floorEntries[selectedFloorEntry.floor + 1]) {
+			document.getElementById("floorUpButton").className = "button";
+		} else {
+			document.getElementById("floorUpButton").className = "button-disabled";
+		}
 
-	if (floorEntries[selectedFloorEntry.floor - 1]) {
-		document.getElementById("floorDownButton").className = "button";
-	} else {
-		document.getElementById("floorDownButton").className = "button-disabled";
+		if (floorEntries[selectedFloorEntry.floor - 1]) {
+			document.getElementById("floorDownButton").className = "button";
+		} else {
+			document.getElementById("floorDownButton").className = "button-disabled";
+		}
 	}
 }
 
@@ -151,10 +153,12 @@ function setSelectedFloor(floor) {
 
 function addFloorError(floor, error) {
 	getFloorEntry(floor, true).addError(error);
+	addAllError(error);
 }
 
 function removeFloorError(floor, error) {
 	getFloorEntry(floor).removeError(error);
+	removeAllError(error);
 }
 
 function addFloorRoom(room) {
@@ -166,6 +170,7 @@ function addFloorRoom(room) {
 	} else {
 		getFloorEntry(room.floor, true).addRoom(room);
 	}
+	checkInactiveFloors();
 }
 
 function removeFloorRoom(room) {

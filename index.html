@@ -72,10 +72,10 @@
     #header {
         background-color: #303050;
         position: absolute;
-        left: 1ex;
-        top: 1ex;
+        left: 0ex;
+        top: 0ex;
         margin: 0;
-        padding: 1.5ex 2ex;
+        padding: 1ex 1ex;
         border-radius: 1ex;
         z-index: 5;
     }
@@ -84,8 +84,8 @@
     #footer {
         background-color: #303050;
         position: absolute;
-        bottom: 1ex;
-        right: 1ex;
+        bottom: 0ex;
+        right: 0ex;
         max-width: 75ex;
         margin: 0;
         padding: 1ex;
@@ -105,8 +105,8 @@
     #statsBar {
         background-color: #303050;
         position: absolute;
-        bottom: 1ex;
-        left: 1ex;
+        bottom: 0ex;
+        left: 0ex;
         margin: 0;
         padding: 1.5ex 1ex;
         border-radius: 1ex;
@@ -119,9 +119,9 @@
         position: absolute;
         top: 50%;
         transform: translateY(-50%);
-        left: 2ex;
+        left: 0ex;
         margin: 0;
-        padding: 2ex 0ex;
+        padding: 0ex 0ex;
         border-radius: 1ex;
         z-index: 8;
     }
@@ -144,8 +144,8 @@
     /* absolutely position the help show/hide button in the upper right corner */
     #helpToggle {
         position: absolute;
-        right: 1ex;
-        top: 1ex;
+        right: 0ex;
+        top: 0ex;
         z-index: 21;
     }
 
@@ -204,7 +204,7 @@
      * button/menu formatting
      ************************************************************/
 
-    .button, .button-disabled, .button-error {
+    .button, .button-disabled, .button-error, .button-clear {
         margin: 1ex 1ex 1ex 1ex;
         border: none;
         padding: 1ex;
@@ -215,8 +215,9 @@
         user-select: none;
     }
 
-    .button, a.button:visited {
+    .button, a.link-button {
         cursor: pointer;
+        text-decoration: none;
         background-color: #7070A0;
         color: #FFFFFF;
     }
@@ -224,6 +225,10 @@
     .button-disabled {
         background-color: #303050;
         color: #808080;
+    }
+
+    .button-disabled > img {
+        filter: saturate(0%) brightness(50%);
     }
 
     .button-error {
@@ -252,6 +257,14 @@
     .docButton-error {
         background-color: #802020;
         color: #FFFFFF;
+    }
+
+    .button > img, .button-disabled > img, .button-error > img, .button-clear > img,
+    .docButton > img, .docButton-error > img,
+    .field > img, .field-error > img,
+    .menu-button > img, .menu-button-error > img, .menu-button-clear > img {
+        display: inline-block;
+        vertical-align: middle;
     }
 
     .label {
@@ -325,6 +338,17 @@
         cursor: pointer;
     }
 
+    .menu-button-clear {
+        margin: 0ex;
+        border: none;
+        padding: 0ex;
+        text-align: center;
+        text-decoration: none;
+        font-size: 100%;
+        border-radius: 1ex;
+        cursor: pointer;
+    }
+
     .menu-button {
         background-color: #7070A0;
         color: #FFFFFF;
@@ -389,6 +413,11 @@
     .floor-button-empty-selected {
         background-color: #303050;
         color: #FFFFFF;
+    }
+
+    #header .button, #header .field, #header .button-error, #header .button-clear,
+    #statsBar .button, #statsBar .field, #statsBar .button-error {
+        margin: 0ex;
     }
 
     /************************************************************
@@ -471,11 +500,11 @@
 
         if (help.style.visibility == "visible") {
             help.style.visibility = "hidden";
-            helpToggle.innerHTML = "Show Help"
+            helpToggle.innerHTML = '<img src="icons/icon-help.png" srcset="icons2x/icon-help.png 2x" title="Show Help"/>';
 
         } else {
             help.style.visibility = "visible";
-            helpToggle.innerHTML = "Hide Help"
+            helpToggle.innerHTML = '<img src="icons/icon-close.png" srcset="icons2x/icon-close.png 2x" title="Close Help"/>';
         }
     }
 
@@ -521,6 +550,7 @@
     }
 
     function showError(html) {
+        clearMenus();
         var errorBarElement = document.getElementById("errorBar");
         errorBarElement.innerHTML = html;
         errorBarElement.style.visibility = "visible";
@@ -620,22 +650,21 @@
 
 <!-- floating header bar -->
 <div id="header">
-    <span id="addRoomButton" class="button" onclick="doAddMenu(this)">Add Room</span>
-    <span id="saveButton" class="button" onclick="doSave(this)">Save</span>
-    <span id="pngButton" class="button" onclick="doPngMenu(this)">PNG</span>
-    <a href="index.html" id="newButton" class="button">New</a>
+    <span id="burgerButton" class="button" onclick="doBurgerMenu(this)"><img src="icons/icon-burger.png" srcset="icons2x/icon-burger.png 2x" title="Menu"/></span>
+    <span id="addRoomButton" class="button" onclick="doAddMenu(this)"><img src="icons/icon-add.png" srcset="icons2x/icon-add.png 2x" title="Add Room"/></span>
+    <span id="allErrorsButton" class="button-clear" onclick="doShowAllErrors(this)"><img src="icons/icon-ok.png" srcset="icons2x/icon-ok.png 2x" title="OK"/></span>
 </div>
 
 <!-- floating sidebar -->
 <div id="sidebar">
-    <div id="floorUpButton" class="button" onclick="doFloorUp(this)">Up</div>
+    <div id="floorUpButton" class="button" onclick="doFloorUp(this)"><img src="icons/icon-up.png" srcset="icons2x/icon-up.png 2x" title="Up"/></div>
     <div id="floorList">
     </div>
-    <div id="floorDownButton" class="button" onclick="doFloorDown(this)">Down</div>
+    <div id="floorDownButton" class="button" onclick="doFloorDown(this)"><img src="icons/icon-down.png" srcset="icons2x/icon-down.png 2x" title="Down"/></div>
 </div>
 
 <!-- floating help button in the corner -->
-<div id="helpToggle" class="button" onclick="toggleHelp()">Show Help</div>
+<div id="helpToggle" class="button" onclick="toggleHelp()"><img src="icons/icon-help.png" srcset="icons2x/icon-help.png 2x" title="Show Help"/></div>
 
 <!-- floating error bar -->
 <div id="errorBar">
@@ -652,7 +681,7 @@
         <div class="helpContainer">
             <p style="text-align: center;">
                 <span class="title">DojoCAD</span><br/>
-                v0.5.3: 2020-01-10<br/>
+                v0.6.0: 2020-01-11<br/>
                 <a href="https://github.com/buff0000n/dojoarch">Source</a>&nbsp;
                 <a href="https://github.com/buff0000n/dojoarch/issues/2">Feedback</a>
             </p>
@@ -672,6 +701,22 @@
                 Click the <span class="docButton">Add Room</span> button to select a category and room to add.
                 Then drag and click where the room should be placed.
             </p>
+
+            <h2 id="Examples">Examples</h2>
+            <ul>
+                <li>
+                    <a href="?v=2,-317,0,0&m=h1,64,64,0,0_re,64,112,0,2_cc,64,16,0,0_or,64,-15,0,0_cc,32,16,0,0_cc,96,16,0,0_re,96,-16,0,0_lt,96,41,0,2_lb,2,16,0,3_lc,32,-16,0,0_le,32,46,0,2_dd,240,16,0,1_lo,240,-138,0,0_cr,240,160,0,2">
+                        Minimal clan dojo
+                    </a>
+
+                </li>
+                <li>
+                    <a href="?v=2,-9,-9,0&m=h1,32,32,0,1_cc,80,32,0,0_cc,80,0,0,0_cc,80,64,0,0_h2,-32,32,0,1_h3,160,32,0,1_gs,112,32,0,0_re,112,0,0,1_re,112,64,0,1_or,49,64,0,3_lt,55,0,0,3_h4,80,112,0,0_h5,80,-48,0,0_cx,128,-32,0,1_cx,128,96,0,1_gl,80,176,0,0_gl,224,32,0,1_cs,224,-8,0,0_cs,224,72,0,0_cs,264,32,0,1_gs,224,-32,0,0_gs,256,-32,0,0_gs,288,-32,0,0_gs,288,0,0,0_gs,288,32,0,0_gs,288,64,0,0_gs,288,96,0,0_gs,256,96,0,0_gs,224,96,0,0_gs,192,96,0,0_gs,160,96,0,0_hi,176,-48,0,0_re,224,-64,0,0_re,256,-64,0,0_re,288,-64,0,0_re,320,-32,0,1_re,320,0,0,1_re,320,64,0,1_re,320,32,0,1_re,320,96,0,1_le,34,-32,0,3_lc,32,-64,0,3_lb,126,-64,0,1_lo,22,96,0,3_th,-96,32,0,0_gs,-144,32,0,0_gl,-96,96,0,0_gl,-96,-32,0,0_re,-144,0,0,0_re,-144,-32,0,3_re,-144,96,0,3_re,-144,64,0,2_oa,-242,32,0,3_oc,-96,226,0,2_cx,-96,-80,0,0_re,-48,96,0,1_re,-48,-32,0,1_gs,80,224,0,0_gl,80,272,0,0_gs,80,320,0,0_gl,80,368,0,0_cr,32,176,0,3_dd,80,-208,0,0_gl,-96,-128,0,0_ce,192,68,-1,0_ob,-208,-128,0,3_cx,192,96,-1,0_cx,256,96,1,0_ce,256,68,0,0_cc,-96,-176,0,0_ce,-68,-176,0,1_ce,-92,-176,1,3_ce,-68,-176,2,1_ce,-92,-176,3,3_ob,0,-176,4,1_cc,-96,-208,0,0_ce,-68,-208,-1,1_ce,-92,-208,-2,3_gl,-48,-208,-2,0">
+                        My actual clan dojo
+                    </a>
+
+                </li>
+            </ul>
 
             <h1 id="TOC">Table of Contents</h1>
             <ul>
@@ -710,7 +755,6 @@
                 </li>
                 <li><a href="#SavingAndSharing">Saving And Sharing</a></li>
                 <li><a href="#ExportToPng">Exporting to PNG</a></li>
-                <li><a href="#Examples">Examples</a></li>
                 <li><a href="#ToDo">To Do</a></li>
                 <li><a href="#KnownIssues">Known Issues</a></li>
             </ul>
@@ -952,29 +996,13 @@
                     for the image links to appear.</strong>
             </p>
 
-            <h1 id="Examples">Examples</h1>
-            <ul>
-                <li>
-                    <a href="?v=2,-317,0,0&m=h1,64,64,0,0_re,64,112,0,2_cc,64,16,0,0_or,64,-15,0,0_cc,32,16,0,0_cc,96,16,0,0_re,96,-16,0,0_lt,96,41,0,2_lb,2,16,0,3_lc,32,-16,0,0_le,32,46,0,2_dd,240,16,0,1_lo,240,-138,0,0_cr,240,160,0,2">
-                        Minimal clan dojo
-                    </a>
-
-                </li>
-                <li>
-                    <a href="?v=2,-9,-9,0&m=h1,32,32,0,1_cc,80,32,0,0_cc,80,0,0,0_cc,80,64,0,0_h2,-32,32,0,1_h3,160,32,0,1_gs,112,32,0,0_re,112,0,0,1_re,112,64,0,1_or,49,64,0,3_lt,55,0,0,3_h4,80,112,0,0_h5,80,-48,0,0_cx,128,-32,0,1_cx,128,96,0,1_gl,80,176,0,0_gl,224,32,0,1_cs,224,-8,0,0_cs,224,72,0,0_cs,264,32,0,1_gs,224,-32,0,0_gs,256,-32,0,0_gs,288,-32,0,0_gs,288,0,0,0_gs,288,32,0,0_gs,288,64,0,0_gs,288,96,0,0_gs,256,96,0,0_gs,224,96,0,0_gs,192,96,0,0_gs,160,96,0,0_hi,176,-48,0,0_re,224,-64,0,0_re,256,-64,0,0_re,288,-64,0,0_re,320,-32,0,1_re,320,0,0,1_re,320,64,0,1_re,320,32,0,1_re,320,96,0,1_le,34,-32,0,3_lc,32,-64,0,3_lb,126,-64,0,1_lo,22,96,0,3_th,-96,32,0,0_gs,-144,32,0,0_gl,-96,96,0,0_gl,-96,-32,0,0_re,-144,0,0,0_re,-144,-32,0,3_re,-144,96,0,3_re,-144,64,0,2_oa,-242,32,0,3_oc,-96,226,0,2_cx,-96,-80,0,0_re,-48,96,0,1_re,-48,-32,0,1_gs,80,224,0,0_gl,80,272,0,0_gs,80,320,0,0_gl,80,368,0,0_cr,32,176,0,3_dd,80,-208,0,0_gl,-96,-128,0,0_ce,192,68,-1,0_ob,-208,-128,0,3_cx,192,96,-1,0_cx,256,96,1,0_ce,256,68,0,0_cc,-96,-176,0,0_ce,-68,-176,0,1_ce,-92,-176,1,3_ce,-68,-176,2,1_ce,-92,-176,3,3_ob,0,-176,4,1_cc,-96,-208,0,0_ce,-68,-208,-1,1_ce,-92,-208,-2,3_gl,-48,-208,-2,0">
-                        My actual clan dojo
-                    </a>
-
-                </li>
-            </ul>
-
             <h1 id="ToDo">To Do</h1>
             <ul>
                 <li>
-                    Icons?
-                    <ul>
-                        <li>Including room menu icons</li>
-                    </ul>
+                    Limit the size of the floor list and scroll it when it gets too big.
+                </li>
+                <li>
+                    Room menu icons
                 </li>
                 <li>
                     Add some actions for the error menus, i.e. clicking on the "Oracle is required" error creates an Oracle room to place.
@@ -1014,7 +1042,13 @@
                 </li>
                 <li>
                     Clicking an internal link in the Help section in Chrome will flicker the screen, because some
-                    things in Chrome are very stupid.  Possibly this also happens in Safari
+                    things in Chrome are very stupid.  Possibly this also happens in mobile Safari, too.
+                </li>
+                <li>
+                    Speaking of Safari, it pops when you switch floors to a floor with rooms off the screen.
+                </li>
+                <li>
+                    PNGs exported with Safari look like ass.
                 </li>
             </ul>
         </div>
@@ -1026,9 +1060,9 @@
 
 <!-- floating stats bar -->
 <span id="statsBar">
-    <span class="statsSpan"><span class="label">Rooms:</span> <span id="numRoomsStat" class="field">0</span></span>
-    <span class="statsSpan"><span class="label">Energy:</span> <span id="energyStat" class="field">0</span></span>
-    <span class="statsSpan"><span class="label">Capacity:</span> <span id="capacityStat" class="field">0</span></span>
+    <span class="field"><span id="numRoomsStat" class="stat">0</span><img src="icons/icon-count.png" srcset="icons2x/icon-count.png 2x" title="Room Count"/></span>
+    <span class="field"><span id="energyStat" class="stat">0</span><img src="icons/icon-energy.png" srcset="icons2x/icon-energy.png 2x" title="Energy"/></span>
+    <span class="field"><span id="capacityStat" class="stat">0</span><img src="icons/icon-capacity.png" srcset="icons2x/icon-capacity.png 2x" title="Capacity"/></span>
 </span>
 
 <!-- floating footer bar -->
