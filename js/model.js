@@ -1071,23 +1071,136 @@ function getDojoBounds() {
 }
 
 function convertToPngs(db, margin, scale) {
+	// build a list of divs to hold the links
+	var linkDivs = Array();
+	for (var f = db.f1; f <= db.f2; f++) {
+		var div = document.createElement("div");
+		div.innerHTML = `...`;
+		linkDivs[f] = div;
+	}
+
+	// ffs image objects loading asynchronously in the backround make it so much harder than it should be to make this
+	// reliable.  Is this really the only way to draw an image on a canvas?
+
+	// start with the bottom floor, this will eventually make it through all of them.
+	convertFloorToPngLink(linkDivs, db, margin, scale, db.f1);
+
+	return linkDivs;
+}
+
+// state for asynchronous image loading
+var drawnImages = 0;
+var loadedImages = 0;
+var loadedImageData = null;
+
+function convertFloorToPngLink(targets, db, margin, scale, f) {
+	// calculate the point in the image that represents (0, 0) in meter-space
+    var roomViewCenterPX = margin + (-db.x1 * scale);
+    var roomViewCenterPY = margin + (-db.y1 * scale);
+
+	var localDrawnImages = 0;
+	drawnImages = 0;
+	loadedImages = 0;
+	loadedImageData = Array();
+
+	for (var r = 0; r < roomList.length; r++) {
+		var room = roomList[r];
+		// check if the room is visible on the given floor
+		if (room.isVisible(f)) {
+			// build an image link because that's what context.drawImage wants
+            var img = new Image();
+            // we have store parameters in the img object itself
+            img.index = localDrawnImages;
+            img.room = room;
+            // omg is this really the only reliable way to draw an image on a canvas?!
+            img.onload = function() {
+	            var index = this.index;
+                var room = this.room;
+				// start by putting the anchor into a vect
+				var av = new Vect(room.anchorMX, room.anchorMY);
+				// rotate the anchor point by the room's rotation
+	            av = av.rotate(room.rotation)
+	                // add to the room's position
+	                .add(room.mv)
+	                // scale by the scale, they are now pixel coords
+	                .scale(scale)
+	                // add to the center point
+	                .addTo(roomViewCenterPX, roomViewCenterPY);
+
+				// calculate basis vectors starting from the transformed anchor point
+	            var vx = new Vect(scale / imgScale, 0).rotate(room.rotation);
+	            var vy = new Vect(0, scale / imgScale).rotate(room.rotation);
+
+				// notify
+//				imageLoaded(targets, db, margin, scale, f, 1);
+				imageLoaded(targets, db, margin, scale, f, index, this, vx.x, vx.y, vy.x, vy.y, av.x, av.y);
+            }
+            img.src = "img" + imgScale + "x/" + room.getImageBase(f) + "-display.png";
+			localDrawnImages++;
+
+			// see if the room has a marker
+			var markerImageBase = room.getMarkerImageBase(f);
+			if (markerImageBase) {
+				// build an image link because that's what context.drawImage wants
+                var img2 = new Image();
+                // we have store parameters in the img object itself
+                img2.index = localDrawnImages;
+                img2.room = room;
+	            // omg is this really the only reliable way to draw an image on a canvas?!
+                img2.onload = function() {
+	                var index = this.index;
+                    var room = this.room;
+					// the marker is a little simpler because we don't have to rotate it and it's always centered
+					// start with the room coords
+					// it's also more complicated because we need its dimensions, which we don't have until it's loaded
+					var av2 = room.mv.copy()
+		                // scale by the scale, they are now pixel coords
+		                .scale(scale)
+		                // add to the center point
+		                .addTo(roomViewCenterPX, roomViewCenterPY)
+		                // center the image
+		                .addTo(-img2.width * (scale / imgScale) / 2, -img2.height * (scale / imgScale) / 2);
+
+					// notify
+//					imageLoaded(targets, db, margin, scale, f, 1);
+					imageLoaded(targets, db, margin, scale, f, index, this, scale / imgScale, 0, 0, scale / imgScale, av2.x, av2.y);
+				}
+	            img2.src = "img" + imgScale + "x/" + markerImageBase + ".png";
+				localDrawnImages++;
+			}
+		}
+	}
+
+	// showDebug("Floor " + f + ": " + localDrawnImages + " images drawn");
+
+	// we're done drawing images
+	drawnImages = localDrawnImages;
+	// just in case everything is already done.
+	imageLoaded(targets, db, margin, scale, f, null, null);
+}
+
+function imageLoaded(targets, db, margin, scale, f, index, image, xx, xy, yx, yy, tx, ty) {
+	// todo: cancel if the menu has been closed before we're finished.
+
+	// if there's an image
+	if (image) {
+		// increment our count and save the image + transform for later
+		loadedImages++;
+		loadedImageData[index] = [image, xx, xy, yx, yy, tx, ty];
+	}
+	// ether we haven't finished drawing images or we haven't finished loading them
+	if (drawnImages == 0 || loadedImages < drawnImages) {
+		return;
+	}
+
+	// all images have been loaded
+	// showDebug("Floor " + f + ": " + loadedImages + " images loaded");
+
+	// create the canvas
 	var canvas = document.createElement("canvas");
 	canvas.width = (db.width() * scale) + (margin * 2);
 	canvas.height = (db.height() * scale) + (margin * 2);
 
-	document.body.appendChild(canvas);
-
-	var links = Array();
-	for (var f = db.f1; f <= db.f2; f++) {
-		links.push(convertFloorToPngLink(canvas, db, margin, scale, f));
-	}
-
-	canvas.remove();
-
-	return links;
-}
-
-function convertFloorToPngLink(canvas, db, margin, scale, f) {
     // get the graphics context, this is what we'll do all our work in
     var context = canvas.getContext("2d");
 
@@ -1095,63 +1208,15 @@ function convertFloorToPngLink(canvas, db, margin, scale, f) {
     context.fillStyle = "#000000";
     context.fillRect(0, 0, canvas.width, canvas.height);
 
-	// calculate the point in the image that represents (0, 0) in meter-space
-    var roomViewCenterPX = margin + (-db.x1 * scale);
-    var roomViewCenterPY = margin + (-db.y1 * scale);
-
-	for (var r = 0; r < roomList.length; r++) {
-		var room = roomList[r];
-		// check if the room is visible on the given floor
-		if (room.isVisible(f)) {
-			// build an image link because that's what context.drawImage wants
-            var img = document.createElement("img");
-            img.src = "img" + imgScale + "x/" + room.getImageBase(f) + "-display.png";
-
-			// start by putting the anchor into a vect
-			var av = new Vect(room.anchorMX, room.anchorMY);
-			// rotate the anchor point by the room's rotation
-            av = av.rotate(room.rotation)
-                // add to the room's position
-                .add(room.mv)
-                // scale by the scale, they are now pixel coords
-                .scale(scale)
-                // add to the center point
-                .addTo(roomViewCenterPX, roomViewCenterPY);
-
-			// calculate basis vectors starting from the transformed anchor point
-            var vx = new Vect(scale / imgScale, 0).rotate(room.rotation);
-            var vy = new Vect(0, scale / imgScale).rotate(room.rotation);
-            // set the transform with the two basis vectors and the translate vector
-            context.setTransform(vx.x, vx.y, vy.x, vy.y, av.x, av.y);
-			// draw the image at the center of the new coordinate space
-			context.drawImage(img, 0, 0);
-			// reset the transform
-			context.resetTransform();
-
-			// see if the room has a marker
-			var markerImageBase = room.getMarkerImageBase(f);
-			if (markerImageBase) {
-	            var img2 = document.createElement("img");
-	            img2.src = "img" + imgScale + "x/" + markerImageBase + ".png";
-				// the marker is a little simpler because we don't have to rotate it and it's always centered
-				// start with the room coords
-				var av2 = room.mv.copy()
-	                // scale by the scale, they are now pixel coords
-	                .scale(scale)
-	                // add to the center point
-	                .addTo(roomViewCenterPX, roomViewCenterPY)
-	                // center the image
-	                .addTo(-img2.width * (scale / imgScale) / 2, -img2.height * (scale / imgScale) / 2);
-
-	            // set the transform with the two basis vectors and the translate vector
-	            context.setTransform(scale / imgScale, 0, 0, scale / imgScale, av2.x, av2.y);
-				// draw the image at the center of the new coordinate space
-				context.drawImage(img2, 0, 0);
-				// reset the transform
-				context.resetTransform();
-			}
-		}
-	}
+    for (var i = 0; i < loadedImageData.length; i++) {
+        var a = loadedImageData[i];
+        // set the transform with the two basis vectors and the translate vector
+        context.setTransform(a[1], a[2], a[3], a[4], a[5], a[6]);
+		// draw the image at the center of the new coordinate space
+		context.drawImage(a[0], 0, 0);
+		// reset the transform
+		context.resetTransform();
+    }
 
 	var floorName = getFloorName(f);
 
@@ -1162,11 +1227,11 @@ function convertFloorToPngLink(canvas, db, margin, scale, f) {
     // title
     context.fillText("Floor " + floorName, 8*scale, 24*scale);
 
-//	context.beginPath();
-//	context.strokeStyle = "#FF0000";
-//	context.lineWidth = 5;
-//	context.rect(margin, margin, canvas.width - (margin * 2), canvas.height - (margin * 2));
-//	context.stroke();
-
-	return convertToPngLink(canvas, "dojo-floor-" + floorName);
+	var link = convertToPngLink(canvas, "dojo-floor-" + floorName);
+    link.onclick = doPngClick;
+	targets[f].innerHTML = ``;
+	targets[f].appendChild(link);
+	if (targets[f + 1]) {
+		convertFloorToPngLink(targets, db, margin, scale, f + 1);
+	}
 }

@@ -33,7 +33,7 @@ class RoomCountRule extends RoomRule {
 		super();
 		this.maxRooms = maxRooms;
 		this.numRooms = 0;
-		this.errorMessage = maxRooms + " rooms max";
+		this.errorMessage = "Limit " + maxRooms + " rooms";
 	}
 
 	roomAdded(room) {
@@ -47,7 +47,7 @@ class RoomCountRule extends RoomRule {
 	}
 
 	getRoomWarning(roomMetaData) {
-		if (this.numRooms > this.maxRooms) {
+		if (this.numRooms >= this.maxRooms) {
 			return this.toString();
 		} else {
 			return null;

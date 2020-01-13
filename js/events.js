@@ -274,9 +274,18 @@ function downEvent(e) {
     mouseDownTargetStartPY = e.clientY;
 
     if (e.currentTarget.room) {
-        mouseDownTarget = e.currentTarget;
-        mouseDownTarget.room.setClickPoint(mouseDownTargetStartPX, mouseDownTargetStartPY);
-        newRoom = false;
+        if (e.altKey) {
+            // insta-delete
+			selectedRoom = e.currentTarget.room;
+			selectedRoom.select();
+		    selectedRoom.updateView();
+		    deleteSelectedRoom();
+
+        } else {
+	        mouseDownTarget = e.currentTarget;
+	        mouseDownTarget.room.setClickPoint(mouseDownTargetStartPX, mouseDownTargetStartPY);
+	        newRoom = false;
+        }
     }
 
 	startDrag();

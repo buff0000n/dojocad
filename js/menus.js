@@ -22,13 +22,14 @@ function getRoomMenuData() {
             cat.push(rmd);
         }
 
-        for (var cat in roomMenuData) {
-            roomMenuData[cat].sort( function(a, b) {
-                return a.name.localeCompare(b.name)
-            } );
-        }
-
-		roomMenuData = sortKeys(roomMenuData);
+		// sorting manually in the metadata file itself
+//        for (var cat in roomMenuData) {
+//            roomMenuData[cat].sort( function(a, b) {
+//                return a.name.localeCompare(b.name)
+//            } );
+//        }
+//
+//		roomMenuData = sortKeys(roomMenuData);
     }
     return roomMenuData;
 }
@@ -44,6 +45,10 @@ function clearMenus(leave = 0) {
     }
     // might as well clear all popups
 	clearErrors();
+	// only clear debug if it's not explicitly enabled
+    if (!debugEnabled) {
+        hideDebug();
+	}
 }
 
 function buildMenu(error = false) {
@@ -409,7 +414,6 @@ function doPngLinkMenu() {
 	var pngButton = getMenuTarget();
 
     var e = e || window.event;
-    var embed = e.altKey;
 
     var menuDiv = buildMenu();
 
@@ -426,18 +430,12 @@ function doPngLinkMenu() {
 
 	var margin = 32 * scale;
 
-	var links = convertToPngs(db, margin, scale);
+	// Get a list of divs.  These will be populated in the background because canvas.drawImage() is dumb.
+	var linkDivs = convertToPngs(db, margin, scale);
 
-	for (var f = 0; f < links.length; f++) {
+	for (var f = db.f1; f <= db.f2; f++) {
 	    var td = document.createElement("td");
-	    if (embed) {
-	        var img = document.createElement("img");
-	        img.src = links[f].href;
-		    td.appendChild(img);
-
-	    } else {
-		    td.appendChild(links[f]);
-	    }
+	    td.appendChild(linkDivs[f]);
 
 	    var tr = document.createElement("tr");
 	    tr.appendChild(td);
@@ -445,6 +443,28 @@ function doPngLinkMenu() {
 	}
 
     showMenu(menuDiv, pngButton);
+}
+
+function doPngClick(e) {
+    var e = e || window.event;
+    if (e.altKey) {
+        // super-secret debug mode: alt-click on an image link to just show it instead of downloading it
+        e.preventDefault();
+
+	    var menuDiv = buildMenu();
+	    var link = e.currentTarget;
+	    var src = link.href;
+
+	    var img = document.createElement("img");
+	    img.src = link.href;
+	    var td = document.createElement("td");
+	    td.appendChild(img);
+	    var tr = document.createElement("tr");
+	    tr.appendChild(td);
+	    menuDiv.appendChild(tr);
+
+	    showMenu(menuDiv, link);
+    }
 }
 
 var errorRoomList = Array();

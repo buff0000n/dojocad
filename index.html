@@ -207,9 +207,9 @@
      ************************************************************/
 
     .button, .button-disabled, .button-error, .button-clear {
-        margin: 1ex 1ex 1ex 1ex;
+        margin: 0.5ex;
         border: none;
-        padding: 1ex;
+        padding: 0.5ex;
         text-align: center;
         text-decoration: none;
         font-size: 100%;
@@ -219,7 +219,6 @@
 
     .button, a.link-button {
         cursor: pointer;
-        text-decoration: none;
         background-color: #7070A0;
         color: #FFFFFF;
     }
@@ -237,9 +236,11 @@
         cursor: pointer;
         background-color: #802020;
         color: #FFFFFF;
-        margin: 0.5ex;
-        border: none;
-        padding: 0.5ex;
+    }
+
+    #header .button, #header .button-disabled {
+        margin: 1ex;
+        padding: 1ex;
     }
 
     .docButton, .docButton-error {
@@ -683,7 +684,7 @@
         <div class="helpContainer">
             <p style="text-align: center;">
                 <span class="title">DojoCAD</span><br/>
-                v0.6.0: 2020-01-11<br/>
+                v0.6.1: 2020-01-13<br/>
                 <a href="https://github.com/buff0000n/dojoarch">Source</a>&nbsp;
                 <a href="https://github.com/buff0000n/dojoarch/issues/2">Feedback</a>
             </p>
@@ -710,13 +711,16 @@
                     <a href="?v=2,-317,0,0&m=h1,64,64,0,0_re,64,112,0,2_cc,64,16,0,0_or,64,-15,0,0_cc,32,16,0,0_cc,96,16,0,0_re,96,-16,0,0_lt,96,41,0,2_lb,2,16,0,3_lc,32,-16,0,0_le,32,46,0,2_dd,240,16,0,1_lo,240,-138,0,0_cr,240,160,0,2">
                         Minimal clan dojo
                     </a>
-
                 </li>
                 <li>
-                    <a href="?v=2,-9,-9,0&m=h1,32,32,0,1_cc,80,32,0,0_cc,80,0,0,0_cc,80,64,0,0_h2,-32,32,0,1_h3,160,32,0,1_gs,112,32,0,0_re,112,0,0,1_re,112,64,0,1_or,49,64,0,3_lt,55,0,0,3_h4,80,112,0,0_h5,80,-48,0,0_cx,128,-32,0,1_cx,128,96,0,1_gl,80,176,0,0_gl,224,32,0,1_cs,224,-8,0,0_cs,224,72,0,0_cs,264,32,0,1_gs,224,-32,0,0_gs,256,-32,0,0_gs,288,-32,0,0_gs,288,0,0,0_gs,288,32,0,0_gs,288,64,0,0_gs,288,96,0,0_gs,256,96,0,0_gs,224,96,0,0_gs,192,96,0,0_gs,160,96,0,0_hi,176,-48,0,0_re,224,-64,0,0_re,256,-64,0,0_re,288,-64,0,0_re,320,-32,0,1_re,320,0,0,1_re,320,64,0,1_re,320,32,0,1_re,320,96,0,1_le,34,-32,0,3_lc,32,-64,0,3_lb,126,-64,0,1_lo,22,96,0,3_th,-96,32,0,0_gs,-144,32,0,0_gl,-96,96,0,0_gl,-96,-32,0,0_re,-144,0,0,0_re,-144,-32,0,3_re,-144,96,0,3_re,-144,64,0,2_oa,-242,32,0,3_oc,-96,226,0,2_cx,-96,-80,0,0_re,-48,96,0,1_re,-48,-32,0,1_gs,80,224,0,0_gl,80,272,0,0_gs,80,320,0,0_gl,80,368,0,0_cr,32,176,0,3_dd,80,-208,0,0_gl,-96,-128,0,0_ce,192,68,-1,0_ob,-208,-128,0,3_cx,192,96,-1,0_cx,256,96,1,0_ce,256,68,0,0_cc,-96,-176,0,0_ce,-68,-176,0,1_ce,-92,-176,1,3_ce,-68,-176,2,1_ce,-92,-176,3,3_ob,0,-176,4,1_cc,-96,-208,0,0_ce,-68,-208,-1,1_ce,-92,-208,-2,3_gl,-48,-208,-2,0">
+                    <a href="?v=2,-66,-20,1&m=h1,0,0,0,0_ce,28,-48,-1,1_re,-32,-48,0,3_re,-32,-48,-1,3_cc,0,48,0,0_h2,0,96,0,2_ce,28,48,0,1_cc,0,48,1,0_h3,0,160,0,0_h4,0,96,1,0_h5,0,0,1,0_dd,0,-192,1,0_cx,0,-48,1,0_th,0,160,1,0_oc,194,160,1,1_cc,0,-16,-1,1_re,-32,-16,-1,3_re,32,-16,-1,1_oa,0,274,1,2_gl,64,160,1,0_hi,0,224,0,0_cc,0,16,-1,1_re,-32,16,-1,3_re,32,16,-1,1_ob,-128,368,0,2_hi,64,208,0,1_hi,-64,208,0,1_or,-31,48,1,3_gl,-64,160,1,0_ce,-128,116,0,0_gl,-176,96,0,0_gs,-176,48,0,0_gl,-128,256,0,0_gs,-176,160,0,0_gs,-128,208,0,0_cr,48,80,1,1_lo,-58,80,1,3_cc,0,48,-1,1_re,32,48,-1,1_re,-32,48,-1,3_cc,0,80,-1,1_cb,-48,256,0,2_du,-48,112,1,3_ct,0,-48,0,1_gs,80,160,0,1_gs,80,128,0,0_gs,-80,160,0,0_re,32,80,-1,1_re,-32,80,-1,3_cc,0,112,-1,1_cs,-176,136,0,2_gl,128,96,0,0_gs,128,208,0,1_cs,104,208,0,1_gl,176,208,0,0_cc,0,144,-1,1_re,32,112,-1,1_re,-32,112,-1,3_ct,0,-48,-1,1_gs,176,160,0,1_gs,176,128,0,1_gs,176,96,0,1_gs,176,256,0,1_gl,128,256,0,0_gs,80,96,0,0_re,32,144,-1,1_re,-32,144,-1,3_cc,0,176,-1,1_lb,-46,-16,1,3_lc,-48,16,1,3_le,46,-16,1,1_lt,41,16,1,1_th,128,160,0,0_th,-128,160,0,0_cc,0,208,-1,1_b1,34,240,-1,1_b1,34,208,-1,1_b1,-34,240,-1,3_b1,-34,208,-1,3_ob,128,368,0,2_ct,48,160,0,0_cc,0,240,-1,1_re,-32,176,-1,3_oa,-242,160,1,3_oa,0,338,0,2_gl,-128,160,1,0_ct,80,256,0,3_ct,-80,256,0,3_cb,48,256,0,3_gs,-176,256,0,0_cs,-136,96,0,1_cs,-104,208,0,1_gl,-176,208,0,0_ct,-48,160,0,2_cb,-112,128,0,3_ct,48,128,0,0_cb,-80,-48,0,1_ct,-48,128,0,2_gs,-80,128,0,0_ct,-48,96,0,2_cb,-144,-80,0,1_th,-48,48,0,0_th,80,48,0,0_ct,-80,96,0,1_cb,48,96,0,0_cb,-48,0,0,1_cb,-144,-48,0,3_cx,-176,16,0,2_cs,-80,-24,0,2_cb,-176,-80,0,0_cx,-176,-16,0,0_cx,-176,-48,0,0_cb,-80,0,0,3_cx,80,0,0,0_cx,176,64,0,0_cb,80,-48,0,0_cs,80,-24,0,2_cb,128,48,0,1_cx,176,32,0,0_cx,176,0,0,0_cx,176,-32,0,0_cx,112,-48,0,1_cb,144,-48,0,2_cb,144,-80,0,0_cb,176,-80,0,1_cs,176,-56,0,2_cx,-112,-48,0,3_ct,-112,96,0,1">
+                        Maximal clan dojo
+                    </a>
+                </li>
+                <li>
+                    <a href="?v=1,-82,-17,0&m=h1,32,32,0,1_cc,80,32,0,0_cc,80,0,0,0_cc,80,64,0,0_h2,-32,32,0,1_h3,160,32,0,1_gs,112,32,0,0_re,112,0,0,1_re,112,64,0,1_or,49,64,0,3_lt,55,0,0,3_h4,80,112,0,0_h5,80,-48,0,0_cx,128,-32,0,1_cx,128,96,0,1_gl,80,176,0,0_gl,224,32,0,1_cs,224,-8,0,0_cs,224,72,0,0_cs,264,32,0,1_gs,224,-32,0,0_gs,256,-32,0,0_gs,288,-32,0,0_gs,288,0,0,0_gs,288,32,0,0_gs,288,64,0,0_gs,288,96,0,0_gs,256,96,0,0_gs,224,96,0,0_gs,192,96,0,0_gs,160,96,0,0_hi,176,-48,0,0_re,224,-64,0,0_re,256,-64,0,0_re,288,-64,0,0_re,320,-32,0,1_re,320,0,0,1_re,320,64,0,1_re,320,32,0,1_re,320,96,0,1_le,34,-32,0,3_lc,32,-64,0,3_lb,126,-64,0,1_lo,22,96,0,3_th,-96,32,0,0_gs,-144,32,0,0_gl,-96,96,0,0_gl,-96,-32,0,0_re,-144,0,0,0_re,-144,-32,0,3_re,-144,96,0,3_re,-144,64,0,2_oa,-242,32,0,3_oc,-96,226,0,2_cx,-96,-80,0,0_re,-48,96,0,1_re,-48,-32,0,1_gs,80,224,0,0_gl,80,272,0,0_gs,80,320,0,0_gl,80,368,0,0_cr,32,176,0,3_dd,80,-208,0,0_gl,-96,-128,0,0_ce,192,68,-1,0_ob,-208,-128,0,3_cx,192,96,-1,0_cx,256,96,1,0_ce,256,68,0,0">
                         My actual clan dojo
                     </a>
-
                 </li>
             </ul>
 
@@ -781,9 +785,8 @@
             <h2 id="ChangingFloors">Changing Floors</h2>
             <p>
                 The highlighted floor on the left side of the screen shows which floor is currently in view.
-                <strong>G</strong> is the ground floor, the starting floor.  Numbers above <strong>G</strong> are
-                floors above the ground floor, and below <strong>G</strong>, numbers starting with a <strong>B</strong>
-                are floors below the ground floor.
+                The floor numbers start at <strong>1</strong> on the ground floor and go up from there.  Below floor
+                <strong>1</strong> is <strong>B1</strong>, and they count down from there.
             </p>
             <p>
                 Use the <span class="docButton">Up</span> button above the floor listing to view the next floor up.
@@ -874,6 +877,9 @@
             </p>
             <p>
                 Press the <strong>Delete</strong> key to delete the selected room without having to bring up a menu.
+            </p>
+            <p>
+                Hold down <strong>Alt</strong> and click on a room to delete it with one click.
             </p>
 
             <h2 id="DeletingEverything">Deleting Everything</h2>
