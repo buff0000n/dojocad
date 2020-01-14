@@ -170,6 +170,7 @@ function checkInactiveFloors0(dir) {
 			// maintain the top floor and top window floor pointers
 			topFloorEntry = floorEntries[f - 1];
 			if (entry == topWindowFloorEntry) {
+				topWindowFloorEntry = topFloorEntry;
 				moveWindowDown();
 			}
 
