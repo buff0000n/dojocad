@@ -81,6 +81,18 @@ function removeFromList(list, item) {
 }
 
 // returns true if the list was changed
+function removeMatchesFromList(list, fun) {
+	var changed = false;
+	for (var i = list.length - 1; i >= 0; i--) {
+		if (fun(list[i])) {
+			list.splice(i, 1);
+			changed = true;
+		}
+	}
+	return changed;
+}
+
+// returns true if the list was changed
 function addToListIfNotPresent(list, item) {
 	var index = list.indexOf(item);
 	if (index == -1) {
