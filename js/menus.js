@@ -347,7 +347,7 @@ function doUrlCopy() {
 	document.execCommand("copy");
 }
 
-function buildMenuInput(label, input) {
+function buildMenuInput(label, input, units = null) {
     var tr = document.createElement("tr");
 
     var td1 = document.createElement("td");
@@ -358,6 +358,12 @@ function buildMenuInput(label, input) {
     var td2 = document.createElement("td");
     td2.appendChild(input);
     tr.appendChild(td2);
+
+    if (units) {
+	    var td3 = document.createElement("td");
+	    td3.innerHTML = units;
+	    tr.appendChild(td3);
+    }
 
     input.menuLevel = getCurrentMenuLevel() + 1;
 
@@ -397,12 +403,12 @@ function doPngMenu() {
     scaleInput.value = 1;
     scaleInput.onchange = pngScaleChanged;
     scaleInput.dojoBounds = db;
-    menuDiv.appendChild(buildMenuInput("Scale", scaleInput));
+    menuDiv.appendChild(buildMenuInput("Scale", scaleInput, "pixels/meter"));
 
 	var sizeDisplay = document.createElement("div");
     sizeDisplay.id = "png-size";
     sizeDisplay.class = "field";
-    menuDiv.appendChild(buildMenuInput("Size", sizeDisplay));
+    menuDiv.appendChild(buildMenuInput("Size", sizeDisplay, "pixels"));
 
     menuDiv.appendChild(buildMenuButton("Create", doPngLinkMenu));
 
