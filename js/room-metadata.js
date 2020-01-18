@@ -281,7 +281,7 @@ var roomMetadata =
 		{"resource": "Ferrite", "costs": [400, 1200, 4000, 12000, 40000]},
 		{"resource": "Rubedo", "costs": [1200, 3600, 12000, 36000, 120000]},
 		{"resource": "Forma", "costs": [1, 1, 2, 5, 15]}]},
-{"id": "oa", "image": "obstacle-course-architect", "name": "Obstacle Course Architect", "category": "Interactive", "prereq": null, "capacity": 0, "energy": -2, "maxnum": 3, "floor": 0, "ceil": 48,
+{"id": "oa", "image": "obstacle-course-architect", "name": "Obstacle Course Architect", "category": "Interactive", "prereq": null, "capacity": 0, "energy": -2, "maxnum": 5, "floor": 0, "ceil": 48,
 	"bounds": [
 		{"x1": -78, "y1": -82, "x2": 78, "y2": 74, "floor": 0, "ceil": 48},
 		{"x1": -6, "y1": 74, "x2": 6, "y2": 82, "floor": 0, "ceil": 48}],
