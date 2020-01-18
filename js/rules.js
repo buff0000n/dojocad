@@ -6,6 +6,7 @@ class RoomRule {
 	}
 
 	getRoomWarning(roomMetaData) {
+		return null;
 	}
 
 	getGlobalError() {
@@ -242,12 +243,49 @@ class PrereqRule extends RoomRule {
 	}
 }
 
+class SpawnRule extends RoomRule {
+	constructor() {
+		super();
+		this.room_list = Array();
+	}
+
+	roomAdded(room) {
+		this.roomChanged(room, true);
+	}
+
+	roomRemoved(room) {
+		this.roomChanged(room, false);
+	}
+
+	roomChanged(room, added) {
+		if (room.metadata.spawn) {
+			var prevLength = this.room_list.length;
+			if (added) {
+				addToListIfNotPresent(this.room_list, room);
+			} else {
+				removeFromList(this.room_list, room);
+			}
+			var newLength = this.room_list.length;
+			if (prevLength > 0 && newLength == 0) {
+				addAllError(this.toString());
+			} else if (prevLength <= 0 && newLength > 0) {
+				removeAllError(this.toString());
+			}
+		}
+	}
+
+	toString() {
+		return "Spawn room required";
+	}
+}
+
 var roomRules = Array();
 
 function registerRoomRules(roomMetaDataList) {
 	roomRules.push(new RoomCountRule(roomMetaDataList.general.max_rooms));
 	roomRules.push(new EnergyRule());
 	roomRules.push(new CapacityRule());
+	roomRules.push(new SpawnRule());
 
 	for (var i = 0; i < roomMetaDataList.rooms.length; i++) {
 		var roomMetadata = roomMetaDataList.rooms[i];

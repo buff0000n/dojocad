@@ -84,14 +84,14 @@ var roomMetadata =
 		{"resource": "Nano Spores", "costs": [1200, 3600, 12000, 36000, 120000]},
 		{"resource": "Forma", "costs": [1, 1, 1, 1, 5]}]},
 
-{"id": "h1", "image": "clan-hall", "name": "Clan Hall", "category": "Halls", "prereq": null, "capacity": 100, "energy": 5, "maxnum": 1, "floor": -12, "ceil": 24,
+{"id": "h1", "image": "clan-hall", "name": "Clan Hall", "category": "Halls", "prereq": null, "capacity": 100, "energy": 5, "maxnum": 1, "spawn": true, "floor": -12, "ceil": 24,
 	"bounds": [
 		{"x1": -18, "y1": -32, "x2": 18, "y2": 32, "floor": -12, "ceil": 24}],
 	"doors": [
 		{"x": 0, "y": 32, "floor": 0, "outx": 0, "outy": 1},
 		{"x": 0, "y": -32, "floor": 0, "outx": 0, "outy": -1}],
 	"resources": []},
-{"id": "h2", "image": "clan-great-hall", "name": "Clan Great Hall", "category": "Halls", "prereq": "h1", "capacity": 200, "energy": -2, "maxnum": 1, "floor": -12, "ceil": 24,
+{"id": "h2", "image": "clan-great-hall", "name": "Clan Great Hall", "category": "Halls", "prereq": null, "capacity": 200, "energy": -2, "maxnum": 1, "spawn": true, "floor": -12, "ceil": 24,
 	"bounds": [
 		{"x1": -18, "y1": -32, "x2": 18, "y2": 32, "floor": -12, "ceil": 24}],
 	"doors": [
@@ -103,7 +103,7 @@ var roomMetadata =
 		{"resource": "Ferrite", "costs": [600, 1800, 6000, 18000, 60000]},
 		{"resource": "Nano Spores", "costs": [300, 900, 3000, 9000, 30000]},
 		{"resource": "Forma", "costs": [1, 1, 3, 8, 25]}]},
-{"id": "h3", "image": "clan-greater-hall", "name": "Clan Greater Hall", "category": "Halls", "prereq": "h2", "capacity": 200, "energy": -2, "maxnum": 1, "floor": -12, "ceil": 24,
+{"id": "h3", "image": "clan-greater-hall", "name": "Clan Greater Hall", "category": "Halls", "prereq": "h2", "capacity": 200, "energy": -2, "maxnum": 1, "spawn": true, "floor": -12, "ceil": 24,
 	"bounds": [
 		{"x1": -24, "y1": -32, "x2": 24, "y2": 32, "floor": -12, "ceil": 24},
 		{"x1": -40, "y1": -12, "x2": 40, "y2": 12, "floor": -12, "ceil": 24}],
@@ -116,7 +116,7 @@ var roomMetadata =
 		{"resource": "Ferrite", "costs": [600, 1800, 6000, 18000, 60000]},
 		{"resource": "Nano Spores", "costs": [300, 900, 3000, 9000, 30000]},
 		{"resource": "Forma", "costs": [1, 1, 3, 8, 25]}]},
-{"id": "h4", "image": "clan-grand-hall", "name": "Clan Grand Hall", "category": "Halls", "prereq": "h3", "capacity": 200, "energy": -2, "maxnum": 1, "floor": -12, "ceil": 32,
+{"id": "h4", "image": "clan-grand-hall", "name": "Clan Grand Hall", "category": "Halls", "prereq": "h3", "capacity": 200, "energy": -2, "maxnum": 1, "spawn": true, "floor": -12, "ceil": 32,
 	"bounds": [
 		{"x1": -32, "y1": -32, "x2": 32, "y2": 32, "floor": -12, "ceil": 32}],
 	"doors": [
@@ -132,7 +132,7 @@ var roomMetadata =
 		{"resource": "Ferrite", "costs": [600, 1800, 6000, 18000, 60000]},
 		{"resource": "Nano Spores", "costs": [300, 900, 3000, 9000, 30000]},
 		{"resource": "Forma", "costs": [1, 1, 3, 8, 25]}]},
-{"id": "h5", "image": "clan-grandest-hall", "name": "Clan Grandest Hall", "category": "Halls", "prereq": "h4", "capacity": 200, "energy": -2, "maxnum": 1, "floor": -12, "ceil": 32,
+{"id": "h5", "image": "clan-grandest-hall", "name": "Clan Grandest Hall", "category": "Halls", "prereq": "h4", "capacity": 200, "energy": -2, "maxnum": 1, "spawn": true, "floor": -12, "ceil": 32,
 	"bounds": [
 		{"x1": -32, "y1": -32, "x2": 32, "y2": 32, "floor": -12, "ceil": 32}],
 	"doors": [
@@ -234,8 +234,8 @@ var roomMetadata =
 
 {"id": "dd", "image": "dry-dock", "name": "Dry Dock", "category": "Interactive", "prereq": null, "capacity": -20, "energy": -6, "maxnum": 1, "floor": -80, "ceil": 200,
 	"bounds": [
-		{"x1": -128, "y1":  -128, "x2": 128, "y2":  128, "floor": -80, "ceil": 200},
-		{"x1": -128, "y1": -1272, "x2": 128, "y2":  -96, "floor": -200, "ceil": 200, "invis": "true"}],
+		{"x1": -128, "y1":  -128, "x2": 128, "y2":  128, "floor": -72, "ceil": 200},
+		{"x1": -128, "y1": -1272, "x2": 128, "y2":  -32, "floor": -200, "ceil": 200, "invis": "true"}],
 	"doors": [
 		{"x": 0, "y": 128, "floor": 0, "outx": 0, "outy": 1},
 		{"x": 128, "y": 0, "floor": 0, "outx": 1, "outy": 0},
