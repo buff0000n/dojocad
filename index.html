@@ -532,6 +532,7 @@
         if (help.style.visibility == "visible") {
             help.style.visibility = "hidden";
             helpToggle.innerHTML = '<img src="icons/icon-help.png" srcset="icons2x/icon-help.png 2x" title="Show Help"/>';
+            removeUrlAnchor();
 
         } else {
             help.style.visibility = "visible";
@@ -644,6 +645,10 @@
         /*
         window.onresize();
         */
+
+        if (window.location.href.indexOf("#") > 0) {
+            toggleHelp();
+        }
     }
 
     /*
@@ -705,7 +710,7 @@
         <div class="helpContainer">
             <p style="text-align: center;">
                 <span class="title">DojoCAD</span><br/>
-                v1.0.2: 2020-01-17<br/>
+                v1.1.0: 2020-01-19<br/>
                 <a href="https://github.com/buff0000n/dojoarch">Source</a>&nbsp;
                 <a href="https://github.com/buff0000n/dojoarch/issues/2">Feedback</a>&nbsp;
                 <a href="https://github.com/buff0000n/dojocad/issues/new">Bugs</a>
@@ -800,6 +805,7 @@
                 </li>
                 <li><a href="#SavingAndSharing">Saving And Sharing</a></li>
                 <li><a href="#ExportToPng">Exporting to PNG</a></li>
+                <li><a href="#UpdateNotes">Update Notes</a></li>
                 <li><a href="#ToDo">To Do</a></li>
                 <li><a href="#KnownIssues">Known Issues</a></li>
             </ul>
@@ -1073,6 +1079,22 @@
                 <strong class="warn">If you have a huge dojo and generate a huge image then it may take a little while
                     for the image links to appear.</strong>
             </p>
+
+            <h1 id="UpdateNotes">Update Notes</h1>
+            <h2 id="UpdateNotes1.1">v1.1: 2020-01-19</h2>
+            <ul>
+                <li>Added compression for the model string, it saves about 30-50% on the sise of URLs
+                    (thanks <strong>u/Almagnus1</strong>)</li>
+                <li>Added wall displays for the Dry Dock 1 floor below and 3 floors above to make it more clear that
+                    you can't build any rooms there (thanks <strong>u/Almagnus1</strong>)</li>
+                <li>Adjusted rules for Hall prerequisites and added a new rule to make sure you have at least one hall
+                    (Thanks <strong>u/yarl5000</strong>)</li>
+                <li>Fixed lower boundary for Dry Dock (thanks <strong>(PC) KCToxic</strong>)</li>
+                <li>Fixed boundary for Crimson Branch (thanks <strong>KingOfYou115</strong> and
+                    <strong>u/Ramarr</strong>)</li>
+                <li>Fixed the constraint on Obstacle Course Architect rooms to 5 instead of 3
+                    (thanks <strong>u/Alighierian</strong>)</li>
+            </ul>
 
             <h1 id="ToDo">To Do</h1>
             <ul>

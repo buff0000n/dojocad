@@ -48,6 +48,14 @@ function actuallyModifyUrl() {
 	hrefToUpdate = null;
 }
 
+function removeUrlAnchor() {
+    var href = getHref();
+    if (href.indexOf("#") > 0) {
+        href = href.substring(0, href.indexOf("#"));
+        updateHref(href);
+    }
+}
+
 function getQueryParam(url, name) {
     // from https://stackoverflow.com/questions/901115/how-can-i-get-query-string-values-in-javascript
     // weird that there's no built in function for this
