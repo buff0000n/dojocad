@@ -240,6 +240,12 @@ var roomMetadata =
 		{"x": 0, "y": 128, "floor": 0, "outx": 0, "outy": 1},
 		{"x": 128, "y": 0, "floor": 0, "outx": 1, "outy": 0},
 		{"x": -128, "y": 0, "floor": 0, "outx": -1, "outy": 0}],
+	"floor_images": [
+		{"floor": -1, "image": "dry-dock-wall"},
+		{"floor": 0, "image": "dry-dock"},
+		{"floor": 1, "image": "dry-dock-wall"},
+		{"floor": 2, "image": "dry-dock-wall"},
+		{"floor": 3, "image": "dry-dock-wall"}],
 	"resources": [
 		{"resource": "Credits", "costs": [100000, 300000, 1000000, 3000000, 10000000]},
 		{"resource": "Salvage", "costs": [25000, 75000, 250000, 750000, 2500000]},
@@ -248,7 +254,7 @@ var roomMetadata =
 		{"resource": "Forma", "costs": [1, 1, 3, 8, 25]}]},
 {"id": "cr", "image": "crimson-branch", "name": "Crimson Branch", "category": "Interactive", "prereq": null, "capacity": -2, "energy": -4, "maxnum": null, "floor": 0, "ceil": 30,
 	"bounds": [
-		{"x1": -32, "y1":  8, "x2": 32, "y2": -30, "floor": 0, "ceil": 30},
+		{"x1": -30, "y1":  8, "x2": 30, "y2": -30, "floor": 0, "ceil": 30},
 		{"x1": -24, "y1": 16, "x2": 24, "y2": -30, "floor": 0, "ceil": 30}],
 	"doors": [
 		{"x": 0, "y": 16, "floor": 0, "outx": 0, "outy": 1}],

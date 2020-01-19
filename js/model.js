@@ -372,11 +372,13 @@ class Room {
         if (!this.multifloor) {
             return [this.floor];
         }
+        // get the floor list from the doors.  The image list may contain extra floor images that we don't want to
+        // include unless there's something else on that floor.  It's the Dry Dock, I'm talking about the Dry Dock.
         var floors = Array();
-		for (var i = 0; i < this.metadata.floor_images.length; i++) {
-			floors.push(this.floor + this.metadata.floor_images[i].floor);
-        }
-        return floors;
+		for (var d = 0 ; d < this.doors.length; d++) {
+			addToListIfNotPresent(floors, this.doors[d].floor);
+		}
+		return floors;
     }
 
     setDebug(debug) {
