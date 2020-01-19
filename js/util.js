@@ -4,7 +4,7 @@ var hrefToUpdate = null;
 
 // modify a URL parameter directly in the browser location bar
 function modifyUrlQueryParam(key, value) {
-    var href = hrefToUpdate ? hrefToUpdate : window.location.href;
+    var href = getHref();
 
 	if (href.match(new RegExp("[?&]" + key + "="))) {
 	    href = href.replace(new RegExp("([?&]" + key + "=)[^&#]*"), "$1" + value);
@@ -15,6 +15,24 @@ function modifyUrlQueryParam(key, value) {
 		href += "?" + key + "=" + value;
 	}
 
+	updateHref(href);
+}
+
+function removeUrlQueryParam(key) {
+    var href = getHref();
+
+	// corner cases the stupid way
+    href = href.replace(new RegExp("([?&])" + key + "=[^&#]*&"), "$1");
+    href = href.replace(new RegExp("[&?]" + key + "=[^&#]*"), "");
+
+	updateHref(href);
+}
+
+function getHref() {
+    return hrefToUpdate ? hrefToUpdate : window.location.href;
+}
+
+function updateHref(href) {
 	if (hrefUpdateTimeout) {
 		clearTimeout(hrefUpdateTimeout);
 	}

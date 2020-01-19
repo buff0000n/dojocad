@@ -166,12 +166,20 @@ function buildModelParam() {
 }
 
 function saveModelToUrl() {
-	modifyUrlQueryParam("m", buildModelParam());
+	modifyUrlQueryParam("mz", LZString.compressToEncodedURIComponent(buildModelParam()));
 }
 
 function loadModelFromUrl() {
     var url = window.location.href;
-	var modelString = getQueryParam(url, "m");
+	var modelString = LZString.decompressFromEncodedURIComponent(getQueryParam(url, "mz"));
+	if (!modelString) {
+		// backwards compatible with the, uh, like maybe couple of dozen old URLs floating around.
+		modelString = getQueryParam(url, "m");
+		// make things easier and just remove the "m=" section so we can replace it with "mz="
+		if (modelString) {
+			removeUrlQueryParam("m");
+		}
+	}
 	if (!modelString) {
 		return false;
 	}
@@ -218,7 +226,8 @@ function loadViewFromUrl() {
 }
 
 function buildUrlParams() {
-	return "?v=" + buildViewParam() + "&m=" + buildModelParam();
+	// this is called from the Save button
+	return "?v=" + buildViewParam() + "&mz=" + LZString.compressToEncodedURIComponent(buildModelParam());
 }
 
 function centerViewOn(mx, my, scale = null, floor = null) {
