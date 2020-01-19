@@ -554,11 +554,15 @@
             setModelDebug(false);
             showDebug("Debug: off");
             hideDebug();
+			removeUrlQueryParam("m");
+			saveModelToUrl();
 
         } else {
             debugEnabled = true;
             setModelDebug(true);
             showDebug("Debug: on");
+			removeUrlQueryParam("mz");
+			saveModelToUrl();
         }
     }
 

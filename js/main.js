@@ -166,7 +166,12 @@ function buildModelParam() {
 }
 
 function saveModelToUrl() {
-	modifyUrlQueryParam("mz", LZString.compressToEncodedURIComponent(buildModelParam()));
+	if (debugEnabled) {
+		modifyUrlQueryParam("m", buildModelParam());
+
+	} else {
+		modifyUrlQueryParam("mz", LZString.compressToEncodedURIComponent(buildModelParam()));
+	}
 }
 
 function loadModelFromUrl() {
@@ -227,7 +232,9 @@ function loadViewFromUrl() {
 
 function buildUrlParams() {
 	// this is called from the Save button
-	return "?v=" + buildViewParam() + "&mz=" + LZString.compressToEncodedURIComponent(buildModelParam());
+	return "?v=" + buildViewParam() + (debugEnabled
+		? "&m=" + buildModelParam()
+		: "&mz=" + LZString.compressToEncodedURIComponent(buildModelParam()));
 }
 
 function centerViewOn(mx, my, scale = null, floor = null) {
