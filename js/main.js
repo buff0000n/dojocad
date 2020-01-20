@@ -150,6 +150,34 @@ function deleteSelectedRoom() {
 	}
 }
 
+function doAddRoom(e, roomMetadata, baseRoom) {
+    var room = new Room(roomMetadata);
+    if (baseRoom) {
+        room.rotation = baseRoom.rotation;
+    }
+    room.setFloor(viewFloor);
+    if (debugEnabled) {
+        room.setDebug(true);
+    }
+    addRoom(room);
+//    room.addDisplay(getRoomContainer());
+
+    // not quite sure why this works
+    mouseDownTargetStartPX = viewPX;
+    mouseDownTargetStartPY = viewPY;
+
+    startNewRoomDrag(e, room.display);
+}
+
+function duplicateSelectedRoom(e) {
+	if (selectedRoom && !dragged) {
+		var room = selectedRoom;
+	    clearMenus(0);
+
+	    doAddRoom(e, room.metadata, room);
+	}
+}
+
 function movedSelectedRoom() {
 	saveModelToUrl();
 }

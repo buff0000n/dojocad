@@ -710,7 +710,7 @@
         <div class="helpContainer">
             <p style="text-align: center;">
                 <span class="title">DojoCAD</span><br/>
-                v1.1.0: 2020-01-19<br/>
+                v1.1.1: 2020-01-19<br/>
                 <a href="https://github.com/buff0000n/dojoarch">Source</a>&nbsp;
                 <a href="https://github.com/buff0000n/dojoarch/issues/2">Feedback</a>&nbsp;
                 <a href="https://github.com/buff0000n/dojocad/issues/new">Bugs</a>
@@ -814,6 +814,8 @@
             <h3 id="KeyboardShortcuts">Keyboard shortcut cheat sheet</h3>
             <ul>
                 <li><strong>Shift-click</strong>: Rotate the selected room</li>
+                <li><strong>R</strong>: Rotate the selected room (<i>works while dragging</i>)</li>
+                <li><strong>D</strong>: Duplicate the selected room</li>
                 <li><strong>Alt-click</strong>: Delete a room</li>
                 <li><strong>Up arrow key</strong>: Move the view up a floor</li>
                 <li><strong>Down arrow key</strong>: Move the view down a floor</li>
@@ -887,6 +889,10 @@
                 <span class="docButton">Duplicate</span> to create a copy of that room to place somewhere else.
             </p>
             <p>
+                Hitting the <strong>D</strong> key when a room is selected will duplicate it without having to bring
+                up the menu.
+            </p>
+            <p>
                 Hitting <strong>Escape</strong> while dragging a newly created room for the first time will cancel the
                 add operation and remove the room.
             </p>
@@ -926,6 +932,10 @@
             <p>
                 Hold down <strong>Shift</strong> and click on the selected room to rotate it 90 degrees without
                 having to bring up a menu.
+            </p>
+            <p>
+                You can also press the <strong>R</strong> key to rotate the seleted room.  This also works while
+                dragging the room.
             </p>
 
             <h2 id="ChangingARoomsFloor">Changing an Elevator's Floor</h2>
@@ -1090,7 +1100,7 @@
             </p>
 
             <h1 id="UpdateNotes">Update Notes</h1>
-            <h2 id="UpdateNotes1.1">v1.1: 2020-01-19</h2>
+            <h3 id="UpdateNotes1.1">v1.1: 2020-01-19</h3>
             <ul>
                 <li>Added compression for the model string, it saves about 30-50% on the sise of URLs.  All old URLs
                     will still work (thanks <strong>u/Almagnus1</strong>)</li>
@@ -1103,6 +1113,15 @@
                     <strong>u/Ramarr</strong>)</li>
                 <li>Fixed the constraint on Obstacle Course Architect rooms to 5 instead of 3
                     (thanks <strong>u/Alighierian</strong>)</li>
+                <li>
+                    Added some keyboard shortcuts (thanks <strong>Kisutora</strong>):
+                    <ul>
+                        <li>Pressing <strong>R</strong> will now rotate the selected room.  Note that this also works
+                            while dragging the room.  <i>Absolutely do not hold the R key down it is definitey not fun
+                            at all ;)</i></li>
+                        <li>Pressing <strong>D</strong> will now duplicate the selected room.</li>
+                    </ul>
+                </li>
             </ul>
 
             <h1 id="ToDo">To Do</h1>

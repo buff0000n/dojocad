@@ -213,26 +213,11 @@ function doAddRoomButton() {
 
     var roomButton = e.currentTarget;
     var roomMetadata = roomButton.roomMetadata;
-    var bcr = roomButton.getBoundingClientRect();
+    var baseRoom = roomButton.room
 
 	lastAddedRoomMetadata = roomMetadata;
 
-    var room = new Room(roomMetadata);
-    if (roomButton.room) {
-        room.rotation = roomButton.room.rotation;
-    }
-    room.setFloor(viewFloor);
-    if (debugEnabled) {
-        room.setDebug(true);
-    }
-    addRoom(room);
-//    room.addDisplay(getRoomContainer());
-
-    // not quite sure why this works
-    mouseDownTargetStartPX = viewPX;
-    mouseDownTargetStartPY = viewPY;
-
-    startNewRoomDrag(e, room.display);
+	doAddRoom(e, roomMetadata, baseRoom);
 }
 
 function doRoomMenu(e, room) {

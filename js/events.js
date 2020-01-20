@@ -192,7 +192,10 @@ function touchCancel(e) {
 // Mouse event wrapper layer
 //==============================================================
 
+var lastMouseEvent = null;
+
 function mouseEventToMTEvent(e) {
+	lastMouseEvent = e;
 	return new MTEvent(e.currentTarget, e.clientX, e.clientY, e.altKey, e.shiftKey);
 }
 
@@ -459,6 +462,12 @@ function keyDown(e) {
 		    break;
 		case "ArrowDown" :
 			doFloorDown();
+		    break;
+		case "KeyD" :
+			duplicateSelectedRoom(lastMouseEvent);
+		    break;
+		case "KeyR" :
+			rotateSelectedRoom(lastMouseEvent);
 		    break;
 	}
 }
