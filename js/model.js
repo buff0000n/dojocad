@@ -1238,3 +1238,82 @@ function imageLoaded(targets, db, margin, scale, f, index, image, xx, xy, yx, yy
 		convertFloorToPngLink(targets, db, margin, scale, f + 1);
 	}
 }
+
+function findHighestDoor(room) {
+	var door = null;
+	for (var d = 0; d < room.doors.length; d++) {
+		var door2 = room.doors[d];
+		if (door == null || door2.metadata.floor > door.metadata.floor) {
+			door = door2;
+		}
+	}
+	return door;
+}
+
+function buildTd(html) {
+	var td = document.createElement("td");
+	td.innerHTML = html;
+	return td;
+}
+
+function buildTh(html) {
+	var th = document.createElement("th");
+	th.innerHTML = html;
+	return th;
+}
+
+function buildTr(tdList) {
+	var tr = document.createElement("tr");
+	for (var i = 0; i < tdList.length; i++) {
+		tr.appendChild(tdList[i]);
+	}
+	return tr;
+}
+
+function buildCollisionMatrix(table) {
+	var roomMetadataList = roomMetadata.rooms;
+
+	var tdList = Array();
+    tdList.push(buildTd(""));
+    for (var r1 = 0; r1 < roomMetadataList.length; r1++) {
+        var rmd1 = roomMetadataList[r1];
+		tdList.push(buildTh(rmd1.id));
+    }
+	table.appendChild(buildTr(tdList));
+
+    for (var r1 = 0; r1 < roomMetadataList.length; r1++) {
+        tdList = Array();
+        var rmd1 = roomMetadataList[r1];
+        var lowerRoom = new Room(rmd1)
+        var lowerDoor = findHighestDoor(lowerRoom);
+        lowerRoom.setPosition(-lowerDoor.metadata.x, -lowerDoor.metadata.y, 100-lowerDoor.metadata.floor, 0);
+
+		tdList.push(buildTh(rmd1.id));
+
+	    for (var r2 = 0; r2 < roomMetadataList.length; r2++) {
+	        var rmd2 = roomMetadataList[r2];
+	        var upperRoom = new Room(rmd2);
+	        var upperDoor = upperRoom.doors[0];
+            upperRoom.setPosition(-upperDoor.metadata.x, -upperDoor.metadata.y, 101, 0);
+
+			var collide = findCollisions(lowerRoom.bounds, upperRoom.bounds).length > 0;
+			var shouldCollide = rmd1.blockedFromAboveBy && (rmd1.blockedFromAboveBy.indexOf(rmd2.id) >=0);
+
+			if (collide) {
+				var td = buildTd("X");
+				if (!shouldCollide) {
+					td.className = "matrix-error";
+				}
+				tdList.push(td);
+
+			} else {
+				var td = buildTd("");
+				if (shouldCollide) {
+					td.className = "matrix-error";
+				}
+				tdList.push(td);
+			}
+        }
+		table.appendChild(buildTr(tdList));
+    }
+}

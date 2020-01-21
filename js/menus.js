@@ -152,6 +152,9 @@ function doBurgerMenu() {
     menuDiv.appendChild(buildMenuButton("Save", doSave));
     menuDiv.appendChild(buildMenuButton("PNG", doPngMenu));
     menuDiv.appendChild(buildLinkMenuButton("New", "index.html"));
+    if (debugEnabled) {
+	    menuDiv.appendChild(buildMenuButton("Collision Matrix", doCollisionMatrix));
+    }
 
     showMenu(menuDiv, element);
 }
@@ -213,26 +216,11 @@ function doAddRoomButton() {
 
     var roomButton = e.currentTarget;
     var roomMetadata = roomButton.roomMetadata;
-    var bcr = roomButton.getBoundingClientRect();
+    var baseRoom = roomButton.room
 
 	lastAddedRoomMetadata = roomMetadata;
 
-    var room = new Room(roomMetadata);
-    if (roomButton.room) {
-        room.rotation = roomButton.room.rotation;
-    }
-    room.setFloor(viewFloor);
-    if (debugEnabled) {
-        room.setDebug(true);
-    }
-    addRoom(room);
-//    room.addDisplay(getRoomContainer());
-
-    // not quite sure why this works
-    mouseDownTargetStartPX = viewPX;
-    mouseDownTargetStartPY = viewPY;
-
-    startNewRoomDrag(e, room.display);
+	doAddRoom(e, roomMetadata, baseRoom);
 }
 
 function doRoomMenu(e, room) {
@@ -531,4 +519,20 @@ function doShowAllErrors() {
 
 	errorButton.errors = errorList;
 	doShowErrors()
+}
+
+function doCollisionMatrix() {
+    var e = e || window.event;
+    e.preventDefault();
+
+    // super-secret debug mode: enables a menu item that shows a matrix of which rooms can be built immediately
+    // above/below which other rooms, and checks that against in-game experimental results
+
+    var menuDiv = buildMenu();
+    menuDiv.className = "matrix-table";
+    var button = e.currentTarget;
+
+    buildCollisionMatrix(menuDiv);
+
+    showMenu(menuDiv, button);
 }

@@ -507,6 +507,27 @@
         border-color: #FFFF00;
     }
 
+    .matrix-table {
+        color: #FFFFFF;
+        background-color: #202030;
+        border: none;
+        padding: 1ex;
+        margin: 1ex;
+        border-collapse: collapse;
+        text-decoration: none;
+        font-size: 100%;
+        position: absolute;
+        z-index: 16;
+    }
+
+    .matrix-table tr td, .matrix-table tr th {
+        border: 1px solid #404040;
+    }
+
+    .matrix-error {
+        background-color: #802020;
+    }
+
 </style>
 <!-- imported libs -->
 <script type="text/javascript" language="javascript" src="js/lib/lz-string.js" ></script>
@@ -555,6 +576,7 @@
             showDebug("Debug: off");
             hideDebug();
 			removeUrlQueryParam("m");
+            removeUrlQueryParam("debug");
 			saveModelToUrl();
 
         } else {
@@ -562,6 +584,7 @@
             setModelDebug(true);
             showDebug("Debug: on");
 			removeUrlQueryParam("mz");
+            modifyUrlQueryParam("debug", "true");
 			saveModelToUrl();
         }
     }
@@ -653,6 +676,10 @@
         if (window.location.href.indexOf("#") > 0) {
             toggleHelp();
         }
+
+        if (getQueryParam(window.location.href, "debug") == "true") {
+            toggleDebug();
+        }
     }
 
     /*
@@ -714,7 +741,7 @@
         <div class="helpContainer">
             <p style="text-align: center;">
                 <span class="title">DojoCAD</span><br/>
-                v1.1.0: 2020-01-19<br/>
+                v1.1.2: 2020-01-20<br/>
                 <a href="https://github.com/buff0000n/dojoarch">Source</a>&nbsp;
                 <a href="https://github.com/buff0000n/dojoarch/issues/2">Feedback</a>&nbsp;
                 <a href="https://github.com/buff0000n/dojocad/issues/new">Bugs</a>
@@ -761,7 +788,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="?v=1,-166,-18,0&mz=BYRgNADJ0g+gJvMIBsV3NgYy2AtACwAc062uhJeAzAEynn7Fh0MD2ATviAOwv1Q4OJlRQEGAGwAu+WtXytBjSmDEMOAU3xEoaqNVibtUPHpaxg9PAE4UpTBK14eVReYkUd-aAYkAjblFxJSMbOzwQWhJ9QydbMHiYiTZ8OzM4YHkItHsM8RUIyIZgAFYRZCKyUPiwn1j8eMjo8yMoRMxW5CiYepN2uE6I7qUpYGQc7IwIWFGwWlp81CmZsaiqJYZZ6hKrDbJZglRuHP2x4hM9yBWwEoJFk6vZtHWH6aeeXdfrnmpwy7exjoLl9ZkQ1JNNmNrN0IacEtDjstZiAICU-iCxiBIsCkZiQER7riusxYY9MdQiqSAchqDx0USQHccQwsAAPZBM7iVK5sjkEExeMi8xn88pC9kiwR2cV8qDMGWSsCCnkSzlYgRk8ZSonzcT-a5rLWQlg7I1ww52fUHLxWsa3PUY1QQEi21QfM2an6Wx1Aj3UsEOonQl2O6wI10otF+67q7XGrEE6PIhYhhkU+gRtWOkC073LYR4WjO+zTUILExuAxl0UYKtOcveGJYGSF4s0DW0eqF0WmYLmLBaLH0uoDip57j9wc9jbgISDo4Q+gGUeM5nyOccuOFzDIorq2RXNgBfe9sDiTvN2XHFlTlAvCcbxWU+gXqfTqzyaYrgh38ZMTBHjSdx-oQ-ZcAU+pYAErZBD0UGyMWbgXsenLZBOX4oaKC7yMuqpYeEerYMelIbMEREVBmExLkAA">
+                    <a href="?v=1,-408,-49,0&mz=BYRgNADJ0g+gJvMIBsV3NgYy2AtACwAc062uhJeAzAEynn7Fh0MD2ATviAOwv1Q4OJlRQEGAGwAu+WtXytBjSmDEMOAU3xEoaqNVibtUPHpaxg9PAE4UpTBK14eVReYkUd-aAYkAjblFxJSMbOzwQWhJ9QydbMHiYiTZ8OzM4YHkItHsM8RUIyIZgAFYRZCKyUPiwn1j8eMjo8yMoRMxW5CiYepN2uE6I7qUpYGQc7IwIWFGwWlp81CmZsaiqJYZZ6hKrDbJZglRuHP2x4hM9yBWwEoJFk6vZtHWH6aeeXdfrnmpwy7exjoLl9ZkQ1JNNmNrN0IacEtDjstZiAICU-iCxiBIsCkZiQER7riusxYY9MdQiqSAchqDx0USQHccQwsAAPZBM7iVK5sjkEExeMi8xn88pC9kiwR2cV8qDMGWSsCCnkSzlYgRk8ZSonzcT-a5rLWQlg7I1ww52fUHLxWsa3PUY1QQEi21QfM2an6Wx1Aj3UsEOonQl2O6wI10otF+67q7XGrEE6PIhYhhkU+gRtWOkC073LYR4WjO+zTUILExuAxl0UYKtOcveGJYGSF4s0DW0eqF0WmYLmLBaLH0uoDip57j9wc9jbgISDo4Q+gGUeM5nyOccuOFzBsALq1LicSd5uy44sqcoF4TjeKyn0Y9T6dWeTTFcES-jJg7vfUO6fwj9lwBT6lgAStkEPSgbIxZuMee6ctkE6vvBooLvIy6qqh4R6tge6UhswS4RUGYTEusC7sRqj5AIQA">
                         Just how big <i>is</i> the Dry Dock?
                     </a>
                 </li>
@@ -774,6 +801,7 @@
 
             <h1 id="TOC">Table of Contents</h1>
             <ul>
+                <li><a href="#KeyboardShortcuts">Keyboard shortcut cheat sheet</a></li>
                 <li>
                     <a href="#Navigation">Navigation</a>
                     <ul>
@@ -814,6 +842,16 @@
                 <li><a href="#KnownIssues">Known Issues</a></li>
             </ul>
 
+            <h3 id="KeyboardShortcuts">Keyboard shortcut cheat sheet</h3>
+            <ul>
+                <li><strong>Shift-click</strong>: Rotate the selected room</li>
+                <li><strong>R</strong>: Rotate the selected room (<i>works while dragging</i>)</li>
+                <li><strong>D</strong>: Duplicate the selected room</li>
+                <li><strong>Alt-click</strong>: Delete a room</li>
+                <li><strong>Up arrow key</strong>: Move the view up a floor</li>
+                <li><strong>Down arrow key</strong>: Move the view down a floor</li>
+                <li><strong>Escape</strong>: Cancel adding/moving a room, cancel menu</li>
+            </ul>
             <h1 id="Navigation">Navigation</h1>
             <p>
                 Click and drag anywhere in the grid area to move around.
@@ -882,6 +920,10 @@
                 <span class="docButton">Duplicate</span> to create a copy of that room to place somewhere else.
             </p>
             <p>
+                Hitting the <strong>D</strong> key when a room is selected will duplicate it without having to bring
+                up the menu.
+            </p>
+            <p>
                 Hitting <strong>Escape</strong> while dragging a newly created room for the first time will cancel the
                 add operation and remove the room.
             </p>
@@ -921,6 +963,10 @@
             <p>
                 Hold down <strong>Shift</strong> and click on the selected room to rotate it 90 degrees without
                 having to bring up a menu.
+            </p>
+            <p>
+                You can also press the <strong>R</strong> key to rotate the seleted room.  This also works while
+                dragging the room.
             </p>
 
             <h2 id="ChangingARoomsFloor">Changing an Elevator's Floor</h2>
@@ -1085,7 +1131,7 @@
             </p>
 
             <h1 id="UpdateNotes">Update Notes</h1>
-            <h2 id="UpdateNotes1.1">v1.1: 2020-01-19</h2>
+            <h3 id="UpdateNotes1.1">v1.1: 2020-01-19</h3>
             <ul>
                 <li>Added compression for the model string, it saves about 30-50% on the sise of URLs.  All old URLs
                     will still work (thanks <strong>u/Almagnus1</strong>)</li>
@@ -1098,6 +1144,17 @@
                     <strong>u/Ramarr</strong>)</li>
                 <li>Fixed the constraint on Obstacle Course Architect rooms to 5 instead of 3
                     (thanks <strong>u/Alighierian</strong>)</li>
+                <li>
+                    Added some keyboard shortcuts (thanks <strong>Kisutora</strong>):
+                    <ul>
+                        <li>Pressing <strong>R</strong> will now rotate the selected room.  Note that this also works
+                            while dragging the room.  <i>Absolutely do not hold the R key down it is definitely not fun
+                            at all ;)</i></li>
+                        <li>Pressing <strong>D</strong> will now duplicate the selected room.</li>
+                    </ul>
+                </li>
+                <li>Did some re-measurement of room upper/lower boundaries and re-testing of combinations
+                    (thanks <strong>Zarzab</strong>)</li>
             </ul>
 
             <h1 id="ToDo">To Do</h1>
