@@ -356,7 +356,7 @@ class Room {
     }
 
     getAllWarnings() {
-		return this.ruleWarnings;
+		return this.ruleWarnings.length > 0 ? this.ruleWarnings : null;
     }
 
 	dispose() {

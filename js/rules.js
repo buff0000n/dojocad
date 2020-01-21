@@ -292,10 +292,10 @@ class DiscontinuedRule extends RoomRule {
 			}
 			var newLength = this.room_list.length;
 			if (prevLength > 0 && newLength == 0) {
-				removeAllWarning(this.toString());
+				removeAllWarning("Discontinued rooms");
 
 			} else if (prevLength <= 0 && newLength > 0) {
-				addAllWarning(this.toString());
+				addAllWarning("Discontinued rooms");
 			}
 		}
 	}
@@ -310,7 +310,7 @@ class DiscontinuedRule extends RoomRule {
 	}
 
 	toString() {
-		return "Discontinued rooms";
+		return "Discontinued room";
 	}
 }
 
