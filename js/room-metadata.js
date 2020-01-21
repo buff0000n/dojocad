@@ -439,7 +439,7 @@ var roomMetadata =
 	"blockedFromAboveBy": [
 		"dd"]},
 
-{"id": "occ", "image": "old-cross-connector", "name": "(Old) Cross Connector", "category": "Discontinued", "prereq": null, "capacity": 0, "energy": 0, "maxnum": null, "floor": -8, "ceil": 24,
+{"id": "occ", "image": "old-cross-connector", "name": "(Old) Cross Connector", "category": "Discontinued", "discontinued": true, "prereq": null, "capacity": 0, "energy": 0, "maxnum": null, "floor": -8, "ceil": 24,
 	"bounds": [
 		{"x1": -18.25, "y1": -18.25, "x2": 18.25, "y2": 18.25, "floor": -8, "ceil": 24}],
 	"doors": [
