@@ -289,7 +289,7 @@ var roomMetadata =
 		{"resource": "Tellurium", "costs": [15, 45, 150, 450, 1500]},
 		{"resource": "Forma", "costs": [1, 1, 3, 8, 25]}],
 	"blockedFromAboveBy": [
-		"cc","cs","cx","ct","cb","ce","h1","h2","h3","h4","h5","hi","or","lt","le","lc","lb","lo","dd","cr","du","oc","oa","gs","gl","ob","th","re","b1","occ"]},
+		"cc","cs","cx","ct","cb","ce","h1","h2","h3","h4","h5","hi","or","lt","le","lc","lb","lo","dd","cr","du","oc","oa","gs","gl","ob","th","re","b1","occ","oct","oh1","oh2","ore"]},
 {"id": "cr", "image": "crimson-branch", "name": "Crimson Branch", "category": "Interactive", "prereq": null, "capacity": -2, "energy": -4, "maxnum": null, "floor": 0, "ceil": 12,
 	"bounds": [
 		{"x1": -30, "y1":  8, "x2": 30, "y2": -30, "floor": 0, "ceil": 12},
@@ -450,4 +450,40 @@ var roomMetadata =
 	"resources": [], "unverified": true,
 	"blockedFromAboveBy": [
 		"dd"]},
+{"id": "oct", "image": "old-t-connector", "name": "(Old) T-shaped Connector", "category": "Discontinued", "discontinued": true, "prereq": null, "capacity": 0, "energy": 0, "maxnum": null, "floor": -8, "ceil": 24,
+	"bounds": [
+		{"x1": -8.25, "y1": -18.25, "x2": 18.25, "y2": 18.25, "floor": -8, "ceil": 24}],
+	"doors": [
+		{"x": 0, "y": 18.25, "floor": 0, "outx": 0, "outy": 1},
+		{"x": 18.25, "y": 0, "floor": 0, "outx": 1, "outy": 0},
+		{"x": 0, "y": -18.25, "floor": 0, "outx": 0, "outy": -1}],
+	"resources": [], "unverified": true,
+	"blockedFromAboveBy": [
+		"dd"]},
+{"id": "oh1", "image": "old-hall", "name": "(Old) Clan Hall", "category": "Discontinued", "discontinued": true, "spawn": true, "prereq": null, "capacity": 100, "energy": 5, "maxnum": null, "floor": -8, "ceil": 24,
+	"bounds": [
+		{"x1": -18, "y1": -32.25, "x2": 18, "y2": 32.25, "floor": -8, "ceil": 24}],
+	"doors": [
+		{"x": 0, "y": 32.25, "floor": 0, "outx": 0, "outy": 1},
+		{"x": 0, "y": -32.25, "floor": 0, "outx": 0, "outy": -1}],
+	"resources": [], "unverified": true,
+	"blockedFromAboveBy": [
+		"dd"]},
+{"id": "oh2", "image": "old-great-hall", "name": "(Old) Clan Great Hall", "category": "Discontinued", "discontinued": true, "spawn": true, "prereq": null, "capacity": 0, "energy": 0, "maxnum": null, "floor": -8, "ceil": 24,
+	"bounds": [
+		{"x1": -32, "y1": -32, "x2": 32, "y2": 32, "floor": -8, "ceil": 24}],
+	"doors": [
+		{"x": 0, "y": 32, "floor": 0, "outx": 0, "outy": 1},
+		{"x": 0, "y": -32, "floor": 0, "outx": 0, "outy": -1}],
+	"resources": [], "unverified": true,
+	"blockedFromAboveBy": [
+		"dd"]},
+{"id": "ore", "image": "old-reactor", "name": "(Old) Reactor", "category": "Discontinued", "discontinued": true, "prereq": null, "capacity": 0, "energy": 25, "maxnum": null, "floor": -8, "ceil": 24,
+	"bounds": [
+		{"x1": -10, "y1": -15, "x2": 10, "y2": 15, "floor": -8, "ceil": 24}],
+	"doors": [
+		{"x": 0, "y": 15, "floor": 0, "outx": 0, "outy": 1}],
+	"resources": [], "unverified": true,
+	"blockedFromAboveBy": [
+		"dd"]}
 ]};
