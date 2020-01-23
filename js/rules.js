@@ -13,6 +13,14 @@ class RoomRule {
 		return null;
 	}
 
+	getNewDojoError() {
+		return null;
+	}
+
+	getNewDojoWarning() {
+		return null;
+	}
+
 	toString() {
 		return "Rule";
 	}
@@ -261,6 +269,10 @@ class SpawnRule extends RoomRule {
 			}
 		}
 	}
+	
+	getNewDojoError() {
+		return this.toString();
+	}
 
 	toString() {
 		return "Spawn room required";
@@ -331,6 +343,20 @@ function registerRoomRules(roomMetaDataList) {
 
 		if (roomMetadata.prereq) {
 			roomRules.push(new PrereqRule(roomMetadata, getRoomMetadata(roomMetadata.prereq)));
+		}
+	}
+	
+	for (var i = 0; i < roomRules.length; i++) {
+		var error = roomRules[i].getNewDojoError();
+		if (error) {
+			addAllError(error);
+		}
+	}
+
+	for (var i = 0; i < roomRules.length; i++) {
+		var warn = roomRules[i].getNewDojoWarning();
+		if (warn) {
+			addAllWarn(warn);
 		}
 	}
 }
