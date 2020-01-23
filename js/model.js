@@ -257,7 +257,8 @@ function roomToString(room) {
 function roomFromString(string) {
     var s = string.split(",");
     var room = new Room(getRoomMetadata(s[0]));
-    room.setPosition(parseInt(s[1]), parseInt(s[2]), parseInt(s[3]), parseInt(s[4]) * 90);
+    // room coordinates may be fractional because of old dojo rooms, floor and rotation are still ints
+    room.setPosition(parseFloat(s[1]), parseFloat(s[2]), parseInt(s[3]), parseInt(s[4]) * 90);
     return room;
 }
 
@@ -293,6 +294,7 @@ class Room {
 
         this.calculateAnchor();
         this.ruleErrors = Array();
+        this.ruleWarnings = Array();
     }
 
 	addRuleError(rule) {
@@ -309,6 +311,14 @@ class Room {
 			this.checkErrors();
 			this.updateView();
 		}
+	}
+
+	addRuleWarning(rule) {
+		addToListIfNotPresent(this.ruleWarnings, rule);
+	}
+
+	removeRuleWarning(rule) {
+		removeFromList(this.ruleWarnings, rule);
 	}
 
 	removeAllRuleErrors() {
@@ -343,6 +353,10 @@ class Room {
 			errors = errors2;
 		}
 		return (errors && errors.length > 0) ? errors : null;
+    }
+
+    getAllWarnings() {
+		return this.ruleWarnings.length > 0 ? this.ruleWarnings : null;
     }
 
 	dispose() {

@@ -331,7 +331,7 @@
         color: #FFFFFF;
     }
 
-    .menu-table, .menu-table-error {
+    .menu-table, .menu-table-error, .menu-table-warn {
         margin: 1ex 1ex 1ex 1ex;
         color: #FFFFFF;
         border: none;
@@ -355,7 +355,12 @@
         background-color: #402020;
     }
 
-    .menu-button, .menu-button-error {
+    .menu-table-warn {
+        background-color: #808000;
+        color: #000000;
+    }
+
+    .menu-button, .menu-button-error, .menu-button-warn {
         margin: 1ex 1ex 1ex 1ex;
         border: none;
         padding: 1ex;
@@ -386,6 +391,11 @@
     .menu-button-error {
         background-color: #802020;
         color: #FFFFFF;
+    }
+
+    .menu-button-warn {
+        background-color: #B0B020;
+        color: #000000;
     }
 
     .menu-divider {
@@ -575,13 +585,17 @@
             setModelDebug(false);
             showDebug("Debug: off");
             hideDebug();
+			removeUrlQueryParam("m");
             removeUrlQueryParam("debug");
+			saveModelToUrl();
 
         } else {
             debugEnabled = true;
             setModelDebug(true);
             showDebug("Debug: on");
+			removeUrlQueryParam("mz");
             modifyUrlQueryParam("debug", "true");
+			saveModelToUrl();
         }
     }
 
@@ -737,10 +751,15 @@
         <div class="helpContainer">
             <p style="text-align: center;">
                 <span class="title">DojoCAD</span><br/>
-                v1.1.2: 2020-01-20<br/>
+                v1.2.0: 2020-01-22<br/>
                 <a href="https://github.com/buff0000n/dojoarch">Source</a>&nbsp;
                 <a href="https://github.com/buff0000n/dojoarch/issues/2">Feedback</a>&nbsp;
-                <a href="https://github.com/buff0000n/dojocad/issues/new">Bugs</a>
+                <a href="https://github.com/buff0000n/dojocad/issues/new">Bugs</a><br/>
+                Contact:
+                <a href="https://forums.warframe.com/messenger/compose/?to=1331202">Forums</a>&nbsp;
+                <a href="https://www.reddit.com/user/buff0000n">Reddit</a>&nbsp;
+                <a href="https://www.youtube.com/c/Buff00n">YouTube</a>&nbsp;
+                <a href="https://github.com/buff0000n/dojocad/issues/new">git</a>
             </p>
 
             <p>Thanks: <a href="https://www.reddit.com/user/AeliosZero">AeliosZero</a></p>
@@ -752,9 +771,10 @@
             </p>
 
             <h2>Disclaimer</h2>
-            <p class="warn">
-                All the room boundaries have been found by in-game experiment, waypoint measurement, or straight-up
-                guesswork.
+            <p>
+                <strong class="warn">All the room boundaries have been found by in-game experiment, waypoint
+                measurement, or straight-up guesswork.</strong>  If you see a problem or if you'd like to help me
+                determine bounds and stats for the old, discontinued rooms then please drop me a line!
             </p>
 
             <h1>Getting started</h1>
@@ -789,7 +809,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="?v=2,24,17,0&mz=BYRgNAzATJMAxhAfQMYrADgdMC6vS12PzUwQDYAWEpYGAWhxwWWAkQu3kSQHMAzohAwWuJACcApsJ6tJMkCLDViyADYAXMAFYdJSHRpElcuvqIMqGWigAeiKDaY9k9xzYCcFNf3XlEAHYfPD8wKCgaMTchCJoGG1CUWMiwQLNk8NVo-hT4sXxBcJ0fF1oip2cC3PCMRPLYutgG2ptVUIqm7xaoErBujrz+kPEikE8YAdGhEC5h2mAASyDS61ppcNSGdvEN3tKd-D2m7ZpQjegEMvkLqDxfW+5fdRkIfJ4IJHV0HFPiT-UACNHAczrx1AB7TbzbBITTAMAMbrVIoMEBUKJmPj+JGlaobNEYgxHGSEmg7KBICEAQ0RkVEH1QDlxiKIgwCcXK-iIUHSLSIly5AQgFHqpAkzRAwX+SAAJrKAgw7mKwiy0U5bIoJipnOB8BDgUq4LqNbD3ONJqU9Uzij5utaUDJ9jraLKAK6I9HvGVkNVSkakUmiz3StG8R2I7Vo0OiG1-aOlGDICESiAcET1T6o7ps6aRnymWgQ9AsiIjSmPFRg5CVqY1mRrTnYIA">
+                    <a href="?v=3,-109,-9,0&mz=BYRgNAzATJMAxhAfQMYrADgdMC6vS12PzUwQDYAWEpYGAWhxwWWAkQu3kSQHMAzohAwWuJACcApsJ6tJMkCLDViyADYAXMAFYdJSHRpElcuvqIMqGWigAeiKDaY9k9xzYCcFNf3XlEAHYfPD8wKCgaMTchCJoGG1CUWMiwQLNk8NVo-hT4sXxBcJ0fF1oip2cC3PCMRPLYutgG2ptVUIqm7xaoErBujrz+kPEikE8YAdGhEC5h2mAASyDS61ppcNSGdvEN3tKd-D2m7ZpQjegEMvkLqDxfW+5fdRkIfJ4IJHV0HFPiT-UACNHAczrx1AB7TbzbBITTAMAMbrVIoMEBUKJmPj+JGlaobNEYgxHGSEmg7KBICEAQ0RkVEH1QDlxiKIgwCcXK-iIUHSLSIly5AQgFHqpAkzRAwX+SAAJrKAgw7mKwiy0U5bIoJipnOB8BDgUq4LqNbD3ONJqU9Uzij5utaUDJ9jraLKAK6I9HvGVkNVSkakUmiz3StG8R2I7Vo0OiG1-aOlGDICESiAcET1T6o7ps6aRnymWgQ9AsiIjSmPFRg5CVqY1mRrTlmkvdJVUe6BxHBtv3NykqORViGCPbZyD8Lh-uMcccT7uePjmhuZmqI31NzaNXKkhAA">
                         My actual clan dojo
                     </a>
                 </li>
@@ -825,6 +845,7 @@
                             <a href="#RoomBoundaries">Room Boundaries</a>
                             <ul>
                                 <li><a href="#SpecialNoteAboutDryDock">Special Note About the Dry Dock</a></li>
+                                <li><a href="#SpecialNoteAboutDiscontinued">Special Note About the Discontinued Rooms</a></li>
                             </ul>
                         </li>
                         <li><a href="#RoomRules">Specific Room Rules</a></li>
@@ -1034,6 +1055,37 @@
                 the Dry Dock.  Boundary collisions with the entire length of the Dry Dock will still be detected, but
                 it may not be obvious what's colliding unless you zoom out and find the Dry Dock.
             </p>
+            <h3 id="SpecialNoteAboutDiscontinued">Special Note About the Discontinued Rooms</h3>
+            <p>
+                The old, discontinued dojo rooms are available to place in your layout.  <strong class="warn">They come
+                with a warning icon <span class="docImgButton-clear"><img src="icons/icon-warn.png" srcset="icons2x/icon-warn.png 2x" title="Warning"/></span>
+                because there are number of caveats:</strong>
+            </p>
+            <p>
+                Pretty much the only information I have about the discontinued rooms is from screenshots and data other
+                players have provided.
+            </p>
+            <p>
+                I can take a guess at boundary dimensions.  But knowing that the discontinued rooms do not
+                follow a standard grid, my guesses are looser than usual.  All I know for sure is that they do not
+                line up with each other or the newer rooms.
+            </p>
+            <p>
+                I know that the <strong>Old Clan Hall</strong> provides the same energy and capacity as the starter
+                <strong>Clan Hall</strong>, and that it's no wider than the starter <strong>Clan Hall</strong>.
+                Everything else I'm assuming:
+            </p>
+            <ul>
+                <li>
+                    I'm assuming that the <strong>Old Reactor</strong> provides the same 25 energy as a newer reactor
+                </li>
+                <li>
+                    For everything else I'm assuming they use zero energy and consume zero capacity.
+                </li>
+                <li>
+                    I'm assuming all the old rooms have the height and depth of the starter <strong>Clan Hall</strong>.
+                </li>
+            </ul>
 
             <h2 id="RoomRules">Specific Room Rules</h2>
             <p>
@@ -1152,14 +1204,18 @@
                 <li>Did some re-measurement of room upper/lower boundaries and re-testing of combinations
                     (thanks <strong>Zarzab</strong>)</li>
             </ul>
+            <h3 id="UpdateNotes1.2">v1.2: 2020-01-22</h3>
+            <ul>
+                <li>Added my best guess at the old, discontinued rooms.  <strong class="warn">Note that the dimensions,
+                    bounds and stats for these rooms are speculative at best.</strong>
+                    (thanks <strong>PC ShadowMageAlpha</strong>, <strong>u/Ramarr</strong>)</li>
+                <li>Added a less severe Warning system, currently only applies to the presence of discontinued rooms</li>
+            </ul>
 
             <h1 id="ToDo">To Do</h1>
             <ul>
                 <li>
                     Room menu icons
-                </li>
-                <li>
-                    Best guess at the old, discontinued dojo rooms
                 </li>
                 <li>
                     Add some actions for the error menus, i.e. clicking on the "Oracle is required" error creates an Oracle room to place.

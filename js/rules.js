@@ -5,11 +5,19 @@ class RoomRule {
 	roomRemoved(room) {
 	}
 
-	getRoomWarning(roomMetaData) {
+	getNewRoomError(roomMetaData) {
 		return null;
 	}
 
-	getGlobalError() {
+	getNewRoomWarning(roomMetaData) {
+		return null;
+	}
+
+	getNewDojoError() {
+		return null;
+	}
+
+	getNewDojoWarning() {
 		return null;
 	}
 
@@ -47,16 +55,12 @@ class RoomCountRule extends RoomRule {
 		updateStat("numRoomsStat", this.numRooms, this.numRooms > this.maxRooms, this);
 	}
 
-	getRoomWarning(roomMetaData) {
+	getNewRoomError(roomMetaData) {
 		if (this.numRooms >= this.maxRooms) {
 			return this.toString();
 		} else {
 			return null;
 		}
-	}
-
-	getGlobalError() {
-		return this.numRooms > this.maxRooms ? errorMessage : null;
 	}
 
 	toString() {
@@ -80,16 +84,12 @@ class EnergyRule extends RoomRule {
 		updateStat("energyStat", this.energy, this.energy < 0, this);
 	}
 
-	getRoomWarning(roomMetaData) {
+	getNewRoomError(roomMetaData) {
 		if (this.energy + roomMetaData.energy < 0) {
 			return this.toString();
 		} else {
 			return null;
 		}
-	}
-
-	getGlobalError() {
-		return this.energy < 0 ? this.toString() : null;
 	}
 
 	toString() {
@@ -113,16 +113,12 @@ class CapacityRule extends RoomRule {
 		updateStat("capacityStat", this.capacity, this.capacity < 0, this);
 	}
 
-	getRoomWarning(roomMetaData) {
+	getNewRoomError(roomMetaData) {
 		if (this.capacity + roomMetaData.capacity < 0) {
 			return this.toString();
 		} else {
 			return null;
 		}
-	}
-
-	getGlobalError() {
-		return this.capacity < 0 ? this.toString() : null;
 	}
 
 	toString() {
@@ -170,7 +166,7 @@ class MaxNumRule extends RoomRule {
 		}
 	}
 
-	getRoomWarning(roomMetaData) {
+	getNewRoomError(roomMetaData) {
 		if (roomMetaData.id == this.id && this.list.length >= this.maxnum) {
 			return this.toString();
 		} else {
@@ -230,7 +226,7 @@ class PrereqRule extends RoomRule {
 		}
 	}
 
-	getRoomWarning(roomMetaData) {
+	getNewRoomError(roomMetaData) {
 		if (roomMetaData.id == this.room_id && this.prereq_list.length == 0) {
 			return this.toString();
 		} else {
@@ -273,9 +269,60 @@ class SpawnRule extends RoomRule {
 			}
 		}
 	}
+	
+	getNewDojoError() {
+		return this.toString();
+	}
 
 	toString() {
 		return "Spawn room required";
+	}
+}
+
+class DiscontinuedRule extends RoomRule {
+	constructor() {
+		super();
+		this.room_list = Array();
+	}
+
+	roomAdded(room) {
+		this.roomChanged(room, true);
+	}
+
+	roomRemoved(room) {
+		this.roomChanged(room, false);
+	}
+
+	roomChanged(room, added) {
+		if (room.metadata.discontinued) {
+			var prevLength = this.room_list.length;
+			if (added) {
+				addToListIfNotPresent(this.room_list, room);
+				room.addRuleWarning(this);
+			} else {
+				removeFromList(this.room_list, room);
+			}
+			var newLength = this.room_list.length;
+			if (prevLength > 0 && newLength == 0) {
+				removeAllWarning("Discontinued rooms");
+
+			} else if (prevLength <= 0 && newLength > 0) {
+				addAllWarning("Discontinued rooms");
+			}
+		}
+	}
+
+	getNewRoomWarning(roomMetaData) {
+		if (roomMetaData.discontinued) {
+			return this.toString();
+
+		} else {
+			return null;
+		}
+	}
+
+	toString() {
+		return "Discontinued room";
 	}
 }
 
@@ -286,6 +333,7 @@ function registerRoomRules(roomMetaDataList) {
 	roomRules.push(new EnergyRule());
 	roomRules.push(new CapacityRule());
 	roomRules.push(new SpawnRule());
+	roomRules.push(new DiscontinuedRule());
 
 	for (var i = 0; i < roomMetaDataList.rooms.length; i++) {
 		var roomMetadata = roomMetaDataList.rooms[i];
@@ -295,6 +343,20 @@ function registerRoomRules(roomMetaDataList) {
 
 		if (roomMetadata.prereq) {
 			roomRules.push(new PrereqRule(roomMetadata, getRoomMetadata(roomMetadata.prereq)));
+		}
+	}
+	
+	for (var i = 0; i < roomRules.length; i++) {
+		var error = roomRules[i].getNewDojoError();
+		if (error) {
+			addAllError(error);
+		}
+	}
+
+	for (var i = 0; i < roomRules.length; i++) {
+		var warn = roomRules[i].getNewDojoWarning();
+		if (warn) {
+			addAllWarn(warn);
 		}
 	}
 }
@@ -311,24 +373,24 @@ function runRulesOnRoomRemoved(room) {
 	}
 }
 
-function getNewRoomWarnings(roomMetaData) {
+function getNewRoomErrors(roomMetaData) {
 	var errors = Array();
 	for (var i = 0; i < roomRules.length; i++) {
-		var warning = roomRules[i].getRoomWarning(roomMetaData);
-		if (warning) {
-			errors.push(warning);
+		var error = roomRules[i].getNewRoomError(roomMetaData);
+		if (error) {
+			errors.push(error);
 		}
 	}
 	return errors.length > 0 ? errors : null;
 }
 
-function getGlobalErrors() {
-	var errors = Array();
+function getNewRoomWarnings(roomMetaData) {
+	var warnings = Array();
 	for (var i = 0; i < roomRules.length; i++) {
-		var error = roomRules[i].getGlobalError();
+		var warning = roomRules[i].getNewRoomWarning(roomMetaData);
 		if (warning) {
-			errors.push(warning);
+			warnings.push(warning);
 		}
 	}
-	return errors.length > 0 ? errors : null;
+	return warnings.length > 0 ? warnings : null;
 }

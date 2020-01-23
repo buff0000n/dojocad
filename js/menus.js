@@ -51,15 +51,15 @@ function clearMenus(leave = 0) {
 	}
 }
 
-function buildMenu(error = false) {
+function buildMenu(className = "menu-table") {
     var menuDiv = document.createElement("table");
-    menuDiv.className = error ? "menu-table-error" : "menu-table";
+    menuDiv.className = className;
     return menuDiv;
 }
 
-function buildMenuButton(label, callback, error = false) {
+function buildMenuButton(label, callback, className = "menu-button") {
     var buttonDiv = document.createElement("td");
-    buttonDiv.className = error ? "menu-button-error" : "menu-button";
+    buttonDiv.className = className;
     buttonDiv.innerHTML = label;
     buttonDiv.onclick = callback;
     buttonDiv.menuLevel = getCurrentMenuLevel() + 1;
@@ -82,12 +82,17 @@ function buildLinkMenuButton(label, link, error = false) {
     return tr;
 }
 
-function buildErrorPopup(errors, span = true) {
+function buildErrorPopup(errors, warns, span = true) {
     var buttonDiv = document.createElement(span ? "span" : "td");
     buttonDiv.className = "menu-button-clear";
-    buttonDiv.innerHTML = `<img src="icons/icon-error.png" srcset="icons2x/icon-error.png 2x" title="Error"/>`
+    if (errors && errors.length > 0) {
+	    buttonDiv.innerHTML = `<img src="icons/icon-error.png" srcset="icons2x/icon-error.png 2x" title="Error"/>`
+    } else {
+	    buttonDiv.innerHTML = `<img src="icons/icon-warn.png" srcset="icons2x/icon-warn.png 2x" title="Warning"/>`
+    }
     buttonDiv.roomMetadata = roomMetadata;
     buttonDiv.errors = errors;
+    buttonDiv.warns = warns;
     buttonDiv.menuLevel = getCurrentMenuLevel() + 1;
     buttonDiv.onclick = doShowErrors;
     return buttonDiv;
@@ -200,9 +205,10 @@ function buildAddRoomButton(roomMetadata, room = null, errors = null) {
     roomButtonDiv.children[0].roomMetadata = roomMetadata;
     roomButtonDiv.children[0].room = room;
 
-    var errors = getNewRoomWarnings(roomMetadata);
-    if (errors) {
-		var errorDiv = buildErrorPopup(errors, false, room ? 1 : 2);
+    var errors = getNewRoomErrors(roomMetadata);
+    var warns = getNewRoomWarnings(roomMetadata);
+    if (errors || warns) {
+		var errorDiv = buildErrorPopup(errors, warns, false);
 	    roomButtonDiv.appendChild(errorDiv);
     }
 
@@ -240,8 +246,9 @@ function doRoomMenu(e, room) {
 	tr.appendChild(td);
 
     var errors = room.getAllErrors();
-    if (errors) {
-        tr.appendChild(buildErrorPopup(errors, span = false, menuLevel = 1));
+    var warnings = room.getAllWarnings();
+    if (errors || warnings) {
+        tr.appendChild(buildErrorPopup(errors, warnings, span = false));
     }
 
     menuDiv.appendChild(tr);
@@ -264,18 +271,26 @@ function doShowErrors() {
 	var errButton = getMenuTarget();
 
     var errorList = errButton.errors;
-    var roomMetadata = errButton.roomMetadata
+    var warnList = errButton.warns;
 
     if (errorList && errorList.length > 0) {
-	    var menuDiv = buildMenu(true);
+	    var menuDiv = buildMenu("menu-table-error");
 	    for (var e = 0; e < errorList.length; e++) {
 		    var error = errorList[e].toString();
-		    var errorButton = buildMenuButton(error, null, true);
+		    var errorButton = buildMenuButton(error, null, "menu-button-error");
+		    menuDiv.appendChild(errorButton);
+	    }
+
+    } else if (warnList && warnList.length > 0) {
+	    var menuDiv = buildMenu("menu-table-warn");
+	    for (var e = 0; e < warnList.length; e++) {
+		    var error = warnList[e].toString();
+		    var errorButton = buildMenuButton(error, null, "menu-button-warn");
 		    menuDiv.appendChild(errorButton);
 	    }
 
     } else {
-	    var menuDiv = buildMenu(false);
+	    var menuDiv = buildMenu();
 	    menuDiv.appendChild(buildMenuField("No errors found"));
     }
 
@@ -462,34 +477,63 @@ function doPngClick(e) {
 }
 
 var errorRoomList = Array();
+var warnRoomList = Array();
 
-function addAllError(error) {
-	var element = document.getElementById("allErrorsButton");
-	var errorList = element.errorList;
-	if (!errorList) {
-		errorList = Array();
-		element.errorList = errorList;
-	}
-
-	if (errorList.length == 0) {
-		element.innerHTML = `<img src="icons/icon-error.png" srcset="icons2x/icon-error.png 2x" title="Errors"/>`;
-	}
-
-	addToListIfNotPresent(errorList, error);
+function addAllWarning(warning) {
+	addAllError(warning, true);
 }
 
-function removeAllError(error) {
+function addAllError(error, warn = false) {
 	var element = document.getElementById("allErrorsButton");
-	var errorList = element.errorList;
+	var errorList = warn ? element.warnList : element.errorList;
 	if (!errorList) {
 		errorList = Array();
-		element.errorList = errorList;
+		if (warn) {
+			element.warnList = errorList;
+
+		} else {
+			element.errorList = errorList;
+		}
 	}
 
-	if (removeFromList(errorList, error)) {
-		if (errorList.length == 0) {
-			element.innerHTML = `<img src="icons/icon-ok.png" srcset="icons2x/icon-ok.png 2x" title="OK"/>`;
+	var before = errorList.length;
+
+	if (addToListIfNotPresent(errorList, error) && before == 0) {
+		updateErrorIcon(element);
+	}
+}
+
+function removeAllWarning(warning) {
+	removeAllError(warning, true);
+}
+
+function removeAllError(error, warn = false) {
+	var element = document.getElementById("allErrorsButton");
+	var errorList = warn ? element.warnList : element.errorList;
+	if (!errorList) {
+		errorList = Array();
+		if (warn) {
+			element.warnList = errorList;
+
+		} else {
+			element.errorList = errorList;
 		}
+	}
+
+	if (removeFromList(errorList, error) && errorList.length == 0) {
+		updateErrorIcon(element);
+	}
+}
+
+function updateErrorIcon(element) {
+	if (element.errorList && element.errorList.length > 0) {
+		element.innerHTML = `<img src="icons/icon-error.png" srcset="icons2x/icon-error.png 2x" title="Errors"/>`;
+
+	} else if (element.warnList && element.warnList.length > 0) {
+		element.innerHTML = `<img src="icons/icon-warn.png" srcset="icons2x/icon-warn.png 2x" title="Warnings"/>`;
+
+	} else {
+		element.innerHTML = `<img src="icons/icon-ok.png" srcset="icons2x/icon-ok.png 2x" title="OK"/>`;
 	}
 }
 
@@ -497,28 +541,41 @@ function doShowAllErrors() {
 	var errorButton = getMenuTarget();
 
 	var errors = errorButton.errorList;
-	var errorList = Array();
-
 	if (errors) {
-		for (var e = 0; e < errors.length; e++) {
-			var error = errors[e];
-			var room = error.room ? error.room : error;
-			if (room.getAllErrors) {
-				var roomErrors = room.getAllErrors();
-				var roomErrorStrings = Array();
-				// for now, just use the error strings and consolidate
-				for (var re = 0; re < roomErrors.length; re++) {
-					roomErrorStrings.push(roomErrors[re].toString());
-				}
-				addAllToListIfNotPresent(errorList, roomErrorStrings);
-			} else {
-				addToListIfNotPresent(errorList, error.toString());
-			}
-		}
+		errorButton.errors = toErrorStrings(errors);
+	} else {
+		errorButton.errors = null;
 	}
 
-	errorButton.errors = errorList;
+	var warns = errorButton.warnList;
+	if (warns) {
+		errorButton.warns = toErrorStrings(warns);
+	} else {
+		errorButton.warns = null;
+	}
+
 	doShowErrors()
+}
+
+function toErrorStrings(errors) {
+	var errorList = Array();
+	for (var e = 0; e < errors.length; e++) {
+		var error = errors[e];
+		var room = error.room ? error.room : error;
+		if (room.getAllErrors) {
+			var roomErrors = room.getAllErrors();
+			var roomErrorStrings = Array();
+			// for now, just use the error strings and consolidate
+			for (var re = 0; re < roomErrors.length; re++) {
+				roomErrorStrings.push(roomErrors[re].toString());
+			}
+			addAllToListIfNotPresent(errorList, roomErrorStrings);
+
+		} else {
+			addToListIfNotPresent(errorList, error.toString());
+		}
+	}
+	return errorList;
 }
 
 function doCollisionMatrix() {
