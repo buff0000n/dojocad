@@ -85,8 +85,8 @@ var roomMetadata =
 		{"x": 0, "y": 12, "floor": 0, "outx": 0, "outy": 1},
 		{"x": 0, "y": 12, "floor": 1, "outx": 0, "outy": 1}],
 	"floor_images": [
-		{"floor": 0, "image": "elevator-bottom", "marker_image": "marker-elevator-bottom"},
-		{"floor": 1, "image": "elevator-bottom", "marker_image": "marker-elevator-top"}],
+		{"floor": 0, "image": "elevator-bottom", "marker_images": [{"image": "marker-elevator-bottom", "x": 0, "y": 0}]},
+		{"floor": 1, "image": "elevator-bottom", "marker_images": [{"image": "marker-elevator-top", "x": 0, "y": 0}]}],
 	"resources": [
 		{"resource": "Credits", "costs": [500, 1500, 5000, 15000, 50000]},
 		{"resource": "Salvage", "costs": [650, 1950, 6500, 19500, 65000]},
@@ -207,6 +207,8 @@ var roomMetadata =
 		{"x1": -10, "y1": -9, "x2": 10, "y2": 9, "floor": 0, "ceil": 8}],
 	"doors": [
 		{"x": 0, "y": 9, "floor": 0, "outx": 0, "outy": 1}],
+	"floor_images": [
+		{"floor": 0, "image": "tenno-lab2", "marker_images": [{"image": "marker-lab-tenno", "x": 0, "y": 8}]}],
 	"resources": [
 		{"resource": "Credits", "costs": [1000, 3000, 10000, 30000, 100000]},
 		{"resource": "Salvage", "costs": [650, 1950, 6500, 19500, 65000]},
@@ -220,6 +222,8 @@ var roomMetadata =
 		{"x1": -14, "y1": -14, "x2": 14, "y2": 14, "floor": 0, "ceil": 16}],
 	"doors": [
 		{"x": 0, "y": 14, "floor": 0, "outx": 0, "outy": 1}],
+	"floor_images": [
+		{"floor": 0, "image": "energy-lab", "marker_images": [{"image": "marker-lab-energy", "x": 0, "y": 13}]}],
 	"resources": [
 		{"resource": "Credits", "costs": [1000, 3000, 10000, 30000, 100000]},
 		{"resource": "Salvage", "costs": [650, 1950, 6500, 19500, 65000]},
@@ -233,6 +237,8 @@ var roomMetadata =
 		{"x1": -14, "y1": -16, "x2": 14, "y2": 16, "floor": -14, "ceil": 16}],
 	"doors": [
 		{"x": 0, "y": 16, "floor": 0, "outx": 0, "outy": 1}],
+	"floor_images": [
+		{"floor": 0, "image": "chem-lab", "marker_images": [{"image": "marker-lab-chem", "x": 0, "y": 15}]}],
 	"resources": [
 		{"resource": "Credits", "costs": [1000, 3000, 10000, 30000, 100000]},
 		{"resource": "Salvage", "costs": [650, 1950, 6500, 19500, 65000]},
@@ -246,6 +252,8 @@ var roomMetadata =
 		{"x1": -14, "y1": -14, "x2": 14, "y2": 14, "floor": 0, "ceil": 12}],
 	"doors": [
 		{"x": 0, "y": 14, "floor": 0, "outx": 0, "outy": 1}],
+	"floor_images": [
+		{"floor": 0, "image": "bio-lab", "marker_images": [{"image": "marker-lab-bio", "x": 0, "y": 13}]}],
 	"resources": [
 		{"resource": "Credits", "costs": [1000, 3000, 10000, 30000, 100000]},
 		{"resource": "Salvage", "costs": [650, 1950, 6500, 19500, 65000]},
@@ -259,6 +267,8 @@ var roomMetadata =
 		{"x1": -16, "y1": -26, "x2": 16, "y2": 26, "floor": -16, "ceil": 28}],
 	"doors": [
 		{"x": 0, "y": 26, "floor": 0, "outx": 0, "outy": 1}],
+	"floor_images": [
+		{"floor": 0, "image": "orokin-lab", "marker_images": [{"image": "marker-lab-orokin", "x": 0, "y": 25}]}],
 	"resources": [
 		{"resource": "Credits", "costs": [1000, 3000, 10000, 30000, 100000]},
 		{"resource": "Ferrite", "costs": [800, 2400, 8000, 24000, 80000]},
@@ -278,7 +288,13 @@ var roomMetadata =
 		{"x": -128, "y": 0, "floor": 0, "outx": -1, "outy": 0}],
 	"floor_images": [
 		{"floor": -1, "image": "dry-dock-wall"},
-		{"floor": 0, "image": "dry-dock"},
+		{"floor": 0, "image": "dry-dock", "marker_images": [
+			{"image": "marker-railjack-summon", "x": 0, "y": 48},
+			{"image": "marker-railjack-lab", "x": 35, "y": 43},
+			{"image": "marker-railjack-config", "x": 43, "y": 35},
+			{"image": "marker-railjack-board", "x": 15.25, "y": -29.75},
+			{"image": "marker-railjack-board", "x": -15.25, "y": -29.75}
+		]},
 		{"floor": 1, "image": "dry-dock-wall"},
 		{"floor": 2, "image": "dry-dock-wall"},
 		{"floor": 3, "image": "dry-dock-wall"}],
@@ -309,6 +325,8 @@ var roomMetadata =
 		{"x1": -16, "y1": -16, "x2": 16, "y2": 16, "floor": 0, "ceil": 20}],
 	"doors": [
 		{"x": 0, "y": 16, "floor": 0, "outx": 0, "outy": 1}],
+	"floor_images": [
+		{"floor": 0, "image": "dueling-room", "marker_images": [{"image": "marker-duel", "x": 0, "y": 14}]}],
 	"resources": [
 		{"resource": "Credits", "costs": [750, 2250, 7500, 22500, 75000]},
 		{"resource": "Salvage", "costs": [650, 1950, 6500, 19500, 65000]},
@@ -323,6 +341,8 @@ var roomMetadata =
 		{"x1": -8, "y1": 94, "x2": 8, "y2": 98, "floor": -24, "ceil": 24}],
 	"doors": [
 		{"x": 0, "y": 98, "floor": 0, "outx": 0, "outy": 1}],
+	"floor_images": [
+		{"floor": 0, "image": "obstacle-course", "marker_images": [{"image": "marker-obstacle", "x": 0, "y": 78}]}],
 	"resources": [
 		{"resource": "Credits", "costs": [1000, 3000, 10000, 30000, 100000]},
 		{"resource": "Alloy Plate", "costs": [650, 1950, 6500, 19500, 65000]},
@@ -337,6 +357,8 @@ var roomMetadata =
 		{"x1": -6, "y1": 74, "x2": 6, "y2": 82, "floor": 0, "ceil": 48}],
 	"doors": [
 		{"x": 0, "y": 82, "floor": 0, "outx": 0, "outy": 1}],
+	"floor_images": [
+		{"floor": 0, "image": "obstacle-course-architect", "marker_images": [{"image": "marker-obstacle", "x": 0, "y": 72}]}],
 	"resources": [
 		{"resource": "Credits", "costs": [1000, 3000, 10000, 30000, 100000]},
 		{"resource": "Salvage", "costs": [150, 450, 1500, 4500, 15000]},

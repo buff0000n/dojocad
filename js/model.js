@@ -249,6 +249,42 @@ class Door {
     }
 }
 
+class Marker {
+	constructor(room, floor, metadata) {
+		this.room = room;
+		this.metadataFloor = floor;
+		if (metadata == null) {
+			throw "OOOOPS";
+		}
+		this.metadata = metadata;
+		this.marker = null;
+	}
+
+    updatePosition() {
+        this.mv = new Vect(this.metadata.x, this.metadata.y).rotate(this.room.rotation).add(this.room.mv);
+        this.floor = this.room.floor + this.metadataFloor;
+    }
+
+    addDisplay(viewContainer) {
+        if (this.floor == viewFloor) {
+	        this.marker = this.room.addDisplayElement(".png", 3, this.metadata.image, true);
+        }
+    }
+
+    updateView() {
+        if (this.marker) {
+            var transform2 = this.room.getMarkerImageTransform(this.mv.x, this.mv.y, viewPX, viewPY, viewScale);
+			this.room.updateViewElement(this.marker, transform2);
+        }
+    }
+
+    removeDisplay() {
+        if (this.marker) {
+            this.marker.remove();
+            this.marker = null;
+        }
+    }
+}
 
 function roomToString(room) {
     return room.metadata.id + "," + room.mv.x + "," + room.mv.y + "," + room.floor + "," + (room.rotation / 90)
@@ -273,20 +309,33 @@ class Room {
         for (var i = 0; i < this.metadata.bounds.length; i++) {
             this.bounds.push(new Bound(this, this.metadata.bounds[i]));
         }
+
         this.doors = Array();
         for (var i = 0; i < this.metadata.doors.length; i++) {
             this.doors.push(new Door(this, this.metadata.doors[i]));
         }
         this.angleToDoors = Array();
 
-        this.multifloor = this.metadata.floor_images != null;
+        this.markers = Array();
+		if (this.metadata.floor_images) {
+	        for (var i = 0; i < this.metadata.floor_images.length; i++) {
+	            var fi = this.metadata.floor_images[i];
+	            if (fi.marker_images) {
+			        for (var j = 0; j < fi.marker_images.length; j++) {
+			            var m = fi.marker_images[j];
+			            this.markers.push(new Marker(this, fi.floor, m));
+		            }
+		        }
+	        }
+		}
+        this.multifloor = this.metadata.floor_images != null && this.metadata.floor_images.length > 1;
+
         this.floor = null;
 
 		this.viewContainer = null;
         this.display = null;
         this.outline = null;
         this.grid = null;
-        this.marker = null;
         this.selected = false;
 
         this.mdragOffset = new Vect(0, 0);
@@ -412,6 +461,7 @@ class Room {
         this.mv = new Vect(nmx, nmy);
         this.floor = nf;
         this.rotation = nr;
+		this.updateMarkerPositions();
 
 		if (isNewFloor) {
 			this.removeDisplay();
@@ -447,6 +497,12 @@ class Room {
 		// for a pure view update, just worry about doors because their snap bounds depend on the zoon
         for (var d = 0; d < this.doors.length; d++) {
             this.doors[d].updatePosition();
+        }
+	}
+
+	updateMarkerPositions() {
+        for (var m = 0; m < this.markers.length; m++) {
+            this.markers[m].updatePosition();
         }
 	}
 
@@ -883,7 +939,9 @@ class Room {
         this.viewContainer = viewContainer;
         if (this.isVisible()) {
 	        this.display = this.addDisplayElement("-display.png", 2);
-	        this.marker = this.addDisplayElement(".png", 3, true);
+			for (var m = 0; m < this.markers.length; m++) {
+				this.markers[m].addDisplay(viewContainer);
+			}
 			for (var b = 0; b < this.doors.length; b++) {
 				this.doors[b].addDisplay(viewContainer);
 			}
@@ -897,8 +955,10 @@ class Room {
 	    this.checkErrors();
     }
 
-    addDisplayElement(imageSuffix, zIndex = 0, marker = false) {
-        var imageBase = marker ? this.getMarkerImageBase() : this.getImageBase();
+    addDisplayElement(imageSuffix, zIndex = 0, imageBase = null, marker = false) {
+        if (!imageBase) {
+            imageBase = this.getImageBase();
+        }
         if (!imageBase) {
             return null;
         }
@@ -910,7 +970,7 @@ class Room {
 	        element.style.transformOrigin = (-this.anchorMX * imgScale) + "px " + (-this.anchorMY * imgScale) + "px";
         }
         element.style.zIndex = zIndex;
-        element.id = this.id;
+        element.roomId = this.id;
 		// have to explicitly tell Chrome that none of these listeners are passive or it will cry
         element.addEventListener("mousedown", mouseDown, { passive: false });
         element.addEventListener("contextmenu", contextMenu, { passive: false });
@@ -938,28 +998,14 @@ class Room {
 		return this.metadata.image
     }
 
-    getMarkerImageBase(whichFloor = null) {
-        if (whichFloor == null) {
-            whichFloor = viewFloor;
-        }
-		if (this.multifloor) {
-			var displayFloor = whichFloor - this.floor;
-			for (var i = 0; i < this.metadata.floor_images.length; i++) {
-				if (this.metadata.floor_images[i].floor == displayFloor) {
-					return this.metadata.floor_images[i].marker_image;
-				}
-			}
-		}
-
-		return null;
-    }
-
     removeDisplay() {
         // remove the images, whichever ones are presesnt
 	    this.display = this.removeDisplayElement(this.display);
-	    this.marker = this.removeDisplayElement(this.marker);
 	    this.outline = this.removeDisplayElement(this.outline);
 	    this.grid = this.removeDisplayElement(this.grid);
+		for (var m = 0; m < this.markers.length; m++) {
+			this.markers[m].removeDisplay();
+		}
 	    // remove bounds debug boxes, if present
 		for (var b = 0; b < this.doors.length; b++) {
 			this.doors[b].removeDisplay();
@@ -984,9 +1030,8 @@ class Room {
 			this.updateViewElement(this.display, transform);
 			this.updateViewElement(this.outline, transform);
 			this.updateViewElement(this.grid, transform);
-			if (this.marker) {
-	            var transform2 = this.getMarkerImageTransform(viewPX, viewPY, viewScale);
-				this.updateViewElement(this.marker, transform2);
+			for (var m = 0; m < this.markers.length; m++) {
+				this.markers[m].updateView();
 			}
 			// update debug bounds views, if present
 			for (var d = 0; d < this.doors.length; d++) {
@@ -1015,10 +1060,10 @@ class Room {
 		return "translate(" + roomViewPX + "px, " + roomViewPY + "px) rotate(" + this.rotation + "deg) scale(" + scale + ", " + scale + ")";
 	}
 
-	getMarkerImageTransform(viewPX, viewPY, viewScale) {
-        // transform the room center coords to pixel coords
-		var roomViewCenterPX = ((this.mv.x + this.mdragOffset.x) * viewScale) + viewPX;
-		var roomViewCenterPY = ((this.mv.y + this.mdragOffset.y) * viewScale) + viewPY;
+	getMarkerImageTransform(mx, my, viewPX, viewPY, viewScale) {
+        // transform the marker center coords to pixel coords
+		var roomViewCenterPX = ((mx + this.mdragOffset.x) * viewScale) + viewPX;
+		var roomViewCenterPY = ((my + this.mdragOffset.y) * viewScale) + viewPY;
 
 		// final scaling of the image
 		var scale = viewScale / imgScale;
@@ -1154,34 +1199,34 @@ function convertFloorToPngLink(targets, db, margin, scale, f) {
             img.src = "img" + imgScale + "x/" + room.getImageBase(f) + "-display.png";
 			localDrawnImages++;
 
-			// see if the room has a marker
-			var markerImageBase = room.getMarkerImageBase(f);
-			if (markerImageBase) {
+			// see if the room has any markers
+			for (var m = 0; m < room.markers.length; m++) {
+				var marker = room.markers[m];
 				// build an image link because that's what context.drawImage wants
                 var img2 = new Image();
                 // we have store parameters in the img object itself
                 img2.index = localDrawnImages;
-                img2.room = room;
+                img2.marker = marker;
 	            // omg is this really the only reliable way to draw an image on a canvas?!
                 img2.onload = function() {
 	                var index = this.index;
-                    var room = this.room;
-					// the marker is a little simpler because we don't have to rotate it and it's always centered
-					// start with the room coords
+                    var marker = this.marker;
+					// the marker is a little simpler because we don't have to rotate it
+					// start with the marker coords
 					// it's also more complicated because we need its dimensions, which we don't have until it's loaded
-					var av2 = room.mv.copy()
+					var av2 = marker.mv.copy()
 		                // scale by the scale, they are now pixel coords
 		                .scale(scale)
 		                // add to the center point
 		                .addTo(roomViewCenterPX, roomViewCenterPY)
 		                // center the image
-		                .addTo(-img2.width * (scale / imgScale) / 2, -img2.height * (scale / imgScale) / 2);
+		                .addTo(-this.width * (scale / imgScale) / 2, -this.height * (scale / imgScale) / 2);
 
 					// notify
 //					imageLoaded(targets, db, margin, scale, f, 1);
 					imageLoaded(targets, db, margin, scale, f, index, this, scale / imgScale, 0, 0, scale / imgScale, av2.x, av2.y);
 				}
-	            img2.src = "img" + imgScale + "x/" + markerImageBase + ".png";
+	            img2.src = "img" + imgScale + "x/" + marker.metadata.image + ".png";
 				localDrawnImages++;
 			}
 		}
