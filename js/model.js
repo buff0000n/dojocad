@@ -267,7 +267,7 @@ class Marker {
 
     addDisplay(viewContainer) {
         if (this.floor == viewFloor) {
-	        this.marker = this.room.addDisplayElement(".png", 3, this.metadata.image, true);
+	        this.marker = this.room.addDisplayElement(".png", 4, this.metadata.image, true);
         }
     }
 
