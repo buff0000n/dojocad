@@ -3,7 +3,8 @@
 //==============================================================
 
 class MTEvent {
-	constructor(currentTarget, clientX, clientY, altKey, shiftKey) {
+	constructor(isTouch, currentTarget, clientX, clientY, altKey, shiftKey) {
+		this.isTouch = isTouch;
 		this.currentTarget = currentTarget;
 		this.clientX = clientX;
 		this.clientY = clientY;
@@ -51,7 +52,7 @@ function touchEventToMTEvent(e) {
 
     if (primary) {
         // we can generate an event, yay our team
-        lastTouchEvent = new MTEvent(primary.target, primary.clientX, primary.clientY, e.altKey, e.shiftKey)
+        lastTouchEvent = new MTEvent(true, primary.target, primary.clientX, primary.clientY, e.altKey, e.shiftKey)
         // save the identifier for next time
         lastTouchIdentifier = primary.identifier;
 	    return lastTouchEvent;
@@ -65,7 +66,7 @@ function touchEventToMTEvent(e) {
         // todo: remove eventually. I'm pretty sure this can't happen any more
         // Update, it does happen, but I only saw it once and can't replicate it
         showDebug("Generating bogus touch event");
-	    return new MTEvent(null, 0, 0, false, false);
+	    return new MTEvent(true, null, 0, 0, false, false);
     }
 }
 
@@ -196,7 +197,7 @@ var lastMouseEvent = null;
 
 function mouseEventToMTEvent(e) {
 	lastMouseEvent = e;
-	return new MTEvent(e.currentTarget, e.clientX, e.clientY, e.altKey, e.shiftKey);
+	return new MTEvent(false, e.currentTarget, e.clientX, e.clientY, e.altKey, e.shiftKey);
 }
 
 function mouseDown(e) {
@@ -395,6 +396,8 @@ function dropEvent(e) {
     document.ontouchend = null;
     document.ontouchmove = null;
     mouseDownTarget = null;
+    // stop auto-scrolling
+    setAutoScroll(e, 0, 0)
 }
 
 function cancelRoomDrag() {
@@ -483,7 +486,10 @@ var autoScrollAreaRatio = 0.05;
 // How often to auto-scroll
 var autoScrollsPerSecond = 30;
 // Multiplied by the auto-scroll zone width to determine the max amount to scroll in one second
-var autoScrollSpeedFactor = 10.0/autoScrollsPerSecond;
+var mouseAutoScrollSpeedFactor = 10.0/autoScrollsPerSecond;
+// bump up the speed on a touch screen because it's harder to actually reach the edge of the window
+var touchAutoScrollSpeedFactor = 20.0/autoScrollsPerSecond;
+
 var autoScrollTime = 1000.0/autoScrollsPerSecond;
 
 var windowWidth;
@@ -568,8 +574,9 @@ function doAutoScroll() {
 	}
 
 	// calculate the change in x and y
-	var dx = autoScrollXAmount * autoScrollSize * autoScrollSpeedFactor;
-	var dy = autoScrollYAmount * autoScrollSize * autoScrollSpeedFactor;
+	var speedFactor = autoScrollSize * (autoScrollEvent.isTouch ? touchAutoScrollSpeedFactor : mouseAutoScrollSpeedFactor);
+	var dx = autoScrollXAmount * speedFactor;
+	var dy = autoScrollYAmount * speedFactor;
 
 	// scroll the view point opposite to the auto-scroll direction
 	setViewP(viewPX - dx, viewPY - dy, viewScale);
