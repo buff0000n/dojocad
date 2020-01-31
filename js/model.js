@@ -1202,6 +1202,9 @@ function convertFloorToPngLink(targets, db, margin, scale, f) {
 			// see if the room has any markers
 			for (var m = 0; m < room.markers.length; m++) {
 				var marker = room.markers[m];
+				if (marker.floor != f) {
+					continue;
+				}
 				// build an image link because that's what context.drawImage wants
                 var img2 = new Image();
                 // we have store parameters in the img object itself
