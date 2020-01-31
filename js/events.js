@@ -339,6 +339,8 @@ function dragEvent(e) {
 	    selectedRoom.setDragOffset(offsetPX, offsetPY, e.shiftKey ? 8 : 1);
 	    selectedRoom.updateView();
 
+	    checkAutoScroll(e);
+
     } else {
 		mouseDownTarget = null;
 	    mouseDownTargetStartPX = e.clientX;
@@ -470,4 +472,136 @@ function keyDown(e) {
 			rotateSelectedRoom(lastMouseEvent);
 		    break;
 	}
+}
+
+//==============================================================
+// window size and auto-scroll handling
+//==============================================================
+
+// How wide the auto-scroll zone is compared to the smallest dimension of the window
+var autoScrollAreaRatio = 0.05;
+// How often to auto-scroll
+var autoScrollsPerSecond = 30;
+// Multiplied by the auto-scroll zone width to determine the max amount to scroll in one second
+var autoScrollSpeedFactor = 10.0/autoScrollsPerSecond;
+var autoScrollTime = 1000.0/autoScrollsPerSecond;
+
+var windowWidth;
+var windowHeight;
+var autoScrollSize;
+var autoScrollDebugElement = null;
+
+// preserve the auto-scroll event so we can re-run the drag logic to move whatever it is we're dragging while auto-scrolling
+var autoScrollEvent;
+var autoScrollTimeout;
+var autoScrollXAmount;
+var autoScrollYAmount;
+
+function windowSizeChanged(h, w) {
+	windowHeight = h;
+	windowWidth = w;
+	// re-calculate the width of the auto-scroll zone
+	autoScrollSize = Math.max(windowWidth, windowHeight) * autoScrollAreaRatio;
+
+	if (debugEnabled) {
+	    updateAutoScrollDebug();
+	}
+}
+
+function checkAutoScroll(e) {
+	// calculate the amount of x-direction auto-scroll, if any
+	// amount goes from -1 at the left window boundary, to 0 at the left auto-scroll zone boundary,
+	// to 0 at the right auto-scroll zone boundary, to 1 at the right window boundary
+	var x = e.clientX;
+	var dx;
+	if (x < autoScrollSize) {
+		dx = Math.max(-1 + (x / autoScrollSize), -1);
+	} else if (x > (windowWidth - autoScrollSize)) {
+		dx = Math.min(1 + ((x - windowWidth) / autoScrollSize), 1);
+	} else {
+		dx = 0;
+	}
+	
+	// calculate the amount of y-direction auto-scroll, if any
+	// amount works the same as the x-direction
+	var y = e.clientY;
+	var dy;
+	if (y < autoScrollSize) {
+		dy = Math.max(-1 + (y / autoScrollSize), -1);
+	} else if (y > (windowHeight - autoScrollSize)) {
+		dy = Math.min(1 + ((y - windowHeight) / autoScrollSize), 1);
+	} else {
+		dy = 0;
+	}
+
+	// refresh auto-scroll state
+	setAutoScroll(e, dx, dy);
+}
+
+function setAutoScroll(e, xAmount, yAmount) {
+	/// save the amounts
+	autoScrollXAmount = xAmount;
+	autoScrollYAmount = yAmount;
+
+	if (xAmount == 0 && yAmount == 0) {
+		// turn off scrolling if there is no auto-scroll
+		if (autoScrollTimeout) {
+			clearTimeout(autoScrollTimeout);
+			autoScrollTimeout = null;
+		}
+		autoScrollEvent = null;
+
+	} else {
+		// save the event so we can repeat the dragEvent() call
+		autoScrollEvent = e;
+		// make sure scrolling is turned on
+		if (!autoScrollTimeout) {
+			autoScrollTimeout = setTimeout(doAutoScroll, autoScrollTime);
+		}
+	}
+}
+
+function doAutoScroll() {
+	// sanity check
+	if (!autoScrollTimeout) {
+		return;
+	}
+
+	// calculate the change in x and y
+	var dx = autoScrollXAmount * autoScrollSize * autoScrollSpeedFactor;
+	var dy = autoScrollYAmount * autoScrollSize * autoScrollSpeedFactor;
+
+	// scroll the view point opposite to the auto-scroll direction
+	setViewP(viewPX - dx, viewPY - dy, viewScale);
+	// offset the drag start point opposite to the auto-scroll direction
+	mouseDownTargetStartPX -= dx;
+	mouseDownTargetStartPY -= dy;
+
+	// repeat the dragEvent handling to move whatever we're dragging
+	dragEvent(autoScrollEvent);
+
+	// repeat
+	autoScrollTimeout = setTimeout(doAutoScroll, autoScrollTime);
+}
+
+function enableAutoScrollDebug(enabled) {
+	if (enabled) {
+		if (!autoScrollDebugElement) {
+	        autoScrollDebugElement = document.createElement("div");
+	        autoScrollDebugElement.className = "debugDoorBounds";
+			autoScrollDebugElement.style.position = "absolute";
+			updateAutoScrollDebug();
+			getRoomContainer().appendChild(autoScrollDebugElement);
+		}
+	} else if (autoScrollDebugElement) {
+		autoScrollDebugElement.remove();
+		autoScrollDebugElement = null;
+	}
+}
+
+function updateAutoScrollDebug() {
+	autoScrollDebugElement.style.left = autoScrollSize;
+	autoScrollDebugElement.style.top = autoScrollSize;
+	autoScrollDebugElement.style.width = windowWidth - (autoScrollSize * 2);
+	autoScrollDebugElement.style.height = windowHeight - (autoScrollSize * 2);
 }

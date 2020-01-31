@@ -597,6 +597,8 @@
             modifyUrlQueryParam("debug", "true");
 			saveModelToUrl();
         }
+
+        enableAutoScrollDebug(debugEnabled);
     }
 
     /************************************************************
@@ -679,9 +681,7 @@
         // init the model
         initModel();
 
-        /*
-        window.onresize();
-        */
+        onresize();
 
         if (window.location.href.indexOf("#") > 0) {
             toggleHelp();
@@ -692,13 +692,11 @@
         }
     }
 
-    /*
-    window.onresize = function() {
-        var h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
-        document.body.style.height = h + "px";
-        showDebug(h + "");
+    function onresize() {
+        var h = Math.max(document.documentElement.clientHeight, window.innerHeight);
+        var w = Math.max(document.documentElement.clientWidth, window.innerWidth);
+        windowSizeChanged(h, w);
     }
-    */
 
     function onScroll() {
         // huge freaking hack for Chrome:
@@ -712,7 +710,7 @@
     }
 
 </script>
-<body onload="init()" onkeydown="keyDown()" onscroll="onScroll()">
+<body onload="init()" onkeydown="keyDown()" onscroll="onScroll()" onresize="onresize()">
 
 <!-- Grid background -->
 <div id="grid"></div>
@@ -751,7 +749,7 @@
         <div class="helpContainer">
             <p style="text-align: center;">
                 <span class="title">DojoCAD</span><br/>
-                v1.2.1: 2020-01-27<br/>
+                v1.2.2: 2020-01-31<br/>
                 <a href="https://github.com/buff0000n/dojoarch">Source</a>&nbsp;
                 <a href="https://github.com/buff0000n/dojoarch/issues/2">Feedback</a>&nbsp;
                 <a href="https://github.com/buff0000n/dojocad/issues/new">Bugs</a><br/>
@@ -881,6 +879,11 @@
             <p>
                 This includes clicking on a room, as long as that room isn't currently selected (see
                 <a href="#SelectingARoom">Selecting a Room</a>).
+            </p>
+            <p>
+                If a room is selected and being dragged into position, then dragging near the window boundary will
+                automatically scroll in that direction.  The closer the cursor is to the window boundary the faster
+                the scrolling.
             </p>
 
             <h2 id="Xooming">Zooming</h2>
@@ -1216,12 +1219,13 @@
                     (thanks <strong>PC ShadowMageAlpha</strong>, <strong>u/Ramarr</strong>)</li>
                 <li>Added a less severe Warning system, currently only applies to the presence of discontinued rooms</li>
                 <li>Added map icons for things that have map icons in-game</li>
+                <li>Implemented auto-scrolling when dragging a room near the boundary of the window.</li>
             </ul>
 
             <h1 id="ToDo">To Do</h1>
             <ul>
                 <li>
-                    Dragging a room near the window's edge auto-scrolls
+                    Door markers while dragging
                 </li>
                 <li>
                     Room menu icons
@@ -1231,9 +1235,6 @@
                 </li>
                 <li>
                     Undo/Redo
-                </li>
-                <li>
-                    Door markers while dragging
                 </li>
                 <li>
                     Tree structure like a real dojo
