@@ -78,7 +78,7 @@ var roomMetadata =
 		{"resource": "Forma", "costs": [1, 1, 1, 1, 5]}],
 	"blockedFromAboveBy": [
 		"dd"]},
-{"id": "ce", "image": "elevator-bottom", "name": "Elevator", "category": "Connectors", "prereq": null, "capacity": -2, "energy": -2, "maxnum": null, "floor": -24, "ceil": 16,
+{"id": "ce", "image": "elevator-bottom", "name": "Elevator", "category": "Connectors", "prereq": null, "capacity": -2, "energy": -2, "maxnum": null, "floor": -24, "ceil": 16, "multifloor": true,
 	"bounds": [
 		{"x1": -8, "y1": -12, "x2": 8, "y2": 12, "floor": -24, "ceil": 80}],
 	"doors": [
@@ -368,6 +368,19 @@ var roomMetadata =
 	"blockedFromAboveBy": [
 		"ob","oc","re","ce","dd"]}, //"b4"?
 
+{"id": "ob", "image": "observatory", "name": "Observatory", "category": "Misc", "prereq": null, "capacity": -2, "energy": -5, "maxnum": null, "floor": -32, "ceil": 52,
+	"bounds": [
+		{"x1": -50, "y1": -80, "x2": 50, "y2": 80, "floor": -32, "ceil": 52}],
+	"doors": [
+		{"x": 0, "y": 80, "floor": 0, "outx": 0, "outy": 1}],
+	"resources": [
+		{"resource": "Credits", "costs": [1000, 3000, 10000, 30000, 100000]},
+		{"resource": "Ferrite", "costs": [800, 2400, 8000, 24000, 80000]},
+		{"resource": "Circuits", "costs": [200, 600, 2000, 6000, 20000]},
+		{"resource": "Salvage", "costs": [500, 1500, 5000, 15000, 50000]},
+		{"resource": "Forma", "costs": [1, 1, 2, 5, 15]}], "unverified": true,
+	"blockedFromAboveBy": [
+		"lc","ce","ob","oc","lo","re","dd"]}, //"b4"?
 {"id": "gs", "image": "small-garden", "name": "Small Garden", "category": "Misc", "prereq": null, "capacity": -10, "energy": -6, "maxnum": null, "floor": 0, "ceil": 20,
 	"bounds": [
 		{"x1": -16, "y1": -16, "x2": 16, "y2": 16, "floor": 0, "ceil": 20}],
@@ -402,19 +415,6 @@ var roomMetadata =
 		{"resource": "Forma", "costs": [1, 1, 1, 3, 10]}], "unverified": true,
 	"blockedFromAboveBy": [
 		"dd"]},
-{"id": "ob", "image": "observatory", "name": "Observatory", "category": "Misc", "prereq": null, "capacity": -2, "energy": -5, "maxnum": null, "floor": -32, "ceil": 52,
-	"bounds": [
-		{"x1": -50, "y1": -80, "x2": 50, "y2": 80, "floor": -32, "ceil": 52}],
-	"doors": [
-		{"x": 0, "y": 80, "floor": 0, "outx": 0, "outy": 1}],
-	"resources": [
-		{"resource": "Credits", "costs": [1000, 3000, 10000, 30000, 100000]},
-		{"resource": "Ferrite", "costs": [800, 2400, 8000, 24000, 80000]},
-		{"resource": "Circuits", "costs": [200, 600, 2000, 6000, 20000]},
-		{"resource": "Salvage", "costs": [500, 1500, 5000, 15000, 50000]},
-		{"resource": "Forma", "costs": [1, 1, 2, 5, 15]}], "unverified": true,
-	"blockedFromAboveBy": [
-		"lc","ce","ob","oc","lo","re","dd"]}, //"b4"?
 {"id": "th", "image": "temple-of-honor", "name": "Temple Of Honor", "category": "Misc", "prereq": null, "capacity": -2, "energy": -5, "maxnum": null, "floor": 0, "ceil": 20,
 	"bounds": [
 		{"x1": -32, "y1": -8, "x2": 32, "y2": 8, "floor": 0, "ceil": 20},
@@ -461,6 +461,24 @@ var roomMetadata =
 	"blockedFromAboveBy": [
 		"dd"]},
 
+{"id": "oh1", "image": "old-hall", "name": "(Old) Clan Hall", "category": "Discontinued", "discontinued": true, "spawn": true, "prereq": null, "capacity": 100, "energy": 5, "maxnum": null, "floor": -8, "ceil": 24,
+	"bounds": [
+		{"x1": -18, "y1": -32.25, "x2": 18, "y2": 32.25, "floor": -8, "ceil": 24}],
+	"doors": [
+		{"x": 0, "y": 32.25, "floor": 0, "outx": 0, "outy": 1},
+		{"x": 0, "y": -32.25, "floor": 0, "outx": 0, "outy": -1}],
+	"resources": [], "unverified": true,
+	"blockedFromAboveBy": [
+		"dd"]},
+{"id": "oh2", "image": "old-great-hall", "name": "(Old) Clan Great Hall", "category": "Discontinued", "discontinued": true, "spawn": true, "prereq": null, "capacity": 0, "energy": 0, "maxnum": null, "floor": -8, "ceil": 24,
+	"bounds": [
+		{"x1": -32, "y1": -32, "x2": 32, "y2": 32, "floor": -8, "ceil": 24}],
+	"doors": [
+		{"x": 0, "y": 32, "floor": 0, "outx": 0, "outy": 1},
+		{"x": 0, "y": -32, "floor": 0, "outx": 0, "outy": -1}],
+	"resources": [], "unverified": true,
+	"blockedFromAboveBy": [
+		"dd"]},
 {"id": "occ", "image": "old-cross-connector", "name": "(Old) Cross Connector", "category": "Discontinued", "discontinued": true, "prereq": null, "capacity": 0, "energy": 0, "maxnum": null, "floor": -8, "ceil": 24,
 	"bounds": [
 		{"x1": -18.25, "y1": -18.25, "x2": 18.25, "y2": 18.25, "floor": -8, "ceil": 24}],
@@ -479,24 +497,6 @@ var roomMetadata =
 		{"x": 0, "y": 18.25, "floor": 0, "outx": 0, "outy": 1},
 		{"x": 18.25, "y": 0, "floor": 0, "outx": 1, "outy": 0},
 		{"x": 0, "y": -18.25, "floor": 0, "outx": 0, "outy": -1}],
-	"resources": [], "unverified": true,
-	"blockedFromAboveBy": [
-		"dd"]},
-{"id": "oh1", "image": "old-hall", "name": "(Old) Clan Hall", "category": "Discontinued", "discontinued": true, "spawn": true, "prereq": null, "capacity": 100, "energy": 5, "maxnum": null, "floor": -8, "ceil": 24,
-	"bounds": [
-		{"x1": -18, "y1": -32.25, "x2": 18, "y2": 32.25, "floor": -8, "ceil": 24}],
-	"doors": [
-		{"x": 0, "y": 32.25, "floor": 0, "outx": 0, "outy": 1},
-		{"x": 0, "y": -32.25, "floor": 0, "outx": 0, "outy": -1}],
-	"resources": [], "unverified": true,
-	"blockedFromAboveBy": [
-		"dd"]},
-{"id": "oh2", "image": "old-great-hall", "name": "(Old) Clan Great Hall", "category": "Discontinued", "discontinued": true, "spawn": true, "prereq": null, "capacity": 0, "energy": 0, "maxnum": null, "floor": -8, "ceil": 24,
-	"bounds": [
-		{"x1": -32, "y1": -32, "x2": 32, "y2": 32, "floor": -8, "ceil": 24}],
-	"doors": [
-		{"x": 0, "y": 32, "floor": 0, "outx": 0, "outy": 1},
-		{"x": 0, "y": -32, "floor": 0, "outx": 0, "outy": -1}],
 	"resources": [], "unverified": true,
 	"blockedFromAboveBy": [
 		"dd"]},

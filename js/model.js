@@ -328,7 +328,8 @@ class Room {
 		        }
 	        }
 		}
-        this.multifloor = this.metadata.floor_images != null && this.metadata.floor_images.length > 1;
+//        this.multifloor = this.metadata.floor_images != null && this.metadata.floor_images.length > 1;
+        this.multifloor = this.metadata.multifloor ? true : false;
 
         this.floor = null;
 

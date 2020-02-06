@@ -321,7 +321,7 @@
         background: #801010;
     }
 
-    .field {
+    .field, .imgField {
         background-color: #202030;
         color: #FFFFFF;
     }
@@ -329,6 +329,19 @@
     .field-error {
         background-color: #B02020;
         color: #FFFFFF;
+    }
+
+    td.field {
+        margin: 0;
+        padding: 0ex, 0.5ex;
+        border: 0;
+    }
+
+    td.imgField {
+        margin: 0;
+        padding: 0ex, 0ex;
+        border: 0;
+        border-radius: 1ex;
     }
 
     .menu-table, .menu-table-error, .menu-table-warn {
@@ -344,11 +357,12 @@
         border-radius: 1ex;
         position: absolute;
         user-select: none;
-        z-index: 16;
+        z-index: 30;
+        box-shadow: 0 0 3px 3px #000000;
     }
 
     .menu-table {
-        background-color: #202030;
+        background-color: #303050;
     }
 
     .menu-table-error {
@@ -400,9 +414,22 @@
 
     .menu-divider {
         margin: 1ex 1ex 1ex 1ex;
-        background-color: #303050;
+        background-color: #202030;
         padding: 1ex;
         border-radius: 1ex;
+    }
+
+    .imgButton {
+        cursor: pointer;
+    }
+
+    .menu-table-error tr td.field, .menu-table-error tr td.imgField  {
+        background-color: #381818;
+    }
+
+    .menu-table-warn tr td.field, .menu-table-warn tr td.imgField  {
+        background-color: #707000;
+        color: #000000;
     }
 
     /************************************************************
@@ -527,7 +554,7 @@
         text-decoration: none;
         font-size: 100%;
         position: absolute;
-        z-index: 16;
+        z-index: 30;
     }
 
     .matrix-table tr td, .matrix-table tr th {
@@ -749,7 +776,7 @@
         <div class="helpContainer">
             <p style="text-align: center;">
                 <span class="title">DojoCAD</span><br/>
-                v1.2.2: 2020-01-31<br/>
+                v1.2.3: 2020-02-06<br/>
                 <a href="https://github.com/buff0000n/dojoarch">Source</a>&nbsp;
                 <a href="https://github.com/buff0000n/dojoarch/issues/2">Feedback</a>&nbsp;
                 <a href="https://github.com/buff0000n/dojocad/issues/new">Bugs</a><br/>
@@ -1220,15 +1247,13 @@
                 <li>Added a less severe Warning system, currently only applies to the presence of discontinued rooms</li>
                 <li>Added map icons for things that have map icons in-game</li>
                 <li>Implemented auto-scrolling when dragging a room near the boundary of the window.</li>
+                <li>Overhauled the menus, adding icons and close buttons and drop shadows and other cool crap.</li>
             </ul>
 
             <h1 id="ToDo">To Do</h1>
             <ul>
                 <li>
                     Door markers while dragging
-                </li>
-                <li>
-                    Room menu icons
                 </li>
                 <li>
                     Add some actions for the error menus, i.e. clicking on the "Oracle is required" error creates an Oracle room to place.
@@ -1244,6 +1269,9 @@
                     </ul>
                 </li>
                 <li>
+                    Showing the rooms on other floors in some shape or fashion
+                </li>
+                <li>
                     Level of detail image sets for zoom levels
                 </li>
                 <li>
@@ -1253,6 +1281,9 @@
 
             <h1 id="KnownIssues">Known Issues</h1>
             <ul>
+                <li>
+                    Pop-up menus have issues fitting itself entirely inside the screen sometimes.
+                </li>
                 <li>
                     If you're on a phone, the UI doesn't fit very well in landscape mode.
                 </li>
