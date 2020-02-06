@@ -182,6 +182,18 @@ function movedSelectedRoom() {
 	saveModelToUrl();
 }
 
+function showDoorMarkers() {
+	for (var r = 0; r < roomList.length; r++) {
+		roomList[r].showDoorMarkers();
+	}
+}
+
+function hideDoorMarkers() {
+	for (var r = 0; r < roomList.length; r++) {
+		roomList[r].hideDoorMarkers();
+	}
+}
+
 function buildModelParam() {
 	var value = "";
 	for (var r = 0; r < roomList.length; r++) {

@@ -333,11 +333,14 @@ function dragEvent(e) {
         return;
     }
 
-    dragged = true;
-
     if (mouseDownTarget && mouseDownTarget.room && mouseDownTarget.room == selectedRoom) {
 	    // set the element's new position:
-	    selectedRoom.setDragOffset(offsetPX, offsetPY, e.shiftKey ? 8 : 1);
+	    selectedRoom.setDragOffset(offsetPX, offsetPY, null, e.shiftKey ? 8 : 1);
+
+	    if (!dragged) {
+	        showDoorMarkers();
+	    }
+
 	    selectedRoom.updateView();
 
 	    checkAutoScroll(e);
@@ -349,6 +352,8 @@ function dragEvent(e) {
 
 		setViewP(viewPX + offsetPX, viewPY + offsetPY, viewScale);
     }
+
+    dragged = true;
 }
 
 function dropEvent(e) {
@@ -361,6 +366,8 @@ function dropEvent(e) {
 		    selectedRoom.dropDragOffset();
 		    selectedRoom.updateView();
 		    dragged = false;
+
+	        hideDoorMarkers();
 
 		} else if (e.shiftKey) {
 			rotateSelectedRoom();
@@ -410,13 +417,14 @@ function cancelRoomDrag() {
 		    selectedRoom = null;
 
 		} else {
-	        selectedRoom.setDragOffset(0, 0)
+	        selectedRoom.setDragOffset(0, 0, 0)
 		    selectedRoom.dropDragOffset();
 		    selectedRoom.updateView();
 		}
 
 	    mouseDownTarget = null;
 	    dragged = false;
+        hideDoorMarkers();
 
 	    document.onmouseup = null;
 	    document.onmousemove = null;

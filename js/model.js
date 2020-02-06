@@ -12,7 +12,7 @@ class Bound {
 
     updatePosition() {
         // rotate the bound corners and translate by the room position
-        var rotation = this.room.rotation;
+        var rotation = (this.room.rotation + this.room.mdragOffsetRotation) % 360;
         var mv1 = new Vect(this.metadata.x1, this.metadata.y1).rotate(rotation).add(this.room.mv).add(this.room.mdragOffset);
         var mv2 = new Vect(this.metadata.x2, this.metadata.y2).rotate(rotation).add(this.room.mv).add(this.room.mdragOffset);
 
@@ -106,11 +106,14 @@ class Door {
         this.otherDoor = null;
         this.incoming = false;
         this.crossBranch = false;
+
+        this.marker = null;
     }
 
     updatePosition() {
-        this.mv = new Vect(this.metadata.x, this.metadata.y).rotate(this.room.rotation).add(this.room.mv).add(this.room.mdragOffset);;
-        this.outv = new Vect(this.metadata.outx, this.metadata.outy).rotate(this.room.rotation);
+        var roomRotation = (this.room.rotation + this.room.mdragOffsetRotation) % 360;
+        this.mv = new Vect(this.metadata.x, this.metadata.y).rotate(roomRotation).add(this.room.mv).add(this.room.mdragOffset);;
+        this.outv = new Vect(this.metadata.outx, this.metadata.outy).rotate(roomRotation);
         this.rotation = this.outv.toRotation();
         this.floor = this.room.floor + this.metadata.floor;
         
@@ -233,6 +236,24 @@ class Door {
         }
     }
 
+    showDoorMarker() {
+        if (this.floor == viewFloor && !this.otherDoor) {
+	        if (!this.marker) {
+	            this.marker = this.room.addDisplayElement(".png", 5, "marker-door", true);
+	        } else {
+		        this.room.viewContainer.appendChild(this.marker);
+	        }
+	        this.updateView();
+        }
+    }
+
+    hideDoorMarker() {
+        if (this.marker) {
+            this.marker.remove();
+            // this.marker = null;
+        }
+    }
+
     updateView() {
         if (this.debugBorder) {
 			this.debugBorder.style.left = (this.x1 * viewScale) + viewPX;
@@ -240,9 +261,14 @@ class Door {
 			this.debugBorder.style.width = (this.x2 - this.x1) * viewScale;
 			this.debugBorder.style.height = (this.y2 - this.y1) * viewScale;
         }
+        if (this.marker) {
+            var transform2 = this.room.getDoorMarkerImageTransform(this.mv.x, this.mv.y, this.rotation, viewPX, viewPY, viewScale);
+			this.room.updateViewElement(this.marker, transform2);
+        }
     }
 
     removeDisplay() {
+        this.hideDoorMarker();
         if (this.debugBorder) {
             this.debugBorder.remove();
         }
@@ -261,7 +287,7 @@ class Marker {
 	}
 
     updatePosition() {
-        this.mv = new Vect(this.metadata.x, this.metadata.y).rotate(this.room.rotation).add(this.room.mv);
+        this.mv = new Vect(this.metadata.x, this.metadata.y).rotate((this.room.rotation + this.room.mdragOffsetRotation) % 369).add(this.room.mv);
         this.floor = this.room.floor + this.metadataFloor;
     }
 
@@ -340,6 +366,7 @@ class Room {
         this.selected = false;
 
         this.mdragOffset = new Vect(0, 0);
+        this.mdragOffsetRotation = 0;
         this.dragging = false;
 
         this.calculateAnchor();
@@ -742,8 +769,14 @@ class Room {
     }
 
     rotate() {
-	    this.disconnectAllDoors();
-        this.setPositionAndConnectDoors(this.mv.x, this.mv.y, this.floor, (this.rotation + 90) % 360);
+        if (this.dragging) {
+            // todo: save the original drag offset so we can reset the position if the room is rotated away from a door snapping zone
+	        this.setDragOffset(null, null, (this.mdragOffsetRotation + 90) % 360, 1);
+
+        } else {
+		    this.disconnectAllDoors();
+	        this.setPositionAndConnectDoors(this.mv.x, this.mv.y, this.floor, (this.rotation + 90) % 360);
+        }
     }
     
     rotateFloor() {
@@ -816,13 +849,14 @@ class Room {
 		}
 	}
 
-    setDragOffset(offsetPX, offsetPY, snap, roomList) {
-		if (offsetPX != 0 || offsetPY != 0) {
+    setDragOffset(offsetPX, offsetPY, offsetRotation, snap) {
+		if (offsetPX != null && (offsetPX != 0 || offsetPY != 0) || (offsetRotation != null && offsetRotation != 0)) {
 			// We've actually been dragged.  Set the flag and disconnect doors.
 			this.dragging = true;
 			this.disconnectAllDoors();
 
-		} else if (offsetPX == 0 && offsetPY == 0) {
+		} else if (((offsetPX != null && (offsetPX == 0 && offsetPY == 0)) || (offsetPX == null && this.mdragOffset.lengthSquared == 0))
+			&& ((offsetRotation != null && offsetRotation == 0) || (offsetRotation == null && this.mdragOffsetRotation == 0))) {
 			// either dragging was canceled or we've been dragged back to our starting position.  Reconnect doors that
 			// were disconnected.
 			this.reconnectAllDoors();
@@ -832,8 +866,13 @@ class Room {
 		    this.grid.style.filter = "brightness(200%)";
 		}
 
-        // start by snapping to the nearest meter
-        this.mdragOffset.set(Math.round(offsetPX / viewScale), Math.round(offsetPY / viewScale));
+        if (offsetPX != null) {
+	        // start by snapping to the nearest meter
+            this.mdragOffset.set(Math.round(offsetPX / viewScale), Math.round(offsetPY / viewScale));
+        }
+        if (offsetRotation != null) {
+            this.mdragOffsetRotation = offsetRotation;
+        }
 
 		// update door positions now so we can use them to figure out door snapping
 		this.updateDoorPositions();
@@ -911,13 +950,15 @@ class Room {
 
     dropDragOffset() {
         // check if we actually dragged anywhere
-        if (this.mdragOffset.x != 0 || this.mdragOffset.y!= 0) {
+        if (this.mdragOffset.x != 0 || this.mdragOffset.y!= 0 || this.mdragOffsetRotation != 0) {
             // calculate the new position
             var nmv = this.mv.add(this.mdragOffset);
+			var nr = (this.rotation + this.mdragOffsetRotation) % 360;
             // reset the drag offset
             this.mdragOffset.set(0, 0);
 	        // commit the position change
-            this.setPositionAndConnectDoors(nmv.x, nmv.y, this.floor, this.rotation);
+	        this.mdragOffsetRotation = 0;
+            this.setPositionAndConnectDoors(nmv.x, nmv.y, this.floor, nr);
 
         } else {
             this.reconnectAllDoors();
@@ -999,6 +1040,14 @@ class Room {
 		return this.metadata.image
     }
 
+    showDoorMarkers() {
+        if (this.isVisible()) {
+			for (var d = 0; d < this.doors.length; b++) {
+				this.doors[d].showDoorMarker();
+			}
+        }
+    }
+
     removeDisplay() {
         // remove the images, whichever ones are presesnt
 	    this.display = this.removeDisplayElement(this.display);
@@ -1024,6 +1073,20 @@ class Room {
         return null;
     }
 
+	showDoorMarkers() {
+	    if (this.isVisible()) {
+	        for (var d = 0; d < this.doors.length; d++) {
+	            this.doors[d].showDoorMarker();
+	        }
+	    }
+	}
+
+	hideDoorMarkers() {
+        for (var d = 0; d < this.doors.length; d++) {
+            this.doors[d].hideDoorMarker();
+        }
+	}
+
     updateView() {
         if (this.display || this.grid) {
             var transform = this.getImageTransform(viewPX, viewPY, viewScale);
@@ -1048,6 +1111,7 @@ class Room {
         // transform the anchor coords to pixel coords
 		var roomViewCenterPX = ((this.mv.x + this.mdragOffset.x) * viewScale) + viewPX;
 		var roomViewCenterPY = ((this.mv.y + this.mdragOffset.y) * viewScale) + viewPY;
+		var roomRotation = (this.rotation + this.mdragOffsetRotation) % 360;
 		// we have to add the anchor points scaled by the image scale rather than the view scale in order for the
 		// css transform to put the room in the right place.  so much trial and error to get this rght...
         var roomViewPX = roomViewCenterPX + (this.anchorMX * imgScale);
@@ -1058,7 +1122,7 @@ class Room {
 
 	    // https://www.w3schools.com/cssref/css3_pr_transform.asp
 	    // translate() need to be before rotate() and scale()
-		return "translate(" + roomViewPX + "px, " + roomViewPY + "px) rotate(" + this.rotation + "deg) scale(" + scale + ", " + scale + ")";
+		return "translate(" + roomViewPX + "px, " + roomViewPY + "px) rotate(" + roomRotation + "deg) scale(" + scale + ", " + scale + ")";
 	}
 
 	getMarkerImageTransform(mx, my, viewPX, viewPY, viewScale) {
@@ -1071,6 +1135,23 @@ class Room {
 
 		// translate by the pixel coords, and then back by 50% to center the image
 		return "translate(" + roomViewCenterPX + "px, " + roomViewCenterPY + "px) translate(-50%, -50%) scale(" + scale + ", " + scale + ")";
+	}
+
+	getDoorMarkerImageTransform(mx, my, rotation, viewPX, viewPY, viewScale) {
+        // doors' coordinates already include the room's offset
+		var roomViewCenterPX = (mx * viewScale) + viewPX;
+		var roomViewCenterPY = (my * viewScale) + viewPY;
+
+		// final scaling of the image
+		var scale = viewScale / imgScale;
+
+		// translate by the pixel coords, and then back by 50% to center the image
+		if (rotation) {
+			return "translate(" + roomViewCenterPX + "px, " + roomViewCenterPY + "px) translate(-50%, -50%) rotate(" + rotation + "deg) scale(" + scale + ", " + scale + ")";
+
+		} else {
+			return "translate(" + roomViewCenterPX + "px, " + roomViewCenterPY + "px) translate(-50%, -50%) scale(" + scale + ", " + scale + ")";
+		}
 	}
 
     updateViewElement(e, transform) {
