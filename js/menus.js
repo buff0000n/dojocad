@@ -86,7 +86,7 @@ function doCloseMenu() {
 function buildCloseMenuButton() {
     var buttonDiv = document.createElement("td");
 //    buttonDiv.className = "field";
-    buttonDiv.innerHTML = `<img class="imgButton" src="icons/icon-close.png" srcset="icons2x/icon-close.png 2x" title="Close Help"/>`;
+    buttonDiv.innerHTML = `<img class="imgButton" src="icons/icon-close.png" srcset="icons2x/icon-close.png 2x" title="Close Menu"/>`;
     buttonDiv.onclick = doCloseMenu;
     buttonDiv.menuLevel = getCurrentMenuLevel();
     return buttonDiv;
@@ -175,6 +175,10 @@ function showMenuAt(menuDiv, left, top) {
 	var w = window.innerWidth;
 	var h = window.innerHeight;
 
+	if (left < 0) left = 0;
+
+	if (top < 0) top = 0;
+
     if (left + bcr.width > w) {
         left = Math.max(0, w - bcr.width);
     }
@@ -186,16 +190,48 @@ function showMenuAt(menuDiv, left, top) {
     menuDiv.style.top = top;
 
     menus.push(menuDiv);
+
+	setTimeout(function() { menuPlacementHack1(menuDiv) }, 100);
 }
 
-function showMenu(menuDiv, element) {
+function menuPlacementHack1(menuDiv) {
+	showDebug("HACK " + menuDiv);
+
+    var bcr = menuDiv.getBoundingClientRect();
+    // pulled from events.js
+//	var windowWidth;
+//	var windowHeight;
+
+    if (bcr.right > windowWidth) {
+        menuDiv.style.left = "";
+        menuDiv.style.right = "0px";
+    }
+
+	setTimeout(function() { menuPlacementHack2(menuDiv) }, 100);
+}
+
+function menuPlacementHack2(menuDiv) {
+	showDebug("HACK " + menuDiv);
+
+    var bcr = menuDiv.getBoundingClientRect();
+    // pulled from events.js
+//	var windowWidth;
+//	var windowHeight;
+
+    if (bcr.bottom > windowHeight) {
+        menuDiv.style.top = "";
+        menuDiv.style.bottom = "0px";
+    }
+}
+
+function showMenu(menuDiv, element, fullWidth = false) {
 	var elementBcr = element.getBoundingClientRect();
 	if (getCurrentMenuLevel() == 0) {
-		var left = elementBcr.left;
+		var left = fullWidth ? 0 : elementBcr.left;
 		var top = elementBcr.bottom;
 
 	} else {
-		var left = elementBcr.right;
+		var left = fullWidth ? 0 : elementBcr.right;
 		var top = elementBcr.top;
 	}
 
@@ -401,6 +437,7 @@ function doSave() {
 	var saveButton = getMenuTarget();
 
     var menuDiv = buildMenu();
+	menuDiv.appendChild(buildMenuHeaderLine("Save URL", 4));
 
 	var url = buildQueryUrl(buildUrlParams());
 
@@ -411,7 +448,8 @@ function doSave() {
 	input.type = "text";
 	input.id = "urlCopy";
 	input.class = "field";
-	input.size = "60";
+//	input.size = "30";
+	input.style.width = "30ex";
 	input.onblur = clearMenus;
     input.value = url;
 
@@ -422,7 +460,7 @@ function doSave() {
     tr.appendChild(td);
     menuDiv.appendChild(tr);
 
-    showMenu(menuDiv, saveButton);
+    showMenu(menuDiv, saveButton, true);
 
     // focus and select the contents of the text field
     input.focus();
