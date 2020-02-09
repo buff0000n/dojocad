@@ -195,8 +195,6 @@ function showMenuAt(menuDiv, left, top) {
 }
 
 function menuPlacementHack1(menuDiv) {
-	showDebug("HACK " + menuDiv);
-
     var bcr = menuDiv.getBoundingClientRect();
     // pulled from events.js
 //	var windowWidth;
@@ -211,8 +209,6 @@ function menuPlacementHack1(menuDiv) {
 }
 
 function menuPlacementHack2(menuDiv) {
-	showDebug("HACK " + menuDiv);
-
     var bcr = menuDiv.getBoundingClientRect();
     // pulled from events.js
 //	var windowWidth;
