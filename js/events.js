@@ -380,16 +380,7 @@ function dropEvent(e) {
 
 	} else {
 		if (!dragged) {
-			if (selectedRoom) {
-				selectedRoom.deselect();
-			    selectedRoom.updateView();
-			    selectedRoom = null;
-			}
-			if (mouseDownTarget && mouseDownTarget.room) {
-				selectedRoom = mouseDownTarget.room;
-				selectedRoom.select();
-			    selectedRoom.updateView();
-		    }
+			selectRoom(!mouseDownTarget ? null : mouseDownTarget.room);
 		}
 
 	    mouseDownTargetStartPX = 0;
@@ -405,6 +396,23 @@ function dropEvent(e) {
     mouseDownTarget = null;
     // stop auto-scrolling
     setAutoScroll(e, 0, 0)
+}
+
+function selectRoom(room) {
+	if (selectedRoom) {
+		selectedRoom.deselect();
+	    selectedRoom.updateView();
+	    selectedRoom = null;
+	}
+	if (room) {
+		if (!room.isOnFloor()) {
+			setViewP(viewPX, viewPY, viewScale, room.floor);
+		}
+
+		selectedRoom = room;
+		selectedRoom.select();
+	    selectedRoom.updateView();
+    }
 }
 
 function cancelRoomDrag() {

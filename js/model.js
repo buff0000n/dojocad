@@ -31,7 +31,7 @@ class Bound {
 	        this.debugBorder = document.createElement("div");
 	        this.debugBorder.className = "debugBounds";
 			this.debugBorder.style.position = "absolute";
-	        if (this.room.isVisible()) {
+	        if (this.room.isOnFloor()) {
 				getRoomContainer().appendChild(this.debugBorder);
 			}
 		} else {
@@ -73,7 +73,7 @@ class Bound {
 	}
 
     addDisplay(viewContainer) {
-        if (this.debugBorder && this.room.isVisible()) {
+        if (this.debugBorder && this.room.isOnFloor()) {
             viewContainer.appendChild(this.debugBorder);
         }
     }
@@ -209,7 +209,7 @@ class Door {
 
 		this.removeCollision(otherDoor);
 
-        if (this.debugBorder && this.room.isVisible()) {
+        if (this.debugBorder && this.room.isOnFloor()) {
 			getRoomContainer().appendChild(this.debugBorder);
 		}
 		this.room.doorDisconnected(this);
@@ -231,7 +231,7 @@ class Door {
 	}
 
     addDisplay(viewContainer) {
-        if (this.debugBorder && this.room.isVisible() && !this.otherDoor && this.floor == viewFloor) {
+        if (this.debugBorder && !this.otherDoor && this.floor == viewFloor) {
             viewContainer.appendChild(this.debugBorder);
         }
     }
@@ -239,7 +239,7 @@ class Door {
     showDoorMarker() {
         if (this.floor == viewFloor && !this.otherDoor) {
 	        if (!this.marker) {
-	            this.marker = this.room.addDisplayElement(".png", 5, "marker-door", true);
+	            this.marker = this.room.addDisplayElement(".png", 205, "marker-door", true);
 	        } else {
 		        this.room.viewContainer.appendChild(this.marker);
 	        }
@@ -287,13 +287,13 @@ class Marker {
 	}
 
     updatePosition() {
-        this.mv = new Vect(this.metadata.x, this.metadata.y).rotate((this.room.rotation + this.room.mdragOffsetRotation) % 369).add(this.room.mv);
+        this.mv = new Vect(this.metadata.x, this.metadata.y).rotate((this.room.rotation + this.room.mdragOffsetRotation) % 360).add(this.room.mv);
         this.floor = this.room.floor + this.metadataFloor;
     }
 
     addDisplay(viewContainer) {
         if (this.floor == viewFloor) {
-	        this.marker = this.room.addDisplayElement(".png", 4, this.metadata.image, true);
+	        this.marker = this.room.addDisplayElement(".png", 204, this.metadata.image, true);
         }
     }
 
@@ -361,6 +361,7 @@ class Room {
 
 		this.viewContainer = null;
         this.display = null;
+        this.otherFloorDisplay = null;
         this.outline = null;
         this.grid = null;
         this.selected = false;
@@ -447,7 +448,7 @@ class Room {
         if (this.floor == whichFloor) {
             return true;
         }
-        if (!this.multifloor) {
+        if (!this.metadata.floor_images || this.metadata.floor_images.length == 1) {
             return false;
         }
 		var displayFloor = whichFloor - this.floor;
@@ -459,8 +460,26 @@ class Room {
 		return false;
     }
 
-    getFloors() {
+    isOnFloor(whichFloor = null) {
+        if (whichFloor == null) {
+            whichFloor = viewFloor;
+        }
+        if (this.floor == whichFloor) {
+            return true;
+        }
         if (!this.multifloor) {
+            return false;
+        }
+		for (var d = 0; d < this.doors.length; d++) {
+			if (this.doors[d].floor == whichFloor) {
+				return true;
+			}
+		}
+		return false;
+    }
+
+    getFloors() {
+        if (!this.metadata.floor_images || this.metadata.floor_images.length == 1) {
             return [this.floor];
         }
         // get the floor list from the doors.  The image list may contain extra floor images that we don't want to
@@ -652,7 +671,7 @@ class Room {
 		if (collidedRooms.length > 0) {
 			if (this.viewContainer) {
 				if (!this.grid) {
-			        this.grid = this.addDisplayElement("-bounds-blue.png", 1);
+			        this.grid = this.addDisplayElement("-bounds-blue.png", 201);
 				}
 			    this.grid.style.filter = "hue-rotate(120deg) brightness(200%)";
 			}
@@ -681,7 +700,7 @@ class Room {
 		if (errors) {
 			if (this.viewContainer) {
 				if (!this.outline) {
-			        this.outline = this.addDisplayElement("-line-blue.png", 3);
+			        this.outline = this.addDisplayElement("-line-blue.png", 203);
 				}
 			    if (this.isSelected()) {
 				    this.outline.style.filter = "hue-rotate(120deg) saturate(50%) brightness(250%)";
@@ -698,7 +717,7 @@ class Room {
 
 		} else if (this.isSelected()) {
 			if (!this.outline) {
-		        this.outline = this.addDisplayElement("-line-blue.png", 3);
+		        this.outline = this.addDisplayElement("-line-blue.png", 203);
 		    }
 		    this.outline.style.filter = "";
 
@@ -740,10 +759,10 @@ class Room {
     select() {
         this.selected = true;
         if (!this.outline) {
-	        this.outline = this.addDisplayElement("-line-blue.png", 3);
+	        this.outline = this.addDisplayElement("-line-blue.png", 203);
         }
         if (!this.grid) {
-	        this.grid = this.addDisplayElement("-bounds-blue.png", 1);
+	        this.grid = this.addDisplayElement("-bounds-blue.png", 201);
         }
 		// see if the outline should be red
 	    this.checkCollided();
@@ -946,6 +965,8 @@ class Room {
 
 		// finally we can update the bounds positions
 		this.updateBoundsPositions();
+		// don't forget markers
+		this.updateMarkerPositions();
     }
 
     dropDragOffset() {
@@ -980,7 +1001,11 @@ class Room {
     addDisplay(viewContainer) {
         this.viewContainer = viewContainer;
         if (this.isVisible()) {
-	        this.display = this.addDisplayElement("-display.png", 2);
+	        this.display = this.addDisplayElement("-display.png", 202);
+	        if (!this.isOnFloor()) {
+		        this.otherFloorDisplay = this.addDisplayElement("-display.png", 100 + this.floor, this.getImageBase(this.floor));
+			    this.otherFloorDisplay.style.filter = "brightness(25%)";
+	        }
 			for (var m = 0; m < this.markers.length; m++) {
 				this.markers[m].addDisplay(viewContainer);
 			}
@@ -991,13 +1016,17 @@ class Room {
 				this.bounds[b].addDisplay(viewContainer);
 			}
 	        this.updateView();
+
+        } else {
+	        this.otherFloorDisplay = this.addDisplayElement("-display.png", 100 + this.floor);
+		    this.otherFloorDisplay.style.filter = "brightness(25%)";
         }
 
 		this.checkCollided();
 	    this.checkErrors();
     }
 
-    addDisplayElement(imageSuffix, zIndex = 0, imageBase = null, marker = false) {
+    addDisplayElement(imageSuffix, zIndex = 200, imageBase = null, marker = false) {
         if (!imageBase) {
             imageBase = this.getImageBase();
         }
@@ -1028,7 +1057,7 @@ class Room {
         if (whichFloor == null) {
             whichFloor = viewFloor;
         }
-		if (this.multifloor) {
+		if (this.metadata.floor_images) {
 			var displayFloor = whichFloor - this.floor;
 			for (var i = 0; i < this.metadata.floor_images.length; i++) {
 				if (this.metadata.floor_images[i].floor == displayFloor) {
@@ -1040,17 +1069,10 @@ class Room {
 		return this.metadata.image
     }
 
-    showDoorMarkers() {
-        if (this.isVisible()) {
-			for (var d = 0; d < this.doors.length; b++) {
-				this.doors[d].showDoorMarker();
-			}
-        }
-    }
-
     removeDisplay() {
         // remove the images, whichever ones are presesnt
 	    this.display = this.removeDisplayElement(this.display);
+	    this.otherFloorDisplay = this.removeDisplayElement(this.otherFloorDisplay);
 	    this.outline = this.removeDisplayElement(this.outline);
 	    this.grid = this.removeDisplayElement(this.grid);
 		for (var m = 0; m < this.markers.length; m++) {
@@ -1074,7 +1096,7 @@ class Room {
     }
 
 	showDoorMarkers() {
-	    if (this.isVisible()) {
+	    if (this.isOnFloor()) {
 	        for (var d = 0; d < this.doors.length; d++) {
 	            this.doors[d].showDoorMarker();
 	        }
@@ -1088,22 +1110,27 @@ class Room {
 	}
 
     updateView() {
-        if (this.display || this.grid) {
+        if (this.display || this.otherFloorDisplay || this.grid) {
             var transform = this.getImageTransform(viewPX, viewPY, viewScale);
-			// update the three images, whichever ones are present
-			this.updateViewElement(this.display, transform);
-			this.updateViewElement(this.outline, transform);
-			this.updateViewElement(this.grid, transform);
-			for (var m = 0; m < this.markers.length; m++) {
-				this.markers[m].updateView();
-			}
-			// update debug bounds views, if present
-			for (var d = 0; d < this.doors.length; d++) {
-				this.doors[d].updateView();
-			}
-			for (var b = 0; b < this.bounds.length; b++) {
-				this.bounds[b].updateView();
-			}
+            if (this.display || this.grid) {
+				// update the three images, whichever ones are present
+				this.updateViewElement(this.display, transform);
+				this.updateViewElement(this.outline, transform);
+				this.updateViewElement(this.grid, transform);
+				for (var m = 0; m < this.markers.length; m++) {
+					this.markers[m].updateView();
+				}
+				// update debug bounds views, if present
+				for (var d = 0; d < this.doors.length; d++) {
+					this.doors[d].updateView();
+				}
+				for (var b = 0; b < this.bounds.length; b++) {
+					this.bounds[b].updateView();
+				}
+            }
+	        if (this.otherFloorDisplay) {
+				this.updateViewElement(this.otherFloorDisplay, transform);
+	        }
         }
     }
 
