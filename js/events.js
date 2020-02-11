@@ -490,6 +490,31 @@ function keyDown(e) {
 		case "KeyR" :
 			rotateSelectedRoom(lastMouseEvent);
 		    break;
+		case "KeyZ" :
+			// only enable undo/redo key shortcut if there is no menu visible
+			if (getCurrentMenuLevel() == 0) {
+				// ctrlKey on Windows, metaKey on Mac
+				if (e.ctrlKey || e.metaKey) {
+					if (e.shiftKey) {
+						// ctrl/meta + shift + Z: redo
+						doRedo();
+					} else {
+						// ctrl/meta + Z: undo
+						doUndo();
+					}
+				}
+			}
+			break;
+		case "KeyY" :
+			// only enable undo/redo key shortcut if there is no menu visible
+			if (getCurrentMenuLevel() == 0) {
+				// ctrlKey on Windows, metaKey on Mac
+				if (e.ctrlKey || e.metaKey) {
+					// ctrl/meta + Y: redo
+					doRedo();
+				}
+			}
+		    break;
 	}
 }
 
