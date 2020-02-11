@@ -289,6 +289,11 @@ function downEvent(e) {
 	        mouseDownTarget = e.currentTarget;
 	        mouseDownTarget.room.setClickPoint(mouseDownTargetStartPX, mouseDownTargetStartPY);
 	        newRoom = false;
+	        // shift-clicking automatically selects the room under the cursor, so you can drag a room without having to
+	        // click it twice
+			if (e.shiftKey) {
+				selectRoom(!e.currentTarget ? null : e.currentTarget.room);
+			}
         }
     }
 
