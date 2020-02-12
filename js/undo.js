@@ -20,7 +20,7 @@ class Action {
 	}
 }
 
-class MoveAction extends RoomAction {
+class MoveAction extends Action {
 	constructor(room, fromX, fromY, fromR, toX, toY, toR) {
 		this.room = room;
 		this.fromX = fromX;

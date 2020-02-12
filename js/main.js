@@ -280,9 +280,13 @@ function buildUrlParams() {
 function centerViewOn(mx, my, scale = null, floor = null) {
 	var newScale = scale ? scale : viewScale;
 	var newfloor = floor ? floor : viewFloor;
-	var cornerPX = (mx * newScale) + (window.innerWidth / 2);
-	var cornerPY = (my * newScale) + (window.innerHeight/ 2);
+	var cornerPX = (mx * newScale) + (windowWidth / 2);
+	var cornerPY = (my * newScale) + (windowHeight/ 2);
 	setViewP(cornerPX, cornerPY, newScale, viewFloor);
+}
+
+function centerViewOnIfNotVisible(mx, my, floor) {
+
 }
 
 //==============================================================

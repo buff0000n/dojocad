@@ -586,6 +586,7 @@
 <script type="text/javascript" language="javascript" src="js/events.js"></script>
 <script type="text/javascript" language="javascript" src="js/elevator.js"></script>
 <script type="text/javascript" language="javascript" src="js/menus.js"></script>
+<script type="text/javascript" language="javascript" src="js/undo.js"></script>
 <script type="text/javascript" language="javascript">
 
     /************************************************************
@@ -703,6 +704,8 @@
         // set up the error listener
         window.onerror = windowOnError;
 
+        onresize();
+
         // we have to do this with addEventListener() instead of directly on the <div> so we can tell stupid Chrome that
         // none of these event handlers are passive
         var grid = document.getElementById("grid");
@@ -717,7 +720,6 @@
         // init the model
         initModel();
 
-        onresize();
 
         if (window.location.href.indexOf("#") > 0) {
             toggleHelp();
