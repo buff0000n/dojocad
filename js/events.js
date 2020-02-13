@@ -363,11 +363,23 @@ function dropEvent(e) {
 	    mouseDownTargetStartPY = 0;
 
 		if (dragged) {
+			if (selectedRoom.moved) {
+				var action = new MoveRoomAction(selectedRoom);
+			}
+
 		    selectedRoom.dropDragOffset();
 		    selectedRoom.updateView();
 		    dragged = false;
 
 	        hideDoorMarkers();
+
+			if (!action) {
+				addUndoAction(new AddDeleteRoomAction(selectedRoom, true));
+			    selectedRoom.justAdded = false;
+
+			} else if (action.isAMove()) {
+                addUndoAction(action);
+            }
 
 		} else if (e.shiftKey) {
 			rotateSelectedRoom();
@@ -421,6 +433,7 @@ function cancelRoomDrag() {
         mouseDownTargetStartPX = 0;
         mouseDownTargetStartPY = 0;
 		if (newRoom) {
+			// no undo action
 			removeRoom(selectedRoom);
 		    selectedRoom = null;
 

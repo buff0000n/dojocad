@@ -489,8 +489,8 @@
         color: #FFFFFF;
     }
 
-    #header .button, #header .field, #header .button-error, #header .button-clear,
-    #statsBar .button, #statsBar .field, #statsBar .button-error {
+    #header .button, #header .field, #header .button-error, #header .button-clear, #header .button-disabled,
+    #statsBar .button, #statsBar .field, #statsBar .button-error, #statsBar .button-disabled {
         margin: 0ex;
     }
 
@@ -582,11 +582,11 @@
 <script type="text/javascript" language="javascript" src="js/util.js"></script>
 <script type="text/javascript" language="javascript" src="js/model.js"></script>
 <script type="text/javascript" language="javascript" src="js/rules.js"></script>
+<script type="text/javascript" language="javascript" src="js/undo.js"></script>
 <script type="text/javascript" language="javascript" src="js/main.js"></script>
 <script type="text/javascript" language="javascript" src="js/events.js"></script>
 <script type="text/javascript" language="javascript" src="js/elevator.js"></script>
 <script type="text/javascript" language="javascript" src="js/menus.js"></script>
-<script type="text/javascript" language="javascript" src="js/undo.js"></script>
 <script type="text/javascript" language="javascript">
 
     /************************************************************
@@ -789,7 +789,7 @@
         <div class="helpContainer">
             <p style="text-align: center;">
                 <span class="title">DojoCAD</span><br/>
-                v1.3.0: 2020-02-09<br/>
+                v1.3.1: 2020-02-09<br/>
                 <a href="https://github.com/buff0000n/dojoarch">Source</a>&nbsp;
                 <a href="https://github.com/buff0000n/dojoarch/issues/2">Feedback</a>&nbsp;
                 <a href="https://github.com/buff0000n/dojocad/issues/new">Bugs</a><br/>
@@ -820,7 +820,7 @@
                 The starter <strong>Clan Hall</strong> is already added by default.
             </p>
             <p>
-                Click the <span class="docButton">Add Room</span> button to select a category and room to add.
+                Click the <span class="docImgButton"><img src="icons/icon-add.png" srcset="icons2x/icon-add.png 2x" title="Add"/></span> button to select a category and room to add.
                 Then drag and click where the room should be placed.
             </p>
 
@@ -878,6 +878,7 @@
                         <li><a href="#ChangingARoomsFloor">Changing an Elevator's Floor</a></li>
                         <li><a href="#DeletingARoom">Deleting a Room</a></li>
                         <li><a href="#DeletingEverything">Deleting Everything</a></li>
+                        <li><a href="#UndoRedo">Undo and Redo</a></li>
                     </ul>
                 </li>
                 <li>
@@ -1029,7 +1030,8 @@
             <h2 id="RotatingARoom">Rotating a Room</h2>
             <p>
                 Clicking again on the currently selected room will bring up a menu.  Click
-                <span class="docButton">Rotate</span> to rotate the room 90 degrees.
+                <span class="docImgButton"><img src="icons/icon-rotate-cw.png" srcset="icons2x/icon-rotate-cw.png 2x" title="Rotate"/></span>
+                to rotate the room 90 degrees.
             </p>
             <p>
                 Hold down <strong>Shift</strong> and click on the selected room to rotate it 90 degrees without
@@ -1044,13 +1046,15 @@
             <p>
                 Elevators span two floors, either going up from the current floor or going down.  To switch which
                 direction an elevator is going, select it and then click again to bring up a menu.  Select
-                <span class="docButton">Change Floor</span> to swap the direction the elevator is going.
+                <span class="docImgButton"><img src="icons/icon-change-floor.png" srcset="icons2x/icon-change-floor.png 2x" title="Rotate Floor"/></span>
+                to swap the direction the elevator is going.
             </p>
 
             <h2 id="DeletingARoom">Deleting a Room</h2>
             <p>
                 Clicking again on the currently selected room will bring up a menu.  Click
-                <span class="docButton">Delete</span> to delete the room.
+                <span class="docImgButton"><img src="icons/icon-delete.png" srcset="icons2x/icon-delete.png 2x" title="Delete"/></span>
+                to delete the room.
             </p>
             <p>
                 Press the <strong>Delete</strong> key to delete the selected room without having to bring up a menu.
@@ -1062,11 +1066,33 @@
             <h2 id="DeletingEverything">Deleting Everything</h2>
             <p>
                 Click on <span class="docImgButton"><img src="icons/icon-burger.png" srcset="icons2x/icon-burger.png 2x" title="Menu"/></span>
-                then <span class="docButton">New</span> to start fresh.
+                then <span class="docImgButton"><img src="icons/icon-new.png" srcset="icons2x/icon-new.png 2x" title="New"/></span>
+                to start fresh.
             </p>
             <p>
                 Note that this opens as a new link, so you can use your browser's <strong>Back</strong> button to go
                 back to your previous layout.
+            </p>
+
+            <h2 id="UndoRedo">Undo and Redo</h2>
+            <p>
+                Click on <span class="docImgButton"><img src="icons/icon-undo.png" srcset="icons2x/icon-undo.png 2x" title="Undo"/></span>
+                do undo your last action.  Actions include <strong>moving</strong>, <strong>rotating</strong>,
+                <strong>rotating floors</strong>, <strong>adding</strong>, and <strong>deleting</strong> a room.  You
+                can continue clicking <span class="docImgButton"><img src="icons/icon-undo.png" srcset="icons2x/icon-undo.png 2x" title="Undo"/></span>
+                to undo previous actions.
+            </p>
+            <p>
+                Click <span class="docImgButton"><img src="icons/icon-redo.png" srcset="icons2x/icon-redo.png 2x" title="Redo"/></span>
+                to redo an action you have just undone.  You can continue clicking
+                <span class="docImgButton"><img src="icons/icon-undo.png" srcset="icons2x/icon-undo.png 2x" title="Undo"/></span>
+                to redo previously undone actions.
+            </p>
+            <p>
+                Performing another action after undoing will clear out all the redoable actions.
+            </p>
+            <p>
+                <strong class="warn">You can undo a maximum of 100 actions.</strong>
             </p>
 
             <h1 id="Constraints">Constraints</h1>
@@ -1202,12 +1228,14 @@
             <p>
                 A longcut to copying the URL is also available by clicking
                 <span class="docImgButton"><img src="icons/icon-burger.png" srcset="icons2x/icon-burger.png 2x" title="Menu"/></span> then
-                <strong class="docButton">Save</strong>, then <strong class="docButton">Copy</strong>.
+                <span class="docImgButton"><img src="icons/icon-save.png" srcset="icons2x/icon-save.png 2x" title="Save"/></span>,
+                then <strong class="docButton">Copy</strong>.
             </p>
             <h1 id="ExportToPng">Exporting to PNG</h1>
             <p>
                 Click <span class="docImgButton"><img src="icons/icon-burger.png" srcset="icons2x/icon-burger.png 2x" title="Menu"/></span>
-                then <strong class="docButton">PNG</strong> to bring up a menu for exporting your dojo layout to one or
+                then <span class="docImgButton"><img src="icons/icon-png.png" srcset="icons2x/icon-png.png 2x" title="PNG"/></span>
+                to bring up a menu for exporting your dojo layout to one or
                 more PNG files.
             </p>
             <ul>
@@ -1273,6 +1301,7 @@
             <ul>
                 <li>Now showing rooms that are not on the current floor in the background in gray.  Selecting a room now
                     always goes to the floor that room is on.  (thanks <strong>(PC) .--._---_.--_._.-</strong>)</li>
+                <li>Implemented undo/redo.</li>
             </ul>
 
             <h1 id="ToDo">To Do</h1>
