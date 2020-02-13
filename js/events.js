@@ -368,11 +368,23 @@ function dropEvent(e) {
 	    mouseDownTargetStartPY = 0;
 
 		if (dragged) {
+			if (selectedRoom.moved) {
+				var action = new MoveRoomAction(selectedRoom);
+			}
+
 		    selectedRoom.dropDragOffset();
 		    selectedRoom.updateView();
 		    dragged = false;
 
 	        hideDoorMarkers();
+
+			if (!action) {
+				addUndoAction(new AddDeleteRoomAction(selectedRoom, true));
+			    selectedRoom.justAdded = false;
+
+			} else if (action.isAMove()) {
+                addUndoAction(action);
+            }
 
 		} else if (e.shiftKey) {
 			rotateSelectedRoom();
@@ -426,6 +438,7 @@ function cancelRoomDrag() {
         mouseDownTargetStartPX = 0;
         mouseDownTargetStartPY = 0;
 		if (newRoom) {
+			// no undo action
 			removeRoom(selectedRoom);
 		    selectedRoom = null;
 
@@ -494,6 +507,31 @@ function keyDown(e) {
 		    break;
 		case "KeyR" :
 			rotateSelectedRoom(lastMouseEvent);
+		    break;
+		case "KeyZ" :
+			// only enable undo/redo key shortcut if there is no menu visible
+			if (getCurrentMenuLevel() == 0) {
+				// ctrlKey on Windows, metaKey on Mac
+				if (e.ctrlKey || e.metaKey) {
+					if (e.shiftKey) {
+						// ctrl/meta + shift + Z: redo
+						doRedo();
+					} else {
+						// ctrl/meta + Z: undo
+						doUndo();
+					}
+				}
+			}
+			break;
+		case "KeyY" :
+			// only enable undo/redo key shortcut if there is no menu visible
+			if (getCurrentMenuLevel() == 0) {
+				// ctrlKey on Windows, metaKey on Mac
+				if (e.ctrlKey || e.metaKey) {
+					// ctrl/meta + Y: redo
+					doRedo();
+				}
+			}
 		    break;
 	}
 }

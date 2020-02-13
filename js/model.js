@@ -1,5 +1,9 @@
 // Sorry, this is Grade-A Fancy spaghetti code
 
+//==============================================================
+// Bound object
+//==============================================================
+
 class Bound {
     constructor(room, doorMetadata) {
         this.room = room;
@@ -93,6 +97,10 @@ class Bound {
         }
     }
 }
+
+//==============================================================
+// Door object
+//==============================================================
 
 class Door {
     constructor(room, doorMetadata) {
@@ -275,6 +283,10 @@ class Door {
     }
 }
 
+//==============================================================
+// Marker object
+//==============================================================
+
 class Marker {
 	constructor(room, floor, metadata) {
 		this.room = room;
@@ -312,6 +324,10 @@ class Marker {
     }
 }
 
+//==============================================================
+// Room object utils
+//==============================================================
+
 function roomToString(room) {
     return room.metadata.id + "," + room.mv.x + "," + room.mv.y + "," + room.floor + "," + (room.rotation / 90)
 }
@@ -325,6 +341,10 @@ function roomFromString(string) {
 }
 
 var roomIdCount = 0;
+
+//==============================================================
+// Room object
+//==============================================================
 
 class Room {
     constructor(metadata) {
@@ -534,6 +554,8 @@ class Room {
 
 		// recalc bounds
 		this.updateBoundsPositions();
+
+		this.moved = true;
     }
 
     resetPositionAndConnectDoors() {
@@ -1192,6 +1214,10 @@ class Room {
     }
 }
 
+//==============================================================
+// overall bounds calculation and PNG generation
+//==============================================================
+
 class DojoBounds {
 	constructor() {
 		this.x1 = 100000;
@@ -1408,6 +1434,10 @@ function imageLoaded(targets, db, margin, scale, f, index, image, xx, xy, yx, yy
 		convertFloorToPngLink(targets, db, margin, scale, f + 1);
 	}
 }
+
+//==============================================================
+// Collision debug
+//==============================================================
 
 function findHighestDoor(room) {
 	var door = null;

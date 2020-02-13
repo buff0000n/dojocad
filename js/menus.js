@@ -71,9 +71,14 @@ function buildBlank(colSpan = 1) {
 	return td;
 }
 
-function buildMenuHeaderLine(title, colSpan) {
+function buildMenuHeaderLine(title, colSpan, icon = null, className = "menu-button") {
 	var tr = document.createElement("tr");
-    tr.appendChild(buildBlank());
+    var iconTd = document.createElement("td");
+	if (icon) {
+        iconTd.className = "imgField";
+		iconTd.innerHTML = `<img class="imgButton" src="icons/${icon}.png" srcset="icons2x/${icon}.png 2x"/>`;
+	}
+    tr.appendChild(iconTd);
 	tr.appendChild(buildMenuLabel(title, colSpan - 2));
 	tr.appendChild(buildCloseMenuButton());
     return tr;
@@ -412,7 +417,7 @@ function doShowErrors() {
 
     } else {
 	    var menuDiv = buildMenu();
-	    menuDiv.appendChild(buildMenuField("No errors found"));
+		menuDiv.appendChild(buildMenuHeaderLine("No errors found", 3, "icon-ok"));
     }
 
     showMenu(menuDiv, errButton);

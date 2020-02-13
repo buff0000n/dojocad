@@ -124,19 +124,27 @@ function addRoom(room) {
 
 function rotateSelectedRoom() {
 	if (selectedRoom) {
+		var action = new MoveRoomAction(selectedRoom);
 	    selectedRoom.rotate();
 	    selectedRoom.updateView();
 		saveModelToUrl();
+        if (action.isAMove()) {
+            addUndoAction(action);
+        }
 	}
 }
 
 function rotateFloorSelectedRoom() {
 	if (selectedRoom) {
+		var action = new MoveRoomAction(selectedRoom);
 	    removeFloorRoom(selectedRoom);
 	    selectedRoom.rotateFloor();
 	    addFloorRoom(selectedRoom);
 	    selectedRoom.updateView();
 		saveModelToUrl();
+        if (action.isAMove()) {
+            addUndoAction(action);
+        }
 	}
 }
 
@@ -146,7 +154,7 @@ function deleteSelectedRoom() {
 	    selectedRoom = null;
 	    removeRoom(room);
 	    clearMenus(0);
-		saveModelToUrl();
+	    addUndoAction(new AddDeleteRoomAction(room, false));
 	}
 }
 
@@ -167,6 +175,7 @@ function doAddRoom(e, roomMetadata, baseRoom) {
     mouseDownTargetStartPY = viewPY;
 
     startNewRoomDrag(e, room.display);
+	// undo action will be created when the room is dropped
 }
 
 function duplicateSelectedRoom(e) {
@@ -278,11 +287,25 @@ function buildUrlParams() {
 }
 
 function centerViewOn(mx, my, scale = null, floor = null) {
-	var newScale = scale ? scale : viewScale;
-	var newfloor = floor ? floor : viewFloor;
-	var cornerPX = (mx * newScale) + (window.innerWidth / 2);
-	var cornerPY = (my * newScale) + (window.innerHeight/ 2);
-	setViewP(cornerPX, cornerPY, newScale, viewFloor);
+	var newScale = scale != null ? scale : viewScale;
+	var newfloor = floor != null ? floor : viewFloor;
+
+	// (newPX, newPY) is where the model grid point (0, 0) is
+	var newPX = (windowWidth / 2) - (mx * newScale);
+	var newPY = (windowHeight / 2) - (my * newScale);
+	setViewP(newPX, newPY, newScale, newfloor);
+}
+
+function centerViewOnIfNotVisible(mx, my, floor) {
+	var px = (mx * viewScale) + viewPX;
+	var py = (my * viewScale) + viewPY;
+	if (floor != viewFloor || px < 0 || px > windowWidth || py < 0 || py > windowWidth) {
+		centerViewOn(mx, my, null, floor);
+		return true;
+
+	} else {
+		return false;
+	}
 }
 
 //==============================================================
