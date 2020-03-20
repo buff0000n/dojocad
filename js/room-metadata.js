@@ -353,7 +353,7 @@ var roomMetadata =
 		"dd"]},
 {"id": "oa", "image": "obstacle-course-architect", "name": "Obstacle Course Architect", "category": "Interactive", "prereq": null, "capacity": 0, "energy": -2, "maxnum": 5, "floor": 0, "ceil": 48,
 	"bounds": [
-		{"x1": -78, "y1": -82, "x2": 78, "y2": 74, "floor": 0, "ceil": 48},
+		{"x1": -76, "y1": -82, "x2": 76, "y2": 74, "floor": 0, "ceil": 48},
 		{"x1": -6, "y1": 74, "x2": 6, "y2": 82, "floor": 0, "ceil": 48}],
 	"doors": [
 		{"x": 0, "y": 82, "floor": 0, "outx": 0, "outy": 1}],
