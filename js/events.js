@@ -292,7 +292,7 @@ function downEvent(e) {
 	        // shift-clicking automatically selects the room under the cursor, so you can drag a room without having to
 	        // click it twice
 			if (e.shiftKey) {
-				selectRoom(!e.currentTarget ? null : e.currentTarget.room);
+				selectRoom(!e.currentTarget ? null : e.currentTarget.room, undoable = true);
 			}
         }
     }
@@ -397,7 +397,7 @@ function dropEvent(e) {
 
 	} else {
 		if (!dragged) {
-			selectRoom(!mouseDownTarget ? null : mouseDownTarget.room);
+			selectRoom(!mouseDownTarget ? null : mouseDownTarget.room, undoable = true);
 		}
 
 	    mouseDownTargetStartPX = 0;
@@ -415,10 +415,12 @@ function dropEvent(e) {
     setAutoScroll(e, 0, 0)
 }
 
-function selectRoom(room) {
-	if (selectedRoom) {
-		selectedRoom.deselect();
-	    selectedRoom.updateView();
+function selectRoom(room, undoable = false) {
+    oldRoom = selectedRoom;
+
+	if (oldRoom) {
+		oldRoom.deselect();
+	    oldRoom.updateView();
 	    selectedRoom = null;
 	}
 	if (room) {
@@ -427,8 +429,12 @@ function selectRoom(room) {
 		}
 
 		selectedRoom = room;
-		selectedRoom.select();
-	    selectedRoom.updateView();
+		room.select();
+	    room.updateView();
+    }
+
+    if (undoable) {
+        addUndoAction(new SelectionAction(oldRoom, room, getViewCenter()));
     }
 }
 

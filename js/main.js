@@ -296,16 +296,23 @@ function centerViewOn(mx, my, scale = null, floor = null) {
 	setViewP(newPX, newPY, newScale, newfloor);
 }
 
-function centerViewOnIfNotVisible(mx, my, floor) {
+function centerViewOnIfNotVisible(mx, my, floor, scale = null) {
 	var px = (mx * viewScale) + viewPX;
 	var py = (my * viewScale) + viewPY;
 	if (floor != viewFloor || px < 0 || px > windowWidth || py < 0 || py > windowWidth) {
-		centerViewOn(mx, my, null, floor);
+		centerViewOn(mx, my, scale, floor);
 		return true;
 
 	} else {
 		return false;
 	}
+}
+
+function getViewCenter() {
+	var mx = ((windowWidth / 2) - viewPX) / viewScale;
+	var my = ((windowHeight / 2) - viewPY) / viewScale;
+	var ret = {mx: mx, my: my, floor: viewFloor, scale: viewScale}
+	return ret
 }
 
 //==============================================================

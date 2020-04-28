@@ -235,3 +235,46 @@ class AddDeleteRoomAction extends Action {
 		return (this.add ? "Add " : "Delete ") + this.room.metadata.name;
 	}
 }
+
+class SelectionAction extends Action {
+	constructor(oldSelection, newSelection, view) {
+		super();
+		this.oldSelection = oldSelection;
+		this.newSelection = newSelection;
+	}
+
+    centerViewOn(room1, room2) {
+        if (room1) {
+    		centerViewOnIfNotVisible(room1.mv.x, room1.mv.y, room1.floor);
+        } else if (room2) {
+    		centerViewOnIfNotVisible(room2.mv.x, room2.mv.y, room2.floor);
+        }
+    }
+
+	prepareUndoAction() {
+		this.centerViewOn(this.oldSelection, this.newSelection);
+		// having a prepare step to show what's about to change feels more confusing than not having it
+		return true;
+	}
+
+	undoAction() {
+	    showDebug("undoing selection")
+		selectRoom(this.oldSelection, undoable = false)
+	}
+
+	prepareRedoAction() {
+		this.centerViewOn(this.newSelection, this.oldSelection);
+		// having a prepare step to show what's about to change feels more confusing than not having it
+		return true;
+	}
+
+	redoAction() {
+	    showDebug("redoing selection")
+		selectRoom(this.newSelection, undoable = false)
+	}
+
+	toString() {
+		return (this.oldSelection ? ("Deselect " + this.oldSelection.metadata.name) : "") + ", " +
+    		(this.newSelection ? ("Select " + this.newSelection.metadata.name) : "");
+	}
+}
