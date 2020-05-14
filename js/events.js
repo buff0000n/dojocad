@@ -264,6 +264,7 @@ var mouseDownTargetStartPY = 0;
 var selectedRoom = null;
 var dragged = false;
 var newRoom = false;
+var multiselectEnabled = false;
 
 // adapted from https://www.w3schools.com/howto/howto_js_draggable.asp
 function downEvent(e) {
@@ -484,6 +485,28 @@ function zoom(px, py, factor) {
 }
 
 //==============================================================
+// multiselect state handling
+//==============================================================
+
+function doToggleMultiselect() {
+    setMultiselectEnabled(!multiselectEnabled);
+}
+
+function setMultiselectEnabled(enabled) {
+    var button = document.getElementById("multiselectButton")
+    if (enabled) {
+        multiselectEnabled = true;
+        button.className = "button";
+		button.children[0].title = "Disable Multiselect Mode";
+
+    } else {
+        multiselectEnabled = false;
+        button.className = "button-disabled";
+		button.children[0].title = "Enable Multiselect Mode";
+    }
+}
+
+//==============================================================
 // key event handling
 //==============================================================
 
@@ -510,6 +533,9 @@ function keyDown(e) {
 		case "KeyR" :
 			rotateSelectedRoom(lastMouseEvent);
 		    break;
+		case "ShiftLeft" :
+		case "ShiftRight" :
+		    setMultiselectEnabled(true);
 		case "KeyZ" :
 			// only enable undo/redo key shortcut if there is no menu visible
 			if (getCurrentMenuLevel() == 0) {
@@ -535,6 +561,15 @@ function keyDown(e) {
 				}
 			}
 		    break;
+	}
+}
+
+function keyUp(e) {
+    e = e || window.event;
+    switch (e.code) {
+		case "ShiftLeft" :
+		case "ShiftRight" :
+		    setMultiselectEnabled(false);
 	}
 }
 

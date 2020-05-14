@@ -752,7 +752,7 @@
     }
 
 </script>
-<body onload="init()" onkeydown="keyDown()" onscroll="onScroll()" onresize="onresize()">
+<body onload="init()" onkeydown="keyDown()" onkeyup="keyUp()" onscroll="onScroll()" onresize="onresize()">
 
 <!-- Grid background -->
 <div id="grid"></div>
@@ -766,6 +766,7 @@
     <span id="addRoomButton" class="button" onclick="doAddMenu(this)"><img src="icons/icon-add.png" srcset="icons2x/icon-add.png 2x" title="Add Room"/></span>
     <span id="undoButton" class="button-disabled" onclick="doUndo(this)"><img src="icons/icon-undo.png" srcset="icons2x/icon-undo.png 2x" title="Undo"/></span>
     <span id="redoButton" class="button-disabled" onclick="doRedo(this)"><img src="icons/icon-redo.png" srcset="icons2x/icon-redo.png 2x" title="Redo"/></span>
+    <span id="multiselectButton" class="button-disabled" onclick="doToggleMultiselect(this)"><img src="icons/icon-multiselect.png" srcset="icons2x/icon-multiselect.png 2x" title="Enable Multiselect Mode"/></span>
     <span id="allErrorsButton" class="button-clear" onclick="doShowAllErrors(this)"><img src="icons/icon-ok.png" srcset="icons2x/icon-ok.png 2x" title="OK"/></span>
 </div>
 
