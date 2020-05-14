@@ -280,9 +280,8 @@ function downEvent(e) {
     if (e.currentTarget.room) {
         if (e.altKey) {
             // insta-delete
-			selectedRoom = e.currentTarget.room;
-			selectedRoom.select();
-		    selectedRoom.updateView();
+
+            selectRoom(e.currentTarget.room)
 		    deleteSelectedRoom();
 
         } else {
@@ -301,14 +300,10 @@ function downEvent(e) {
 }
 
 function startNewRoomDrag(e, target) {
-	if (selectedRoom) {
-		selectedRoom.deselect();
-	    selectedRoom.updateView();
-	}
     mouseDownTarget = target;
-    selectedRoom = target.room;
+    selectRoom(target.room)
+
     selectedRoom.setClickPoint(e.clientX, e.clientY);
-    selectedRoom.select();
     newRoom = true;
 
 	startDrag();
@@ -346,6 +341,7 @@ function dragEvent(e) {
 	        showDoorMarkers();
 	    }
 
+        // todo: necessary?
 	    selectedRoom.updateView();
 
 	    checkAutoScroll(e);
