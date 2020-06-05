@@ -234,7 +234,7 @@ var roomMetadata =
 		"dd"]},
 {"id": "lc", "image": "chem-lab", "name": "Chem Lab", "category": "Labs", "prereq": "or", "capacity": -2, "energy": -5, "maxnum": null, "floor": -12, "ceil": 16,
 	"bounds": [
-		{"x1": -14, "y1": -16, "x2": 14, "y2": 16, "floor": -14, "ceil": 16}],
+		{"x1": -14, "y1": -15, "x2": 14, "y2": 16, "floor": -14, "ceil": 16}],
 	"doors": [
 		{"x": 0, "y": 16, "floor": 0, "outx": 0, "outy": 1}],
 	"floor_images": [
@@ -308,8 +308,8 @@ var roomMetadata =
 		"cc","cs","cx","ct","cb","ce","h1","h2","h3","h4","h5","hi","or","lt","le","lc","lb","lo","dd","cr","du","oc","oa","gs","gl","ob","th","re","b1","occ","oct","oh1","oh2","ore"]},
 {"id": "cr", "image": "crimson-branch", "name": "Crimson Branch", "category": "Interactive", "prereq": null, "capacity": -2, "energy": -4, "maxnum": null, "floor": 0, "ceil": 12,
 	"bounds": [
-		{"x1": -30, "y1":  8, "x2": 30, "y2": -30, "floor": 0, "ceil": 12},
-		{"x1": -24, "y1": 16, "x2": 24, "y2": -30, "floor": 0, "ceil": 12}],
+		{"x1": -30, "y1":  1, "x2": 30, "y2": -30, "floor": 0, "ceil": 12},
+		{"x1": -16, "y1": 16, "x2": 16, "y2": -30, "floor": 0, "ceil": 12}],
 	"doors": [
 		{"x": 0, "y": 16, "floor": 0, "outx": 0, "outy": 1}],
 	"resources": [
