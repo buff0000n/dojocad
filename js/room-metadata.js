@@ -187,7 +187,7 @@ var roomMetadata =
 		{"resource": "Rubedo", "costs": [300, 900, 3000, 9000, 30000]},
 		{"resource": "Forma", "costs": [1, 1, 3, 8, 25]}],
 	"blockedFromAboveBy": [
-		"ce","ob","oc","re","dd"]},
+		"ce","ob","oc","re","dd", "os"]},
 
 {"id": "or", "image": "oracle2", "name": "Oracle", "category": "Labs", "prereq": null, "capacity": -2, "energy": -5, "maxnum": null, "floor": -8, "ceil": 12,
 	"bounds": [
@@ -366,7 +366,7 @@ var roomMetadata =
 		{"resource": "Nano Spores", "costs": [300, 900, 3000, 9000, 30000]},
 		{"resource": "Forma", "costs": [1, 1, 2, 5, 15]}], "unverified": true,
 	"blockedFromAboveBy": [
-		"ob","oc","re","ce","dd"]}, //"b4"?
+		"ob","oc","re","ce","dd", "os"]}, //"b4"?
 
 {"id": "ob", "image": "observatory", "name": "Observatory", "category": "Misc", "prereq": null, "capacity": -2, "energy": -5, "maxnum": null, "floor": -32, "ceil": 52,
 	"bounds": [
@@ -380,7 +380,7 @@ var roomMetadata =
 		{"resource": "Salvage", "costs": [500, 1500, 5000, 15000, 50000]},
 		{"resource": "Forma", "costs": [1, 1, 2, 5, 15]}], "unverified": true,
 	"blockedFromAboveBy": [
-		"lc","ce","ob","oc","lo","re","dd"]}, //"b4"?
+		"lc","ce","ob","oc","lo","re","dd", "os'"]}, //"b4"?
 {"id": "gs", "image": "small-garden", "name": "Small Garden", "category": "Misc", "prereq": null, "capacity": -10, "energy": -6, "maxnum": null, "floor": 0, "ceil": 20,
 	"bounds": [
 		{"x1": -16, "y1": -16, "x2": 16, "y2": 16, "floor": 0, "ceil": 20}],
@@ -433,6 +433,26 @@ var roomMetadata =
 		{"resource": "Forma", "costs": [1, 1, 1, 3, 10]}], "unverified": true,
 	"blockedFromAboveBy": [
 		"dd"]},
+{"id": "os", "image": "open-space", "name": "Open Space", "category": "Misc", "prereq": null, "capacity": -2, "energy": -5, "maxnum": null, "floor": -60, "ceil": 78,
+	"bounds": [
+		{"x1": -76, "y1": -82, "x2": 76, "y2": 74, "floor": -60, "ceil": 78},
+		{"x1": -6, "y1": 74, "x2": 6, "y2": 82, "floor": -60, "ceil": 78}],
+	"doors": [
+		{"x": 0, "y": 82, "floor": 0, "outx": 0, "outy": 1}],
+	"floor_images": [
+		{"floor": -1, "image": "open-space"},
+		{"floor": 0, "image": "open-space"},
+		{"floor": 1, "image": "open-space"}],
+	"doors": [
+		{"x": 0, "y": 82, "floor": 0, "outx": 0, "outy": 1}],
+	"resources": [
+		{"resource": "Credits", "costs": [1000, 3000, 10000, 30000, 100000]},
+		{"resource": "Ferrite", "costs": [800, 2400, 8000, 24000, 80000]},
+		{"resource": "Circuits", "costs": [200, 600, 2000, 6000, 20000]},
+		{"resource": "Salvage", "costs": [500, 1500, 5000, 15000, 50000]},
+		{"resource": "Forma", "costs": [1, 1, 1, 3, 10]}], "unverified": true,
+	"blockedFromAboveBy": [
+		"os", "dd"]},
 
 {"id": "re", "image": "reactor", "name": "Reactor", "category": "Utility", "prereq": null, "capacity": -5, "energy": 25, "maxnum": null, "floor": -28, "ceil": 36,
 	"bounds": [
