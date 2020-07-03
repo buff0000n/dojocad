@@ -180,6 +180,9 @@ var roomMetadata =
 		{"x": 0, "y": -32, "floor": 0, "outx": 0, "outy": -1},
 		{"x": -32, "y": -16, "floor": 0, "outx": -1, "outy": 0},
 		{"x": -32, "y": 16, "floor": 0, "outx": -1, "outy": 0}],
+	"floor_images": [
+		{"floor": 0, "image": "inspiration-hall"},
+		{"floor": 1, "image": "inspiration-hall"}],
 	"resources": [
 		{"resource": "Credits", "costs": [1000, 3000, 10000, 30000, 100000]},
 		{"resource": "Alloy Plate", "costs": [150, 450, 1500, 4500, 15000]},
@@ -353,7 +356,7 @@ var roomMetadata =
 		"dd"]},
 {"id": "oa", "image": "obstacle-course-architect", "name": "Obstacle Course Architect", "category": "Interactive", "prereq": null, "capacity": 0, "energy": -2, "maxnum": 5, "floor": 0, "ceil": 48,
 	"bounds": [
-		{"x1": -76, "y1": -82, "x2": 76, "y2": 74, "floor": 0, "ceil": 48},
+		{"x1": -76, "y1": -80, "x2": 76, "y2": 74, "floor": 0, "ceil": 48},
 		{"x1": -6, "y1": 74, "x2": 6, "y2": 82, "floor": 0, "ceil": 48}],
 	"doors": [
 		{"x": 0, "y": 82, "floor": 0, "outx": 0, "outy": 1}],
@@ -435,7 +438,7 @@ var roomMetadata =
 		"dd"]},
 {"id": "os", "image": "open-space", "name": "Open Space", "category": "Misc", "prereq": null, "capacity": -2, "energy": -5, "maxnum": null, "floor": -60, "ceil": 78,
 	"bounds": [
-		{"x1": -76, "y1": -82, "x2": 76, "y2": 74, "floor": -60, "ceil": 78},
+		{"x1": -76, "y1": -80, "x2": 76, "y2": 74, "floor": -60, "ceil": 78},
 		{"x1": -6, "y1": 74, "x2": 6, "y2": 82, "floor": -60, "ceil": 78}],
 	"doors": [
 		{"x": 0, "y": 82, "floor": 0, "outx": 0, "outy": 1}],
