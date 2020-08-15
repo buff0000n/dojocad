@@ -520,8 +520,8 @@ class Room {
         }
     }
 
-    setPosition(nmx, nmy, nf, nr) {
-        var isNewFloor =  nf != this.floor;
+    setPosition(nmx, nmy, nf, nr, updateFloors = true) {
+        var isNewFloor = updateFloors && nf != this.floor;
         if (isNewFloor) {
 			this.removeAllRuleErrors();
         }
@@ -1439,15 +1439,27 @@ function imageLoaded(targets, db, margin, scale, f, index, image, xx, xy, yx, yy
 // Collision debug
 //==============================================================
 
-function findHighestDoor(room) {
-	var door = null;
-	for (var d = 0; d < room.doors.length; d++) {
-		var door2 = room.doors[d];
-		if (door == null || door2.metadata.floor > door.metadata.floor) {
-			door = door2;
-		}
-	}
-	return door;
+function findHighestFloor(room) {
+    var ceil = 0;    
+    for (var b = 0; b < room.bounds.length; b++) {
+        var bounds = room.bounds[b];
+        if (bounds.metadata.ceil > ceil) {
+            ceil = bounds.metadata.ceil;
+        }
+    }
+    return Math.floor((ceil - 1) / 64.0);
+}
+
+function findLowestFloor(room) {
+    var floor = 0;    
+    for (var b = 0; b < room.bounds.length; b++) {
+        var bounds = room.bounds[b];
+        if (bounds.metadata.floor < floor) {
+            floor = bounds.metadata.floor;
+        }
+    }
+    // any room with a floor level under -48 will block every room on the floor below it
+    return Math.ceil((floor - 12) / 64.0);
 }
 
 function buildTd(html) {
@@ -1477,7 +1489,9 @@ function buildCollisionMatrix(table) {
     tdList.push(buildTd(""));
     for (var r1 = 0; r1 < roomMetadataList.length; r1++) {
         var rmd1 = roomMetadataList[r1];
-		tdList.push(buildTh(rmd1.id));
+        var tr = new Room(rmd1);
+        var tro = findLowestFloor(tr);
+		tdList.push(buildTh(rmd1.id + "<br/>(" + tro + ")"));
     }
 	table.appendChild(buildTr(tdList));
 
@@ -1485,16 +1499,18 @@ function buildCollisionMatrix(table) {
         tdList = Array();
         var rmd1 = roomMetadataList[r1];
         var lowerRoom = new Room(rmd1)
-        var lowerDoor = findHighestDoor(lowerRoom);
-        lowerRoom.setPosition(-lowerDoor.metadata.x, -lowerDoor.metadata.y, 100-lowerDoor.metadata.floor, 0);
+        var lowerRoomOffset = findHighestFloor(lowerRoom);
+        var lowerDoor = lowerRoom.doors[0];
+        lowerRoom.setPosition(-lowerDoor.metadata.x, -lowerDoor.metadata.y, 100-lowerRoomOffset, 0, updateFloors=false);
 
-		tdList.push(buildTh(rmd1.id));
+		tdList.push(buildTh(rmd1.id + " (" + lowerRoomOffset + ")"));
 
 	    for (var r2 = 0; r2 < roomMetadataList.length; r2++) {
 	        var rmd2 = roomMetadataList[r2];
 	        var upperRoom = new Room(rmd2);
+            var upperRoomOffset = findLowestFloor(upperRoom);
 	        var upperDoor = upperRoom.doors[0];
-            upperRoom.setPosition(-upperDoor.metadata.x, -upperDoor.metadata.y, 101, 0);
+            upperRoom.setPosition(-upperDoor.metadata.x, -upperDoor.metadata.y, 101-upperRoomOffset, 0, updateFloors=false);
 
 			var collide = findCollisions(lowerRoom.bounds, upperRoom.bounds).length > 0;
 			var shouldCollide = rmd1.blockedFromAboveBy && (rmd1.blockedFromAboveBy.indexOf(rmd2.id) >=0);
