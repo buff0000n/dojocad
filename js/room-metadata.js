@@ -191,7 +191,7 @@ var roomMetadata =
 		{"resource": "Forma", "costs": [1, 1, 3, 8, 25]}],
 	"blockedFromAboveBy": [
 		"ce","ob","oc","re"]},
-{"id": "he", "image": "entrati-hall", "name": "Entrati Hall (ph)", "category": "Halls", "prereq": null, "capacity": 100, "energy": -1, "maxnum": 3, "floor": -12, "ceil": 32,
+{"id": "he", "image": "entrati-hall", "name": "Entrati Audience Chamber", "category": "Halls", "prereq": null, "capacity": 200, "energy": -2, "maxnum": null, "floor": -12, "ceil": 32,
 	"bounds": [
 		{"x1": -32, "y1": -32, "x2": 32, "y2": 32, "floor": -12, "ceil": 44}],
 	"doors": [
@@ -203,10 +203,10 @@ var roomMetadata =
 		{"x": -32, "y": 16, "floor": 0, "outx": -1, "outy": 0}],
 	"resources": [
 		{"resource": "Credits", "costs": [1000, 3000, 10000, 30000, 100000]},
-		{"resource": "Alloy Plate", "costs": [150, 450, 1500, 4500, 15000]},
-		{"resource": "Ferrite", "costs": [600, 1800, 6000, 18000, 60000]},
-		{"resource": "Rubedo", "costs": [300, 900, 3000, 9000, 30000]},
-		{"resource": "Forma", "costs": [1, 1, 3, 8, 25]}],
+		{"resource": "Ferrite", "costs": [800, 2400, 8000, 24000, 80000]},
+		{"resource": "Circuits", "costs": [200, 600, 2000, 6000, 20000]},
+		{"resource": "Salvage", "costs": [500, 1500, 5000, 15000, 50000]},
+		{"resource": "Forma", "costs": [1, 1, 1, 3, 10]}], "unverified": true,
 	"blockedFromAboveBy": [
 		"ce","ob","oc","re"]},
 
