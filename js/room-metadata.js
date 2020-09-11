@@ -170,7 +170,7 @@ var roomMetadata =
 		{"resource": "Forma", "costs": [1, 1, 3, 8, 25]}],
 	"blockedFromAboveBy": [
 	    ]},
-{"id": "hi", "image": "inspiration-hall", "name": "Inspiration Hall", "category": "Halls", "prereq": null, "capacity": 100, "energy": -1, "maxnum": 3, "floor": -12, "ceil": 44,
+{"id": "hi", "image": "inspiration-hall", "name": "Inspiration Hall", "category": "Halls", "prereq": null, "capacity": 100, "energy": -1, "maxnum": 3, "spawn": true, "floor": -12, "ceil": 44,
 	"bounds": [
 		{"x1": -32, "y1": -32, "x2": 32, "y2": 32, "floor": -12, "ceil": 44}],
 	"doors": [
