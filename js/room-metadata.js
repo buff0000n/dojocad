@@ -98,7 +98,8 @@ var roomMetadata =
 
 {"id": "h1", "image": "clan-hall", "name": "Clan Hall", "category": "Halls", "prereq": null, "capacity": 100, "energy": 5, "maxnum": 1, "spawn": true, "floor": -12, "ceil": 24,
 	"bounds": [
-		{"x1": -18, "y1": -32, "x2": 18, "y2": 32, "floor": -12, "ceil": 24}],
+		{"x1": -16, "y1": -32, "x2": 16, "y2": 32, "floor": -12, "ceil": 24},
+		{"x1": -18, "y1": -24, "x2": 18, "y2": 24, "floor": -12, "ceil": 24}],
 	"doors": [
 		{"x": 0, "y": 32, "floor": 0, "outx": 0, "outy": 1},
 		{"x": 0, "y": -32, "floor": 0, "outx": 0, "outy": -1}],
