@@ -347,8 +347,8 @@ class RoomCounter extends RoomRule {
 	    }
 	}
 
-	getRoomCount(room) {
-	    var id = room.metadata.id;
+	getRoomCount(metadata) {
+	    var id = metadata.id;
 	    var count = this.room_counts[id];
 	    return count ? count : 0
 	}

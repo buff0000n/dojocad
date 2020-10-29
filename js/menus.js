@@ -323,7 +323,14 @@ function hasError(errors, error) {
 }
 
 function buildAddRoomButton(roomMetadata, room = null, errors = null) {
-    var roomButtonDiv = buildMenuButton(room != null ? "Duplicate" : roomMetadata.name, doAddRoomButton, icon="icon-room-" + roomMetadata.image);
+    if (room != null) {
+        var menuTitle = "Duplicate";
+
+    } else {
+        var count = roomCounter.getRoomCount(roomMetadata);
+        var menuTitle = roomMetadata.name + (count > 0 ? (" (" + count + ")") : "");
+    }
+    var roomButtonDiv = buildMenuButton(menuTitle, doAddRoomButton, icon="icon-room-" + roomMetadata.image);
     for (var i = 0; i < roomButtonDiv.children.length; i++) {
 	    roomButtonDiv.children[i].roomMetadata = roomMetadata;
 	    roomButtonDiv.children[i].room = room;
@@ -391,7 +398,7 @@ function doRoomMenu(e, room) {
     } else {
         tr.appendChild(buildBlank());
     }
-    var roomCount = roomCounter.getRoomCount(room);
+    var roomCount = roomCounter.getRoomCount(room.metadata);
 	tr.appendChild(buildMenuLabel(room.metadata.name, 4, roomCount <= 1 ? null : `&nbsp;(${roomCount} built)`));
 	tr.appendChild(buildCloseMenuButton());
 
