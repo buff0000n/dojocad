@@ -495,11 +495,11 @@ var roomMetadata =
 	"doors": [
 		{"x": 0, "y": 18, "floor": 0, "outx": 0, "outy": 1}],
 	"resources": [
-		{"resource": "Credits", "costs": [1000, 3000, 10000, 100000, 0]},
-		{"resource": "Alloy Plate", "costs": [150, 450, 1500, 15000, 0]},
-		{"resource": "Ferrite", "costs": [600, 1800, 6000, 60000, 0]},
-		{"resource": "Rubedo", "costs": [300, 900, 3000, 30000, 0]},
-		{"resource": "Forma", "costs": [1, 1, 3, 25, 0]}], "unverified": true,
+		{"resource": "Credits", "costs": [1000, 3000, 10000, 100000, 100000]},
+		{"resource": "Alloy Plate", "costs": [150, 450, 1500, 15000, 15000]},
+		{"resource": "Ferrite", "costs": [600, 1800, 6000, 60000, 60000]},
+		{"resource": "Rubedo", "costs": [300, 900, 3000, 30000, 30000]},
+		{"resource": "Forma", "costs": [1, 1, 3, 25, 25]}], "unverified": true,
 	"blockedFromAboveBy": [
 	    ]},
 
