@@ -358,8 +358,94 @@ class RoomCounter extends RoomRule {
 	}
 }
 
+class ResourceCounter extends RoomRule {
+	constructor() {
+		super();
+		this.resources = {};
+		this.tier = 0;
+		this.maxTier = 4;
+	}
+
+	getTier() {
+	    return Math.min(this.tier, this.maxTier);
+	}
+
+	roomAdded(room) {
+	    if (room.metadata.id == "b1") {
+	        this.tier++;
+	    }
+
+	    var tier = this.getTier();
+
+	    this.addResources(this.resources, room.metadata);
+	}
+
+	addResources(resourceMap, metadata) {
+	    var rr = metadata.resources;
+	    for (var i = 0; i < rr.length; i++) {
+	        if (!resourceMap[rr[i].resource]) {
+	            resourceMap[rr[i].resource] = [];
+	            for (var j = 0; j <= this.maxTier; j++) {
+	                resourceMap[rr[i].resource][j] = 0;
+	            }
+	        }
+            for (var j = 0; j <= this.maxTier; j++) {
+                resourceMap[rr[i].resource][j] += rr[i].costs[j];
+            }
+	    }
+	}
+
+	roomRemoved(room) {
+	    if (room.metadata.id == "b1") {
+	        this.tier--;
+	    }
+
+	    var tier = this.getTier();
+
+	    var rr = room.metadata.resources;
+	    for (var i = 0; i < this.resources.length; i++) {
+            for (var j = 0; j <= this.maxTier; j++) {
+                this.resources[rr[i].resource][j] -= rr[i].costs[j];
+            }
+	    }
+	}
+
+	getResourcesForRoomMetadata(metadata) {
+	    // ugh just convert it to a dict
+	    var resourcesMap = {};
+	    this.addResources(resourcesMap, metadata);
+	    return this.getResources0(resourcesMap);
+	}
+
+	getTotalResources() {
+	    return this.getResources0(this.resources);
+	}
+
+	getResources0(resourceMap) {
+	    var tier = this.getTier();
+
+	    var sortedKeys = keys(resourceMap).sort();
+
+	    var costs = {};
+
+	    for (var i = 0; i < sortedKeys.length; i++) {
+	        var key = sortedKeys[i];
+	        var cost = resourceMap[key][tier];
+	        if (cost > 0) {
+	            costs[key] = cost;
+	        }
+	    }
+
+	    return costs;
+	}
+
+	toString() {
+		return "resource tracker";
+	}
+}
 
 var roomCounter = new RoomCounter();
+var resourceCounter = new ResourceCounter();
 
 var roomRules = Array();
 
@@ -370,6 +456,7 @@ function registerRoomRules(roomMetaDataList) {
 	roomRules.push(new SpawnRule());
 	roomRules.push(new DiscontinuedRule());
 	roomRules.push(roomCounter);
+	roomRules.push(resourceCounter);
 
 	for (var i = 0; i < roomMetaDataList.rooms.length; i++) {
 		var roomMetadata = roomMetaDataList.rooms[i];

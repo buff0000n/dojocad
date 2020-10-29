@@ -87,7 +87,6 @@ function buildMenuHeaderLine(title, colSpan, icon = null, className = "menu-butt
 	var tr = document.createElement("tr");
     var iconTd = document.createElement("td");
 	if (icon) {
-        iconTd.className = "imgField";
 		iconTd.innerHTML = `<img class="imgButton" src="icons/${icon}.png" srcset="icons2x/${icon}.png 2x"/>`;
 	}
     tr.appendChild(iconTd);
@@ -274,7 +273,7 @@ function doAddMenu() {
     var rmd = getRoomMenuData();
     var menuDiv = buildMenu();
 
-	menuDiv.appendChild(buildMenuHeaderLine("Categories", 5));
+	menuDiv.appendChild(buildMenuHeaderLine("Categories", 6));
 
     for (var cat in rmd) {
         var catButtonDiv = buildMenuButton(cat, doAddCategoryMenu, icon="icon-room-" + rmd[cat][0].image);
@@ -286,7 +285,7 @@ function doAddMenu() {
     }
 
     if (lastAddedRoomMetadata) {
-        menuDiv.appendChild(buildMenuDivider(5));
+        menuDiv.appendChild(buildMenuDivider(6));
 	    var roomButtonDiv = buildAddRoomButton(lastAddedRoomMetadata);
         menuDiv.appendChild(roomButtonDiv);
     }
@@ -302,7 +301,7 @@ function doAddCategoryMenu() {
 
     var menuDiv = buildMenu();
 
-	menuDiv.appendChild(buildMenuHeaderLine(catButton.category, 5));
+	menuDiv.appendChild(buildMenuHeaderLine(catButton.category, 6));
 
     for (var r in roomList) {
 	    var roomMetadata = roomList[r];
@@ -341,6 +340,14 @@ function buildAddRoomButton(roomMetadata, room = null, errors = null) {
 	tdcapacity.className = hasError(errors, "capacity") ? "field-error" : "field";
     tdcapacity.innerHTML = `${roomMetadata.capacity}<img src="icons/icon-capacity.png" srcset="icons2x/icon-capacity.png 2x" title="Capacity"/>`;
     roomButtonDiv.appendChild(tdcapacity);
+
+	var tdresources = document.createElement("td")
+	tdresources.className = "field clickable";
+    tdresources.innerHTML = `<img onclick="showResources()" src="icons/icon-resources.png" srcset="icons2x/icon-resources.png 2x" title="Resources"/>`;
+    var resourcesButton = tdresources.firstElementChild
+    resourcesButton.menuLevel = getCurrentMenuLevel() + 1;
+    resourcesButton.metadata = roomMetadata;
+    roomButtonDiv.appendChild(tdresources);
 
     var warns = getNewRoomWarnings(roomMetadata);
     if (errors || warns) {
@@ -384,9 +391,8 @@ function doRoomMenu(e, room) {
     } else {
         tr.appendChild(buildBlank());
     }
-
     var roomCount = roomCounter.getRoomCount(room);
-	tr.appendChild(buildMenuLabel(room.metadata.name, 3, roomCount <= 1 ? null : `&nbsp;(${roomCount} built)`));
+	tr.appendChild(buildMenuLabel(room.metadata.name, 4, roomCount <= 1 ? null : `&nbsp;(${roomCount} built)`));
 	tr.appendChild(buildCloseMenuButton());
 
     menuDiv.appendChild(tr);
@@ -398,7 +404,7 @@ function doRoomMenu(e, room) {
 
     menuDiv.appendChild(buildAddRoomButton(room.metadata, room));
 
-    menuDiv.appendChild(buildMenuDivider(5));
+    menuDiv.appendChild(buildMenuDivider(6));
 
     menuDiv.appendChild(buildMenuButton("Delete", deleteSelectedRoom, "icon-delete"));
 
@@ -490,6 +496,38 @@ function doUrlCopy() {
 
 	/* Copy the text inside the text field */
 	document.execCommand("copy");
+}
+
+function showResources() {
+    var e = e || window.event;
+	var resourcesButton = getMenuTarget();
+
+    var metadata = resourcesButton.metadata;
+	if (metadata) {
+	    resources = resourceCounter.getResourcesForRoomMetadata(resourcesButton.metadata);
+	} else {
+    	resources = resourceCounter.getTotalResources();
+	}
+
+    var menuDiv = buildMenu();
+
+    menuDiv.appendChild(buildMenuHeaderLine((metadata ? ("Resources for " + metadata.name) : "Total Resources"), 4, "icon-resources"));
+
+    if (Object.keys(resources).length == 0) {
+        var tr = document.createElement("tr");
+        tr.innerHTML = `<td/><td>(not applicable)</td><td/><td/>`
+        menuDiv.appendChild(tr);
+
+    } else {
+        for (var resourceName in resources) {
+            var tr = document.createElement("tr");
+            tr.innerHTML = `<td/><td>${resourceName}</td><td>${resources[resourceName]}</td><td/>`
+
+            menuDiv.appendChild(tr);
+        }
+    }
+
+    showMenuAt(menuDiv, e.clientX, e.clientY);
 }
 
 function buildMenuInput(label, input, units = null) {
