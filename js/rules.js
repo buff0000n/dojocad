@@ -326,6 +326,41 @@ class DiscontinuedRule extends RoomRule {
 	}
 }
 
+class RoomCounter extends RoomRule {
+	constructor() {
+		super();
+		this.room_counts = {};
+	}
+
+	roomAdded(room) {
+	    var id = room.metadata.id;
+	    if (!this.room_counts[id]) {
+	        this.room_counts[id] = 0;
+	    }
+        this.room_counts[id]++;
+	}
+
+	roomRemoved(room) {
+	    var id = room.metadata.id;
+	    if (!this.room_counts[id]) {
+	        this.room_counts[id]--;
+	    }
+	}
+
+	getRoomCount(room) {
+	    var id = room.metadata.id;
+	    var count = this.room_counts[id];
+	    return count ? count : 0
+	}
+
+	toString() {
+		return "room counter";
+	}
+}
+
+
+var roomCounter = new RoomCounter();
+
 var roomRules = Array();
 
 function registerRoomRules(roomMetaDataList) {
@@ -334,6 +369,7 @@ function registerRoomRules(roomMetaDataList) {
 	roomRules.push(new CapacityRule());
 	roomRules.push(new SpawnRule());
 	roomRules.push(new DiscontinuedRule());
+	roomRules.push(roomCounter);
 
 	for (var i = 0; i < roomMetaDataList.rooms.length; i++) {
 		var roomMetadata = roomMetaDataList.rooms[i];

@@ -57,10 +57,22 @@ function buildMenu(className = "menu-table") {
     return menuDiv;
 }
 
-function buildMenuLabel(label, colSpan) {
+function buildMenuLabel(label, colSpan, suffix=null) {
 	var td = document.createElement("td");
-	td.className = "label";
-	td.innerHTML = label;
+	if (suffix == null) {
+        td.className = "label";
+        td.innerHTML = label;
+
+	} else {
+    	var span = document.createElement("span");
+        span.className = "label";
+        span.innerHTML = label;
+        td.appendChild(span);
+
+    	var span2 = document.createElement("span");
+        span2.innerHTML = suffix;
+        td.appendChild(span2);
+	}
 	td.colSpan = "" + colSpan;
 	return td;
 }
@@ -372,7 +384,9 @@ function doRoomMenu(e, room) {
     } else {
         tr.appendChild(buildBlank());
     }
-	tr.appendChild(buildMenuLabel(room.metadata.name, 3));
+
+    var roomCount = roomCounter.getRoomCount(room);
+	tr.appendChild(buildMenuLabel(room.metadata.name, 3, roomCount <= 1 ? null : `&nbsp;(${roomCount} built)`));
 	tr.appendChild(buildCloseMenuButton());
 
     menuDiv.appendChild(tr);
