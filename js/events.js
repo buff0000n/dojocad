@@ -327,6 +327,10 @@ function isDraggingRoom() {
     return mouseDownTarget && mouseDownTarget.room && mouseDownTarget.room == selectedRoom;
 }
 
+function isMultiselecting() {
+    return multiselectCornerPX != null;
+}
+
 function dragEvent(e) {
     // calculate the new cursor position:
     var offsetPX = e.clientX - mouseDownTargetStartPX;
@@ -350,19 +354,18 @@ function dragEvent(e) {
 	    checkAutoScroll(e);
 
     } else if (multiselectEnabled) {
-        if (multiselectCornerPX == null) {
+        if (!isMultiselecting()) {
             mouseDownTargetStartPX = e.clientX;
             mouseDownTargetStartPY = e.clientY;
             multiselectCornerPX = e.clientX;
             multiselectCornerPY = e.clientY;
     	    showMultiselectBox();
-            showDebug("Started multiselecting");
+
         } else {
             multiselectCornerPX = e.clientX;
             multiselectCornerPY = e.clientY;
     	    updateMultiselectBox();
     	    checkAutoScroll(e);
-            showDebug("Continued multiselecting");
         }
 
     } else {
@@ -381,7 +384,6 @@ function dropEvent(e) {
         hideMultiselectBox();
         multiselectCornerPX = null;
         multiselectCornerPY = null;
-        showDebug("Stopped multiselecting");
 
     } else if (isDraggingRoom()) {
 	    mouseDownTarget = null;
@@ -503,6 +505,12 @@ function zoom(px, py, factor) {
 		// Oh god we're dragging and zooming at the same time *sweats profusely*
 		mouseDownTargetStartPX = (mouseDownTargetStartPX - viewPX) * (newViewScale / viewScale) + newViewPX;
 		mouseDownTargetStartPY = (mouseDownTargetStartPY - viewPY) * (newViewScale / viewScale) + newViewPY;
+
+	} else if (isMultiselecting()) {
+		// Oh double god we're dragging and multiselecting at the same time *nosebleed*
+		mouseDownTargetStartPX = (mouseDownTargetStartPX - viewPX) * (newViewScale / viewScale) + newViewPX;
+		mouseDownTargetStartPY = (mouseDownTargetStartPY - viewPY) * (newViewScale / viewScale) + newViewPY;
+		updateMultiselectBox();
 	}
 
 	setViewP(newViewPX, newViewPY, newViewScale);
@@ -527,6 +535,14 @@ function setMultiselectEnabled(enabled) {
         multiselectEnabled = false;
         button.className = "button-disabled";
 		button.children[0].title = "Enable Multiselect Mode";
+
+		if (isMultiselecting()) {
+            mouseDownTargetStartPX = multiselectCornerPX;
+            mouseDownTargetStartPY = multiselectCornerPY
+            multiselectCornerPX = null;
+            multiselectCornerPY = null;
+            hideMultiselectBox();
+		}
     }
 }
 
