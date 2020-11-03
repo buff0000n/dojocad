@@ -57,10 +57,22 @@ function buildMenu(className = "menu-table") {
     return menuDiv;
 }
 
-function buildMenuLabel(label, colSpan) {
+function buildMenuLabel(label, colSpan, suffix=null) {
 	var td = document.createElement("td");
-	td.className = "label";
-	td.innerHTML = label;
+	if (suffix == null) {
+        td.className = "label";
+        td.innerHTML = label;
+
+	} else {
+    	var span = document.createElement("span");
+        span.className = "label";
+        span.innerHTML = label;
+        td.appendChild(span);
+
+    	var span2 = document.createElement("span");
+        span2.innerHTML = suffix;
+        td.appendChild(span2);
+	}
 	td.colSpan = "" + colSpan;
 	return td;
 }
@@ -75,7 +87,6 @@ function buildMenuHeaderLine(title, colSpan, icon = null, className = "menu-butt
 	var tr = document.createElement("tr");
     var iconTd = document.createElement("td");
 	if (icon) {
-        iconTd.className = "imgField";
 		iconTd.innerHTML = `<img class="imgButton" src="icons/${icon}.png" srcset="icons2x/${icon}.png 2x"/>`;
 	}
     tr.appendChild(iconTd);
@@ -262,7 +273,7 @@ function doAddMenu() {
     var rmd = getRoomMenuData();
     var menuDiv = buildMenu();
 
-	menuDiv.appendChild(buildMenuHeaderLine("Categories", 5));
+	menuDiv.appendChild(buildMenuHeaderLine("Categories", 6));
 
     for (var cat in rmd) {
         var catButtonDiv = buildMenuButton(cat, doAddCategoryMenu, icon="icon-room-" + rmd[cat][0].image);
@@ -274,7 +285,7 @@ function doAddMenu() {
     }
 
     if (lastAddedRoomMetadata) {
-        menuDiv.appendChild(buildMenuDivider(5));
+        menuDiv.appendChild(buildMenuDivider(6));
 	    var roomButtonDiv = buildAddRoomButton(lastAddedRoomMetadata);
         menuDiv.appendChild(roomButtonDiv);
     }
@@ -290,7 +301,7 @@ function doAddCategoryMenu() {
 
     var menuDiv = buildMenu();
 
-	menuDiv.appendChild(buildMenuHeaderLine(catButton.category, 5));
+	menuDiv.appendChild(buildMenuHeaderLine(catButton.category, 6));
 
     for (var r in roomList) {
 	    var roomMetadata = roomList[r];
@@ -312,7 +323,14 @@ function hasError(errors, error) {
 }
 
 function buildAddRoomButton(roomMetadata, room = null, errors = null) {
-    var roomButtonDiv = buildMenuButton(room != null ? "Duplicate" : roomMetadata.name, doAddRoomButton, icon="icon-room-" + roomMetadata.image);
+    if (room != null) {
+        var menuTitle = "Duplicate";
+
+    } else {
+        var count = roomCounter.getRoomCount(roomMetadata);
+        var menuTitle = roomMetadata.name + (count > 0 ? (" (" + count + ")") : "");
+    }
+    var roomButtonDiv = buildMenuButton(menuTitle, doAddRoomButton, icon="icon-room-" + roomMetadata.image);
     for (var i = 0; i < roomButtonDiv.children.length; i++) {
 	    roomButtonDiv.children[i].roomMetadata = roomMetadata;
 	    roomButtonDiv.children[i].room = room;
@@ -329,6 +347,14 @@ function buildAddRoomButton(roomMetadata, room = null, errors = null) {
 	tdcapacity.className = hasError(errors, "capacity") ? "field-error" : "field";
     tdcapacity.innerHTML = `${roomMetadata.capacity}<img src="icons/icon-capacity.png" srcset="icons2x/icon-capacity.png 2x" title="Capacity"/>`;
     roomButtonDiv.appendChild(tdcapacity);
+
+	var tdresources = document.createElement("td")
+	tdresources.className = "field clickable";
+    tdresources.innerHTML = `<img onclick="showResources()" src="icons/icon-resources.png" srcset="icons2x/icon-resources.png 2x" title="Resources"/>`;
+    var resourcesButton = tdresources.firstElementChild
+    resourcesButton.menuLevel = getCurrentMenuLevel() + 1;
+    resourcesButton.metadata = roomMetadata;
+    roomButtonDiv.appendChild(tdresources);
 
     var warns = getNewRoomWarnings(roomMetadata);
     if (errors || warns) {
@@ -372,7 +398,8 @@ function doRoomMenu(e, room) {
     } else {
         tr.appendChild(buildBlank());
     }
-	tr.appendChild(buildMenuLabel(room.metadata.name, 3));
+    var roomCount = roomCounter.getRoomCount(room.metadata);
+	tr.appendChild(buildMenuLabel(room.metadata.name, 4, roomCount <= 1 ? null : `&nbsp;(${roomCount} built)`));
 	tr.appendChild(buildCloseMenuButton());
 
     menuDiv.appendChild(tr);
@@ -384,7 +411,7 @@ function doRoomMenu(e, room) {
 
     menuDiv.appendChild(buildAddRoomButton(room.metadata, room));
 
-    menuDiv.appendChild(buildMenuDivider(5));
+    menuDiv.appendChild(buildMenuDivider(6));
 
     menuDiv.appendChild(buildMenuButton("Delete", deleteSelectedRoom, "icon-delete"));
 
@@ -476,6 +503,38 @@ function doUrlCopy() {
 
 	/* Copy the text inside the text field */
 	document.execCommand("copy");
+}
+
+function showResources() {
+    var e = e || window.event;
+	var resourcesButton = getMenuTarget();
+
+    var metadata = resourcesButton.metadata;
+	if (metadata) {
+	    resources = resourceCounter.getResourcesForRoomMetadata(resourcesButton.metadata);
+	} else {
+    	resources = resourceCounter.getTotalResources();
+	}
+
+    var menuDiv = buildMenu();
+
+    menuDiv.appendChild(buildMenuHeaderLine((metadata ? ("Resources for " + metadata.name) : "Total Resources"), 4, "icon-resources"));
+
+    if (Object.keys(resources).length == 0) {
+        var tr = document.createElement("tr");
+        tr.innerHTML = `<td/><td>(not applicable)</td><td/><td/>`
+        menuDiv.appendChild(tr);
+
+    } else {
+        for (var resourceName in resources) {
+            var tr = document.createElement("tr");
+            tr.innerHTML = `<td/><td>${resourceName}</td><td>${resources[resourceName]}</td><td/>`
+
+            menuDiv.appendChild(tr);
+        }
+    }
+
+    showMenuAt(menuDiv, e.clientX, e.clientY);
 }
 
 function buildMenuInput(label, input, units = null) {
