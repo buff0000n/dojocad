@@ -264,7 +264,10 @@ var mouseDownTargetStartPY = 0;
 var selectedRoom = null;
 var dragged = false;
 var newRoom = false;
+
 var multiselectEnabled = false;
+var multiselectCornerPX = null;
+var multiselectCornerPY = null;
 
 // adapted from https://www.w3schools.com/howto/howto_js_draggable.asp
 function downEvent(e) {
@@ -289,11 +292,6 @@ function downEvent(e) {
 	        mouseDownTarget = e.currentTarget;
 	        mouseDownTarget.room.setClickPoint(mouseDownTargetStartPX, mouseDownTargetStartPY);
 	        newRoom = false;
-	        // shift-clicking automatically selects the room under the cursor, so you can drag a room without having to
-	        // click it twice
-			if (e.shiftKey) {
-				selectRoom(!e.currentTarget ? null : e.currentTarget.room, undoable = true);
-			}
         }
     }
 
@@ -325,6 +323,10 @@ function startDrag() {
     dragTarget.ontouchend = touchEnd;
 }
 
+function isDraggingRoom() {
+    return mouseDownTarget && mouseDownTarget.room && mouseDownTarget.room == selectedRoom;
+}
+
 function dragEvent(e) {
     // calculate the new cursor position:
     var offsetPX = e.clientX - mouseDownTargetStartPX;
@@ -334,7 +336,7 @@ function dragEvent(e) {
         return;
     }
 
-    if (mouseDownTarget && mouseDownTarget.room && mouseDownTarget.room == selectedRoom) {
+    if (isDraggingRoom()) {
 	    // set the element's new position:
 	    selectedRoom.setDragOffset(offsetPX, offsetPY, null, e.shiftKey ? 8 : 1);
 
@@ -346,6 +348,22 @@ function dragEvent(e) {
 	    selectedRoom.updateView();
 
 	    checkAutoScroll(e);
+
+    } else if (multiselectEnabled) {
+        if (multiselectCornerPX == null) {
+            mouseDownTargetStartPX = e.clientX;
+            mouseDownTargetStartPY = e.clientY;
+            multiselectCornerPX = e.clientX;
+            multiselectCornerPY = e.clientY;
+    	    showMultiselectBox();
+            showDebug("Started multiselecting");
+        } else {
+            multiselectCornerPX = e.clientX;
+            multiselectCornerPY = e.clientY;
+    	    updateMultiselectBox();
+    	    checkAutoScroll(e);
+            showDebug("Continued multiselecting");
+        }
 
     } else {
 		mouseDownTarget = null;
@@ -359,27 +377,33 @@ function dragEvent(e) {
 }
 
 function dropEvent(e) {
-    if (mouseDownTarget && mouseDownTarget.room && mouseDownTarget.room == selectedRoom) {
+    if (multiselectEnabled) {
+        hideMultiselectBox();
+        multiselectCornerPX = null;
+        multiselectCornerPY = null;
+        showDebug("Stopped multiselecting");
+
+    } else if (isDraggingRoom()) {
 	    mouseDownTarget = null;
 	    mouseDownTargetStartPX = 0;
 	    mouseDownTargetStartPY = 0;
 
 		if (dragged) {
-			if (selectedRoom.moved) {
-				var action = new MoveRoomAction(selectedRoom);
-			}
+            if (selectedRoom.moved) {
+                var action = new MoveRoomAction(selectedRoom);
+            }
 
-		    selectedRoom.dropDragOffset();
-		    selectedRoom.updateView();
-		    dragged = false;
+            selectedRoom.dropDragOffset();
+            selectedRoom.updateView();
+            dragged = false;
 
-	        hideDoorMarkers();
+            hideDoorMarkers();
 
-			if (!action) {
-				addUndoAction(new AddDeleteRoomAction(selectedRoom, true));
-			    selectedRoom.justAdded = false;
+            if (!action) {
+                addUndoAction(new AddDeleteRoomAction(selectedRoom, true));
+                selectedRoom.justAdded = false;
 
-			} else if (action.isAMove()) {
+            } else if (action.isAMove()) {
                 addUndoAction(action);
             }
 
@@ -436,7 +460,7 @@ function selectRoom(room, undoable = false) {
 }
 
 function cancelRoomDrag() {
-    if (mouseDownTarget && mouseDownTarget.room && mouseDownTarget.room == selectedRoom) {
+    if (isDraggingRoom()) {
         mouseDownTarget = null;
         mouseDownTargetStartPX = 0;
         mouseDownTargetStartPY = 0;
@@ -535,7 +559,10 @@ function keyDown(e) {
 		    break;
 		case "ShiftLeft" :
 		case "ShiftRight" :
-		    setMultiselectEnabled(true);
+		    if (!isDraggingRoom()) {
+    		    setMultiselectEnabled(true);
+		    }
+		    break;
 		case "KeyZ" :
 			// only enable undo/redo key shortcut if there is no menu visible
 			if (getCurrentMenuLevel() == 0) {
@@ -571,6 +598,41 @@ function keyUp(e) {
 		case "ShiftRight" :
 		    setMultiselectEnabled(false);
 	}
+}
+
+//==============================================================
+// multiselect
+//==============================================================
+
+var multiselectBox = null;
+
+function showMultiselectBox() {
+    if (multiselectBox == null) {
+        multiselectBox = document.createElement("div");
+        multiselectBox.className = "multiselectBox";
+        multiselectBox.style.position = "absolute";
+        updateMultiselectBox();
+        getRoomContainer().appendChild(multiselectBox);
+    }
+}
+
+function hideMultiselectBox() {
+    if (multiselectBox != null) {
+		multiselectBox.remove();
+		multiselectBox = null;
+    }
+}
+
+function updateMultiselectBox() {
+    var x1 = Math.min(mouseDownTargetStartPX, multiselectCornerPX);
+    var x2 = Math.max(mouseDownTargetStartPX, multiselectCornerPX);
+    var y1 = Math.min(mouseDownTargetStartPY, multiselectCornerPY);
+    var y2 = Math.max(mouseDownTargetStartPY, multiselectCornerPY);
+
+	multiselectBox.style.left = x1;
+	multiselectBox.style.top = y1;
+	multiselectBox.style.width = (x2 - x1);
+	multiselectBox.style.height = (y2 - y1);
 }
 
 //==============================================================

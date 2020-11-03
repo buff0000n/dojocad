@@ -503,6 +503,19 @@
     }
 
     /************************************************************
+     * multiselect formatting
+     ************************************************************/
+
+    .multiselectBox {
+        position: absolute;
+        border-style: solid;
+        border-width: 1px;
+        z-index: 499;
+        pointer-events: none;
+        border-color: #00FF00;
+    }
+
+    /************************************************************
      * error/debug formatting
      ************************************************************/
 
@@ -989,10 +1002,6 @@
             <p>
                 Select a room by clicking on it without dragging.  The currently selected room will have a blue
                 outline around it.
-            </p>
-            <p>
-                You can also <strong>shift</strong>-click on a room to automatically select it and start dragging it
-                without having to click twice.
             </p>
             <p>
                 You can also click on a room that's not in the current floor but visible in the background in gray to go
