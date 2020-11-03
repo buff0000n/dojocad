@@ -342,7 +342,7 @@ class RoomCounter extends RoomRule {
 
 	roomRemoved(room) {
 	    var id = room.metadata.id;
-	    if (!this.room_counts[id]) {
+	    if (this.room_counts[id]) {
 	        this.room_counts[id]--;
 	    }
 	}
