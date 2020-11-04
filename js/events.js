@@ -281,7 +281,7 @@ function downEvent(e) {
     mouseDownTargetStartPX = e.clientX;
     mouseDownTargetStartPY = e.clientY;
 
-    if (e.currentTarget.room) {
+    if (e.currentTarget.room && !multiselectEnabled) {
         if (e.altKey) {
             // insta-delete
 
@@ -501,16 +501,16 @@ function zoom(px, py, factor) {
 	var newViewPX = px - (mx * newViewScale);
 	var newViewPY = py - (my * newViewScale);
 
-	if (mouseDownTarget) {
-		// Oh god we're dragging and zooming at the same time *sweats profusely*
-		mouseDownTargetStartPX = (mouseDownTargetStartPX - viewPX) * (newViewScale / viewScale) + newViewPX;
-		mouseDownTargetStartPY = (mouseDownTargetStartPY - viewPY) * (newViewScale / viewScale) + newViewPY;
-
-	} else if (isMultiselecting()) {
-		// Oh double god we're dragging and multiselecting at the same time *nosebleed*
+	if (isMultiselecting()) {
+		// Oh god we're multiselecting and zooming at the same time *sweats profusely*
 		mouseDownTargetStartPX = (mouseDownTargetStartPX - viewPX) * (newViewScale / viewScale) + newViewPX;
 		mouseDownTargetStartPY = (mouseDownTargetStartPY - viewPY) * (newViewScale / viewScale) + newViewPY;
 		updateMultiselectBox();
+
+	} else if (mouseDownTarget) {
+		// Oh double god we're dragging and zooming at the same time *nosebleed*
+		mouseDownTargetStartPX = (mouseDownTargetStartPX - viewPX) * (newViewScale / viewScale) + newViewPX;
+		mouseDownTargetStartPY = (mouseDownTargetStartPY - viewPY) * (newViewScale / viewScale) + newViewPY;
 	}
 
 	setViewP(newViewPX, newViewPY, newViewScale);
