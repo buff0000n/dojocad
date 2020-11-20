@@ -281,17 +281,22 @@ function downEvent(e) {
     mouseDownTargetStartPX = e.clientX;
     mouseDownTargetStartPY = e.clientY;
 
-    if (e.currentTarget.room && !multiselectEnabled) {
-        if (e.altKey) {
-            // insta-delete
-
-            selectRoom(e.currentTarget.room)
-		    deleteSelectedRoom();
+    if (e.currentTarget.room) {
+        if (multiselectEnabled) {
+	        mouseDownTarget = e.currentTarget;
 
         } else {
-	        mouseDownTarget = e.currentTarget;
-	        mouseDownTarget.room.setClickPoint(mouseDownTargetStartPX, mouseDownTargetStartPY);
-	        newRoom = false;
+            if (e.altKey) {
+                // insta-delete
+
+                selectRoom(e.currentTarget.room)
+                deleteSelectedRoom();
+
+            } else {
+                mouseDownTarget = e.currentTarget;
+                mouseDownTarget.room.setClickPoint(mouseDownTargetStartPX, mouseDownTargetStartPY);
+                newRoom = false;
+            }
         }
     }
 
@@ -381,9 +386,16 @@ function dragEvent(e) {
 
 function dropEvent(e) {
     if (multiselectEnabled) {
-        hideMultiselectBox();
-        multiselectCornerPX = null;
-        multiselectCornerPY = null;
+        if (isMultiselecting()) {
+            hideMultiselectBox();
+            multiselectCornerPX = null;
+            multiselectCornerPY = null;
+            dragged = false;
+            // todo; commit selection
+
+        } else {
+			selectRoom(!mouseDownTarget ? null : mouseDownTarget.room, undoable = true);
+        }
 
     } else if (isDraggingRoom()) {
 	    mouseDownTarget = null;
@@ -391,7 +403,7 @@ function dropEvent(e) {
 	    mouseDownTargetStartPY = 0;
 
 		if (dragged) {
-            if (selectedRoom.moved) {
+            if (selectedRoom.placed) {
                 var action = new MoveRoomAction(selectedRoom);
             }
 
@@ -403,8 +415,7 @@ function dropEvent(e) {
 
             if (!action) {
                 addUndoAction(new AddDeleteRoomAction(selectedRoom, true));
-                selectedRoom.justAdded = false;
-
+//                selectedRoom.justAdded = false;
             } else if (action.isAMove()) {
                 addUndoAction(action);
             }
@@ -436,6 +447,29 @@ function dropEvent(e) {
     mouseDownTarget = null;
     // stop auto-scrolling
     setAutoScroll(e, 0, 0)
+}
+
+function selectRoom(room, undoable = false) {
+    oldRoom = selectedRoom;
+
+	if (oldRoom) {
+		oldRoom.deselect();
+	    oldRoom.updateView();
+	    selectedRoom = null;
+	}
+	if (room) {
+		if (!room.isOnFloor()) {
+			setViewP(viewPX, viewPY, viewScale, room.floor);
+		}
+
+		selectedRoom = room;
+		room.select();
+	    room.updateView();
+    }
+
+    if (undoable) {
+        addUndoAction(new SelectionAction(oldRoom, room, getViewCenter()));
+    }
 }
 
 function selectRoom(room, undoable = false) {
