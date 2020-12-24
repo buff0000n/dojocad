@@ -194,7 +194,7 @@ var roomMetadata =
 		"ce","ob","oc","re"]},
 {"id": "he", "image": "entrati-hall", "name": "Entrati Audience Chamber", "category": "Halls", "spawn": true, "prereq": null, "capacity": 200, "energy": -2, "maxnum": null, "floor": -12, "ceil": 32,
 	"bounds": [
-		{"x1": -32, "y1": -32, "x2": 32, "y2": 32, "floor": -12, "ceil": 44}],
+		{"x1": -32, "y1": -32, "x2": 32, "y2": 32, "floor": -12, "ceil": 32}],
 	"doors": [
 		{"x": 0, "y": 32, "floor": 0, "outx": 0, "outy": 1},
 		{"x": 32, "y": 16, "floor": 0, "outx": 1, "outy": 0},
@@ -212,7 +212,7 @@ var roomMetadata =
 		"ce","ob","oc","re"]},
 {"id": "hf", "image": "infested-hall", "name": "Infested Chamber", "category": "Halls", "spawn": true, "prereq": null, "capacity": 200, "energy": -2, "maxnum": null, "floor": -12, "ceil": 32,
 	"bounds": [
-		{"x1": -32, "y1": -32, "x2": 32, "y2": 32, "floor": -12, "ceil": 44}],
+		{"x1": -32, "y1": -32, "x2": 32, "y2": 32, "floor": -12, "ceil": 32}],
 	"doors": [
 		{"x": 0, "y": 32, "floor": 0, "outx": 0, "outy": 1},
 		{"x": 32, "y": 16, "floor": 0, "outx": 1, "outy": 0},
