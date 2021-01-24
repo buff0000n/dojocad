@@ -304,7 +304,7 @@ var roomMetadata =
 	    ]},
 {"id": "lo", "image": "orokin-lab", "name": "Orokin Lab", "category": "Labs", "prereq": "or", "capacity": -2, "energy": -5, "maxnum": null, "floor": -16, "ceil": 28,
 	"bounds": [
-		{"x1": -16, "y1": -26, "x2": 16, "y2": 26, "floor": -16, "ceil": 28}],
+		{"x1": -16, "y1": -28, "x2": 16, "y2": 26, "floor": -16, "ceil": 28}],
 	"doors": [
 		{"x": 0, "y": 26, "floor": 0, "outx": 0, "outy": 1}],
 	"floor_images": [
