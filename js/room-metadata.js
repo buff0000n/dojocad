@@ -439,8 +439,8 @@ var roomMetadata =
 	    ]},
 {"id": "gl", "image": "large-garden", "name": "Large Garden", "category": "Misc", "prereq": null, "capacity": -15, "energy": -8, "maxnum": null, "floor": 0, "ceil": 20,
 	"bounds": [
-		{"x1": -32, "y1": -8, "x2": 32, "y2": 8, "floor": 0, "ceil": 20},
-		{"x1": -8, "y1": -32, "x2": 8, "y2": 32, "floor": 0, "ceil": 20},
+		{"x1": -32, "y1": -4, "x2": 32, "y2": 4, "floor": 0, "ceil": 20},
+		{"x1": -4, "y1": -32, "x2": 4, "y2": 32, "floor": 0, "ceil": 20},
 		{"x1": -24, "y1": -24, "x2": 24, "y2": 24, "floor": 0, "ceil": 20}],
 	"doors": [
 		{"x": 0, "y": 32, "floor": 0, "outx": 0, "outy": 1},
