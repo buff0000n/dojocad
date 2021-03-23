@@ -120,7 +120,7 @@ var roomMetadata =
 		{"resource": "Forma", "costs": [1, 1, 3, 8, 25]}],
 	"blockedFromAboveBy": [
 	    ]},
-{"id": "h3", "image": "clan-greater-hall", "name": "Clan Greater Hall", "category": "Halls", "prereq": "h2", "capacity": 200, "energy": -2, "maxnum": 1, "spawn": true, "floor": -12, "ceil": 24,
+{"id": "h3", "image": "clan-greater-hall", "name": "Clan Greater Hall", "category": "Halls", "prereq": null, "capacity": 200, "energy": -2, "maxnum": 1, "spawn": true, "floor": -12, "ceil": 24,
 	"bounds": [
 		{"x1": -24, "y1": -32, "x2": 24, "y2": 32, "floor": -12, "ceil": 24},
 		{"x1": -40, "y1": -12, "x2": 40, "y2": 12, "floor": -12, "ceil": 24}],
@@ -135,7 +135,7 @@ var roomMetadata =
 		{"resource": "Forma", "costs": [1, 1, 3, 8, 25]}],
 	"blockedFromAboveBy": [
 	    ]},
-{"id": "h4", "image": "clan-grand-hall", "name": "Clan Grand Hall", "category": "Halls", "prereq": "h3", "capacity": 200, "energy": -2, "maxnum": 1, "spawn": true, "floor": -12, "ceil": 30,
+{"id": "h4", "image": "clan-grand-hall", "name": "Clan Grand Hall", "category": "Halls", "prereq": null, "capacity": 200, "energy": -2, "maxnum": 1, "spawn": true, "floor": -12, "ceil": 30,
 	"bounds": [
 		{"x1": -32, "y1": -32, "x2": 32, "y2": 32, "floor": -12, "ceil": 30}],
 	"doors": [
@@ -153,7 +153,7 @@ var roomMetadata =
 		{"resource": "Forma", "costs": [1, 1, 3, 8, 25]}],
 	"blockedFromAboveBy": [
 	    ]},
-{"id": "h5", "image": "clan-grandest-hall", "name": "Clan Grandest Hall", "category": "Halls", "prereq": "h4", "capacity": 200, "energy": -2, "maxnum": 1, "spawn": true, "floor": -12, "ceil": 30,
+{"id": "h5", "image": "clan-grandest-hall", "name": "Clan Grandest Hall", "category": "Halls", "prereq": null, "capacity": 200, "energy": -2, "maxnum": 1, "spawn": true, "floor": -12, "ceil": 30,
 	"bounds": [
 		{"x1": -32, "y1": -32, "x2": 32, "y2": 32, "floor": -12, "ceil": 30}],
 	"doors": [
@@ -194,7 +194,43 @@ var roomMetadata =
 		"ce","ob","oc","re"]},
 {"id": "he", "image": "entrati-hall", "name": "Entrati Audience Chamber", "category": "Halls", "spawn": true, "prereq": null, "capacity": 200, "energy": -2, "maxnum": null, "floor": -12, "ceil": 32,
 	"bounds": [
-		{"x1": -32, "y1": -32, "x2": 32, "y2": 32, "floor": -12, "ceil": 44}],
+		{"x1": -32, "y1": -32, "x2": 32, "y2": 32, "floor": -12, "ceil": 32}],
+	"doors": [
+		{"x": 0, "y": 32, "floor": 0, "outx": 0, "outy": 1},
+		{"x": 32, "y": 16, "floor": 0, "outx": 1, "outy": 0},
+		{"x": 32, "y": -16, "floor": 0, "outx": 1, "outy": 0},
+		{"x": 0, "y": -32, "floor": 0, "outx": 0, "outy": -1},
+		{"x": -32, "y": -16, "floor": 0, "outx": -1, "outy": 0},
+		{"x": -32, "y": 16, "floor": 0, "outx": -1, "outy": 0}],
+	"resources": [
+		{"resource": "Credits", "costs": [1000, 3000, 10000, 30000, 100000]},
+		{"resource": "Ferrite", "costs": [800, 2400, 8000, 24000, 80000]},
+		{"resource": "Circuits", "costs": [200, 600, 2000, 6000, 20000]},
+		{"resource": "Salvage", "costs": [500, 1500, 5000, 15000, 50000]},
+		{"resource": "Forma", "costs": [1, 1, 1, 3, 10]}], "unverified": true,
+	"blockedFromAboveBy": [
+		"ce","ob","oc","re"]},
+{"id": "hf", "image": "infested-hall", "name": "Infested Chamber", "category": "Halls", "spawn": true, "prereq": null, "capacity": 200, "energy": -2, "maxnum": null, "floor": -12, "ceil": 32,
+	"bounds": [
+		{"x1": -32, "y1": -32, "x2": 32, "y2": 32, "floor": -12, "ceil": 32}],
+	"doors": [
+		{"x": 0, "y": 32, "floor": 0, "outx": 0, "outy": 1},
+		{"x": 32, "y": 16, "floor": 0, "outx": 1, "outy": 0},
+		{"x": 32, "y": -16, "floor": 0, "outx": 1, "outy": 0},
+		{"x": 0, "y": -32, "floor": 0, "outx": 0, "outy": -1},
+		{"x": -32, "y": -16, "floor": 0, "outx": -1, "outy": 0},
+		{"x": -32, "y": 16, "floor": 0, "outx": -1, "outy": 0}],
+	"resources": [
+		{"resource": "Credits", "costs": [1000, 3000, 10000, 30000, 100000]},
+		{"resource": "Ferrite", "costs": [800, 2400, 8000, 24000, 80000]},
+		{"resource": "Circuits", "costs": [200, 600, 2000, 6000, 20000]},
+		{"resource": "Salvage", "costs": [500, 1500, 5000, 15000, 50000]},
+		{"resource": "Forma", "costs": [1, 1, 1, 3, 10]}], "unverified": true,
+	"blockedFromAboveBy": [
+		"ce","ob","oc","re"]},
+{"id": "sm", "image": "starlight-market", "name": "Starlight Market", "category": "Halls", "spawn": true, "prereq": null, "capacity": 200, "energy": -2, "maxnum": null, "floor": -12, "ceil": 32,
+	"bounds": [
+		{"x1": -32, "y1": -32, "x2": 32, "y2": 32, "floor": -12, "ceil": 32}],
 	"doors": [
 		{"x": 0, "y": 32, "floor": 0, "outx": 0, "outy": 1},
 		{"x": 32, "y": 16, "floor": 0, "outx": 1, "outy": 0},
@@ -226,7 +262,7 @@ var roomMetadata =
 	    ]},
 {"id": "lt", "image": "tenno-lab2", "name": "Tenno Lab", "category": "Labs", "prereq": "or", "capacity": -2, "energy": -5, "maxnum": null, "floor": 0, "ceil": 8,
 	"bounds": [
-		{"x1": -10, "y1": -9, "x2": 10, "y2": 9, "floor": 0, "ceil": 8}],
+		{"x1": -10, "y1": -11, "x2": 10, "y2": 9, "floor": 0, "ceil": 8}],
 	"doors": [
 		{"x": 0, "y": 9, "floor": 0, "outx": 0, "outy": 1}],
 	"floor_images": [
@@ -286,7 +322,7 @@ var roomMetadata =
 	    ]},
 {"id": "lo", "image": "orokin-lab", "name": "Orokin Lab", "category": "Labs", "prereq": "or", "capacity": -2, "energy": -5, "maxnum": null, "floor": -16, "ceil": 28,
 	"bounds": [
-		{"x1": -16, "y1": -26, "x2": 16, "y2": 26, "floor": -16, "ceil": 28}],
+		{"x1": -16, "y1": -28, "x2": 16, "y2": 26, "floor": -16, "ceil": 28}],
 	"doors": [
 		{"x": 0, "y": 26, "floor": 0, "outx": 0, "outy": 1}],
 	"floor_images": [
@@ -421,8 +457,8 @@ var roomMetadata =
 	    ]},
 {"id": "gl", "image": "large-garden", "name": "Large Garden", "category": "Misc", "prereq": null, "capacity": -15, "energy": -8, "maxnum": null, "floor": 0, "ceil": 20,
 	"bounds": [
-		{"x1": -32, "y1": -8, "x2": 32, "y2": 8, "floor": 0, "ceil": 20},
-		{"x1": -8, "y1": -32, "x2": 8, "y2": 32, "floor": 0, "ceil": 20},
+		{"x1": -32, "y1": -4, "x2": 32, "y2": 4, "floor": 0, "ceil": 20},
+		{"x1": -4, "y1": -32, "x2": 4, "y2": 32, "floor": 0, "ceil": 20},
 		{"x1": -24, "y1": -24, "x2": 24, "y2": 24, "floor": 0, "ceil": 20}],
 	"doors": [
 		{"x": 0, "y": 32, "floor": 0, "outx": 0, "outy": 1},
