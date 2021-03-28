@@ -379,37 +379,63 @@ function doAddRoomButton() {
 	doAddRoom(e, roomMetadata, baseRoom);
 }
 
-function doRoomMenu(e, room) {
+function doRoomMenu(e, rooms) {
     var e = e || window.event;
 
     clearMenus();
 
-    var element = room.display;
+    var errors = null;
+    var warnings = null;
 
-    var errors = room.getAllErrors();
-    var warnings = room.getAllWarnings();
+    for (var r = 0; r < rooms.length; r++) {
+        var roomErrors = rooms[r].getAllErrors();
+        if (roomErrors && roomErrors.length > 0) {
+            if (errors == null) {
+                errors = [];
+            }
+            // that's weird way to append one array to another in place
+            errors.push.apply(errors, roomErrors);
+        }
+        var roomWarnings = rooms[r].getAllWarnings();
+        if (roomWarnings && roomWarnings.length > 0) {
+            if (warnings == null) {
+                warnings = [];
+            }
+            // that's weird way to append one array to another in place
+            warnings.push.apply(warnings, roomWarnings);
+        }
+    }
 
     var menuDiv = buildMenu();
 
 	var tr = document.createElement("tr");
+
+    var room = rooms.length == 1 ? rooms[0] : null;
 
     if (errors || warnings) {
         tr.appendChild(buildErrorPopup(errors, warnings, span = false));
     } else {
         tr.appendChild(buildBlank());
     }
-    var roomCount = roomCounter.getRoomCount(room.metadata);
-	tr.appendChild(buildMenuLabel(room.metadata.name, 4, roomCount <= 1 ? null : `&nbsp;(${roomCount} built)`));
-	tr.appendChild(buildCloseMenuButton());
+    if (room) {
+        var roomCount = roomCounter.getRoomCount(room.metadata);
+        tr.appendChild(buildMenuLabel(room.metadata.name, 4, roomCount <= 1 ? null : `&nbsp;(${roomCount} built)`));
+    } else {
+        tr.appendChild(buildMenuLabel(`${rooms.length} rooms`, 4, null));
+    }
+    tr.appendChild(buildCloseMenuButton());
 
     menuDiv.appendChild(tr);
 
     menuDiv.appendChild(buildMenuButton("Rotate", rotateSelectedRoom, "icon-rotate-cw"));
-    if (room.multifloor) {
-	    menuDiv.appendChild(buildMenuButton("Change Floor", rotateFloorSelectedRoom, "icon-change-floor"));
-    }
 
-    menuDiv.appendChild(buildAddRoomButton(room.metadata, room));
+    if (room) {
+        if (room.multifloor) {
+            menuDiv.appendChild(buildMenuButton("Change Floor", rotateFloorSelectedRoom, "icon-change-floor"));
+        }
+
+        menuDiv.appendChild(buildAddRoomButton(room.metadata, room));
+    }
 
     menuDiv.appendChild(buildMenuDivider(6));
 

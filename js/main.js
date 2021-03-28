@@ -60,9 +60,11 @@ function setViewP(newViewPX, newViewPY, newViewScale, newViewFloor = null) {
 
 		setSelectedFloor(viewFloor);
 
-		if (selectedRoom) {
-			selectedRoom.deselect();
-		    selectedRoom = null;
+		if (selectedRooms.length > 0) {
+		    for (var r = 0; r < selectedRooms.length; r++) {
+                selectedRooms[r].deselect();
+            }
+		    selectedRooms = [];
 		}
 	}
 
@@ -123,10 +125,11 @@ function addRoom(room) {
 }
 
 function rotateSelectedRoom() {
-	if (selectedRoom) {
-		var action = new MoveRoomAction(selectedRoom);
-	    selectedRoom.rotate();
-	    selectedRoom.updateView();
+    // todo
+	if (selectedRooms.length == 1) {
+		var action = new MoveRoomAction(selectedRooms, getViewCenter());
+	    selectedRooms[0].rotate();
+	    selectedRooms[0].updateView();
 		saveModelToUrl();
         if (action.isAMove()) {
             addUndoAction(action);
@@ -135,12 +138,12 @@ function rotateSelectedRoom() {
 }
 
 function rotateFloorSelectedRoom() {
-	if (selectedRoom) {
-		var action = new MoveRoomAction(selectedRoom);
-	    removeFloorRoom(selectedRoom);
-	    selectedRoom.rotateFloor();
-	    addFloorRoom(selectedRoom);
-	    selectedRoom.updateView();
+	if (selectedRooms.length == 1) {
+		var action = new MoveRoomAction(selectedRooms, getViewCenter());
+	    removeFloorRoom(selectedRooms[0]);
+	    selectedRooms[0].rotateFloor();
+	    addFloorRoom(selectedRooms[0]);
+	    selectedRooms[0].updateView();
 		saveModelToUrl();
         if (action.isAMove()) {
             addUndoAction(action);
@@ -149,12 +152,15 @@ function rotateFloorSelectedRoom() {
 }
 
 function deleteSelectedRoom() {
-	if (selectedRoom) {
-		var room = selectedRoom;
-	    selectedRoom = null;
-	    removeRoom(room);
+	if (selectedRooms.length > 0) {
+		var oldRooms = selectedRooms;
+	    selectedRooms = [];
+        for (var r = 0; r < oldRooms.length; r++) {
+            oldRooms[r].deselect();
+    	    removeRoom(oldRooms[r]);
+        }
 	    clearMenus(0);
-	    addUndoAction(new AddDeleteRoomAction(room, false));
+	    addUndoAction(new AddDeleteRoomsAction(oldRooms, false));
 	}
 }
 
@@ -179,8 +185,8 @@ function doAddRoom(e, roomMetadata, baseRoom) {
 }
 
 function duplicateSelectedRoom(e) {
-	if (selectedRoom && !dragged) {
-		var room = selectedRoom;
+	if (selectedRooms.length == 1 && !dragged) {
+		var room = selectedRooms[0];
 	    clearMenus(0);
 
 	    doAddRoom(e, room.metadata, room);

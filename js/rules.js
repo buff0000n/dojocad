@@ -202,6 +202,8 @@ class PrereqRule extends RoomRule {
 			if (added) {
 				if (addToListIfNotPresent(this.room_list, room) && this.prereq_list.length == 0) {
 					room.addRuleError(this);
+				} else {
+                    room.removeRuleError(this);
 				}
 			} else {
 				removeFromList(this.room_list, room);

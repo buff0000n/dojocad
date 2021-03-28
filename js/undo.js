@@ -70,6 +70,7 @@ function doUndo() {
 
 		} else {
 			// we're prepared, so undo the action
+            showDebug("undoing: " + action.toString());
 			action.undoAction();
 			// put it on the redo stack
 			redoStack.push(action);
@@ -92,6 +93,7 @@ function doRedo() {
 
 		} else {
 			// we're prepared, so redo the action
+            showDebug("redoing: " + action.toString());
 			action.redoAction();
 			// put it back on the undo stack
 			undoStack.push(action);
@@ -105,95 +107,124 @@ function doRedo() {
 // Undo/Redo actions
 //==============================================================
 
+class RoomPosition {
+    constructor(room) {
+		this.MX = room.mv.x;
+		this.MY = room.mv.y;
+		this.Floor = room.floor;
+		this.R = room.rotation;
+    }
+
+    equals(other) {
+		return this.MX == other.MX
+				&& this.MY == other.MY
+				&& this.Floor == other.Floor
+				&& this.R == other.R;
+    }
+}
+
+function describeRoomList(rooms) {
+    if (!rooms || rooms.length == 0) {
+        return "nothing";
+    }
+    if (rooms.length == 1) {
+        return rooms[0].metadata.name;
+    }
+    return rooms.length + " rooms";
+}
+
 class MoveRoomAction extends Action {
-	constructor(room) {
+	constructor(rooms, viewCenter) {
 		super();
-		this.room = room;
-		this.recordFrom(this.room);
+		this.rooms = rooms;
+		this.viewCenter = viewCenter;
+		this.recordFrom(this.rooms);
 	}
 	
 	recordFrom() {
-		this.fromMX = this.room.mv.x;
-		this.fromMY = this.room.mv.y;
-		this.fromFloor = this.room.floor;
-		this.fromR = this.room.rotation;
+	    this.from = [];
+	    for (var r = 0; r < this.rooms.length; r++) {
+	        this.from.push(new RoomPosition(this.rooms[r]));
+	    }
 	}
 
 	recordTo() {
-		this.toMX = this.room.mv.x;
-		this.toMY = this.room.mv.y;
-		this.toFloor = this.room.floor;
-		this.toR = this.room.rotation;
+	    this.to = [];
+	    for (var r = 0; r < this.rooms.length; r++) {
+	        this.to.push(new RoomPosition(this.rooms[r]));
+	    }
 	}
 
 	isAMove() {
-		this.recordTo(this.room);
-		return this.fromMX != this.toMX
-				|| this.fromMY != this.toMY
-				|| this.fromFloor != this.toFloor
-				|| this.fromR != this.toR;
+		this.recordTo(this.rooms);
+		for (var r = 0; r < this.rooms.length; r++) {
+		    if (!this.from[r].equals(this.to[r])) {
+		        return true;
+            }
+		}
+		return false;
 	}
 
 	prepareUndoAction() {
-		centerViewOnIfNotVisible(this.fromMX, this.fromMY, this.fromFloor);
-		// having a prepare step to show what's about to change feels more confusing than not having it
-		return true;
+		return this.prepareAction();
 	}
 
 	undoAction() {
-		if (this.fromFloor != this.toFloor) {
-		    removeFloorRoom(this.room);
-		}
-		this.room.disconnectAllDoors();
-		this.room.setPositionAndConnectDoors(this.fromMX, this.fromMY, this.fromFloor, this.fromR);
-		if (this.fromFloor != this.toFloor) {
-		    addFloorRoom(this.room);
-		}
-		selectRoom(this.room)
-		saveModelToUrl();
+        this.action(this.to, this.from);
 	}
 
 	prepareRedoAction() {
-		centerViewOnIfNotVisible(this.toMX, this.toMY, this.toFloor);
+		return this.prepareAction();
+	}
+
+	redoAction() {
+        this.action(this.from, this.to);
+	}
+
+	prepareAction() {
+        centerViewOnIfNotVisible(this.viewCenter.mx, this.viewCenter.my, this.viewCenter.floor);
 		// having a prepare step to show what's about to change feels more confusing than not having it
 		return true;
 	}
 
-	redoAction() {
-		if (this.fromFloor != this.toFloor) {
-		    removeFloorRoom(this.room);
-		}
-		this.room.disconnectAllDoors();
-		this.room.setPositionAndConnectDoors(this.toMX, this.toMY, this.toFloor, this.toR);
-		if (this.fromFloor != this.toFloor) {
-		    addFloorRoom(this.room);
-		}
-		selectRoom(this.room)
+	action(from, to) {
+	    for (var r = 0; r < this.rooms.length; r++) {
+	        var room = this.rooms[r];
+            if (from[r].Floor != to[r].Floor) {
+                removeFloorRoom(room);
+            }
+            room.disconnectAllDoors();
+            room.setPositionAndConnectDoors(to[r].MX, to[r].MY, to[r].Floor, to[r].R);
+            if (from[r].Floor != to[r].Floor) {
+                addFloorRoom(room);
+            }
+
+            room.updateView();
+	    }
+
+		selectRooms(this.rooms, false, false);
 		saveModelToUrl();
 	}
 
 	toString() {
-		return "Move " + this.room.metadata.name;
+		return "Move " + describeRoomList(this.rooms);
 	}
 }
 
-class AddDeleteRoomAction extends Action {
-	constructor(room, add) {
+class AddDeleteRoomsAction extends Action {
+	constructor(rooms, add) {
 		super();
-		this.room = room;
-		this.record(this.room);
+		this.rooms = rooms;
+		this.records = [];
+		this.bounds = new DojoBounds(rooms);
+		for (var r = 0; r < this.rooms.length; r++) {
+		    this.records.push(new RoomPosition(this.rooms[r]));
+		}
 		this.add = add;
 	}
 
-	record() {
-		this.MX = this.room.mv.x;
-		this.MY = this.room.mv.y;
-		this.Floor = this.room.floor;
-		this.R = this.room.rotation;
-	}
-
 	prepareUndoAction() {
-		centerViewOnIfNotVisible(this.MX, this.MY, this.Floor);
+		centerViewOnIfNotVisible(this.bounds.centerX(), this.bounds.centerY(), this.bounds.highestFloor());
 		// having a prepare step to show what's about to change feels more confusing than not having it
 		return true;
 	}
@@ -219,62 +250,65 @@ class AddDeleteRoomAction extends Action {
 	}
 
 	addAction() {
-	    addRoom(this.room);
-		// hax to force it to think the floor has changed and setup its display
-		this.room.floor = 100;
-	    this.room.setPositionAndConnectDoors(this.MX, this.MY, this.Floor, this.R);
-		selectRoom(this.room)
-		saveModelToUrl();
+	    for (var r = 0; r < this.rooms.length; r++) {
+            addRoom(this.rooms[r]);
+            // hax to force it to think the floor has changed and setup its display
+            this.rooms[r].floor = 100;
+            this.rooms[r].setPositionAndConnectDoors(this.records[r].MX, this.records[r].MY, this.records[r].Floor, this.records[r].R);
+            this.rooms[r].select();
+            this.rooms[r].updateView();
+	    }
+//        selectRoom(this.room)
+        selectedRooms = this.rooms;
+
+		saveModelToUrl();3
 	}
 
 	removeAction() {
-	    removeRoom(this.room);
+	    for (var r = 0; r < this.rooms.length; r++) {
+            this.rooms[r].deselect();
+    	    removeRoom(this.rooms[r]);
+            selectedRooms = [];
+	    }
 	}
 
 	toString() {
-		return (this.add ? "Add " : "Delete ") + this.room.metadata.name;
+		return (this.add ? "Add " : "Delete ") + describeRoomList(this.rooms);
 	}
 }
 
 class SelectionAction extends Action {
-	constructor(oldSelection, newSelection, view) {
+	constructor(oldSelections, newSelections, viewCenter) {
 		super();
-		this.oldSelection = oldSelection;
-		this.newSelection = newSelection;
+		this.oldSelections = oldSelections;
+		this.newSelections = newSelections;
+		this.viewCenter = viewCenter;
 	}
 
-    centerViewOn(room1, room2) {
-        if (room1) {
-    		centerViewOnIfNotVisible(room1.mv.x, room1.mv.y, room1.floor);
-        } else if (room2) {
-    		centerViewOnIfNotVisible(room2.mv.x, room2.mv.y, room2.floor);
-        }
-    }
-
 	prepareUndoAction() {
-		this.centerViewOn(this.oldSelection, this.newSelection);
-		// having a prepare step to show what's about to change feels more confusing than not having it
-		return true;
+	    return this.prepareAction();
 	}
 
 	undoAction() {
-	    showDebug("undoing selection")
-		selectRoom(this.oldSelection, undoable = false)
+		selectRooms(this.oldSelections, false, false);
 	}
 
 	prepareRedoAction() {
-		this.centerViewOn(this.newSelection, this.oldSelection);
+	    return this.prepareAction();
+	}
+
+	redoAction() {
+		selectRooms(this.newSelections, false, false);
+	}
+
+	prepareAction() {
+        centerViewOnIfNotVisible(this.viewCenter.mx, this.viewCenter.my, this.viewCenter.floor);
 		// having a prepare step to show what's about to change feels more confusing than not having it
 		return true;
 	}
 
-	redoAction() {
-	    showDebug("redoing selection")
-		selectRoom(this.newSelection, undoable = false)
-	}
-
 	toString() {
-		return (this.oldSelection ? ("Deselect " + this.oldSelection.metadata.name) : "") + ", " +
-    		(this.newSelection ? ("Select " + this.newSelection.metadata.name) : "");
+		return (this.oldSelections ? ("Deselect " + describeRoomList(this.oldSelections)) : "") + ", " +
+    		(this.newSelections ? ("Select " + describeRoomList(this.newSelections)) : "");
 	}
 }

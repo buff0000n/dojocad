@@ -346,198 +346,16 @@ var roomIdCount = 0;
 // Room object
 //==============================================================
 
-class BaseRoom {
-    constructor() {
+class Room {
+    constructor(metadata) {
         this.mv = new Vect(0, 0);
         this.mdragOffset = new Vect(0, 0);
         this.mdragOffsetRotation = 0;
         this.dragging = false;
         this.placed = false;
 
-        this.omitRooms = null;
-    }
+        this.ignoreRooms = null;
 
-    setDebug(debug) { }
-
-    select() { }
-
-    deselect() { }
-
-    getAllErrors() { }
-
-    getAllWarnings() { }
-
-    checkThings() { }
-
-    updateView() { }
-
-    disconnectAllDoors() { }
-
-    reconnectAllDoors() { }
-
-	updateBoundsPositions() { }
-
-    updateMarkerPositions() { }
-
-    setPosition(nmx, nmy, nf, nr, updateFloors = true) { }
-
-    setPositionAndConnectDoors(nmx, nmy, nf, nr) { }
-
-    getDoors() { }
-
-    resetPositionAndConnectDoors() {
-        this.setPositionAndConnectDoors(this.mv.x, this.mv.y, this.floor, this.rotation);
-    }
-
-    rotate() {
-        if (this.dragging) {
-            // todo: save the original drag offset so we can reset the position if the room is rotated away from a door snapping zone
-	        this.setDragOffset(null, null, (this.mdragOffsetRotation + 90) % 360, 1);
-
-        } else {
-		    this.disconnectAllDoors(this.rooms);
-	        this.setPositionAndConnectDoors(this.mv.x, this.mv.y, this.floor, (this.rotation + 90) % 360);
-        }
-    }
-
-//    rotateFloor() { }
-
-    setClickPoint(clickPX, clickPY) {
-        this.clickP = new Vect(((clickPX - viewPX) / viewScale), ((clickPY - viewPY) / viewScale));
-    }
-
-    setMDragOffset(offsetX, offsetY) {
-        this.mdragOffset.set(offsetX, offsetY);
-    }
-
-    setDragOffset(offsetPX, offsetPY, offsetRotation, snap) {
-		if (offsetPX != null && (offsetPX != 0 || offsetPY != 0) || (offsetRotation != null && offsetRotation != 0)) {
-			// We've actually been dragged.  Set the flag and disconnect doors.
-			this.dragging = true;
-			this.disconnectAllDoors();
-
-		} else if (((offsetPX != null && (offsetPX == 0 && offsetPY == 0)) || (offsetPX == null && this.mdragOffset.lengthSquared == 0))
-			&& ((offsetRotation != null && offsetRotation == 0) || (offsetRotation == null && this.mdragOffsetRotation == 0))) {
-			// either dragging was canceled or we've been dragged back to our starting position.  Reconnect doors that
-			// were disconnected.
-			this.reconnectAllDoors();
-		}
-
-        this.setDraggingDisplay();
-
-        if (offsetPX != null) {
-	        // start by snapping to the nearest meter
-            this.setMDragOffset(Math.round(offsetPX / viewScale), Math.round(offsetPY / viewScale));
-        }
-        if (offsetRotation != null) {
-            this.mdragOffsetRotation = offsetRotation;
-        }
-
-		// update door positions now so we can use them to figure out door snapping
-		this.updateDoorPositions();
-
-		// calculate the click point position
-		var click = this.clickP.add(this.mdragOffset);
-		// we want the door closest to the click point
-		var doorDist = -1;
-		// these will get filled in if we find a door pair to snap to
-		var snapDoor = null;
-		var snapOtherDoor = null;
-		// iterate over our doors
-		var doors = this.getDoors();
-		for (var d = 0; d < doors.length; d++) {
-			var door = doors[d];
-			// see if our door has any collisions
-			if (door.collisions.length > 0) {
-				// see if this door is closer to the click point than the previous door, if any
-				var doorDist2 = click.subtract(door.mv).lengthSquared();
-				if (doorDist > -1 && doorDist < doorDist2) {
-					continue;
-				}
-				// we're snapping with this door unless we find a closer one
-				doorDist = doorDist2;
-				snapDoor = door;
-				// we want the other door that's closest to the click point
-				var otherDoorDist = -1;
-				// iterate over the other doors
-				for (var c = 0; c < door.collisions.length; c++) {
-					var otherDoor = door.collisions[c];
-					// see if this other door is closer to the click point than the previous door, if any
-					var otherDoorDist2 = click.subtract(otherDoor.mv).lengthSquared();
-					if (otherDoorDist > -1 && otherDoorDist < otherDoorDist2) {
-						continue;
-					}
-					// we're snapping to this door unless we find a closer one
-					otherDoorDist = otherDoorDist2;
-					snapOtherDoor = otherDoor;
-				}
-			}
-		}
-
-		var snapped = false;
-
-		// did we find a pair of doors to snap?
-		if (snapDoor && snapOtherDoor) {
-			// calculate the difference between the two door positions
-			var snapOffset = snapOtherDoor.mv.subtract(snapDoor.mv);
-			// adjust the drag offset
-			this.setMDragOffset(this.mdragOffset.x + snapOffset.x, this.mdragOffset.y + snapOffset.y);
-			snapped = true;
-
-		// do we have a given snap resolution?
-		} else if (!snapped && snap > 1) {
-			// round the final x coordinate
-            var mx = this.mv.x + this.mdragOffset.x;
-            var mx2 = Math.round(mx / snap) * snap;
-
-			// round the final y coordinate
-            var my = this.mv.y + this.mdragOffset.y;
-            var my2 = Math.round(my / snap) * snap;
-
-			// adjust the drag offset
-			this.setMDragOffset(this.mdragOffset.x + mx2 - mx, this.mdragOffset.y + my2 - my);
-            snapped = true;
-        }
-
-		if (snapped) {
-			// update the door positions again if we snapped.
-			this.updateDoorPositions();
-		}
-
-		// finally we can update the bounds positions
-		this.updateBoundsPositions();
-		// don't forget markers
-		this.updateMarkerPositions();
-    }
-
-    dropDragOffset() {
-        // check if we actually dragged anywhere
-        if (this.mdragOffset.x != 0 || this.mdragOffset.y!= 0 || this.mdragOffsetRotation != 0) {
-            // calculate the new position
-            var nmv = this.mv.add(this.mdragOffset);
-			var nr = (this.rotation + this.mdragOffsetRotation) % 360;
-            // reset the drag offset
-            this.setMDragOffset(0, 0);
-	        // commit the position change
-	        this.mdragOffsetRotation = 0;
-            this.setPositionAndConnectDoors(nmv.x, nmv.y, this.floor, nr);
-
-        } else {
-            this.reconnectAllDoors();
-        }
-
-		// dragging is finished.
-        this.dragging = false;
-        this.checkThings();
-
-        // clear the click point
-        this.clickP = null;
-    }
-}
-
-class Room extends BaseRoom {
-    constructor(metadata) {
-        super();
         this.metadata = metadata;
         this.id = "room" + (roomIdCount++);
 
@@ -794,11 +612,11 @@ class Room extends BaseRoom {
 				for (var r = 0; r < roomList.length; r++) {
 					var room = roomList[r];
                     // skip omitted rooms
-                    if (this.omitRooms != null && this.omitRooms.includes(roomList[r])) {
+                    if (this.ignoreRooms != null && this.ignoreRooms.includes(roomList[r])) {
                         continue;
                     }
 					// see if the room isn't this room and has doors facing the other direction
-					if (room != this && room.angleToDoors[a2] && (this.omitRooms == null || !this.omitRooms.includes(room))) {
+					if (room != this && room.angleToDoors[a2] && (this.ignoreRooms == null || !this.ignoreRooms.includes(room))) {
 						// find collisions in the two sets of door boxes
 						var cols = findCollisions(this.angleToDoors[a], room.angleToDoors[a2]);
 						// iterate over the collisions
@@ -855,7 +673,7 @@ class Room extends BaseRoom {
 			for (var r = 0; r < roomList.length; r++) {
 				var room = roomList[r];
 				// skip omitted rooms
-				if (this.omitRooms != null && this.omitRooms.includes(roomList[r])) {
+				if (this.ignoreRooms != null && this.ignoreRooms.includes(roomList[r])) {
 				    continue;
 				}
 				// see if the room isn't this room
@@ -1003,6 +821,17 @@ class Room extends BaseRoom {
         return this.selected;
     }
 
+    rotate() {
+        if (this.dragging) {
+            // todo: save the original drag offset so we can reset the position if the room is rotated away from a door snapping zone
+	        this.setDragOffset(null, null, (this.mdragOffsetRotation + 90) % 360, 1);
+
+        } else {
+		    this.disconnectAllDoors(this.rooms);
+	        this.setPositionAndConnectDoors(this.mv.x, this.mv.y, this.floor, (this.rotation + 90) % 360);
+        }
+    }
+
     rotateFloor() {
         if (!this.multifloor) {
             return;
@@ -1038,12 +867,17 @@ class Room extends BaseRoom {
         }
     }
 
+    setClickPoint(clickPX, clickPY) {
+        this.clickP = new Vect(((clickPX - viewPX) / viewScale), ((clickPY - viewPY) / viewScale));
+    }
+
     disconnectAllDoors() {
         if (!this.doorConnectionSaves) {
 			this.doorConnectionSaves = Array();
 			for (var d = 0; d < this.doors.length; d++) {
 			    var door = this.doors[d];
-			    if (this.omitRooms != null && this.omitRooms.includes(door.room)) {
+			    if (this.ignoreRooms != null && this.ignoreRooms.includes(door.room) &&
+			        door.otherDoor && this.ignoreRooms.includes(door.otherDoor.room)) {
 			        continue;
                 }
 				var save = this.doors[d].disconnect();
@@ -1081,6 +915,134 @@ class Room extends BaseRoom {
 
     getDoors() {
         return this.doors;
+    }
+
+    setMDragOffset(offsetX, offsetY) {
+        this.mdragOffset.set(offsetX, offsetY);
+    }
+
+    setDragOffset(offsetPX, offsetPY, offsetRotation, snap) {
+		if (offsetPX != null && (offsetPX != 0 || offsetPY != 0) || (offsetRotation != null && offsetRotation != 0)) {
+			// We've actually been dragged.  Set the flag and disconnect doors.
+			this.dragging = true;
+			this.disconnectAllDoors();
+
+		} else if (((offsetPX != null && (offsetPX == 0 && offsetPY == 0)) || (offsetPX == null && this.mdragOffset.lengthSquared == 0))
+			&& ((offsetRotation != null && offsetRotation == 0) || (offsetRotation == null && this.mdragOffsetRotation == 0))) {
+			// either dragging was canceled or we've been dragged back to our starting position.  Reconnect doors that
+			// were disconnected.
+			this.reconnectAllDoors();
+		}
+
+        this.setDraggingDisplay();
+
+        if (offsetPX != null) {
+	        // start by snapping to the nearest meter
+            this.setMDragOffset(Math.round(offsetPX / viewScale), Math.round(offsetPY / viewScale));
+        }
+        if (offsetRotation != null) {
+            this.mdragOffsetRotation = offsetRotation;
+        }
+
+		// update door positions now so we can use them to figure out door snapping
+		this.updateDoorPositions();
+
+		// calculate the click point position
+		var click = this.clickP.add(this.mdragOffset);
+		// we want the door closest to the click point
+		var doorDist = -1;
+		// these will get filled in if we find a door pair to snap to
+		var snapDoor = null;
+		var snapOtherDoor = null;
+		// iterate over our doors
+		var doors = this.getDoors();
+		for (var d = 0; d < doors.length; d++) {
+			var door = doors[d];
+			// see if our door has any collisions
+			if (door.collisions.length > 0) {
+				// see if this door is closer to the click point than the previous door, if any
+				var doorDist2 = click.subtract(door.mv).lengthSquared();
+				if (doorDist > -1 && doorDist < doorDist2) {
+					continue;
+				}
+				// we're snapping with this door unless we find a closer one
+				doorDist = doorDist2;
+				snapDoor = door;
+				// we want the other door that's closest to the click point
+				var otherDoorDist = -1;
+				// iterate over the other doors
+				for (var c = 0; c < door.collisions.length; c++) {
+					var otherDoor = door.collisions[c];
+					// see if this other door is closer to the click point than the previous door, if any
+					var otherDoorDist2 = click.subtract(otherDoor.mv).lengthSquared();
+					if (otherDoorDist > -1 && otherDoorDist < otherDoorDist2) {
+						continue;
+					}
+					// we're snapping to this door unless we find a closer one
+					otherDoorDist = otherDoorDist2;
+					snapOtherDoor = otherDoor;
+				}
+			}
+		}
+
+		var snapped = false;
+
+		// did we find a pair of doors to snap?
+		if (snapDoor && snapOtherDoor) {
+			// calculate the difference between the two door positions
+			var snapOffset = snapOtherDoor.mv.subtract(snapDoor.mv);
+			// adjust the drag offset
+			this.setMDragOffset(this.mdragOffset.x + snapOffset.x, this.mdragOffset.y + snapOffset.y);
+			snapped = true;
+
+		// do we have a given snap resolution?
+		} else if (!snapped && snap > 1) {
+			// round the final x coordinate
+            var mx = this.mv.x + this.mdragOffset.x;
+            var mx2 = Math.round(mx / snap) * snap;
+
+			// round the final y coordinate
+            var my = this.mv.y + this.mdragOffset.y;
+            var my2 = Math.round(my / snap) * snap;
+
+			// adjust the drag offset
+			this.setMDragOffset(this.mdragOffset.x + mx2 - mx, this.mdragOffset.y + my2 - my);
+            snapped = true;
+        }
+
+		if (snapped) {
+			// update the door positions again if we snapped.
+			this.updateDoorPositions();
+		}
+
+		// finally we can update the bounds positions
+		this.updateBoundsPositions();
+		// don't forget markers
+		this.updateMarkerPositions();
+    }
+
+    dropDragOffset() {
+        // check if we actually dragged anywhere
+        if (this.mdragOffset.x != 0 || this.mdragOffset.y!= 0 || this.mdragOffsetRotation != 0) {
+            // calculate the new position
+            var nmv = this.mv.add(this.mdragOffset);
+			var nr = (this.rotation + this.mdragOffsetRotation) % 360;
+            // reset the drag offset
+            this.setMDragOffset(0, 0);
+	        // commit the position change
+	        this.mdragOffsetRotation = 0;
+            this.setPositionAndConnectDoors(nmv.x, nmv.y, this.floor, nr);
+
+        } else {
+            this.reconnectAllDoors();
+        }
+
+		// dragging is finished.
+        this.dragging = false;
+        this.checkThings();
+
+        // clear the click point
+        this.clickP = null;
     }
 
     checkThings() {
@@ -1286,239 +1248,34 @@ class Room extends BaseRoom {
     }
 }
 
-//==============================================================
-// multiselect room object
-//==============================================================
-
-class MultiRoom extends BaseRoom {
-    constructor() {
-        super();
-        this.rooms = Array();
-        this.omitRooms = this.rooms;
-        this.originalRooms = null;
-
-        this.centerDirty = true;
-    }
-
-    addRoom(room) {
-        if (addToListIfNotPresent(this.rooms, room)) {
-            room.omitRooms = this.rooms;
-            room.select();
-            this.centerDirty = true;
-            return true;
-
-        } else {
-            return false;
-        }
-    }
-
-    removeRoom(room) {
-        if (removeFromList(this.rooms, room)) {
-            room.omitRooms = null;
-            room.deselect();
-            this.centerDirty = true;
-            return true;
-
-        } else {
-            return false;
-        }
-    }
-
-    setTemporaryRooms(tempRooms) {
-        if (!this.originalRooms) {
-            // goofy javascript array copy function
-            this.originalRooms = [...this.rooms];
-        }
-
-        for (var r = 0; r < tempRooms.length; r++) {
-            this.addRoom(tempRooms[r]);
-        }
-
-        for (var r = 0; r < this.rooms.length; r++) {
-            var room = this.rooms[r];
-            if (!this.originalRooms.includes(room) && !tempRooms.includes(room)) {
-                // removeRoom(this.rooms[r]);
-                this.rooms(splice(r, 1));
-                room.omitRooms = null;
-                room.deselect();
-                r--;
-            }
-        }
-    }
-
-    calculateCenter() {
-        if (!this.centerDirty) {
-            return this.mv
-        }
-
-        if (this.rooms.length == 1) {
-            this.mv = this.rooms[0].mv.copy();
-            return this.mv
-        }
-
-        var minX = 100000;
-        var maxX = -100000;
-        var minY = 100000;
-        var maxY = -100000;
-
-        for (var r = 0; r < this.rooms.length; r++) {
-            var room = this.rooms[r];
-            for (var b = 0; b < room.bounds.length; b++) {
-                var bound = room.bounds[b];
-                if (!bound.invisible) {
-                    if (bound.x1 < minX) minX = room.x1;
-                    if (bound.x2 > maxX) maxX = room.x2;
-                    if (bound.y1 < minY) minY = room.y1;
-                    if (bound.y2 > maxY) maxY = room.y2;
-                }
-            }
-        }
-
-        // calculate the midpoint of all our room bounds, rounded to the nearest 4m
-        this.mv = new Vect(Math.round((minX + maxX) / 4) * 4, Math.round((minY + maxY) / 4) * 4, )
-
-        return this.mv
-    }
-
-    commitTempRooms() {
-        this.originalRooms = null;
-    }
-
-    setDebug(debug) {
-        for (var i = 0; i < this.rooms.length; i++) {
-            this.rooms[i].setDebug(debug);
-        }
-    }
-
-    select() {
-        for (var i = 0; i < this.rooms.length; i++) {
-            this.rooms[i].select();
-        }
-    }
-
-    deselect() {
-        for (var i = 0; i < this.rooms.length; i++) {
-            this.rooms[i].deselect();
-        }
-    }
-
-    getAllErrors() {
-        var errors = Array();
-        for (var i = 0; i < this.rooms.length; i++) {
-            var roomErrors = this.rooms[i].getAllErrors();
-            errors.concat(roomErrors);
-        }
-        return errors;
-    }
-
-    getAllWarnings() {
-        var warnings = Array();
-        for (var i = 0; i < this.rooms.length; i++) {
-            var roomWarnings = this.rooms[i].getAllWarnings();
-            warnings.concat(roomWarnings);
-        }
-        return warnings;
-    }
-
-    checkThings() {
-        for (var i = 0; i < this.rooms.length; i++) {
-            this.rooms[i].checkThings();
-        }
-    }
-
-    updateView() {
-        for (var i = 0; i < this.rooms.length; i++) {
-            this.rooms[i].updateView();
-        }
-    }
-
-	updateBoundsPositions() {
-        for (var i = 0; i < this.rooms.length; i++) {
-            this.rooms[i].updateBoundsPositions();
-        }
-	}
-
-    updateMarkerPositions() {
-        for (var i = 0; i < this.rooms.length; i++) {
-            this.rooms[i].updateMarkerPositions();
-        }
-    }
-
-    disconnectAllDoors() {
-        for (var i = 0; i < this.rooms.length; i++) {
-            this.rooms[i].disconnectAllDoors();
-        }
-    }
-
-    reconnectAllDoors() {
-        for (var i = 0; i < this.rooms.length; i++) {
-            this.rooms[i].reconnectAllDoors();
-        }
-    }
-
-    setClickPoint(clickPX, clickPY) {
-        calculateCenter();
-        super.setClickPoint(clickPX, clickPY);
-    }
-
-    setDragOffset(offsetPX, offsetPY, offsetRotation, snap) {
-        calculateCenter();
-        super.setDragOffset(offsetPX, offsetPY, offsetRotation, snap);
-    }
-
-    setMDragOffset(offsetX, offsetY) {
-        super.setMDragOffset(offsetX, offsetY);
-        for (var i = 0; i < this.rooms.length; i++) {
-            this.rooms[i].setMDragOffset(offsetX, offsetY);
-        }
-    }
-
-    setPosition(nmx, nmy, nf, nr, updateFloors = true) {
-        var dmx = nmx - this.mv.x;
-        var dmy = nmy - this.mv.y;
-
-        for (var i = 0; i < this.rooms.length; i++) {
-            var room = this.rooms[i];
-            room.setPosition(room.mv.x + dmx, room.mv.y + dmy, room.floor, room.rotation, updateFloors);
-        }
-
-        this.mv.set(nmx, nmy);
-    }
-
-    setPositionAndConnectDoors(nmx, nmy, nf, nr) {
-        var dmx = nmx - this.mv.x;
-        var dmy = nmy - this.mv.y;
-
-        for (var i = 0; i < this.rooms.length; i++) {
-            var room = this.rooms[i];
-            room.setPositionAndConnectDoors(room.mv.x + dmx, room.mv.y + dmy, room.floor, room.rotation);
-        }
-
-        this.mv.set(nmx, nmy);
-
-		this.placed = true;
-    }
-}
-
 
 //==============================================================
 // overall bounds calculation and PNG generation
 //==============================================================
 
 class DojoBounds {
-	constructor() {
+	constructor(rooms = null) {
 		this.x1 = 100000;
 		this.x2 = -100000;
 		this.y1 = 100000;
 		this.y2 = -100000;
 		this.f1 = 100000;
 		this.f2 = -100000;
+		if (rooms) {
+		    this.includeRooms(rooms);
+		}
 	}
 	
 	includeAll() {
 		for (var r = 0; r < roomList.length; r++) {
 			this.includeRoom(roomList[r]);
 		}
+	}
+
+	includeRooms(rooms) {
+	    for (var r = 0; r < rooms.length; r++) {
+	        this.includeRoom(rooms[r]);
+	    }
 	}
 	
 	includeRoom(room) {
@@ -1545,6 +1302,12 @@ class DojoBounds {
 	width() { return Math.abs(this.x2 - this.x1); }
 
 	height() { return Math.abs(this.y2 - this.y1); }
+
+	centerX() { return 8 * Math.round((this.x1 + this.x2) / 16); }
+
+	centerY() { return 8 * Math.round((this.y1 + this.y2) / 16); }
+
+	highestFloor() { return this.f2; }
 }
 
 function getDojoBounds() {

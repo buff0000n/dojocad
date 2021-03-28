@@ -261,7 +261,7 @@ function wheel(e) {
 var mouseDownTarget = null;
 var mouseDownTargetStartPX = 0;
 var mouseDownTargetStartPY = 0;
-var selectedRoom = null;
+var selectedRooms = [];
 var dragged = false;
 var newRoom = false;
 
@@ -289,12 +289,20 @@ function downEvent(e) {
             if (e.altKey) {
                 // insta-delete
 
-                selectRoom(e.currentTarget.room)
+                if (!selectedRooms.includes(e.currentTarget.room)) {
+                    selectRoom(e.currentTarget.room, false, false);
+                }
+
                 deleteSelectedRoom();
 
             } else {
                 mouseDownTarget = e.currentTarget;
                 mouseDownTarget.room.setClickPoint(mouseDownTargetStartPX, mouseDownTargetStartPY);
+                if (selectedRooms.includes(mouseDownTarget.room)) {
+                    for (var r = 0; r < selectedRooms.length; r++) {
+                        selectedRooms[r].setClickPoint(mouseDownTargetStartPX, mouseDownTargetStartPY);
+                    }
+                }
                 newRoom = false;
             }
         }
@@ -305,9 +313,9 @@ function downEvent(e) {
 
 function startNewRoomDrag(e, target) {
     mouseDownTarget = target;
-    selectRoom(target.room)
+    selectRoom(target.room, false, false)
 
-    selectedRoom.setClickPoint(e.clientX, e.clientY);
+    target.room.setClickPoint(e.clientX, e.clientY);
     newRoom = true;
 
 	startDrag();
@@ -329,7 +337,7 @@ function startDrag() {
 }
 
 function isDraggingRoom() {
-    return mouseDownTarget && mouseDownTarget.room && mouseDownTarget.room == selectedRoom;
+    return mouseDownTarget && mouseDownTarget.room && selectedRooms.includes(mouseDownTarget.room);
 }
 
 function isMultiselecting() {
@@ -347,14 +355,19 @@ function dragEvent(e) {
 
     if (isDraggingRoom()) {
 	    // set the element's new position:
-	    selectedRoom.setDragOffset(offsetPX, offsetPY, null, e.shiftKey ? 8 : 1);
+	    for (var r = 0; r < selectedRooms.length; r++) {
+	        selectedRooms[r].ignoreRooms = selectedRooms;
+    	    selectedRooms[r].setDragOffset(offsetPX, offsetPY, null, e.shiftKey ? 8 : 1);
+	    }
 
 	    if (!dragged) {
 	        showDoorMarkers();
 	    }
 
         // todo: necessary?
-	    selectedRoom.updateView();
+	    for (var r = 0; r < selectedRooms.length; r++) {
+    	    selectedRooms[r].updateView();
+        }
 
 	    checkAutoScroll(e);
 
@@ -394,7 +407,7 @@ function dropEvent(e) {
             // todo; commit selection
 
         } else {
-			selectRoom(!mouseDownTarget ? null : mouseDownTarget.room, undoable = true);
+			selectRoom(!mouseDownTarget ? null : mouseDownTarget.room, undoable = true, true);
         }
 
     } else if (isDraggingRoom()) {
@@ -403,19 +416,24 @@ function dropEvent(e) {
 	    mouseDownTargetStartPY = 0;
 
 		if (dragged) {
-            if (selectedRoom.placed) {
-                var action = new MoveRoomAction(selectedRoom);
+            if (!(selectedRooms.length == 1 && !selectedRooms[0].placed)) {
+                var action = new MoveRoomAction(selectedRooms, getViewCenter());
             }
 
-            selectedRoom.dropDragOffset();
-            selectedRoom.updateView();
+    	    for (var r = 0; r < selectedRooms.length; r++) {
+                selectedRooms[r].dropDragOffset();
+                selectedRooms[r].updateView();
+    	        selectedRooms[r].ignoreRooms = null;
+            }
             dragged = false;
 
             hideDoorMarkers();
 
             if (!action) {
-                addUndoAction(new AddDeleteRoomAction(selectedRoom, true));
-//                selectedRoom.justAdded = false;
+                addUndoAction(new AddDeleteRoomsAction(selectedRooms, true));
+//        	    for (var r = 0; r < selectedRooms.length; r++) {
+//                  selectedRoom.justAdded = false;
+//              }
             } else if (action.isAMove()) {
                 addUndoAction(action);
             }
@@ -424,14 +442,14 @@ function dropEvent(e) {
 			rotateSelectedRoom();
 
 		} else {
-			doRoomMenu(e, selectedRoom);
+			doRoomMenu(e, selectedRooms);
 		}
 
 		movedSelectedRoom();
 
 	} else {
 		if (!dragged) {
-			selectRoom(!mouseDownTarget ? null : mouseDownTarget.room, undoable = true);
+			selectRoom(!mouseDownTarget ? null : mouseDownTarget.room, undoable = true, false);
 		}
 
 	    mouseDownTargetStartPX = 0;
@@ -449,49 +467,90 @@ function dropEvent(e) {
     setAutoScroll(e, 0, 0)
 }
 
-function selectRoom(room, undoable = false) {
-    oldRoom = selectedRoom;
+function selectRoom(room, undoable = false, multiselect = false) {
+    var oldSelectedRooms = selectedRooms;
 
-	if (oldRoom) {
-		oldRoom.deselect();
-	    oldRoom.updateView();
-	    selectedRoom = null;
-	}
-	if (room) {
-		if (!room.isOnFloor()) {
-			setViewP(viewPX, viewPY, viewScale, room.floor);
-		}
+    if (!multiselect) {
+        if (selectedRooms.includes(room)) {
+            return;
+        }
 
-		selectedRoom = room;
-		room.select();
-	    room.updateView();
+        if (oldSelectedRooms.length > 0) {
+            for (var r = 0; r < oldSelectedRooms.length; r++) {
+                oldSelectedRooms[r].deselect();
+                oldSelectedRooms[r].updateView();
+            }
+        }
+        if (room) {
+            if (!room.isOnFloor()) {
+                setViewP(viewPX, viewPY, viewScale, room.floor);
+            }
+
+            selectedRooms = [room];
+            room.select();
+            room.updateView();
+        } else if (oldSelectedRooms.length > 0) {
+            // only reset selectedRooms if it wasn't already empty
+            selectedRooms = [];
+        }
+
+    // selecting nothing while multiselect is active does nothing
+    } else if (room) { // multiselect
+        if (selectedRooms.includes(room)) {
+            // selecting a room again will deselect it
+            var newRooms = oldSelectedRooms.slice();
+            removeFromList(newRooms, room);
+            selectedRooms = newRooms;
+            room.deselect();
+            room.updateView();
+
+        } else {
+            // multiselecting new room
+            var newRooms = oldSelectedRooms.slice();
+            newRooms.push(room);
+            selectedRooms = newRooms;
+            room.select();
+            room.updateView();
+        }
     }
 
-    if (undoable) {
-        addUndoAction(new SelectionAction(oldRoom, room, getViewCenter()));
+    if (undoable && oldSelectedRooms != selectedRooms) {
+        addUndoAction(new SelectionAction(oldSelectedRooms, selectedRooms, getViewCenter()));
     }
 }
 
-function selectRoom(room, undoable = false) {
-    oldRoom = selectedRoom;
+function selectRooms(rooms, append=false, undoable=true) {
+    var oldSelectedRooms = selectedRooms;
+    var newSelectedRooms = selectedRooms.slice();
+    var selectionChanged = false;
 
-	if (oldRoom) {
-		oldRoom.deselect();
-	    oldRoom.updateView();
-	    selectedRoom = null;
-	}
-	if (room) {
-		if (!room.isOnFloor()) {
-			setViewP(viewPX, viewPY, viewScale, room.floor);
-		}
-
-		selectedRoom = room;
-		room.select();
-	    room.updateView();
+    if (!append) {
+        for (var r = 0; r < oldSelectedRooms.length; r++) {
+            if (!rooms.includes(oldSelectedRooms[r])) {
+                oldSelectedRooms[r].deselect();
+                oldSelectedRooms[r].updateView();
+                removeFromList(newSelectedRooms, oldSelectedRooms[r]);
+                selectionChanged = true;
+            }
+        }
     }
 
-    if (undoable) {
-        addUndoAction(new SelectionAction(oldRoom, room, getViewCenter()));
+    if (rooms) {
+        for (var r = 0; r < rooms.length; r++) {
+            if (!oldSelectedRooms.includes(rooms[r])) {
+                rooms[r].select();
+                rooms[r].updateView();
+                newSelectedRooms.push(rooms[r]);
+                selectionChanged = true;
+            }
+        }
+    }
+
+    if (selectionChanged) {
+        if (undoable) {
+            addUndoAction(new SelectionAction(oldSelectedRooms, newSelectedRooms, getViewCenter()));
+        }
+        selectedRooms = newSelectedRooms;
     }
 }
 
@@ -502,13 +561,15 @@ function cancelRoomDrag() {
         mouseDownTargetStartPY = 0;
 		if (newRoom) {
 			// no undo action
-			removeRoom(selectedRoom);
-		    selectedRoom = null;
+			removeRoom(selectedRooms[0]);
+		    selectedRooms = [];
 
 		} else {
-	        selectedRoom.setDragOffset(0, 0, 0)
-		    selectedRoom.dropDragOffset();
-		    selectedRoom.updateView();
+		    for (var r = 0; r < selectedRooms.length; r++) {
+                selectedRooms[r].setDragOffset(0, 0, 0)
+                selectedRooms[r].dropDragOffset();
+                selectedRooms[r].updateView();
+		    }
 		}
 
 	    mouseDownTarget = null;
