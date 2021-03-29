@@ -337,7 +337,7 @@ function startDrag() {
 }
 
 function isDraggingRoom() {
-    return mouseDownTarget && mouseDownTarget.room && selectedRooms.includes(mouseDownTarget.room);
+    return mouseDownTarget && mouseDownTarget.room && selectedRooms.includes(mouseDownTarget.room) && !multiselectEnabled;
 }
 
 function isMultiselecting() {
@@ -354,15 +354,18 @@ function dragEvent(e) {
     }
 
     if (isDraggingRoom()) {
-	    // set the element's new position:
-	    for (var r = 0; r < selectedRooms.length; r++) {
-	        selectedRooms[r].ignoreRooms = selectedRooms;
-    	    selectedRooms[r].setDragOffset(offsetPX, offsetPY, null, e.shiftKey ? 8 : 1);
-	    }
+        // Convert offset to model coordinates and snap to the nearest meter
+        var offsetM = new Vect(
+            Math.round(offsetPX / viewScale),
+            Math.round(offsetPY / viewScale));
 
-	    if (!dragged) {
-	        showDoorMarkers();
-	    }
+        // calculate the cursor position in model coordinates
+        var clickM = new Vect(
+            Math.round((e.clientX - viewPX) / viewScale),
+            Math.round((e.clientY - viewPY) / viewScale));
+
+        // handle room drag
+        handleRoomDrag(offsetM, clickM, e.shiftKey, dragged);
 
         // todo: necessary?
 	    for (var r = 0; r < selectedRooms.length; r++) {
@@ -395,6 +398,64 @@ function dragEvent(e) {
     }
 
     dragged = true;
+}
+
+function handleRoomDrag(offsetM, clickM, shiftKey) {
+    // track the best door pair for snapping
+    var snapDoor = null;
+    var snapOtherDoor = null;
+
+    for (var r = 0; r < selectedRooms.length; r++) {
+        // make sure the room is ignoring all selected rooms for checking doors and bounds
+        selectedRooms[r].ignoreRooms = selectedRooms;
+        // set the room's new position and door positions
+        // don't commit in case we need to change the offset for snapping
+        selectedRooms[r].setDragOffset(offsetM.x, offsetM.y, null, false);
+        // find the best door pair for snaping this room
+        var doorPair = selectedRooms[r].getClosestDoorSnapPair();
+        // if there's a door snap pair
+        if (doorPair) {
+            // replace the current door pair if there isn't one or if the new one is closer to the cursor
+            if (!snapDoor ||
+                    doorPair.door.mv.distanceSquared(clickM) < snapDoor.mv.distanceSquared(clickM)) {
+                snapDoor = doorPair.door;
+                snapOtherDoor = doorPair.otherDoor;
+            }
+        }
+    }
+
+    // show door markers before snapping, in case any doors reconnect after snapping
+    if (!dragged) {
+        showDoorMarkers();
+    }
+
+    var newOffsetM = null;
+
+    // did we find a pair of doors to snap?
+    if (snapDoor && snapOtherDoor) {
+        // calculate the difference between the two door positions
+        // adjust the drag offset
+        newOffsetM = offsetM.add(snapOtherDoor.mv.subtract(snapDoor.mv));
+
+    // Are we dragging with the shift key down?
+    } else if (shiftKey) {
+        // calculate the round adjustment using the dragged location of the clicked room
+        var refM = mouseDownTarget.room.mv.add(offsetM);
+        // round to the nearest 8m
+        var roundM = refM.round(8);
+        // adjust the drag offset
+        newOffsetM = offsetM.add(roundM.subtract(refM));
+        // console.log(`${refM} -> ${roundM} : ${offsetM} -> ${newOffsetM}`);
+
+    } else {
+        // no snapping
+        newOffsetM = offsetM;
+    }
+
+    // redo the drag offset and commit it this time
+    for (var r = 0; r < selectedRooms.length; r++) {
+        selectedRooms[r].setDragOffset(newOffsetM.x, newOffsetM.y, null, true);
+    }
 }
 
 function dropEvent(e) {

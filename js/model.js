@@ -70,9 +70,11 @@ class Bound {
 		}
 	}
 
-	clearCollisions() {
-		while (this.collisions.length > 0) {
-			this.removeCollision(this.collisions[this.collisions.length - 1]);
+	clearCollisions(exceptRooms = null) {
+	    for (var c = this.collisions.length - 1; c >= 0; c--) {
+	        if (!exceptRooms || !exceptRooms.includes(this.collisions[c].room)) {
+                this.removeCollision(this.collisions[c]);
+	        }
 		}
 	}
 
@@ -667,7 +669,7 @@ class Room {
             bound.updatePosition();
 
             // clear the bound's collisions
-            bound.clearCollisions();
+            bound.clearCollisions(this.ignoreRooms);
 
 			// iterate over the global room list
 			for (var r = 0; r < roomList.length; r++) {
@@ -921,13 +923,13 @@ class Room {
         this.mdragOffset.set(offsetX, offsetY);
     }
 
-    setDragOffset(offsetPX, offsetPY, offsetRotation, snap) {
-		if (offsetPX != null && (offsetPX != 0 || offsetPY != 0) || (offsetRotation != null && offsetRotation != 0)) {
+    setDragOffset(offsetMX, offsetMY, offsetRotation, commit = true) {
+		if (offsetMX != null && (offsetMX != 0 || offsetMY != 0) || (offsetRotation != null && offsetRotation != 0)) {
 			// We've actually been dragged.  Set the flag and disconnect doors.
 			this.dragging = true;
 			this.disconnectAllDoors();
 
-		} else if (((offsetPX != null && (offsetPX == 0 && offsetPY == 0)) || (offsetPX == null && this.mdragOffset.lengthSquared == 0))
+		} else if (((offsetMX != null && (offsetMX == 0 && offsetMY == 0)) || (offsetMX == null && this.mdragOffset.lengthSquared == 0))
 			&& ((offsetRotation != null && offsetRotation == 0) || (offsetRotation == null && this.mdragOffsetRotation == 0))) {
 			// either dragging was canceled or we've been dragged back to our starting position.  Reconnect doors that
 			// were disconnected.
@@ -936,17 +938,26 @@ class Room {
 
         this.setDraggingDisplay();
 
-        if (offsetPX != null) {
-	        // start by snapping to the nearest meter
-            this.setMDragOffset(Math.round(offsetPX / viewScale), Math.round(offsetPY / viewScale));
+        if (offsetMX != null) {
+            this.setMDragOffset(offsetMX, offsetMY);
         }
         if (offsetRotation != null) {
             this.mdragOffsetRotation = offsetRotation;
         }
 
-		// update door positions now so we can use them to figure out door snapping
+		// always update door positions now so we can use them to figure out door snapping
 		this.updateDoorPositions();
 
+        // check if this is the final offset
+		if (commit) {
+            // finally we can update the bounds positions
+            this.updateBoundsPositions();
+            // don't forget markers
+            this.updateMarkerPositions();
+		}
+    }
+
+    getClosestDoorSnapPair() {
 		// calculate the click point position
 		var click = this.clickP.add(this.mdragOffset);
 		// we want the door closest to the click point
@@ -985,40 +996,12 @@ class Room {
 			}
 		}
 
-		var snapped = false;
-
-		// did we find a pair of doors to snap?
 		if (snapDoor && snapOtherDoor) {
-			// calculate the difference between the two door positions
-			var snapOffset = snapOtherDoor.mv.subtract(snapDoor.mv);
-			// adjust the drag offset
-			this.setMDragOffset(this.mdragOffset.x + snapOffset.x, this.mdragOffset.y + snapOffset.y);
-			snapped = true;
+		    return { "door": snapDoor, "otherDoor": snapOtherDoor };
 
-		// do we have a given snap resolution?
-		} else if (!snapped && snap > 1) {
-			// round the final x coordinate
-            var mx = this.mv.x + this.mdragOffset.x;
-            var mx2 = Math.round(mx / snap) * snap;
-
-			// round the final y coordinate
-            var my = this.mv.y + this.mdragOffset.y;
-            var my2 = Math.round(my / snap) * snap;
-
-			// adjust the drag offset
-			this.setMDragOffset(this.mdragOffset.x + mx2 - mx, this.mdragOffset.y + my2 - my);
-            snapped = true;
-        }
-
-		if (snapped) {
-			// update the door positions again if we snapped.
-			this.updateDoorPositions();
+		} else {
+		    return null;
 		}
-
-		// finally we can update the bounds positions
-		this.updateBoundsPositions();
-		// don't forget markers
-		this.updateMarkerPositions();
     }
 
     dropDragOffset() {

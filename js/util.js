@@ -203,12 +203,29 @@ class Vect {
         return this;
     }
 
+    round(rx, ry = rx) {
+        return new Vect(
+            rx * (Math.round(this.x / rx)),
+            ry * (Math.round(this.y / ry))
+         );
+    }
+
     length() {
         return Math.sqrt(this.lengthSquared());
     }
 
     lengthSquared() {
         return (this.x * this.x) + (this.y * this.y);
+    }
+
+    distance(other) {
+        return Math.sqrt(distanceSquared(other));
+    }
+
+    distanceSquared(other) {
+        var dx = this.x - other.x;
+        var dy = this.y - other.y;
+        return (dx * dx) + (dy * dy);
     }
 
     addTo(x, y) {
@@ -234,6 +251,10 @@ class Vect {
 
     equals(v) {
         return this.x == v.x && this.y == v.y;
+    }
+
+    toString() {
+        return `(${this.x.toFixed(2)}, ${this.y.toFixed()})`;
     }
 }
 
