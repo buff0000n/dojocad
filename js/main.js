@@ -354,6 +354,7 @@ function initModel() {
         centerViewOn(0, 0, 2, 0);
         var starterRoom = new Room(getRoomMetadata("h1"));
         starterRoom.setPosition(0, 0, 0, 0);
+        starterRoom.placed = true;
 	    addRoom(starterRoom);
     }
 

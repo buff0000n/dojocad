@@ -263,6 +263,7 @@ var mouseDownTargetStartPX = 0;
 var mouseDownTargetStartPY = 0;
 var selectedRooms = [];
 var dragged = false;
+var dragMoveUndoAction = false;
 var newRoom = false;
 
 var multiselectEnabled = false;
@@ -363,6 +364,11 @@ function dragEvent(e) {
         var clickM = new Vect(
             Math.round((e.clientX - viewPX) / viewScale),
             Math.round((e.clientY - viewPY) / viewScale));
+
+        // if this is the first time then initialize the undo action with the starting positions
+        if (!dragged) {
+            dragMoveUndoAction = new MoveRoomAction(selectedRooms);
+        }
 
         // handle room drag
         handleRoomDrag(offsetM, clickM, e.shiftKey, dragged);
@@ -477,10 +483,6 @@ function dropEvent(e) {
 	    mouseDownTargetStartPY = 0;
 
 		if (dragged) {
-            if (!(selectedRooms.length == 1 && !selectedRooms[0].placed)) {
-                var action = new MoveRoomAction(selectedRooms, getViewCenter());
-            }
-
     	    for (var r = 0; r < selectedRooms.length; r++) {
                 selectedRooms[r].dropDragOffset();
                 selectedRooms[r].updateView();
@@ -490,14 +492,14 @@ function dropEvent(e) {
 
             hideDoorMarkers();
 
-            if (!action) {
+            if (!dragMoveUndoAction) {
                 addUndoAction(new AddDeleteRoomsAction(selectedRooms, true));
-//        	    for (var r = 0; r < selectedRooms.length; r++) {
-//                  selectedRoom.justAdded = false;
-//              }
-            } else if (action.isAMove()) {
-                addUndoAction(action);
+
+            } else if (dragMoveUndoAction.isAMove()) {
+                addUndoAction(dragMoveUndoAction);
             }
+
+            dragMoveUndoAction = null;
 
 		} else if (e.shiftKey) {
 			rotateSelectedRoom();
@@ -576,7 +578,7 @@ function selectRoom(room, undoable = false, multiselect = false) {
     }
 
     if (undoable && oldSelectedRooms != selectedRooms) {
-        addUndoAction(new SelectionAction(oldSelectedRooms, selectedRooms, getViewCenter()));
+        addUndoAction(new SelectionAction(oldSelectedRooms, selectedRooms));
     }
 }
 
@@ -609,7 +611,7 @@ function selectRooms(rooms, append=false, undoable=true) {
 
     if (selectionChanged) {
         if (undoable) {
-            addUndoAction(new SelectionAction(oldSelectedRooms, newSelectedRooms, getViewCenter()));
+            addUndoAction(new SelectionAction(oldSelectedRooms, newSelectedRooms));
         }
         selectedRooms = newSelectedRooms;
     }
@@ -736,8 +738,8 @@ function keyDown(e) {
 		    }
 		    break;
 		case "KeyZ" :
-			// only enable undo/redo key shortcut if there is no menu visible
-			if (getCurrentMenuLevel() == 0) {
+			// only enable undo/redo key shortcut if there is no menu visible and no dragging operation
+			if (getCurrentMenuLevel() == 0 && !isDraggingRoom() || !isMultiselecting()) {
 				// ctrlKey on Windows, metaKey on Mac
 				if (e.ctrlKey || e.metaKey) {
 					if (e.shiftKey) {
@@ -751,8 +753,8 @@ function keyDown(e) {
 			}
 			break;
 		case "KeyY" :
-			// only enable undo/redo key shortcut if there is no menu visible
-			if (getCurrentMenuLevel() == 0) {
+			// only enable undo/redo key shortcut if there is no menu visible and no dragging operation
+			if (getCurrentMenuLevel() == 0 && !isDraggingRoom() || !isMultiselecting()) {
 				// ctrlKey on Windows, metaKey on Mac
 				if (e.ctrlKey || e.metaKey) {
 					// ctrl/meta + Y: redo

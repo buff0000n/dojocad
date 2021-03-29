@@ -107,22 +107,6 @@ function doRedo() {
 // Undo/Redo actions
 //==============================================================
 
-class RoomPosition {
-    constructor(room) {
-		this.MX = room.mv.x;
-		this.MY = room.mv.y;
-		this.Floor = room.floor;
-		this.R = room.rotation;
-    }
-
-    equals(other) {
-		return this.MX == other.MX
-				&& this.MY == other.MY
-				&& this.Floor == other.Floor
-				&& this.R == other.R;
-    }
-}
-
 function describeRoomList(rooms) {
     if (!rooms || rooms.length == 0) {
         return "nothing";
@@ -134,10 +118,9 @@ function describeRoomList(rooms) {
 }
 
 class MoveRoomAction extends Action {
-	constructor(rooms, viewCenter) {
+	constructor(rooms) {
 		super();
 		this.rooms = rooms;
-		this.viewCenter = viewCenter;
 		this.recordFrom(this.rooms);
 	}
 	
@@ -146,6 +129,7 @@ class MoveRoomAction extends Action {
 	    for (var r = 0; r < this.rooms.length; r++) {
 	        this.from.push(new RoomPosition(this.rooms[r]));
 	    }
+	    this.fromCenter = new DojoBounds(this.rooms).centerPosition();
 	}
 
 	recordTo() {
@@ -153,6 +137,7 @@ class MoveRoomAction extends Action {
 	    for (var r = 0; r < this.rooms.length; r++) {
 	        this.to.push(new RoomPosition(this.rooms[r]));
 	    }
+	    this.toCenter = new DojoBounds(this.rooms).centerPosition();
 	}
 
 	isAMove() {
@@ -166,7 +151,7 @@ class MoveRoomAction extends Action {
 	}
 
 	prepareUndoAction() {
-		return this.prepareAction();
+		return this.prepareAction(this.fromCenter);
 	}
 
 	undoAction() {
@@ -174,15 +159,15 @@ class MoveRoomAction extends Action {
 	}
 
 	prepareRedoAction() {
-		return this.prepareAction();
+		return this.prepareAction(this.toCenter);
 	}
 
 	redoAction() {
         this.action(this.from, this.to);
 	}
 
-	prepareAction() {
-        centerViewOnIfNotVisible(this.viewCenter.mx, this.viewCenter.my, this.viewCenter.floor);
+	prepareAction(center) {
+        centerViewOnIfNotVisible(center.MX, center.MY, center.Floor);
 		// having a prepare step to show what's about to change feels more confusing than not having it
 		return true;
 	}
@@ -216,7 +201,7 @@ class AddDeleteRoomsAction extends Action {
 		super();
 		this.rooms = rooms;
 		this.records = [];
-		this.bounds = new DojoBounds(rooms);
+		this.center = new DojoBounds(rooms).centerPosition();
 		for (var r = 0; r < this.rooms.length; r++) {
 		    this.records.push(new RoomPosition(this.rooms[r]));
 		}
@@ -224,7 +209,7 @@ class AddDeleteRoomsAction extends Action {
 	}
 
 	prepareUndoAction() {
-		centerViewOnIfNotVisible(this.bounds.centerX(), this.bounds.centerY(), this.bounds.highestFloor());
+        centerViewOnIfNotVisible(this.center.MX, this.center.MY, this.center.Floor);
 		// having a prepare step to show what's about to change feels more confusing than not having it
 		return true;
 	}
@@ -278,15 +263,20 @@ class AddDeleteRoomsAction extends Action {
 }
 
 class SelectionAction extends Action {
-	constructor(oldSelections, newSelections, viewCenter) {
+	constructor(oldSelections, newSelections) {
 		super();
 		this.oldSelections = oldSelections;
+		this.oldCenter = this.oldSelections && this.oldSelections.length > 0 ? 
+		    new DojoBounds(this.oldSelections).centerPosition() :
+		    null;
 		this.newSelections = newSelections;
-		this.viewCenter = viewCenter;
+		this.newCenter = this.newSelections && this.newSelections.length > 0 ? 
+		    new DojoBounds(this.newSelections).centerPosition() :
+		    null;
 	}
 
 	prepareUndoAction() {
-	    return this.prepareAction();
+	    return this.prepareAction(this.oldCenter, this.newCenter);
 	}
 
 	undoAction() {
@@ -294,15 +284,18 @@ class SelectionAction extends Action {
 	}
 
 	prepareRedoAction() {
-	    return this.prepareAction();
+	    return this.prepareAction(this.newCenter, this.oldCenter);
 	}
 
 	redoAction() {
 		selectRooms(this.newSelections, false, false);
 	}
 
-	prepareAction() {
-        centerViewOnIfNotVisible(this.viewCenter.mx, this.viewCenter.my, this.viewCenter.floor);
+	prepareAction(center1, center2) {
+	    var center = center1 ? center1 : center2;
+	    if (center) {
+            centerViewOnIfNotVisible(center.MX, center.MY, center.Floor);
+	    }
 		// having a prepare step to show what's about to change feels more confusing than not having it
 		return true;
 	}

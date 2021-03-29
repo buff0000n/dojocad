@@ -202,7 +202,7 @@ class Door {
 		this.otherDoor.connect(this, crossBranch, !incoming);
 
 		if (this.debugBorder) {
-			this.removeDisplay();
+            this.debugBorder.remove();
 		}
 
 		this.room.doorConnected(this);
@@ -929,11 +929,12 @@ class Room {
 			this.dragging = true;
 			this.disconnectAllDoors();
 
-		} else if (((offsetMX != null && (offsetMX == 0 && offsetMY == 0)) || (offsetMX == null && this.mdragOffset.lengthSquared == 0))
-			&& ((offsetRotation != null && offsetRotation == 0) || (offsetRotation == null && this.mdragOffsetRotation == 0))) {
-			// either dragging was canceled or we've been dragged back to our starting position.  Reconnect doors that
-			// were disconnected.
-			this.reconnectAllDoors();
+        // todo: I don't think I need this
+//		} else if (((offsetMX != null && (offsetMX == 0 && offsetMY == 0)) || (offsetMX == null && this.mdragOffset.lengthSquared == 0))
+//			&& ((offsetRotation != null && offsetRotation == 0) || (offsetRotation == null && this.mdragOffsetRotation == 0))) {
+//			// either dragging was canceled or we've been dragged back to our starting position.  Reconnect doors that
+//			// were disconnected.
+//			this.reconnectAllDoors();
 		}
 
         this.setDraggingDisplay();
@@ -1236,6 +1237,38 @@ class Room {
 // overall bounds calculation and PNG generation
 //==============================================================
 
+class Position {
+    constructor(mx, my, floor, rotation) {
+		this.MX = mx;
+		this.MY = my;
+		this.Floor = floor;
+		this.R = rotation;
+    }
+
+    equals(other) {
+		return this.MX == other.MX
+				&& this.MY == other.MY
+				&& this.Floor == other.Floor
+				&& this.R == other.R;
+    }
+}
+
+class RoomPosition extends Position {
+    constructor(room) {
+        super(room.mv.x,
+            room.mv.y,
+            room.floor,
+            room.rotation);
+    }
+
+    equals(other) {
+		return this.MX == other.MX
+				&& this.MY == other.MY
+				&& this.Floor == other.Floor
+				&& this.R == other.R;
+    }
+}
+
 class DojoBounds {
 	constructor(rooms = null) {
 		this.x1 = 100000;
@@ -1244,6 +1277,8 @@ class DojoBounds {
 		this.y2 = -100000;
 		this.f1 = 100000;
 		this.f2 = -100000;
+		this.floorCounts = {};
+		this.center = null;
 		if (rooms) {
 		    this.includeRooms(rooms);
 		}
@@ -1269,6 +1304,8 @@ class DojoBounds {
 			}
 			var floors = room.getFloors();
 			for (var f = 0; f < floors.length; f++) {
+			    if (!this.floorCounts[floors[f]]) this.floorCounts[floors[f]];
+			    this.floorCounts[floors[f]] += 1;
 				if (floors[f] < this.f1) { this.f1 = floors[f]; }
 				if (floors[f] > this.f2) { this.f2 = floors[f]; }
 			}
@@ -1286,11 +1323,22 @@ class DojoBounds {
 
 	height() { return Math.abs(this.y2 - this.y1); }
 
-	centerX() { return 8 * Math.round((this.x1 + this.x2) / 16); }
-
-	centerY() { return 8 * Math.round((this.y1 + this.y2) / 16); }
-
-	highestFloor() { return this.f2; }
+    centerPosition() {
+        if (!this.center) {
+            // find the center and round to the nearest 8m
+            var centerX = 8 * Math.round((this.x1 + this.x2) / 16);
+            var centerY = 8 * Math.round((this.y1 + this.y2) / 16);
+            // find the floor with the most rooms on it
+            var floor = null;
+            for (var f in this.floorCounts) {
+                if (!floor || this.floorCounts[f] > this.floorCounts[floor]) {
+                    floor = f;
+                }
+            }
+            this.center = new Position(centerX, centerY, floor, 0);
+        }
+        return this.center;
+    }
 }
 
 function getDojoBounds() {
