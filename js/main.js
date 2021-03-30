@@ -125,11 +125,40 @@ function addRoom(room) {
 }
 
 function rotateSelectedRoom() {
-    // todo
+    if (!isDraggingRoom()) {
+		var action = new MoveRoomAction(selectedRooms);
+    }
+
 	if (selectedRooms.length == 1) {
-		var action = new MoveRoomAction(selectedRooms, getViewCenter());
 	    selectedRooms[0].rotate();
+	    // todo: why do I need this here?
 	    selectedRooms[0].updateView();
+
+	} else {
+	    // pick a center of rotation
+	    var center;
+	    if (isDraggingRoom()) {
+	        // for rotating while dragging, use the center of the room that was actually clicked and dragged as the
+	        // rotation center
+	        center = mouseDownTarget.room.mv;
+
+	    } else if (getCurrentMenuLevel > 0 && lastClickedRoom) {
+	        // for the rotate menu option, use the center of the room that was actually clicked as the rotation center
+	        center = lastClickedRoom.mv;
+
+	    } else {
+	        // find the center of bounds, snapped to the nearest 1m
+	        center = new DojoBounds(selectedRooms).centerPosition().toVect();
+	    }
+
+        for (var r = 0; r < selectedRooms.length; r++) {
+            selectedRooms[r].rotateAround(center);
+            // todo: why do I need this here?
+            selectedRooms[r].updateView();
+        }
+	}
+
+	if (!isDraggingRoom()) {
 		saveModelToUrl();
         if (action.isAMove()) {
             addUndoAction(action);
@@ -139,7 +168,7 @@ function rotateSelectedRoom() {
 
 function rotateFloorSelectedRoom() {
 	if (selectedRooms.length == 1) {
-		var action = new MoveRoomAction(selectedRooms, getViewCenter());
+		var action = new MoveRoomAction(selectedRooms);
 	    removeFloorRoom(selectedRooms[0]);
 	    selectedRooms[0].rotateFloor();
 	    addFloorRoom(selectedRooms[0]);

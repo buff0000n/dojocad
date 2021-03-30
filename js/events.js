@@ -262,6 +262,7 @@ var mouseDownTarget = null;
 var mouseDownTargetStartPX = 0;
 var mouseDownTargetStartPY = 0;
 var selectedRooms = [];
+var lastClickedRoom = null;
 var dragged = false;
 var dragMoveUndoAction = false;
 var newRoom = false;
@@ -478,6 +479,8 @@ function dropEvent(e) {
         }
 
     } else if (isDraggingRoom()) {
+        // save the clicked room, if any
+        lastClickedRoom = (mouseDownTarget && mouseDownTarget.room) ? mouseDownTarget.room : null;
 	    mouseDownTarget = null;
 	    mouseDownTargetStartPX = 0;
 	    mouseDownTargetStartPY = 0;
@@ -500,9 +503,6 @@ function dropEvent(e) {
             }
 
             dragMoveUndoAction = null;
-
-		} else if (e.shiftKey) {
-			rotateSelectedRoom();
 
 		} else {
 			doRoomMenu(e, selectedRooms);
@@ -617,6 +617,18 @@ function selectRooms(rooms, append=false, undoable=true) {
     }
 }
 
+function selectAllRoomsOnFloor() {
+    var floorRooms = [];
+
+    for (var r = 0; r < roomList.length; r++) {
+        if (roomList[r].getFloors().includes(viewFloor)) {
+            floorRooms.push(roomList[r]);
+        }
+    }
+
+    selectRooms(floorRooms, false, true);
+}
+
 function cancelRoomDrag() {
     if (isDraggingRoom()) {
         mouseDownTarget = null;
@@ -708,38 +720,61 @@ function setMultiselectEnabled(enabled) {
 // key event handling
 //==============================================================
 
+function nothingElseGoingOn() {
+    return getCurrentMenuLevel() == 0 && !isDraggingRoom() && !isMultiselecting();
+}
+
 function keyDown(e) {
     e = e || window.event;
     switch (e.code) {
 		case "Escape" :
 		    clearMenus(0);
 		    cancelRoomDrag();
+            e.preventDefault();
 		    break;
 		case "Backspace" :
 		case "Delete" :
-			deleteSelectedRoom();
+			if (!isDraggingRoom() && !isMultiselecting()) {
+    			deleteSelectedRoom();
+                e.preventDefault();
+            }
 		    break;
 		case "ArrowUp" :
-			doFloorUp();
+			if (!isDraggingRoom() && !isMultiselecting()) {
+                doFloorUp();
+                e.preventDefault();
+            }
 		    break;
 		case "ArrowDown" :
-			doFloorDown();
+			if (!isDraggingRoom() && !isMultiselecting()) {
+                doFloorDown();
+                e.preventDefault();
+            }
 		    break;
 		case "KeyD" :
-			duplicateSelectedRoom(lastMouseEvent);
+			if (nothingElseGoingOn()) {
+    			duplicateSelectedRoom(lastMouseEvent);
+                e.preventDefault();
+            }
 		    break;
 		case "KeyR" :
-			rotateSelectedRoom(lastMouseEvent);
+		    // still allow ctrl-R to work normally
+		    if (!e.ctrlKey && !e.metaKey && !isMultiselecting()) {
+    			rotateSelectedRoom(lastMouseEvent);
+                e.preventDefault();
+		    }
 		    break;
 		case "ShiftLeft" :
 		case "ShiftRight" :
 		    if (!isDraggingRoom()) {
     		    setMultiselectEnabled(true);
+                e.preventDefault();
 		    }
+		    // drag snapping is taken care of elsewhere
 		    break;
 		case "KeyZ" :
 			// only enable undo/redo key shortcut if there is no menu visible and no dragging operation
-			if (getCurrentMenuLevel() == 0 && !isDraggingRoom() || !isMultiselecting()) {
+			if (nothingElseGoingOn()) {
 				// ctrlKey on Windows, metaKey on Mac
 				if (e.ctrlKey || e.metaKey) {
 					if (e.shiftKey) {
@@ -749,18 +784,60 @@ function keyDown(e) {
 						// ctrl/meta + Z: undo
 						doUndo();
 					}
+				    e.preventDefault();
 				}
 			}
 			break;
 		case "KeyY" :
 			// only enable undo/redo key shortcut if there is no menu visible and no dragging operation
-			if (getCurrentMenuLevel() == 0 && !isDraggingRoom() || !isMultiselecting()) {
+			if (nothingElseGoingOn()) {
 				// ctrlKey on Windows, metaKey on Mac
 				if (e.ctrlKey || e.metaKey) {
 					// ctrl/meta + Y: redo
 					doRedo();
+				    e.preventDefault();
 				}
 			}
+		    break;
+		case "KeyC" :
+			// only enable select all key shortcut if there is no menu visible and no dragging operation
+			if (nothingElseGoingOn()) {
+				// ctrlKey on Windows, metaKey on Mac
+				if (e.ctrlKey || e.metaKey) {
+				    showDebug("copy");
+				    e.preventDefault();
+				}
+            }
+		    break;
+		case "KeyX" :
+			// only enable select all key shortcut if there is no menu visible and no dragging operation
+			if (nothingElseGoingOn()) {
+				// ctrlKey on Windows, metaKey on Mac
+				if (e.ctrlKey || e.metaKey) {
+				    showDebug("Cut");
+				    e.preventDefault();
+				}
+            }
+		    break;
+		case "KeyV" :
+			// only enable select all key shortcut if there is no menu visible and no dragging operation
+			if (nothingElseGoingOn()) {
+				// ctrlKey on Windows, metaKey on Mac
+				if (e.ctrlKey || e.metaKey) {
+				    showDebug("Paste");
+				    e.preventDefault();
+				}
+            }
+		    break;
+		case "KeyA" :
+			// only enable select all key shortcut if there is no menu visible and no dragging operation
+			if (nothingElseGoingOn()) {
+				// ctrlKey on Windows, metaKey on Mac
+				if (e.ctrlKey || e.metaKey) {
+                    selectAllRoomsOnFloor();
+				    e.preventDefault();
+				}
+            }
 		    break;
 	}
 }

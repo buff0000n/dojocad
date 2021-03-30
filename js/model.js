@@ -352,7 +352,9 @@ class Room {
     constructor(metadata) {
         this.mv = new Vect(0, 0);
         this.mdragOffset = new Vect(0, 0);
+        this.mdragOffsetRaw = new Vect(0, 0);
         this.mdragOffsetRotation = 0;
+        this.mrotationOffset = null;
         this.dragging = false;
         this.placed = false;
 
@@ -823,14 +825,25 @@ class Room {
         return this.selected;
     }
 
-    rotate() {
+    rotateAround(centerM) {
+        var newRotation = (this.mdragOffsetRotation + 90) % 360;
+        var fromCenter = this.mv.subtract(centerM).rotate(newRotation);
+        var rotationOffsetM = fromCenter.add(centerM).subtract(this.mv);
+        this.rotate(rotationOffsetM);
+    }
+
+    rotate(rotationOffsetM = null) {
         if (this.dragging) {
+            this.mrotationOffset = rotationOffsetM;
             // todo: save the original drag offset so we can reset the position if the room is rotated away from a door snapping zone
-	        this.setDragOffset(null, null, (this.mdragOffsetRotation + 90) % 360, 1);
+	        this.setDragOffset(null, null, (this.mdragOffsetRotation + 90) % 360);
 
         } else {
 		    this.disconnectAllDoors(this.rooms);
-	        this.setPositionAndConnectDoors(this.mv.x, this.mv.y, this.floor, (this.rotation + 90) % 360);
+	        this.setPositionAndConnectDoors(
+	            this.mv.x + (rotationOffsetM ? rotationOffsetM.x : 0),
+	            this.mv.y + (rotationOffsetM ? rotationOffsetM.y : 0),
+	            this.floor, (this.rotation + 90) % 360);
         }
     }
 
@@ -920,7 +933,12 @@ class Room {
     }
 
     setMDragOffset(offsetX, offsetY) {
-        this.mdragOffset.set(offsetX, offsetY);
+        this.mdragOffsetRaw.set(offsetX, offsetY);
+        if (this.mrotationOffset) {
+            this.mdragOffset.set(offsetX + this.mrotationOffset.x, offsetY + this.mrotationOffset.y);
+        } else {
+            this.mdragOffset.set(offsetX, offsetY);
+        }
     }
 
     setDragOffset(offsetMX, offsetMY, offsetRotation, commit = true) {
@@ -928,13 +946,6 @@ class Room {
 			// We've actually been dragged.  Set the flag and disconnect doors.
 			this.dragging = true;
 			this.disconnectAllDoors();
-
-        // todo: I don't think I need this
-//		} else if (((offsetMX != null && (offsetMX == 0 && offsetMY == 0)) || (offsetMX == null && this.mdragOffset.lengthSquared == 0))
-//			&& ((offsetRotation != null && offsetRotation == 0) || (offsetRotation == null && this.mdragOffsetRotation == 0))) {
-//			// either dragging was canceled or we've been dragged back to our starting position.  Reconnect doors that
-//			// were disconnected.
-//			this.reconnectAllDoors();
 		}
 
         this.setDraggingDisplay();
@@ -944,6 +955,9 @@ class Room {
         }
         if (offsetRotation != null) {
             this.mdragOffsetRotation = offsetRotation;
+            if (this.mrotationOffset) {
+                this.setMDragOffset(this.mdragOffsetRaw.x, this.mdragOffsetRaw.y);
+            }
         }
 
 		// always update door positions now so we can use them to figure out door snapping
@@ -1011,10 +1025,12 @@ class Room {
             // calculate the new position
             var nmv = this.mv.add(this.mdragOffset);
 			var nr = (this.rotation + this.mdragOffsetRotation) % 360;
-            // reset the drag offset
-            this.setMDragOffset(0, 0);
-	        // commit the position change
+            // reset the drag offsets
+            this.mdragOffset.set(0, 0);
+            this.mdragOffsetRaw.set(0, 0);
 	        this.mdragOffsetRotation = 0;
+            this.mrotationOffset = null;
+	        // commit the position change
             this.setPositionAndConnectDoors(nmv.x, nmv.y, this.floor, nr);
 
         } else {
@@ -1245,6 +1261,10 @@ class Position {
 		this.R = rotation;
     }
 
+    toVect() {
+        return new Vect(this.MX, this.MY);
+    }
+
     equals(other) {
 		return this.MX == other.MX
 				&& this.MY == other.MY
@@ -1325,9 +1345,9 @@ class DojoBounds {
 
     centerPosition() {
         if (!this.center) {
-            // find the center and round to the nearest 8m
-            var centerX = 8 * Math.round((this.x1 + this.x2) / 16);
-            var centerY = 8 * Math.round((this.y1 + this.y2) / 16);
+            // find the center and round to the nearest 1m
+            var centerX = Math.round((this.x1 + this.x2) / 2);
+            var centerY = Math.round((this.y1 + this.y2) / 2);
             // find the floor with the most rooms on it
             var floor = null;
             for (var f in this.floorCounts) {
