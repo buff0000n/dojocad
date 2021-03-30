@@ -390,6 +390,7 @@ class Room {
         this.multifloor = this.metadata.multifloor ? true : false;
 
         this.floor = null;
+        this.allFloors = null;
 
 		this.viewContainer = null;
         this.display = null;
@@ -507,16 +508,23 @@ class Room {
     }
 
     getFloors() {
-        if (!this.metadata.floor_images || this.metadata.floor_images.length == 1) {
-            return [this.floor];
+        if (this.allFloors) {
+            return this.allFloors;
         }
-        // get the floor list from the doors.  The image list may contain extra floor images that we don't want to
-        // include unless there's something else on that floor.  It's the Dry Dock, I'm talking about the Dry Dock.
-        var floors = Array();
-		for (var d = 0 ; d < this.doors.length; d++) {
-			addToListIfNotPresent(floors, this.doors[d].floor);
-		}
-		return floors;
+
+        if (!this.metadata.floor_images || this.metadata.floor_images.length == 1) {
+            this.allFloors = [this.floor];
+
+        } else {
+            // get the floor list from the doors.  The image list may contain extra floor images that we don't want to
+            // include unless there's something else on that floor.  It's the Dry Dock, I'm talking about the Dry Dock.
+            this.allFloors = Array();
+            for (var d = 0 ; d < this.doors.length; d++) {
+                addToListIfNotPresent(this.allFloors, this.doors[d].floor);
+            }
+        }
+
+		return this.allFloors;
     }
 
     setDebug(debug) {
@@ -534,6 +542,9 @@ class Room {
 			this.removeAllRuleErrors();
         }
         this.mv = new Vect(nmx, nmy);
+        if (this.floor != nf) {
+            this.allFloors = null;
+        }
         this.floor = nf;
         this.rotation = nr;
 		this.updateMarkerPositions();

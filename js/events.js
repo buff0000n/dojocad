@@ -472,7 +472,7 @@ function dropEvent(e) {
             multiselectCornerPX = null;
             multiselectCornerPY = null;
             dragged = false;
-            // todo; commit selection
+            commitMultiselectRooms();
 
         } else {
 			selectRoom(!mouseDownTarget ? null : mouseDownTarget.room, undoable = true, true);
@@ -856,6 +856,7 @@ function keyUp(e) {
 //==============================================================
 
 var multiselectBox = null;
+var multiselectRooms = [];
 
 function showMultiselectBox() {
     if (multiselectBox == null) {
@@ -884,6 +885,61 @@ function updateMultiselectBox() {
 	multiselectBox.style.top = y1;
 	multiselectBox.style.width = (x2 - x1);
 	multiselectBox.style.height = (y2 - y1);
+
+    var mx1 = Math.round((x1 - viewPX) / viewScale);
+    var my1 = Math.round((y1- viewPY) / viewScale);
+    var mx2 = Math.round((x2 - viewPX) / viewScale);
+    var my2 = Math.round((y2- viewPY) / viewScale);
+    updateMultiselectRooms(mx1, my1, mx2, my2);
+}
+
+function updateMultiselectRooms(mx1, my1, mx2, my2) {
+    var bounds = [{
+        x1: mx1,
+        y1: my1,
+        z1: (viewFloor * roomMetadata.general.floor_distance),
+        x2: mx2,
+        y2: my2,
+        z2: (viewFloor * roomMetadata.general.floor_distance) + 1
+    }];
+
+    // iterate over the global room list
+    for (var r = 0; r < roomList.length; r++) {
+        var room = roomList[r];
+
+        // skip rooms on other floors or ones that are already selected
+        if (!room.getFloors().includes(viewFloor) || selectedRooms.includes(room)) {
+            continue;
+        }
+
+        // find collisions
+        var cols = findCollisions(bounds, room.bounds);
+        if (cols.length > 0 && !multiselectRooms.includes(room)) {
+            multiselectRooms.push(room);
+            room.select();
+
+        } else if (cols.length == 0 && multiselectRooms.includes(room)) {
+            removeFromList(multiselectRooms, room);
+            room.deselect();
+        }
+    }
+}
+
+function commitMultiselectRooms() {
+    if (multiselectRooms.length > 0) {
+        var newSelectedRooms = selectedRooms.concat(multiselectRooms)
+        selectRooms(newSelectedRooms);
+        multiselectRooms = [];
+    }
+}
+
+function cancelMultiselectRooms() {
+    if (multiselectRooms.length > 0) {
+        for (var r = 0; r < multiselectRooms.length; r++) {
+            multiselectRooms[r].deselect();
+        }
+        multiselectRooms = [];
+    }
 }
 
 //==============================================================
