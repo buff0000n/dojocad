@@ -972,6 +972,13 @@ class Room {
 		}
     }
 
+    resetDragOffset() {
+        this.mdragOffset.set(0, 0);
+        this.mdragOffsetRaw.set(0, 0);
+        this.mdragOffsetRotation = 0;
+        this.mrotationOffset = null;
+    }
+
     getClosestDoorSnapPair() {
 		// calculate the click point position
 		var click = this.clickP.add(this.mdragOffset);
@@ -1026,10 +1033,7 @@ class Room {
             var nmv = this.mv.add(this.mdragOffset);
 			var nr = (this.rotation + this.mdragOffsetRotation) % 360;
             // reset the drag offsets
-            this.mdragOffset.set(0, 0);
-            this.mdragOffsetRaw.set(0, 0);
-	        this.mdragOffsetRotation = 0;
-            this.mrotationOffset = null;
+            this.resetDragOffset();
 	        // commit the position change
             this.setPositionAndConnectDoors(nmv.x, nmv.y, this.floor, nr);
 

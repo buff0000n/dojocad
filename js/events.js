@@ -641,7 +641,7 @@ function cancelRoomDrag() {
 
 		} else {
 		    for (var r = 0; r < selectedRooms.length; r++) {
-                selectedRooms[r].setDragOffset(0, 0, 0)
+                selectedRooms[r].resetDragOffset();
                 selectedRooms[r].dropDragOffset();
                 selectedRooms[r].updateView();
 		    }
