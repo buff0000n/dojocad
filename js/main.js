@@ -193,32 +193,32 @@ function deleteSelectedRoom() {
 	}
 }
 
-function doAddRoom(e, roomMetadata, baseRoom) {
-    var room = new Room(roomMetadata);
-    if (baseRoom) {
-        room.rotation = baseRoom.rotation;
+function doAddRooms(e, rooms) {
+    for (var r = 0; r < rooms.length; r++) {
+        // todo: use setPosition?
+        var floor = rooms[r].floor;
+        rooms[r].floor = 100;
+        rooms[r].setFloor(viewFloor + floor);
+        if (debugEnabled) {
+            rooms[r].setDebug(true);
+        }
+        addRoom(rooms[r]);
     }
-    room.setFloor(viewFloor);
-    if (debugEnabled) {
-        room.setDebug(true);
-    }
-    addRoom(room);
-//    room.addDisplay(getRoomContainer());
 
     // not quite sure why this works
     mouseDownTargetStartPX = viewPX;
     mouseDownTargetStartPY = viewPY;
 
-    startNewRoomDrag(e, room.display);
+    startNewRoomDrag(e, rooms, rooms[0].display);
 	// undo action will be created when the room is dropped
 }
 
-function duplicateSelectedRoom(e) {
-	if (selectedRooms.length == 1 && !dragged) {
-		var room = selectedRooms[0];
+function duplicateSelectedRooms(e) {
+	if (!dragged) {
+		var rooms = cloneRooms(selectedRooms);
 	    clearMenus(0);
 
-	    doAddRoom(e, room.metadata, room);
+	    doAddRooms(e, rooms);
 	}
 }
 

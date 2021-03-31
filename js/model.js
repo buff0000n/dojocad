@@ -1263,6 +1263,117 @@ class Room {
     }
 }
 
+//==============================================================
+// Room utils
+//==============================================================
+
+function cloneRooms(rooms) {
+    var centerRoom;
+    if (rooms.length == 1) {
+        centerRoom = rooms[0];
+
+    } else {
+        // find the room closest to the center
+        var center = new DojoBounds(rooms).centerPosition().toVect();
+        var closestDistSquared = Number.POSITIVE_INFINITY;
+        for (var r = 0; r < rooms.length; r++) {
+            var ds = rooms[r].mv.distanceSquared(center);
+            if (ds < closestDistSquared) {
+                closestDistSquared = ds;
+                centerRoom = rooms[r];
+            }
+        }
+    }
+
+    var newRooms = [];
+    var newCenterRoom;
+
+    for (var r = 0; r < rooms.length; r++) {
+        var room = rooms[r];
+        var newRoom = new Room(room.metadata)
+        newRoom.setPosition(
+            room.mv.x - centerRoom.mv.x,
+            room.mv.y - centerRoom.mv.y,
+            room.floor - viewFloor,
+            room.rotation, false);
+        if (room == centerRoom) {
+            newCenterRoom = newRoom;
+        }
+        newRooms.push(newRoom);
+    }
+
+    // okay connecting internal doors let's get stupid
+    // loop over original rooms
+    for (var r = 0; r < rooms.length; r++) {
+        var room1 = rooms[r];
+        var room2 = newRooms[r];
+        // loop over room's doors
+        for (var d = 0; d < room1.doors.length; d++) {
+            var door1 = room1.doors[d];
+            var door2 = room2.doors[d];
+            // if the door has a connection and it's not already connected in the new room
+            if (door1.otherDoor && !door2.otherDoor) {
+                // get the other door and other room
+                var otherDoor1 = door1.otherDoor;
+                var otherRoom1 = otherDoor1.room;
+                // see if the other room is in the room list
+                var or = rooms.indexOf(otherRoom1);
+                if (or >= 0) {
+                    // get the other door and other on on the new side
+                    var od = otherRoom1.doors.indexOf(otherDoor1);
+                    otherRoom2 = newRooms[or];
+                    otherDoor2 = otherRoom2.doors[od];
+                    // Got the two door we need to connect
+                    door2.connect(otherDoor2);
+                }
+            }
+        }
+    }
+
+    // move the center room to the top of the array, the UI will pick the first room as the cursor/rotation anchor
+    removeFromList(newRooms, newCenterRoom);
+    newRooms.unshift(newCenterRoom);
+
+    return newRooms;
+}
+
+function combineMetadata(rooms) {
+    var combo = {};
+    combo.id = "multi";
+    combo.name = rooms.length + " Rooms";
+    combo.capacity = 0;
+    combo.energy = 0;
+    combo.num = rooms.length;
+
+    var resourceMap = {};
+
+    for (var r = 0; r < rooms.length; r++) {
+        var md = rooms[r].metadata;
+        combo.capacity += md.capacity;
+        combo.energy += md.energy;
+        for (var i = 0; i < md.resources.length; i++) {
+            var res = md.resources[i];
+            if (res.resource in resourceMap) {
+                var costs = resourceMap[res.resource]
+                for (var j = 0; j < costs.length; j++) {
+                    costs[j] += res.costs[j];
+                }
+            } else {
+                resourceMap[res.resource] = res.costs.slice();
+            }
+        }
+    }
+
+    combo.resources = [];
+    for (resource in resourceMap) {
+        combo.resources.push({
+            "resource": resource,
+            "costs": resourceMap[resource]
+        });
+    }
+
+    return combo;
+}
 
 //==============================================================
 // overall bounds calculation and PNG generation

@@ -313,8 +313,9 @@ function doAddCategoryMenu() {
 
 function hasError(errors, error) {
 	if (errors) {
+	    var re = new RegExp(error, "i");
 		for (var e = 0; e < errors.length; e++) {
-			if (errors[e].search(new RegExp(error, "i")) > -1) {
+			if (errors[e].search(re) > -1) {
 				return true;
 			}
 		}
@@ -322,21 +323,86 @@ function hasError(errors, error) {
 	return false;
 }
 
-function buildAddRoomButton(roomMetadata, room = null, errors = null) {
-    if (room != null) {
+function removeError(errors, error) {
+	if (errors) {
+	    var re = new RegExp(error, "i");
+	    removeMatchesFromList(errors, (err) => err.search(re) > -1)
+	}
+	return errors;
+}
+
+function buildAddRoomButton(roomMetadata, rooms = null, errors = null) {
+    if (rooms) {
         var menuTitle = "Duplicate";
 
     } else {
         var count = roomCounter.getRoomCount(roomMetadata);
         var menuTitle = roomMetadata.name + (count > 0 ? (" (" + count + ")") : "");
     }
-    var roomButtonDiv = buildMenuButton(menuTitle, doAddRoomButton, icon="icon-room-" + roomMetadata.image);
-    for (var i = 0; i < roomButtonDiv.children.length; i++) {
-	    roomButtonDiv.children[i].roomMetadata = roomMetadata;
-	    roomButtonDiv.children[i].room = room;
+
+    if (roomMetadata) {
+        var roomButtonDiv = buildMenuButton(menuTitle, doAddRoomButton, icon="icon-room-" + roomMetadata.image);
+
+    } else {
+        var roomButtonDiv = buildMenuButton(menuTitle, duplicateSelectedRooms);
     }
 
-    var errors = getNewRoomErrors(roomMetadata);
+    for (var i = 0; i < roomButtonDiv.children.length; i++) {
+	    roomButtonDiv.children[i].roomMetadata = roomMetadata;
+	    if (rooms) {
+    	    roomButtonDiv.children[i].room = rooms[0];
+	    }
+    }
+
+    if (roomMetadata) {
+        var errors = getNewRoomErrors(roomMetadata);
+        var warns = getNewRoomWarnings(roomMetadata);
+
+    } else {
+        var metadataCounts = {};
+
+        for (var r = 0; r < rooms.length; r++) {
+            if (!(rooms[r].metadata.id in metadataCounts)) {
+                metadataCounts[rooms[r].metadata.id] = [rooms[r].metadata, 1];
+
+            } else {
+                metadataCounts[rooms[r].metadata.id][1] += 1;
+            }
+        }
+
+        var errors = [];
+        var warns = [];
+
+        for (mdid in metadataCounts) {
+            var roomTypeErrors = getNewRoomErrors(metadataCounts[mdid][0], metadataCounts[mdid][1]);
+            if (roomTypeErrors) {
+                addAllToListIfNotPresent(errors, roomTypeErrors);
+            }
+            var roomTypeWarns = getNewRoomWarnings(metadataCounts[mdid][0], metadataCounts[mdid][1]);
+            if (roomTypeWarns) {
+                addAllToListIfNotPresent(warns, roomTypeWarns);
+            }
+        }
+        // the lazy way: just remove any energy and capacity errors we got from checking individual room types
+        // these will be covered by the combined metadata check
+        removeError(errors, "energy");
+        removeError(errors, "capacity");
+
+        var combinedMetaData = combineMetadata(rooms);
+
+        var combinedErrors = getNewRoomErrors(combinedMetaData);
+        if (combinedErrors) {
+            addAllToListIfNotPresent(errors, combinedErrors);
+        }
+        var combinedWarns = getNewRoomWarnings(combinedMetaData);
+        if (combinedWarns) {
+            addAllToListIfNotPresent(warns, combinedWarns);
+        }
+
+        if (errors.length == 0) errors = null;
+        if (warns.length == 0) warns = null;
+        roomMetadata = combinedMetaData;
+    }
 
 	var tdenergy = document.createElement("td")
 	tdenergy.className = hasError(errors, "energy") ? "field-error" : "field";
@@ -356,7 +422,6 @@ function buildAddRoomButton(roomMetadata, room = null, errors = null) {
     resourcesButton.metadata = roomMetadata;
     roomButtonDiv.appendChild(tdresources);
 
-    var warns = getNewRoomWarnings(roomMetadata);
     if (errors || warns) {
 		var errorDiv = buildErrorPopup(errors, warns, false);
 	    roomButtonDiv.appendChild(errorDiv);
@@ -376,7 +441,14 @@ function doAddRoomButton() {
 
 	lastAddedRoomMetadata = roomMetadata;
 
-	doAddRoom(e, roomMetadata, baseRoom);
+	var newRooms;
+	if (baseRoom) {
+	    newRooms = cloneRooms([baseRoom]);
+	} else {
+        newRooms = [new Room(roomMetadata)];
+	}
+
+	doAddRooms(e, newRooms);
 }
 
 function doRoomMenu(e, rooms) {
@@ -429,13 +501,11 @@ function doRoomMenu(e, rooms) {
 
     menuDiv.appendChild(buildMenuButton("Rotate", rotateSelectedRoom, "icon-rotate-cw"));
 
-    if (room) {
-        if (room.multifloor) {
-            menuDiv.appendChild(buildMenuButton("Change Floor", rotateFloorSelectedRoom, "icon-change-floor"));
-        }
-
-        menuDiv.appendChild(buildAddRoomButton(room.metadata, room));
+    if (room && room.multifloor) {
+        menuDiv.appendChild(buildMenuButton("Change Floor", rotateFloorSelectedRoom, "icon-change-floor"));
     }
+
+    menuDiv.appendChild(buildAddRoomButton(room ? room.metadata : null, rooms));
 
     menuDiv.appendChild(buildMenuDivider(6));
 

@@ -313,11 +313,15 @@ function downEvent(e) {
 	startDrag();
 }
 
-function startNewRoomDrag(e, target) {
+function startNewRoomDrag(e, rooms, target) {
     mouseDownTarget = target;
-    selectRoom(target.room, false, false)
+    startUndoCombo();
+    selectRooms(rooms, false, true)
 
-    target.room.setClickPoint(e.clientX, e.clientY);
+    for (var r = 0; r < rooms.length; r++) {
+        rooms[r].setClickPoint(e.clientX, e.clientY);
+    }
+
     newRoom = true;
 
 	startDrag();
@@ -367,7 +371,7 @@ function dragEvent(e) {
             Math.round((e.clientY - viewPY) / viewScale));
 
         // if this is the first time then initialize the undo action with the starting positions
-        if (!dragged) {
+        if (!dragged && !newRoom) {
             dragMoveUndoAction = new MoveRoomAction(selectedRooms);
         }
 
@@ -502,13 +506,16 @@ function dropEvent(e) {
                 addUndoAction(dragMoveUndoAction);
             }
 
+            endAllUndoCombos();
+
             dragMoveUndoAction = null;
+
+    		movedSelectedRoom();
 
 		} else {
 			doRoomMenu(e, selectedRooms);
 		}
 
-		movedSelectedRoom();
 
 	} else {
 		if (!dragged) {
@@ -636,7 +643,9 @@ function cancelRoomDrag() {
         mouseDownTargetStartPY = 0;
 		if (newRoom) {
 			// no undo action
-			removeRoom(selectedRooms[0]);
+		    for (var r = 0; r < selectedRooms.length; r++) {
+    			removeRoom(selectedRooms[r]);
+            }
 		    selectedRooms = [];
 
 		} else {
@@ -655,6 +664,8 @@ function cancelRoomDrag() {
 	    document.onmousemove = null;
 	    document.ontouchend = null;
 	    document.ontouchmove = null;
+
+        cancelAllUndoCombos();
     }
 }
 
@@ -753,7 +764,7 @@ function keyDown(e) {
 		    break;
 		case "KeyD" :
 			if (nothingElseGoingOn()) {
-    			duplicateSelectedRoom(lastMouseEvent);
+    			duplicateSelectedRooms(lastMouseEvent);
                 e.preventDefault();
             }
 		    break;

@@ -26,7 +26,8 @@ class Action {
 
 var undoStack = Array();
 var redoStack = Array();
-var maxUndoStackSize = 100;
+var maxUndoStackSize = 250;
+var undoCombos = [];
 
 function updateUndoRedoButton(button, stack, prefix) {
 	if (stack.length > 0) {
@@ -45,6 +46,10 @@ function updateButtons() {
 }
 
 function addUndoAction(action) {
+    if (undoCombos.length > 0) {
+        undoCombos[undoCombos.length - 1].push(action);
+        return;
+    }
 	// add to the stack
 	undoStack.push(action);
 	// trim the back of the stack if it's exceeded the max size
@@ -55,6 +60,53 @@ function addUndoAction(action) {
 	redoStack = Array();
 	// update UI
 	updateButtons();
+}
+
+function startUndoCombo() {
+    undoCombos.push([]);
+    showDebug("Pushed undoCombo: " + undoCombos.length);
+}
+
+function endUndoCombo() {
+    var undoList = undoCombos.pop()
+    showDebug("Poped undoCombo: " + undoCombos.length);
+    var action = null;
+    if (undoList.length >1) {
+        action = new CompositeAction(undoList);
+
+    } else if (undoList.length == 1) {
+        action = undoList[0];
+    }
+
+    if (action) {
+        if (undoCombos.length > 0) {
+            undoCombos.push(action);
+        } else {
+            addUndoAction(action)
+        }
+    }
+}
+
+function endAllUndoCombos() {
+    while (undoCombos.length > 0) {
+        endUndoCombo();
+    }
+}
+
+function cancelUndoCombo() {
+    var undoList = undoCombos.pop()
+    showDebug("Poped undoCombo: " + undoCombos.length);
+    for (var i = undoList.length - 1; i >= 0; i--) {
+        showDebug("undoing: " + undoList[i].toString());
+        undoList[i].prepareUndoAction();
+        undoList[i].undoAction();
+    }
+}
+
+function cancelAllUndoCombos() {
+    while (undoCombos.length > 0) {
+        cancelUndoCombo();
+    }
 }
 
 function doUndo() {
@@ -100,6 +152,39 @@ function doRedo() {
 		}
 		// update UI
 		updateButtons();
+	}
+}
+
+class CompositeAction extends Action {
+    constructor(actions) {
+        super();
+        this.actions = actions;
+    }
+
+	prepareUndoAction() {
+		return this.actions[this.actions.length - 1].prepareUndoAction();
+	}
+
+	undoAction() {
+	    for (var a = this.actions.length - 1; a >= 0; a--) {
+	        this.actions[a].prepareUndoAction();
+	        this.actions[a].undoAction();
+	    }
+	}
+
+	prepareRedoAction() {
+		return this.actions[0].prepareRedoAction();
+	}
+
+	redoAction() {
+	    for (var a = 0; a < this.actions.length; a++) {
+	        this.actions[a].prepareRedoAction();
+	        this.actions[a].redoAction();
+	    }
+	}
+
+	toString() {
+		return this.actions.length + " action(s)";
 	}
 }
 
