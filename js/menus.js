@@ -284,10 +284,16 @@ function doAddMenu() {
         menuDiv.appendChild(catButtonDiv);
     }
 
-    if (lastAddedRoomMetadata) {
+    if (lastAddedRoomMetadata || copiedRooms) {
         menuDiv.appendChild(buildMenuDivider(6));
-	    var roomButtonDiv = buildAddRoomButton(lastAddedRoomMetadata);
-        menuDiv.appendChild(roomButtonDiv);
+        if (copiedRooms) {
+            menuDiv.appendChild(buildAddRoomButton(null, copiedRooms));
+        }
+
+        if (lastAddedRoomMetadata) {
+            var roomButtonDiv = buildAddRoomButton(lastAddedRoomMetadata);
+            menuDiv.appendChild(roomButtonDiv);
+        }
     }
 
     showMenu(menuDiv, element);
@@ -332,7 +338,10 @@ function removeError(errors, error) {
 }
 
 function buildAddRoomButton(roomMetadata, rooms = null, errors = null) {
-    if (rooms) {
+    if (rooms && rooms == copiedRooms) {
+        var menuTitle = "Paste " + copiedRooms.length + " Room(s)";
+
+    } else if (rooms) {
         var menuTitle = "Duplicate";
 
     } else {
@@ -342,6 +351,9 @@ function buildAddRoomButton(roomMetadata, rooms = null, errors = null) {
 
     if (roomMetadata) {
         var roomButtonDiv = buildMenuButton(menuTitle, doAddRoomButton, icon="icon-room-" + roomMetadata.image);
+
+    } else if (rooms == copiedRooms) {
+        var roomButtonDiv = buildMenuButton(menuTitle, pasteCopiedRooms, icon="icon-paste");
 
     } else {
         var roomButtonDiv = buildMenuButton(menuTitle, duplicateSelectedRooms);
@@ -359,48 +371,8 @@ function buildAddRoomButton(roomMetadata, rooms = null, errors = null) {
         var warns = getNewRoomWarnings(roomMetadata);
 
     } else {
-        var metadataCounts = {};
-
-        for (var r = 0; r < rooms.length; r++) {
-            if (!(rooms[r].metadata.id in metadataCounts)) {
-                metadataCounts[rooms[r].metadata.id] = [rooms[r].metadata, 1];
-
-            } else {
-                metadataCounts[rooms[r].metadata.id][1] += 1;
-            }
-        }
-
-        var errors = [];
-        var warns = [];
-
-        for (mdid in metadataCounts) {
-            var roomTypeErrors = getNewRoomErrors(metadataCounts[mdid][0], metadataCounts[mdid][1]);
-            if (roomTypeErrors) {
-                addAllToListIfNotPresent(errors, roomTypeErrors);
-            }
-            var roomTypeWarns = getNewRoomWarnings(metadataCounts[mdid][0], metadataCounts[mdid][1]);
-            if (roomTypeWarns) {
-                addAllToListIfNotPresent(warns, roomTypeWarns);
-            }
-        }
-        // the lazy way: just remove any energy and capacity errors we got from checking individual room types
-        // these will be covered by the combined metadata check
-        removeError(errors, "energy");
-        removeError(errors, "capacity");
-
-        var combinedMetaData = combineMetadata(rooms);
-
-        var combinedErrors = getNewRoomErrors(combinedMetaData);
-        if (combinedErrors) {
-            addAllToListIfNotPresent(errors, combinedErrors);
-        }
-        var combinedWarns = getNewRoomWarnings(combinedMetaData);
-        if (combinedWarns) {
-            addAllToListIfNotPresent(warns, combinedWarns);
-        }
-
-        if (errors.length == 0) errors = null;
-        if (warns.length == 0) warns = null;
+        // this is too big to cram into this function
+        var { errors, warns, combinedMetaData } = getErrorsWarningsAndCombinedMetadata(rooms);
         roomMetadata = combinedMetaData;
     }
 
@@ -507,9 +479,13 @@ function doRoomMenu(e, rooms) {
 
     menuDiv.appendChild(buildAddRoomButton(room ? room.metadata : null, rooms));
 
+    menuDiv.appendChild(buildMenuButton("Copy", copySelectedRooms, "icon-copy"));
+
+    menuDiv.appendChild(buildMenuButton("Cut", cutSelectedRooms, "icon-cut"));
+
     menuDiv.appendChild(buildMenuDivider(6));
 
-    menuDiv.appendChild(buildMenuButton("Delete", deleteSelectedRoom, "icon-delete"));
+    menuDiv.appendChild(buildMenuButton("Delete", deleteSelectedRooms, "icon-delete"));
 
     showMenuAt(menuDiv, e.clientX, e.clientY);
 }

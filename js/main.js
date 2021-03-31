@@ -180,7 +180,7 @@ function rotateFloorSelectedRoom() {
 	}
 }
 
-function deleteSelectedRoom() {
+function deleteSelectedRooms() {
 	if (selectedRooms.length > 0) {
 		var oldRooms = selectedRooms;
 	    selectedRooms = [];
@@ -220,6 +220,28 @@ function duplicateSelectedRooms(e) {
 
 	    doAddRooms(e, rooms);
 	}
+}
+
+function copySelectedRooms() {
+    if (selectedRooms.length > 0) {
+        clearMenus(0);
+        copiedRooms = cloneRooms(selectedRooms);
+    }
+}
+
+function cutSelectedRooms() {
+    if (selectedRooms.length > 0) {
+        clearMenus(0);
+        copySelectedRooms();
+        deleteSelectedRooms();
+    }
+}
+
+function pasteCopiedRooms() {
+    if (copiedRooms) {
+        clearMenus(0);
+        doAddRooms(lastMouseEvent, cloneRooms(copiedRooms, false));
+    }
 }
 
 function movedSelectedRoom() {

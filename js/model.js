@@ -536,7 +536,7 @@ class Room {
         }
     }
 
-    setPosition(nmx, nmy, nf, nr, updateFloors = true) {
+    setPosition(nmx, nmy, nf, nr, updateFloors = true, fullUpdate = true) {
         var isNewFloor = updateFloors && nf != this.floor;
         if (isNewFloor) {
 			this.removeAllRuleErrors();
@@ -547,15 +547,19 @@ class Room {
         }
         this.floor = nf;
         this.rotation = nr;
-		this.updateMarkerPositions();
+        if (fullUpdate) {
+    		this.updateMarkerPositions();
+        }
 
-		if (isNewFloor) {
-			this.removeDisplay();
-			this.addDisplay(getRoomContainer());
-			this.reAddAllRuleErrors();
-		}
-		this.updateDoorPositions();
-		this.updateBoundsPositions();
+        if (fullUpdate) {
+            if (isNewFloor) {
+                this.removeDisplay();
+                this.addDisplay(getRoomContainer());
+                this.reAddAllRuleErrors();
+            }
+            this.updateDoorPositions();
+            this.updateBoundsPositions();
+        }
     }
 
     setFloor(floor) {
@@ -1267,37 +1271,47 @@ class Room {
 // Room utils
 //==============================================================
 
-function cloneRooms(rooms) {
-    var centerRoom;
-    if (rooms.length == 1) {
-        centerRoom = rooms[0];
+function cloneRooms(rooms, reposition=true) {
+    if (reposition) {
+        var centerRoom;
+        if (rooms.length == 1) {
+            centerRoom = rooms[0];
 
-    } else {
-        // find the room closest to the center
-        var center = new DojoBounds(rooms).centerPosition().toVect();
-        var closestDistSquared = Number.POSITIVE_INFINITY;
-        for (var r = 0; r < rooms.length; r++) {
-            var ds = rooms[r].mv.distanceSquared(center);
-            if (ds < closestDistSquared) {
-                closestDistSquared = ds;
-                centerRoom = rooms[r];
+        } else {
+            // find the room closest to the center
+            var center = new DojoBounds(rooms).centerPosition().toVect();
+            var closestDistSquared = Number.POSITIVE_INFINITY;
+            for (var r = 0; r < rooms.length; r++) {
+                var ds = rooms[r].mv.distanceSquared(center);
+                if (ds < closestDistSquared) {
+                    closestDistSquared = ds;
+                    centerRoom = rooms[r];
+                }
             }
         }
+        var newCenterRoom;
     }
 
     var newRooms = [];
-    var newCenterRoom;
 
     for (var r = 0; r < rooms.length; r++) {
         var room = rooms[r];
         var newRoom = new Room(room.metadata)
-        newRoom.setPosition(
-            room.mv.x - centerRoom.mv.x,
-            room.mv.y - centerRoom.mv.y,
-            room.floor - viewFloor,
-            room.rotation, false);
-        if (room == centerRoom) {
-            newCenterRoom = newRoom;
+        if (reposition) {
+            newRoom.setPosition(
+                room.mv.x - centerRoom.mv.x,
+                room.mv.y - centerRoom.mv.y,
+                room.floor - viewFloor,
+                room.rotation, false, false);
+            if (room == centerRoom) {
+                newCenterRoom = newRoom;
+            }
+        } else {
+            newRoom.setPosition(
+                room.mv.x,
+                room.mv.y,
+                room.floor,
+                room.rotation, false, false);
         }
         newRooms.push(newRoom);
     }
@@ -1330,9 +1344,11 @@ function cloneRooms(rooms) {
         }
     }
 
-    // move the center room to the top of the array, the UI will pick the first room as the cursor/rotation anchor
-    removeFromList(newRooms, newCenterRoom);
-    newRooms.unshift(newCenterRoom);
+    if (reposition) {
+        // move the center room to the top of the array, the UI will pick the first room as the cursor/rotation anchor
+        removeFromList(newRooms, newCenterRoom);
+        newRooms.unshift(newCenterRoom);
+    }
 
     return newRooms;
 }
@@ -1373,6 +1389,53 @@ function combineMetadata(rooms) {
     }
 
     return combo;
+}
+
+function getErrorsWarningsAndCombinedMetadata(rooms) {
+    var metadataCounts = {};
+
+    for (var r = 0; r < rooms.length; r++) {
+        if (!(rooms[r].metadata.id in metadataCounts)) {
+            metadataCounts[rooms[r].metadata.id] = [rooms[r].metadata, 1];
+
+        } else {
+            metadataCounts[rooms[r].metadata.id][1] += 1;
+        }
+    }
+
+    var errors = [];
+    var warns = [];
+
+    for (mdid in metadataCounts) {
+        var roomTypeErrors = getNewRoomErrors(metadataCounts[mdid][0], metadataCounts[mdid][1]);
+        if (roomTypeErrors) {
+            addAllToListIfNotPresent(errors, roomTypeErrors);
+        }
+        var roomTypeWarns = getNewRoomWarnings(metadataCounts[mdid][0], metadataCounts[mdid][1]);
+        if (roomTypeWarns) {
+            addAllToListIfNotPresent(warns, roomTypeWarns);
+        }
+    }
+    // the lazy way: just remove any energy and capacity errors we got from checking individual room types
+    // these will be covered by the combined metadata check
+    removeError(errors, "energy");
+    removeError(errors, "capacity");
+
+    var combinedMetaData = combineMetadata(rooms);
+
+    var combinedErrors = getNewRoomErrors(combinedMetaData);
+    if (combinedErrors) {
+        addAllToListIfNotPresent(errors, combinedErrors);
+    }
+    var combinedWarns = getNewRoomWarnings(combinedMetaData);
+    if (combinedWarns) {
+        addAllToListIfNotPresent(warns, combinedWarns);
+    }
+
+    if (errors.length == 0) errors = null;
+    if (warns.length == 0) warns = null;
+
+    return { errors, warns, combinedMetaData };
 }
 
 //==============================================================

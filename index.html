@@ -141,20 +141,6 @@
         z-index: 308;
     }
 
-    /* floating right sidebar, hidden by default */
-    #rightSidebar {
-        background-color: #303050;
-        position: absolute;
-        top: 50%;
-        transform: translateY(-50%);
-        right: 0ex;
-        margin: 0;
-        padding: 0ex 0ex;
-        border-radius: 1ex;
-        z-index: 308;
-        display: hidden;
-    }
-
     /* floating help container, fills the right side up to a max width */
     #help {
         background-color: #303050;
@@ -805,13 +791,6 @@
 <div id="sidebar">
     <div id="floorUpButton" class="button" onclick="doFloorUp(this)"><img id="floorUpButtonImg" src="icons/icon-up.png" srcset="icons2x/icon-up.png 2x" title="Up"/></div>
     <div id="floorDownButton" class="button" onclick="doFloorDown(this)"><img id="floorDownButtonImg" src="icons/icon-down.png" srcset="icons2x/icon-down.png 2x" title="Down"/></div>
-</div>
-
-<!-- right side sidebar -->
-<div id="rightSidebar">
-    <div id="copyButton" class="button-disabled" onclick="doCopy(this)"><img id="copyButtonImg" src="icons/icon-copy.png" srcset="icons2x/icon-copy.png 2x" title="Copy"/></div>
-    <div id="cutButton" class="button-disabled" onclick="doCut(this)"><img id="cutButtonImg" src="icons/icon-cut.png" srcset="icons2x/icon-cut.png 2x" title="Cut"/></div>
-    <div id="pasteButton" class="button-disabled" onclick="doPaste(this)"><img id="pasteButtonImg" src="icons/icon-paste.png" srcset="icons2x/icon-paste.png 2x" title="Paste"/></div>
 </div>
 
 <!-- floating help button in the corner -->

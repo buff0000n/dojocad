@@ -262,6 +262,7 @@ var mouseDownTarget = null;
 var mouseDownTargetStartPX = 0;
 var mouseDownTargetStartPY = 0;
 var selectedRooms = [];
+var copiedRooms = [];
 var lastClickedRoom = null;
 var dragged = false;
 var dragMoveUndoAction = false;
@@ -295,7 +296,7 @@ function downEvent(e) {
                     selectRoom(e.currentTarget.room, false, false);
                 }
 
-                deleteSelectedRoom();
+                deleteSelectedRooms();
 
             } else {
                 mouseDownTarget = e.currentTarget;
@@ -316,7 +317,8 @@ function downEvent(e) {
 function startNewRoomDrag(e, rooms, target) {
     mouseDownTarget = target;
     startUndoCombo();
-    selectRooms(rooms, false, true)
+    selectRooms([], false, true);
+    selectRooms(rooms, false, false);
 
     for (var r = 0; r < rooms.length; r++) {
         rooms[r].setClickPoint(e.clientX, e.clientY);
@@ -746,7 +748,7 @@ function keyDown(e) {
 		case "Backspace" :
 		case "Delete" :
 			if (!isDraggingRoom() && !isMultiselecting()) {
-    			deleteSelectedRoom();
+    			deleteSelectedRooms();
                 e.preventDefault();
             }
 		    break;
@@ -815,7 +817,7 @@ function keyDown(e) {
 			if (nothingElseGoingOn()) {
 				// ctrlKey on Windows, metaKey on Mac
 				if (e.ctrlKey || e.metaKey) {
-				    showDebug("copy");
+				    copySelectedRooms();
 				    e.preventDefault();
 				}
             }
@@ -825,7 +827,7 @@ function keyDown(e) {
 			if (nothingElseGoingOn()) {
 				// ctrlKey on Windows, metaKey on Mac
 				if (e.ctrlKey || e.metaKey) {
-				    showDebug("Cut");
+				    cutSelectedRooms();
 				    e.preventDefault();
 				}
             }
@@ -835,7 +837,7 @@ function keyDown(e) {
 			if (nothingElseGoingOn()) {
 				// ctrlKey on Windows, metaKey on Mac
 				if (e.ctrlKey || e.metaKey) {
-				    showDebug("Paste");
+				    pasteCopiedRooms();
 				    e.preventDefault();
 				}
             }
