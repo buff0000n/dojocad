@@ -61,10 +61,7 @@ function setViewP(newViewPX, newViewPY, newViewScale, newViewFloor = null) {
 		setSelectedFloor(viewFloor);
 
 		if (selectedRooms.length > 0) {
-		    for (var r = 0; r < selectedRooms.length; r++) {
-                selectedRooms[r].deselect();
-            }
-		    selectedRooms = [];
+		    selectRooms([]);
 		}
 	}
 

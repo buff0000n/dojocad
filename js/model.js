@@ -1513,7 +1513,7 @@ class DojoBounds {
 			}
 			var floors = room.getFloors();
 			for (var f = 0; f < floors.length; f++) {
-			    if (!this.floorCounts[floors[f]]) this.floorCounts[floors[f]];
+			    if (!this.floorCounts[floors[f]]) this.floorCounts[floors[f]] = 0;
 			    this.floorCounts[floors[f]] += 1;
 				if (floors[f] < this.f1) { this.f1 = floors[f]; }
 				if (floors[f] > this.f2) { this.f2 = floors[f]; }
@@ -1540,7 +1540,8 @@ class DojoBounds {
             // find the floor with the most rooms on it
             var floor = null;
             for (var f in this.floorCounts) {
-                if (!floor || this.floorCounts[f] > this.floorCounts[floor]) {
+                f = parseInt(f);
+                if (floor == null || this.floorCounts[f] > this.floorCounts[floor]) {
                     floor = f;
                 }
             }
