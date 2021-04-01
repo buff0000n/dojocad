@@ -194,6 +194,7 @@ function doAddRooms(e, rooms) {
     for (var r = 0; r < rooms.length; r++) {
         // todo: use setPosition?
         var floor = rooms[r].floor;
+        if (floor == 100) floor = 0;
         rooms[r].floor = 100;
         rooms[r].setFloor(viewFloor + floor);
         if (debugEnabled) {
