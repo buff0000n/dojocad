@@ -339,7 +339,7 @@ function removeError(errors, error) {
 
 function buildAddRoomButton(roomMetadata, rooms = null, errors = null) {
     if (rooms && rooms == copiedRooms) {
-        var menuTitle = "Paste " + copiedRooms.length + " Room(s)";
+        var menuTitle = "Paste " + (copiedRooms.length > 1 ? (copiedRooms.length + " Rooms") : copiedRooms[0].metadata.name);
 
     } else if (rooms) {
         var menuTitle = "Duplicate";
