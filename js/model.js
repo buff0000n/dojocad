@@ -1704,9 +1704,9 @@ function convertFloorToPngLink(targets, db, margin, scale, f) {
 	                // add to the center point
 	                .addTo(roomViewCenterPX, roomViewCenterPY);
 	            // scale font size
-                var fontSize = 16 * scale;
+                var fontSize = 16;
 				// calculate basis vectors starting from the transformed anchor point
-        		labelData.push([room.label, v.x, v.y, fontSize]);
+        		labelData.push([room.label, v.x, v.y, fontSize, scale]);
             }
 
 		    if (room.metadata.num == 0) {
@@ -1833,15 +1833,23 @@ function imageLoaded(targets, db, margin, scale, f, index, image, xx, xy, yx, yy
         var a = labelData[i];
         // set the transform with the two basis vectors and the translate vector
         context.translate(a[1], a[2]);
+        context.scale(a[4], a[4]);
+		var fontSize = a[3];
         // todo: hue transformation
 		// draw the image at the center of the new coordinate space
-		var fontSize = a[3];
 		var texts = a[0].split("\n");
-        context.font = "bold " + fontSize + "px Arial";
+        context.font = "bold " + fontSize + "px sans-serif";
         context.textAlign = "center";
-        context.fillStyle = "#FFFFFF";
 		for (var t = 0; t < texts.length; t++) {
 		    var y = (t - ((texts.length - 1)/2) + 0.5) * fontSize;
+		    // poor man's outline, this mirros the officially recommended way to do it in css, so shrug.
+            context.fillStyle = "#000000";
+            context.fillText(texts[t], -1, y-1);
+            context.fillText(texts[t], 1, y-1);
+            context.fillText(texts[t], -1, y+1);
+            context.fillText(texts[t], 1, y+1);
+
+            context.fillStyle = "#FFFFFF";
             context.fillText(texts[t], 0, y);
 		}
 		// reset the transform
