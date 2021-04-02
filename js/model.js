@@ -71,7 +71,9 @@ class Bound {
 	}
 
 	clearCollisions(exceptRooms = null) {
+	    // easiest to iterate from the end backwards
 	    for (var c = this.collisions.length - 1; c >= 0; c--) {
+	        // remove everything except rooms in the same selection
 	        if (!exceptRooms || !exceptRooms.includes(this.collisions[c].room)) {
                 this.removeCollision(this.collisions[c]);
 	        }
@@ -336,9 +338,13 @@ var newlineRegex = new RegExp('\n', "g");
 
 function roomToString(room) {
     var s = room.metadata.id + "," + room.mv.x + "," + room.mv.y + "," + room.floor + "," + (room.rotation / 90)
+    // hue and label fields are optional
     if (room.hue != null || room.label != null) {
+        // add the hue or blank if it's null
         s = s + "," + (room.hue == null ? "" : room.hue);
+        // label is optional
         if (room.label != null) {
+            // we just need to escape quotes, and then put it in quotes
             s = s + ',"' + room.label.replace(quoteRegex, '\\"') + '"'
         }
     }
@@ -346,14 +352,18 @@ function roomToString(room) {
 }
 
 function roomFromString(string) {
+    // split by comma taking into account quotes, removing both commas and quotes
     var s = quotedSplit(string, ",");
     var room = new Room(getRoomMetadata(s[0]));
     // room coordinates may be fractional because of old dojo rooms, floor and rotation are still ints
     room.setPosition(parseFloat(s[1]), parseFloat(s[2]), parseInt(s[3]), parseInt(s[4]) * 90);
+    // look for optional hue
     if (s.length > 5) {
+        // blank is null
         if (s[5].length > 0) {
             room.setHue(parseInt(s[5]));
         }
+        // look for optional label
         if (s.length > 6) {
             room.setLabel(s[6]);
         }
@@ -421,6 +431,7 @@ class Room {
         this.selected = false;
 
         this.hue = null;
+        // pull default label from metadata, if present
         this.label = this.metadata.defaultLabel ? this.metadata.defaultLabel : null;
 
         this.calculateAnchor();
@@ -532,11 +543,13 @@ class Room {
     }
 
     getFloors() {
+        // check for cached result
         if (this.allFloors) {
             return this.allFloors;
         }
 
         if (!this.metadata.floor_images || this.metadata.floor_images.length == 1) {
+            // simple case, room is only on one floor
             this.allFloors = [this.floor];
 
         } else {
@@ -567,15 +580,18 @@ class Room {
         }
         this.mv = new Vect(nmx, nmy);
         if (this.floor != nf) {
+            // floor has changed, reset any cached floor result
             this.allFloors = null;
         }
         this.floor = nf;
         this.rotation = nr;
+
+        // only bother if it's a full update
+        // non-full updates are used mostly in clone/copy/paste, we don't need
+        // to do any of these updates in those cases
         if (fullUpdate) {
     		this.updateMarkerPositions();
-        }
 
-        if (fullUpdate) {
             if (isNewFloor) {
                 this.removeDisplay();
                 this.addDisplay(getRoomContainer());
@@ -654,7 +670,7 @@ class Room {
 				// iterate over the global room list
 				for (var r = 0; r < roomList.length; r++) {
 					var room = roomList[r];
-                    // skip omitted rooms
+                    // don't chack collisions with rooms in the same selection
                     if (this.ignoreRooms != null && this.ignoreRooms.includes(roomList[r])) {
                         continue;
                     }
@@ -832,7 +848,10 @@ class Room {
         this.anchorMX = minBoundsMX - this.mv.x;
         this.anchorMY = minBoundsMY - this.mv.y;
 
-        for (var b = this.bounds.length - 1; b >= 1; b--) {
+        // check for bounds marked as "discard' in the metadata and
+        // remove them.  They're just for determining the anchor point
+        // This is just the "label" room
+        for (var b = this.bounds.length - 1; b >= 0; b--) {
             if (this.metadata.bounds[b].discard) {
                 this.bounds.splice(b, 1);
             }
@@ -871,20 +890,32 @@ class Room {
     }
 
     rotateAround(centerM) {
+        // increment the rotation
         var newRotation = (this.mdragOffsetRotation + 90) % 360;
+        // get a vector pointing from the center of rotation to our untransformed position
+        // and rotate
         var fromCenter = this.mv.subtract(centerM).rotate(newRotation);
+        // add the new vector to the center to get our new position, and subtract our
+        // current untransformed position to get the delta
+        // save to the special rotation offset vector
         var rotationOffsetM = fromCenter.add(centerM).subtract(this.mv);
+        // rotate as normal, but with an additional offset
         this.rotate(rotationOffsetM);
     }
 
     rotate(rotationOffsetM = null) {
+        // if we're currently dragging
         if (this.dragging) {
+            // save as a special offset that will get added to the normal drag offset
             this.mrotationOffset = rotationOffsetM;
-            // todo: save the original drag offset so we can reset the position if the room is rotated away from a door snapping zone
+            // go through the drag offset update
 	        this.setDragOffset(null, null, (this.mdragOffsetRotation + 90) % 360);
 
+        // not dragging, rotate the room in place
         } else {
+            // disconnect
 		    this.disconnectAllDoors(this.rooms);
+		    // move directly to the new rotated position, using the rotation offset if provided
 	        this.setPositionAndConnectDoors(
 	            this.mv.x + (rotationOffsetM ? rotationOffsetM.x : 0),
 	            this.mv.y + (rotationOffsetM ? rotationOffsetM.y : 0),
@@ -936,6 +967,7 @@ class Room {
 			this.doorConnectionSaves = Array();
 			for (var d = 0; d < this.doors.length; d++) {
 			    var door = this.doors[d];
+                // don't disconect doors with rooms in the same selection
 			    if (this.ignoreRooms != null && this.ignoreRooms.includes(door.room) &&
 			        door.otherDoor && this.ignoreRooms.includes(door.otherDoor.room)) {
 			        continue;
@@ -978,7 +1010,10 @@ class Room {
     }
 
     setMDragOffset(offsetX, offsetY) {
+        // we need the original raw drag offset so rooms can be rotated without
+        // waiting for another drag event
         this.mdragOffsetRaw.set(offsetX, offsetY);
+        // apply the rotation offset, if present
         if (this.mrotationOffset) {
             this.mdragOffset.set(offsetX + this.mrotationOffset.x, offsetY + this.mrotationOffset.y);
         } else {
@@ -993,14 +1028,18 @@ class Room {
 			this.disconnectAllDoors();
 		}
 
+        // update display
         this.setDraggingDisplay();
 
         if (offsetMX != null) {
+            // update the drag offset if there is an updated value
             this.setMDragOffset(offsetMX, offsetMY);
         }
         if (offsetRotation != null) {
+            // update the rotation if there is an updated value
             this.mdragOffsetRotation = offsetRotation;
             if (this.mrotationOffset) {
+                // update the drag offset if the rotation offset was also updated
                 this.setMDragOffset(this.mdragOffsetRaw.x, this.mdragOffsetRaw.y);
             }
         }
@@ -1018,12 +1057,14 @@ class Room {
     }
 
     resetDragOffset() {
+        // so much drag state to reset
         this.mdragOffset.set(0, 0);
         this.mdragOffsetRaw.set(0, 0);
         this.mdragOffsetRotation = 0;
         this.mrotationOffset = null;
     }
 
+    // get the closest door pair to smap together, if there is one
     getClosestDoorSnapPair() {
 		// calculate the click point position
 		var click = this.clickP.add(this.mdragOffset);
@@ -1088,35 +1129,44 @@ class Room {
 
 		// dragging is finished.
         this.dragging = false;
-        this.checkThings();
 
-        // clear the click point
-        this.clickP = null;
-    }
-
-    checkThings() {
         if (this.grid) {
             this.checkCollided();
         }
         if (this.outline) {
 		    this.checkErrors();
         }
+
+        // clear the click point
+        this.clickP = null;
     }
 
     setLabel(label) {
-        this.label = label ? label : this.metadata.defaultLabel ? this.metadata.defaultLabel : null;
-        this.updateLabelDisplay();
-        this.updateView();
+        // check for change
+        if (label != this.label) {
+            // set the label, taking into account the metadata's default if there is one
+            this.label = label ? label : this.metadata.defaultLabel ? this.metadata.defaultLabel : null;
+            // update the display
+            this.updateLabelDisplay();
+            this.updateView();
+        }
     }
 
     setHue(hue) {
+        // check for change
         if (hue != this.hue) {
-            var previousHue = this.hue;
+            // if it's changing from null to not null or vice versa then we will need
+            // to reset the display to use a different image
+            var reset = hue == null || this.hue == null;
+            // set the new value
             this.hue = hue;
-            if (previousHue == null || hue == null) {
+            // reset the display if necessary
+            if (reset) {
                 this.resetColorDisplay();
             }
+            // update or clear the hue filter
 			this.display.style.filter = this.getDisplayImageFilter();
+			// if there is a label then update it's filter, too
 			if (this.labelDisplay) {
 			    this.labelDisplay.style.color = this.getDisplayLabelColor();
 			}
@@ -1126,33 +1176,48 @@ class Room {
     updateLabelDisplay() {
         if (this.label) {
             if (!this.labelDisplay) {
+                // we need a label for don't have one, create it
 	            this.labelDisplay = this.addDisplayLabel();
+	            // init the hue filter, if there is one
 			    this.labelDisplay.style.color = this.getDisplayLabelColor();
             }
+            // update the label contents, replacing newlines with <br/>
             this.labelDisplay.innerHTML = this.label.replace(newlineRegex, "<br/>");
+
         } else if (this.labelDisplay) {
+            // we have a label and don't need it anymore, remove it.
             this.labelDisplay = this.removeDisplayElement(this.labelDisplay);
         }
     }
 
     resetColorDisplay() {
+        // remove the old display image
         if (this.display) {
             this.display.remove();
         }
+        // create a new display image, either grayscale or with color
         this.display = this.addDisplayImage(this.getDisplayImageSuffix(), 202);
+        // set the hue filter, if any
         this.display.style.filter = this.getDisplayImageFilter();
+        // init the display's position, rotation, etc
         this.updateView();
     }
 
     getDisplayImageSuffix() {
+        // we need to use a different display image depending in whether
+        // it's in color or not
+        // this wouldn't be necessary if CSS had a way to directly filter the
+        // red, green, and blue channels of an image
         return this.hue ? "-display-red.png" : "-display.png";
     }
 
     getDisplayImageFilter() {
+        // CSS filter value for the dispaly image, if necessary
         return this.hue ? " hue-rotate(" + this.hue + "deg)" : "";
     }
 
     getDisplayLabelColor() {
+        // CSS color value for the label, depending on whether there is a hue specified
         return this.hue ? "hsl(" + this.hue + ", 75%, 75%)" : "hsl(0, 0%, 100%)";
     }
 
@@ -1160,14 +1225,18 @@ class Room {
         this.viewContainer = viewContainer;
         if (this.isVisible()) {
             // main visible display
-	        this.display = this.addDisplayImage(this.getDisplayImageSuffix(), 202);
+	        this.display = this.addDisplayImage(this.getDisplayImageSuffix(), this.isOnFloor() ? 202 : 199);
+	        // init the display hue filter, if necessary
 			this.display.style.filter = this.getDisplayImageFilter();
-	        if (!this.isOnFloor()) {
+	        if (this.isOnFloor()) {
+                // init the label, if necessary
+                this.updateLabelDisplay();
+
+	        } else {
 	            // additional other floor display
 		        this.otherFloorDisplay = this.addDisplayImage(this.getDisplayImageSuffix(), 100 + this.floor, this.getImageBase(this.floor));
 			    this.otherFloorDisplay.style.filter = "brightness(25%)" + this.getDisplayImageFilter();
 	        }
-            this.updateLabelDisplay();
 			for (var m = 0; m < this.markers.length; m++) {
 				this.markers[m].addDisplay(viewContainer);
 			}
@@ -1208,9 +1277,12 @@ class Room {
     }
 
     addDisplayLabel(zIndex = 300) {
+        // labels should appear above all other elements
+        // labels are just a div with CSS
         var element = document.createElement("div");
         element.className = "roomLabel";
 
+        // add as a display element
         return this.addDisplayImageElement(element, zIndex);
     }
 
@@ -1309,6 +1381,7 @@ class Room {
 				this.updateViewElement(this.otherFloorDisplay, transform);
 	        }
         }
+        // update label, if present
         if (this.labelDisplay) {
             var transform = this.getLabelTransform(viewPX, viewPY, viewScale);
             this.updateViewElement(this.labelDisplay, transform);
@@ -1334,15 +1407,17 @@ class Room {
 	}
 
 	getLabelTransform(viewPX, viewPY, viewScale) {
-        // transform the anchor coords to pixel coords
+        // transform the center coords to pixel coords
 		var roomViewCenterPX = ((this.mv.x + this.mdragOffset.x) * viewScale) + viewPX;
 		var roomViewCenterPY = ((this.mv.y + this.mdragOffset.y) * viewScale) + viewPY;
 
-//		// final scaling of the image
+//		// raw scaling
 		var scale = viewScale;
 
+        // no rotation, labels are always right-side-up
+
 	    // https://www.w3schools.com/cssref/css3_pr_transform.asp
-	    // translate() need to be before rotate() and scale()
+	    // translate() need to be before scale()
 		return "translate(" + roomViewCenterPX + "px, " + roomViewCenterPY + "px) translate(-50%, -50%) scale(" + scale + ", " + scale + ")";
 	}
 
@@ -1391,14 +1466,19 @@ class Room {
 //==============================================================
 
 function cloneRooms(rooms, reposition=true) {
+    // reposition when cloning existing rooms to put on our clipboard,
+    // but not when cloning the clipboard to paste back in
     if (reposition) {
+        // find the center room
         var centerRoom;
         if (rooms.length == 1) {
+            // easy case with one room
             centerRoom = rooms[0];
 
         } else {
-            // find the room closest to the center
+            // find the center point
             var center = new DojoBounds(rooms).centerPosition().toVect();
+            // find the room closest to the center point
             var closestDistSquared = Number.POSITIVE_INFINITY;
             for (var r = 0; r < rooms.length; r++) {
                 var ds = rooms[r].mv.distanceSquared(center);
@@ -1411,29 +1491,36 @@ function cloneRooms(rooms, reposition=true) {
         var newCenterRoom;
     }
 
+    // cloned rooms go in here
     var newRooms = [];
 
     for (var r = 0; r < rooms.length; r++) {
         var room = rooms[r];
+        // create a new room of the same type
         var newRoom = new Room(room.metadata)
         if (reposition) {
+            // set this room's relative position so the center room ends up at the origin on the floor 0
             newRoom.setPosition(
                 room.mv.x - centerRoom.mv.x,
                 room.mv.y - centerRoom.mv.y,
                 room.floor - viewFloor,
                 room.rotation, false, false);
             if (room == centerRoom) {
+                // this is the center room on the clone side
                 newCenterRoom = newRoom;
             }
         } else {
+            // otherwise just clone the position
             newRoom.setPosition(
                 room.mv.x,
                 room.mv.y,
                 room.floor,
                 room.rotation, false, false);
         }
+        // clone misc properties
         newRoom.label = room.label;
         newRoom.hue = room.hue;
+        // add the new room
         newRooms.push(newRoom);
     }
 
@@ -1475,51 +1562,77 @@ function cloneRooms(rooms, reposition=true) {
 }
 
 function combineMetadata(rooms) {
+    // construct a synthetic metadata entry
     var combo = {};
+    // use an id that won't match any room-specific rules
     combo.id = "multi";
     combo.name = rooms.length + " Rooms";
+    // start at zero
     combo.capacity = 0;
     combo.energy = 0;
+    // magic num property.  this tells some rules that this metadata actually counts as multiple rooms
     combo.num = rooms.length;
 
+    // build up a resource map to combine resources
     var resourceMap = {};
 
     for (var r = 0; r < rooms.length; r++) {
         var md = rooms[r].metadata;
+        // add capacity and energy
         combo.capacity += md.capacity;
         combo.energy += md.energy;
         for (var i = 0; i < md.resources.length; i++) {
             var res = md.resources[i];
+            // check if teh resource is already in the map
             if (res.resource in resourceMap) {
+                // pull the current total costs
                 var costs = resourceMap[res.resource]
+                // add the cost array from this room
                 for (var j = 0; j < costs.length; j++) {
                     costs[j] += res.costs[j];
                 }
             } else {
+                // clone this room's cost array as the starting point for this resource
                 resourceMap[res.resource] = res.costs.slice();
             }
         }
     }
 
+    // metadata needs things in an array of structs, I don't feel like changing the format
     combo.resources = [];
     for (resource in resourceMap) {
+        // convert to array of structs
         combo.resources.push({
             "resource": resource,
             "costs": resourceMap[resource]
         });
     }
 
+    // that was an ordeal
     return combo;
 }
 
+function removeError(errors, error) {
+    // remove any errors containing the given substring, case-insensitive
+	if (errors) {
+	    var re = new RegExp(error, "i");
+	    removeMatchesFromList(errors, (err) => err.search(re) > -1)
+	}
+	return errors;
+}
+
 function getErrorsWarningsAndCombinedMetadata(rooms) {
+    // keep a count of how many of each room type there are, along with the metadata itself
+    // this is a map of id => [metadata, count]
     var metadataCounts = {};
 
     for (var r = 0; r < rooms.length; r++) {
         if (!(rooms[r].metadata.id in metadataCounts)) {
+            // start a new entry
             metadataCounts[rooms[r].metadata.id] = [rooms[r].metadata, 1];
 
         } else {
+            // increment the existing entry
             metadataCounts[rooms[r].metadata.id][1] += 1;
         }
     }
@@ -1527,35 +1640,48 @@ function getErrorsWarningsAndCombinedMetadata(rooms) {
     var errors = [];
     var warns = [];
 
+    // loop over room types
     for (mdid in metadataCounts) {
+        // get errors from adding that many of this room type
         var roomTypeErrors = getNewRoomErrors(metadataCounts[mdid][0], metadataCounts[mdid][1]);
         if (roomTypeErrors) {
+            // add any new errors to the error list
             addAllToListIfNotPresent(errors, roomTypeErrors);
         }
+        // get warnings from adding that many of this room type
         var roomTypeWarns = getNewRoomWarnings(metadataCounts[mdid][0], metadataCounts[mdid][1]);
         if (roomTypeWarns) {
+            // add any new warns to the warn list
             addAllToListIfNotPresent(warns, roomTypeWarns);
         }
     }
     // the lazy way: just remove any energy and capacity errors we got from checking individual room types
-    // these will be covered by the combined metadata check
+    // these could be erroneous if the room list includes room types with both positive and negative values for these
+    // this error type will be checked by running the combined metadata
     removeError(errors, "energy");
     removeError(errors, "capacity");
 
+    // combine the metadata
     var combinedMetaData = combineMetadata(rooms);
 
+    // get errors from the combined metadata
     var combinedErrors = getNewRoomErrors(combinedMetaData);
     if (combinedErrors) {
+        // add any new errors to the error list
         addAllToListIfNotPresent(errors, combinedErrors);
     }
+    // get warns from the combined metadata
     var combinedWarns = getNewRoomWarnings(combinedMetaData);
     if (combinedWarns) {
+        // add any new warns to the warn list
         addAllToListIfNotPresent(warns, combinedWarns);
     }
 
+    // convention is to return null if there are no errors/warnings
     if (errors.length == 0) errors = null;
     if (warns.length == 0) warns = null;
 
+    // return multiple values
     return { errors, warns, combinedMetaData };
 }
 
@@ -1718,7 +1844,7 @@ function convertFloorToPngLink(targets, db, margin, scale, f) {
 		// check if the room is visible on the given floor
 		if (room.isVisible(f)) {
 		    // check for a label
-            if (room.label) {
+            if (room.label && room.isOnFloor(f)) {
                 // start with the room's position
 				var v = new Vect(room.mv.x, room.mv.y)
 	                // scale by the scale, they are now pixel coords
@@ -1777,7 +1903,9 @@ function convertFloorToPngLink(targets, db, margin, scale, f) {
 				    "yy": vy.y,
 				    "tx": av.x,
 				    "ty": av.y,
-				    "hue": room.hue
+				    "hue": room.hue,
+				    // if the room isn't actually on this floor, make sure the image is drawn underneath everything else
+				    "bottom": !room.isOnFloor(f)
 				});
             }
             img.src = "img" + imgScale + "x/" + room.getImageBase(f) + room.getDisplayImageSuffix();
@@ -1817,7 +1945,8 @@ function convertFloorToPngLink(targets, db, margin, scale, f) {
     					"yx": 0,
     					"yy": scale / imgScale,
     					"tx": av2.x,
-    					"ty": av2.y
+    					"ty": av2.y,
+				        "bottom": false
 					});
 				}
 	            img2.src = "img" + imgScale + "x/" + marker.metadata.image + ".png";
@@ -1863,25 +1992,35 @@ function imageLoaded(targets, db, margin, scale, f, index, imageData) {
     context.fillStyle = "#000000";
     context.fillRect(0, 0, canvas.width, canvas.height);
 
-    for (var i = 0; i < loadedImageData.length; i++) {
-        var a = loadedImageData[i];
-        // set the transform with the two basis vectors and the translate vector
-        context.setTransform(a.xx, a.xy, a.yx, a.yy, a.tx, a.ty);
-        // set the hue rotation if there is one
-        if (a.hue != null) {
-            // todo: this is not supported of safari because of reasons
-            context.filter = "hue-rotate(" + a.hue + "deg)";
+    function drawImages(bottom) {
+        for (var i = 0; i < loadedImageData.length; i++) {
+            var a = loadedImageData[i];
+            if (a.bottom != bottom) {
+                continue;
+            }
+            // set the transform with the two basis vectors and the translate vector
+            context.setTransform(a.xx, a.xy, a.yx, a.yy, a.tx, a.ty);
+            // set the hue rotation if there is one
+            if (a.hue != null) {
+                // todo: this is not supported of safari because of reasons
+                context.filter = "hue-rotate(" + a.hue + "deg)";
+            }
+            // draw the image at the center of the new coordinate space
+            context.drawImage(a.image, 0, 0);
+            // reset the transform
+            context.resetTransform();
+            // reset the hue, if there is one
+            if (a.hue != null) {
+                // you have to set it to "none"
+                context.filter = "none";
+            }
         }
-		// draw the image at the center of the new coordinate space
-		context.drawImage(a.image, 0, 0);
-		// reset the transform
-		context.resetTransform();
-		// reset the hue, if there is one
-		if (a.hue != null) {
-		    // you have to set it to "none"
-            context.filter = "none";
-		}
     }
+
+    // draw the bottom images first
+    drawImages(true);
+    // then the rest
+    drawImages(false);
 
     for (var i = 0; i < labelData.length; i++) {
         var a = labelData[i];

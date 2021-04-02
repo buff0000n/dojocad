@@ -47,6 +47,7 @@ class RoomCountRule extends RoomRule {
 
 	roomAdded(room) {
 	    if (room.metadata.num != null) {
+    	    // metadata has a num override
             this.numRooms += room.metadata.num;
 
 	    } else {
@@ -57,6 +58,7 @@ class RoomCountRule extends RoomRule {
 
 	roomRemoved(room) {
 	    if (room.metadata.num != null) {
+    	    // metadata has a num override
             this.numRooms -= room.metadata.num;
 
 	    } else {
@@ -67,6 +69,7 @@ class RoomCountRule extends RoomRule {
 	}
 
 	getNewRoomError(roomMetaData, num=1) {
+        // metadata has a num override
 	    if (roomMetaData.num != null) {
             num = roomMetaData.num;
 	    }
@@ -99,6 +102,7 @@ class EnergyRule extends RoomRule {
 	}
 
 	getNewRoomError(roomMetaData, num=1) {
+	    // does not apply metadata num override
 		if (this.energy + (roomMetaData.energy * num) < 0) {
 			return this.toString();
 		} else {
@@ -128,6 +132,7 @@ class CapacityRule extends RoomRule {
 	}
 
 	getNewRoomError(roomMetaData, num=1) {
+	    // does not apply metadata num override
 		if (this.capacity + (roomMetaData.capacity * num) < 0) {
 			return this.toString();
 		} else {
@@ -181,6 +186,7 @@ class MaxNumRule extends RoomRule {
 	}
 
 	getNewRoomError(roomMetaData, num=1) {
+	    // does not apply metadata num override
 		if (roomMetaData.id == this.id && (this.list.length + num) > this.maxnum) {
 			return this.toString();
 		} else {
@@ -243,6 +249,7 @@ class PrereqRule extends RoomRule {
 	}
 
 	getNewRoomError(roomMetaData, num=1) {
+	    // does not apply metadata num override
 		if (roomMetaData.id == this.room_id && this.prereq_list.length == 0) {
 			return this.toString();
 		} else {

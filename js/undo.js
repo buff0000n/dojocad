@@ -46,7 +46,9 @@ function updateButtons() {
 }
 
 function addUndoAction(action) {
+    // check if there's a combo in progress
     if (undoCombos.length > 0) {
+        // put in the combo
         undoCombos[undoCombos.length - 1].push(action);
         return;
     }
@@ -204,28 +206,36 @@ class MoveRoomAction extends Action {
 	}
 	
 	recordFrom() {
+	    // record the starting positions for all rooms
 	    this.from = [];
 	    for (var r = 0; r < this.rooms.length; r++) {
 	        this.from.push(new RoomPosition(this.rooms[r]));
 	    }
+	    // calculate the center point of the starting room positions
 	    this.fromCenter = new DojoBounds(this.rooms).centerPosition();
 	}
 
 	recordTo() {
+	    // record the ending positions for all rooms
 	    this.to = [];
 	    for (var r = 0; r < this.rooms.length; r++) {
 	        this.to.push(new RoomPosition(this.rooms[r]));
 	    }
+	    // calculate the center point of the ending room positions
 	    this.toCenter = new DojoBounds(this.rooms).centerPosition();
 	}
 
 	isAMove() {
+	    // automatically record the end positions
 		this.recordTo(this.rooms);
+		// check if any corresponding positions are different
 		for (var r = 0; r < this.rooms.length; r++) {
 		    if (!this.from[r].equals(this.to[r])) {
+		        // found a difference
 		        return true;
             }
 		}
+		// no differences
 		return false;
 	}
 
@@ -266,6 +276,7 @@ class MoveRoomAction extends Action {
             room.updateView();
 	    }
 
+        // automatically select the rooms
 		selectRooms(this.rooms, false, false);
 		saveModelToUrl();
 	}
@@ -283,14 +294,17 @@ class ChangeHueAction extends Action {
 	}
 
 	recordFrom() {
+	    // record the starting hues for all rooms
 	    this.from = [];
 	    for (var r = 0; r < this.rooms.length; r++) {
 	        this.from.push(this.rooms[r].hue);
 	    }
+	    // calculate the center point of the room positions
 	    this.center = new DojoBounds(this.rooms).centerPosition();
 	}
 
 	recordTo() {
+	    // record the ending hues for all rooms
 	    this.to = [];
 	    for (var r = 0; r < this.rooms.length; r++) {
 	        this.to.push(this.rooms[r].hue);
@@ -298,12 +312,16 @@ class ChangeHueAction extends Action {
 	}
 
 	isAChange() {
+	    // automatically record the end hues
 		this.recordTo(this.rooms);
+		// check if any corresponding positions are different
 		for (var r = 0; r < this.rooms.length; r++) {
 		    if (this.from[r] != this.to[r]) {
+		        // found a difference
 		        return true;
             }
 		}
+		// no differences
 		return false;
 	}
 
@@ -349,15 +367,19 @@ class ChangeLabelAction extends Action {
 	}
 
 	recordFrom() {
+	    // record the starting label
 	    this.from = this.room.label;
 	}
 
 	recordTo() {
+	    // record the ending label
 	    this.to = this.room.label;
 	}
 
 	isAChange() {
+	    // automatically record the ending label
 		this.recordTo();
+		// see if the label changed
 		return this.from != this.to;
 	}
 
@@ -397,8 +419,10 @@ class AddDeleteRoomsAction extends Action {
 	constructor(rooms, add) {
 		super();
 		this.rooms = rooms;
-		this.records = [];
+		// remember the center position
 		this.center = new DojoBounds(rooms).centerPosition();
+		// remember all the room positions
+		this.records = [];
 		for (var r = 0; r < this.rooms.length; r++) {
 		    this.records.push(new RoomPosition(this.rooms[r]));
 		}
@@ -437,10 +461,11 @@ class AddDeleteRoomsAction extends Action {
             // hax to force it to think the floor has changed and setup its display
             this.rooms[r].floor = 100;
             this.rooms[r].setPositionAndConnectDoors(this.records[r].MX, this.records[r].MY, this.records[r].Floor, this.records[r].R);
+            // select the rooms
             this.rooms[r].select();
             this.rooms[r].updateView();
 	    }
-//        selectRoom(this.room)
+	    // directly set the room selection
         selectedRooms = this.rooms;
 
 		saveModelToUrl();3
@@ -450,6 +475,7 @@ class AddDeleteRoomsAction extends Action {
 	    for (var r = 0; r < this.rooms.length; r++) {
             this.rooms[r].deselect();
     	    removeRoom(this.rooms[r]);
+    	    // clear selection
             selectedRooms = [];
 	    }
 	}
@@ -462,10 +488,12 @@ class AddDeleteRoomsAction extends Action {
 class SelectionAction extends Action {
 	constructor(oldSelections, newSelections) {
 		super();
+		// remenber old selection and center
 		this.oldSelections = oldSelections;
 		this.oldCenter = this.oldSelections && this.oldSelections.length > 0 ? 
 		    new DojoBounds(this.oldSelections).centerPosition() :
 		    null;
+		// remenber new selection and center
 		this.newSelections = newSelections;
 		this.newCenter = this.newSelections && this.newSelections.length > 0 ? 
 		    new DojoBounds(this.newSelections).centerPosition() :
@@ -491,6 +519,9 @@ class SelectionAction extends Action {
 	prepareAction(center1, center2) {
 	    var center = center1 ? center1 : center2;
 	    if (center) {
+	        // Changing floors with an active selection will add an undo action,
+	        // so preemptively clear the selection with no undo.
+	        selectRooms([], false, false);
             centerViewOnIfNotVisible(center.MX, center.MY, center.Floor);
 	    }
 		// having a prepare step to show what's about to change feels more confusing than not having it

@@ -286,48 +286,63 @@ function downEvent(e) {
 
     if (e.currentTarget.room) {
         if (multiselectEnabled) {
+            // set up for adding a room to the selection
 	        mouseDownTarget = e.currentTarget;
 
         } else {
             if (e.altKey) {
                 // insta-delete
 
+                // if you ald-click on a room that's not selected, then
+                // change the selection, so it can be undone later
                 if (!selectedRooms.includes(e.currentTarget.room)) {
                     selectRoom(e.currentTarget.room, false, false);
                 }
 
+                // now we can just use the usual delete method
                 deleteSelectedRooms();
 
             } else {
                 mouseDownTarget = e.currentTarget;
                 mouseDownTarget.room.setClickPoint(mouseDownTargetStartPX, mouseDownTargetStartPY);
+                // If a selected room was clicked then make sure all selected rooms have a click point
                 if (selectedRooms.includes(mouseDownTarget.room)) {
                     for (var r = 0; r < selectedRooms.length; r++) {
                         selectedRooms[r].setClickPoint(mouseDownTargetStartPX, mouseDownTargetStartPY);
                     }
                 }
+                // clear the new room flag before we start dragging
                 newRoom = false;
             }
         }
     }
 
+    // start the drag process
 	startDrag();
 }
 
 function startNewRoomDrag(e, rooms, target) {
     mouseDownTarget = target;
+    // going t combine a selection action and new room action into one undo action
+    // this way, undo will both delete the added room and select the previously
+    // selected room(s).
     startUndoCombo();
+    // deselect currntly selected rooms
     selectRooms([], false, true);
+    // select the new room(s), but don't add another selection action.
     selectRooms(rooms, false, false);
 
+    // make sure all the new rooms have a click point
     for (var r = 0; r < rooms.length; r++) {
         rooms[r].setClickPoint(e.clientX, e.clientY);
     }
 
+    // set the new room flag before we start dragging
     newRoom = true;
 
+    // start the drag process
 	startDrag();
-	// force the room to start under the cursor
+	// call teh drag handler immediately to force the room to start under the cursor
 	dragEvent(e);
 }
 
@@ -345,10 +360,12 @@ function startDrag() {
 }
 
 function isDraggingRoom() {
+    // lots going on to try and tell if we're draggina  room
     return mouseDownTarget && mouseDownTarget.room && selectedRooms.includes(mouseDownTarget.room) && !multiselectEnabled;
 }
 
 function isMultiselecting() {
+    // telltale for when multiselecting is happening
     return multiselectCornerPX != null;
 }
 
@@ -357,6 +374,8 @@ function dragEvent(e) {
     var offsetPX = e.clientX - mouseDownTargetStartPX;
     var offsetPY = e.clientY - mouseDownTargetStartPY;
 
+    // give some wiggle room so the cursor doesn't have to be perfectly
+    // still to count as a click instead of a drag
     if (!dragged && ((offsetPX * offsetPX) + (offsetPY * offsetPY) < dragThresholdSquared)) {
         return;
     }
@@ -385,24 +404,31 @@ function dragEvent(e) {
     	    selectedRooms[r].updateView();
         }
 
+        // scroll the screen if we're close enough to an edge
 	    checkAutoScroll(e);
 
     } else if (multiselectEnabled) {
+        // start the multiselect state
         if (!isMultiselecting()) {
+            // init the multiselect box coordinates
             mouseDownTargetStartPX = e.clientX;
             mouseDownTargetStartPY = e.clientY;
             multiselectCornerPX = e.clientX;
             multiselectCornerPY = e.clientY;
+            // show the box
     	    showMultiselectBox();
 
         } else {
+            // update the multiselect box coordinates
             multiselectCornerPX = e.clientX;
             multiselectCornerPY = e.clientY;
     	    updateMultiselectBox();
+            // scroll the screen if we're close enough to an edge
     	    checkAutoScroll(e);
         }
 
     } else {
+        // nothing else we could be dragging, so drag the screen
 		mouseDownTarget = null;
 	    mouseDownTargetStartPX = e.clientX;
 	    mouseDownTargetStartPY = e.clientY;
@@ -410,6 +436,7 @@ function dragEvent(e) {
 		setViewP(viewPX + offsetPX, viewPY + offsetPY, viewScale);
     }
 
+    // set the dragged flag
     dragged = true;
 }
 
@@ -473,14 +500,19 @@ function handleRoomDrag(offsetM, clickM, shiftKey) {
 
 function dropEvent(e) {
     if (multiselectEnabled) {
+        // were we multiselecting
         if (isMultiselecting()) {
+            // clear multiselect state
             hideMultiselectBox();
             multiselectCornerPX = null;
             multiselectCornerPY = null;
             dragged = false;
+            // add any rooms inside the multiselect box to the current selection
             commitMultiselectRooms();
 
         } else {
+            // It was a click instead of a drag
+            /// Add a room to the selection if a room was clicked, otherwise clear the selection.
 			selectRoom(!mouseDownTarget ? null : mouseDownTarget.room, undoable = true, true);
         }
 
@@ -491,45 +523,63 @@ function dropEvent(e) {
 	    mouseDownTargetStartPX = 0;
 	    mouseDownTargetStartPY = 0;
 
+        // if we actually dragged some distance
 		if (dragged) {
+		    // commit the move for each selected room
     	    for (var r = 0; r < selectedRooms.length; r++) {
                 selectedRooms[r].dropDragOffset();
+                // update the view
                 selectedRooms[r].updateView();
+                // clear the ignore list
     	        selectedRooms[r].ignoreRooms = null;
             }
             dragged = false;
 
+            // no more door markers
             hideDoorMarkers();
 
             if (!dragMoveUndoAction) {
+                // if there was no undo action in progreses then these were
+                // new rooms, create an add action to undo.
                 addUndoAction(new AddDeleteRoomsAction(selectedRooms, true));
 
+            // otherwise, check the in progress move action to see if anything
+            // was actually moved
             } else if (dragMoveUndoAction.isAMove()) {
+                // commit the move undo action
                 addUndoAction(dragMoveUndoAction);
             }
 
+            // clear out any combo undos.  This takes care of any possible combined
+            // selection and addition actions
             endAllUndoCombos();
 
+            // clear out any move action
             dragMoveUndoAction = null;
 
+            // notify things that a room or rooms were moved
     		movedSelectedRoom();
 
 		} else {
+		    // room wasn't actually dragged anywhere, treat it as a click and
+		    // open the room menu
 			doRoomMenu(e, selectedRooms);
 		}
 
-
 	} else {
 		if (!dragged) {
+    	    // no multiselect and no dragging.  treat it as a simple click and either
+    	    // select a single room or clear the selection
 			selectRoom(!mouseDownTarget ? null : mouseDownTarget.room, undoable = true, false);
 		}
 
+        // clear click and dragging state
 	    mouseDownTargetStartPX = 0;
 	    mouseDownTargetStartPY = 0;
 	    dragged = false;
 	}
 
-    /* stop moving when mouse button is released:*/
+    // clear out all the dragging mouse/touch listeners
     document.onmouseup = null;
     document.onmousemove = null;
     document.ontouchend = null;
@@ -539,134 +589,191 @@ function dropEvent(e) {
     setAutoScroll(e, 0, 0)
 }
 
+// selection change involving a single room
 function selectRoom(room, undoable = false, multiselect = false) {
+    // save the old selected rooms
     var oldSelectedRooms = selectedRooms;
 
+    // One set of logic if we're not multiselecting
     if (!multiselect) {
         if (selectedRooms.includes(room)) {
+            // the room is already selected, nothing to do
+            // pretty sure this doesn't happen.
             return;
         }
 
+        // clear out the old selections, if any
         if (oldSelectedRooms.length > 0) {
             for (var r = 0; r < oldSelectedRooms.length; r++) {
                 oldSelectedRooms[r].deselect();
                 oldSelectedRooms[r].updateView();
             }
         }
+        // if we have a new selection
         if (room) {
+            // go to the floor the room is on, if it's not on the current floor
             if (!room.isOnFloor()) {
                 setViewP(viewPX, viewPY, viewScale, room.floor);
             }
 
+            // select just that one room
             selectedRooms = [room];
+            // update the room's state
             room.select();
             room.updateView();
+
         } else if (oldSelectedRooms.length > 0) {
             // only reset selectedRooms if it wasn't already empty
             selectedRooms = [];
         }
 
     // selecting nothing while multiselect is active does nothing
-    } else if (room) { // multiselect
-        if (selectedRooms.includes(room)) {
-            // selecting a room again will deselect it
+    } else if (room) {
+        if (!room.isOnFloor()) {
+            // room is on a different floor, ignore
+            return;
+
+        } else if (selectedRooms.includes(room)) {
+            // selecting an already selected room will deselect it
+            // make a copy of the selected rooms list
             var newRooms = oldSelectedRooms.slice();
+            // remove the deselected room
             removeFromList(newRooms, room);
+            // change the selection
             selectedRooms = newRooms;
+            // update the room's state
             room.deselect();
             room.updateView();
 
         } else {
             // multiselecting new room
+            // make a copy of the selected rooms list
             var newRooms = oldSelectedRooms.slice();
+            // add the newly selected room
             newRooms.push(room);
+            // change the selection
             selectedRooms = newRooms;
+            // update the room's state
             room.select();
             room.updateView();
         }
     }
 
+    // check if this is an undoable section and the selection has changed
     if (undoable && oldSelectedRooms != selectedRooms) {
+        // add a selection action to undo
         addUndoAction(new SelectionAction(oldSelectedRooms, selectedRooms));
     }
 }
 
+// selection change involving multiple rooms at once
 function selectRooms(rooms, append=false, undoable=true) {
+    // save the current selection
     var oldSelectedRooms = selectedRooms;
+    // make a copy of the current selection
     var newSelectedRooms = selectedRooms.slice();
+    // just have a flag for if something changes
     var selectionChanged = false;
 
+    // check if we're not appending to the current selection
     if (!append) {
+        // loop over the currently selected rooms
         for (var r = 0; r < oldSelectedRooms.length; r++) {
+            // check if the currently selected room is nor in the new selection
             if (!rooms.includes(oldSelectedRooms[r])) {
+                // update the old room's state
                 oldSelectedRooms[r].deselect();
                 oldSelectedRooms[r].updateView();
+                // remove it from the new selection
                 removeFromList(newSelectedRooms, oldSelectedRooms[r]);
                 selectionChanged = true;
             }
         }
     }
 
+    // todo: need this check?
     if (rooms) {
+        // loop over the new roooms
         for (var r = 0; r < rooms.length; r++) {
+            // check if the new room isn't already selected yet
             if (!oldSelectedRooms.includes(rooms[r])) {
+                // update the newroom's state
                 rooms[r].select();
                 rooms[r].updateView();
+                // add to the selection
                 newSelectedRooms.push(rooms[r]);
                 selectionChanged = true;
             }
         }
     }
 
+    // check if there was any actual selection changes
     if (selectionChanged) {
+        // if it's an undoable action
         if (undoable) {
+            // add an undo action for the selection change
             addUndoAction(new SelectionAction(oldSelectedRooms, newSelectedRooms));
         }
+        // commit new selection
         selectedRooms = newSelectedRooms;
     }
 }
 
+// Ctrl-A handler
 function selectAllRoomsOnFloor() {
+    // get every room that has at least some part on the current floor
     var floorRooms = [];
-
     for (var r = 0; r < roomList.length; r++) {
         if (roomList[r].getFloors().includes(viewFloor)) {
             floorRooms.push(roomList[r]);
         }
     }
 
+    // replace the current selection
     selectRooms(floorRooms, false, true);
 }
 
 function cancelRoomDrag() {
+    // check if we're actualyl dragging
     if (isDraggingRoom()) {
+        // clear drag state
         mouseDownTarget = null;
         mouseDownTargetStartPX = 0;
         mouseDownTargetStartPY = 0;
+        // see if we were dragging new rooms
 		if (newRoom) {
-			// no undo action
+			// no undo action, just remove the new rooms
 		    for (var r = 0; r < selectedRooms.length; r++) {
     			removeRoom(selectedRooms[r]);
             }
+            // stealth clear the selection
 		    selectedRooms = [];
 
 		} else {
+		    // not new rooms, reset them
 		    for (var r = 0; r < selectedRooms.length; r++) {
+		        // reset to their original positions
                 selectedRooms[r].resetDragOffset();
+                // stop dragging
                 selectedRooms[r].dropDragOffset();
+                // update state
                 selectedRooms[r].updateView();
 		    }
 		}
 
+        // clear more drag state
 	    mouseDownTarget = null;
 	    dragged = false;
+	    // no mor doors
         hideDoorMarkers();
 
+        // unregister grad listeners
 	    document.onmouseup = null;
 	    document.onmousemove = null;
 	    document.ontouchend = null;
 	    document.ontouchmove = null;
 
+        // cancel any pending undo combinations
         cancelAllUndoCombos();
     }
 }
@@ -696,6 +803,7 @@ function zoom(px, py, factor) {
 		mouseDownTargetStartPY = (mouseDownTargetStartPY - viewPY) * (newViewScale / viewScale) + newViewPY;
 	}
 
+    // update the view
 	setViewP(newViewPX, newViewPY, newViewScale);
 }
 
@@ -704,26 +812,37 @@ function zoom(px, py, factor) {
 //==============================================================
 
 function doToggleMultiselect() {
+    // flip the bit
     setMultiselectEnabled(!multiselectEnabled);
 }
 
 function setMultiselectEnabled(enabled) {
+    // get the UI button
     var button = document.getElementById("multiselectButton")
+    // if we're starting multiselect
     if (enabled) {
+        // update state
         multiselectEnabled = true;
+        // update the button
         button.className = "button";
 		button.children[0].title = "Disable Multiselect Mode";
 
+    // if we're ending multiselect
     } else {
+        // update state
         multiselectEnabled = false;
+        // update the button
         button.className = "button-disabled";
 		button.children[0].title = "Enable Multiselect Mode";
 
+        // check if we actually had a multiselect box going
 		if (isMultiselecting()) {
+		    // clear multiselect box state
             mouseDownTargetStartPX = multiselectCornerPX;
             mouseDownTargetStartPY = multiselectCornerPY
             multiselectCornerPX = null;
             multiselectCornerPY = null;
+            // hide the box
             hideMultiselectBox();
 		}
     }
@@ -734,45 +853,52 @@ function setMultiselectEnabled(enabled) {
 //==============================================================
 
 function nothingElseGoingOn() {
+    // a lot of key shortcuts are disabled if there is anything else going on in the UI
+    // things like a menu, or things that involve active dragging
     return getCurrentMenuLevel() == 0 && !isDraggingRoom() && !isMultiselecting();
 }
 
 function keyDown(e) {
     e = e || window.event;
 
+    // ignore typing in a text box
     nodeName = e.target.nodeName;
-
-    // ignote typing in a text box
     if (nodeName == "TEXTAREA" || nodeName == "INPUT") {
         return;
     }
 
     switch (e.code) {
 		case "Escape" :
+		    // escape cancels menus and drag operations
 		    clearMenus(0);
 		    cancelRoomDrag();
             e.preventDefault();
 		    break;
 		case "Backspace" :
 		case "Delete" :
+		    // deletes selected rooms
 			if (!isDraggingRoom() && !isMultiselecting()) {
     			deleteSelectedRooms();
+    			// prevent the browser from navigating backwards
                 e.preventDefault();
             }
 		    break;
 		case "ArrowUp" :
+		    // goes up a floor
 			if (!isDraggingRoom() && !isMultiselecting()) {
                 doFloorUp();
                 e.preventDefault();
             }
 		    break;
 		case "ArrowDown" :
+		    // goes down a floor
 			if (!isDraggingRoom() && !isMultiselecting()) {
                 doFloorDown();
                 e.preventDefault();
             }
 		    break;
 		case "KeyD" :
+		    // deletes selected rooms
 			if (nothingElseGoingOn()) {
     			duplicateSelectedRooms(lastMouseEvent);
                 e.preventDefault();
@@ -780,13 +906,15 @@ function keyDown(e) {
 		    break;
 		case "KeyR" :
 		    // still allow ctrl-R to work normally
-		    if (!e.ctrlKey && !e.metaKey && !isMultiselecting()) {
+		    // allow rotation while dragging rooms, but not while in a menu or multiselecting
+		    if (!e.ctrlKey && !e.metaKey && getCurrentMenuLevel() == 0 && !isMultiselecting()) {
     			rotateSelectedRoom(lastMouseEvent);
                 e.preventDefault();
 		    }
 		    break;
 		case "ShiftLeft" :
 		case "ShiftRight" :
+		    // shift toggles multiselect mode on
 		    if (!isDraggingRoom()) {
     		    setMultiselectEnabled(true);
                 e.preventDefault();
@@ -821,7 +949,7 @@ function keyDown(e) {
 			}
 		    break;
 		case "KeyC" :
-			// only enable select all key shortcut if there is no menu visible and no dragging operation
+			// only enable copy key shortcut if there is no menu visible and no dragging operation
 			if (nothingElseGoingOn()) {
 				// ctrlKey on Windows, metaKey on Mac
 				if (e.ctrlKey || e.metaKey) {
@@ -831,7 +959,7 @@ function keyDown(e) {
             }
 		    break;
 		case "KeyX" :
-			// only enable select all key shortcut if there is no menu visible and no dragging operation
+			// only enable cut shortcut if there is no menu visible and no dragging operation
 			if (nothingElseGoingOn()) {
 				// ctrlKey on Windows, metaKey on Mac
 				if (e.ctrlKey || e.metaKey) {
@@ -841,7 +969,7 @@ function keyDown(e) {
             }
 		    break;
 		case "KeyV" :
-			// only enable select all key shortcut if there is no menu visible and no dragging operation
+			// only enable paste key shortcut if there is no menu visible and no dragging operation
 			if (nothingElseGoingOn()) {
 				// ctrlKey on Windows, metaKey on Mac
 				if (e.ctrlKey || e.metaKey) {
@@ -868,6 +996,7 @@ function keyUp(e) {
     switch (e.code) {
 		case "ShiftLeft" :
 		case "ShiftRight" :
+		    // letting up on the shift key disabled multiselect mode
 		    setMultiselectEnabled(false);
 	}
 }
@@ -876,45 +1005,55 @@ function keyUp(e) {
 // multiselect
 //==============================================================
 
+// multiselect state
 var multiselectBox = null;
 var multiselectRooms = [];
 
 function showMultiselectBox() {
     if (multiselectBox == null) {
+        // create the multiselect box, it's just a heavily css-ed <div>
         multiselectBox = document.createElement("div");
         multiselectBox.className = "multiselectBox";
         multiselectBox.style.position = "absolute";
+        // update initial box position
         updateMultiselectBox();
+        // add to the usual container
         getRoomContainer().appendChild(multiselectBox);
     }
 }
 
 function hideMultiselectBox() {
     if (multiselectBox != null) {
+        // remove and delete the box
 		multiselectBox.remove();
 		multiselectBox = null;
     }
 }
 
 function updateMultiselectBox() {
+    // normalize the min and max x and y coordinates
     var x1 = Math.min(mouseDownTargetStartPX, multiselectCornerPX);
     var x2 = Math.max(mouseDownTargetStartPX, multiselectCornerPX);
     var y1 = Math.min(mouseDownTargetStartPY, multiselectCornerPY);
     var y2 = Math.max(mouseDownTargetStartPY, multiselectCornerPY);
 
+    // set the box position and size
 	multiselectBox.style.left = x1;
 	multiselectBox.style.top = y1;
 	multiselectBox.style.width = (x2 - x1);
 	multiselectBox.style.height = (y2 - y1);
 
+    // convert to model coordinates
     var mx1 = Math.round((x1 - viewPX) / viewScale);
     var my1 = Math.round((y1- viewPY) / viewScale);
     var mx2 = Math.round((x2 - viewPX) / viewScale);
     var my2 = Math.round((y2- viewPY) / viewScale);
+    // see what rooms are selected
     updateMultiselectRooms(mx1, my1, mx2, my2);
 }
 
 function updateMultiselectRooms(mx1, my1, mx2, my2) {
+    // create a bounds object representing the selection area
     var bounds = [{
         x1: mx1,
         y1: my1,
@@ -935,30 +1074,44 @@ function updateMultiselectRooms(mx1, my1, mx2, my2) {
 
         // find collisions
         var cols = findCollisions(bounds, room.bounds);
+        // check if there are collisions and the room is not currently in the multiselection list
         if (cols.length > 0 && !multiselectRooms.includes(room)) {
+            // add to teh list
             multiselectRooms.push(room);
+            // update the room's visual state
             room.select();
 
+        // check if there are no collisions and the room is currently in the multiselection list
         } else if (cols.length == 0 && multiselectRooms.includes(room)) {
+            // remove from the list
             removeFromList(multiselectRooms, room);
+            // update the room's visual state
             room.deselect();
         }
     }
 }
 
 function commitMultiselectRooms() {
+    // check if anything was multiselected
     if (multiselectRooms.length > 0) {
+        // the multiselect rooms should be be disjoint from the currently
+        // selected rooms, so we can just concat them
         var newSelectedRooms = selectedRooms.concat(multiselectRooms)
+        // update the selection
         selectRooms(newSelectedRooms);
+        // clear multiselect state
         multiselectRooms = [];
     }
 }
 
 function cancelMultiselectRooms() {
+    // check if anything was multiselected
     if (multiselectRooms.length > 0) {
+        // update the visual state oof each room, there's nothing else we need to do
         for (var r = 0; r < multiselectRooms.length; r++) {
             multiselectRooms[r].deselect();
         }
+        // clear multiselect state
         multiselectRooms = [];
     }
 }

@@ -60,6 +60,8 @@ function setViewP(newViewPX, newViewPY, newViewScale, newViewFloor = null) {
 
 		setSelectedFloor(viewFloor);
 
+        // clear any selections when we change floors, undoing this will revert
+        // the view to the previous floor
 		if (selectedRooms.length > 0) {
 		    selectRooms([]);
 		}
@@ -122,11 +124,14 @@ function addRoom(room) {
 }
 
 function rotateSelectedRoom() {
+    // if we're not currently dragging rooms then start a new move action
     if (!isDraggingRoom()) {
 		var action = new MoveRoomAction(selectedRooms);
     }
 
+    // easy case for one selected room
 	if (selectedRooms.length == 1) {
+	    // just rotate the room around its center
 	    selectedRooms[0].rotate();
 	    // todo: why do I need this here?
 	    selectedRooms[0].updateView();
@@ -149,21 +154,24 @@ function rotateSelectedRoom() {
 	    }
 
         for (var r = 0; r < selectedRooms.length; r++) {
+            // rotate each room around the center
             selectedRooms[r].rotateAround(center);
             // todo: why do I need this here?
             selectedRooms[r].updateView();
         }
 	}
 
-	if (!isDraggingRoom()) {
-		saveModelToUrl();
-        if (action.isAMove()) {
-            addUndoAction(action);
-        }
+    // if we're not dragging then force the new undo action to store the new
+    // room positions by making it check if this qualifies as a move
+	if (!isDraggingRoom() && action.isAMove()) {
+	    // add the action
+        addUndoAction(action);
+        saveModelToUrl();
 	}
 }
 
 function rotateFloorSelectedRoom() {
+    // this is only supported when a single room is selected
 	if (selectedRooms.length == 1) {
 		var action = new MoveRoomAction(selectedRooms);
 	    removeFloorRoom(selectedRooms[0]);
@@ -179,27 +187,42 @@ function rotateFloorSelectedRoom() {
 
 function deleteSelectedRooms() {
 	if (selectedRooms.length > 0) {
+	    // save a copy of the selected room list and reset the selection
+	    // not sure if this is necessary, but maybe something weird happens when
+	    // deleting a room that's selected
 		var oldRooms = selectedRooms;
 	    selectedRooms = [];
+	    // deselect and remove each room;
         for (var r = 0; r < oldRooms.length; r++) {
             oldRooms[r].deselect();
     	    removeRoom(oldRooms[r]);
         }
 	    clearMenus(0);
+	    // add an undo action
 	    addUndoAction(new AddDeleteRoomsAction(oldRooms, false));
 	}
 }
 
 function doAddRooms(e, rooms) {
+    // loop over the new rooms
     for (var r = 0; r < rooms.length; r++) {
         // todo: use setPosition?
+        // get the room's "base" floor
         var floor = rooms[r].floor;
+        // hack: if it's a brand new room then the floor will still be 100 from
+        // calculating the anchor point
         if (floor == 100) floor = 0;
+        // set the floor directly to 100, then go through setFloor to change the floor
+        // and initialize all the display elements
+        // todo: this is stupid
         rooms[r].floor = 100;
+        // offset the base floor with the currently viewed floor
         rooms[r].setFloor(viewFloor + floor);
+        // propagate the debug flag
         if (debugEnabled) {
             rooms[r].setDebug(true);
         }
+        // add the room to the room list
         addRoom(rooms[r]);
     }
 
@@ -207,15 +230,20 @@ function doAddRooms(e, rooms) {
     mouseDownTargetStartPX = viewPX;
     mouseDownTargetStartPY = viewPY;
 
+    // start the drag process directly, the rooms will follow the cursor until
+    // it is clicked and released
     startNewRoomDrag(e, rooms, rooms[0].display);
 	// undo action will be created when the room is dropped
 }
 
 function duplicateSelectedRooms(e) {
+    // sanity check
 	if (!dragged) {
+	    // clone the rooms
 		var rooms = cloneRooms(selectedRooms);
 	    clearMenus(0);
 
+        // add the rooms
 	    doAddRooms(e, rooms);
 	}
 }
@@ -223,6 +251,7 @@ function duplicateSelectedRooms(e) {
 function copySelectedRooms() {
     if (selectedRooms.length > 0) {
         clearMenus(0);
+        // create a position-normalized copy of the rooms and put it in our clipboard
         copiedRooms = cloneRooms(selectedRooms);
     }
 }
@@ -230,6 +259,7 @@ function copySelectedRooms() {
 function cutSelectedRooms() {
     if (selectedRooms.length > 0) {
         clearMenus(0);
+        // copy + delete
         copySelectedRooms();
         deleteSelectedRooms();
     }
@@ -238,6 +268,8 @@ function cutSelectedRooms() {
 function pasteCopiedRooms() {
     if (copiedRooms) {
         clearMenus(0);
+        // create a copy of the rooms in the clipboard, not bothering to normalize
+        // positions, and start the add process.
         doAddRooms(lastMouseEvent, cloneRooms(copiedRooms, false));
     }
 }
@@ -245,8 +277,11 @@ function pasteCopiedRooms() {
 function setSelectedRoomsLabels(label, action) {
     if (selectedRooms.length == 1) {
         clearMenus(0);
+        // use the room on the existing action
         action.room.setLabel(label);
+        // check if it was actually a change
         if (action.isAChange()) {
+            // commit the action
             addUndoAction(action);
         	saveModelToUrl();
         }
@@ -254,16 +289,20 @@ function setSelectedRoomsLabels(label, action) {
 }
 
 function clearSelectedRoomsLabels(action) {
+    // set labe to null
     setSelectedRoomsLabels(null, action);
 }
 
 function setSelectedRoomsColor(hue, action) {
     if (selectedRooms.length > 0) {
         clearMenus(0);
+        // use the room list on the existing action
         for (var r = 0; r < action.rooms.length; r++) {
             action.rooms[r].setHue(hue);
         }
+        // check if it was actually a change
         if (action.isAChange()) {
+            // commit the action
             addUndoAction(action);
         	saveModelToUrl();
         }
@@ -271,6 +310,7 @@ function setSelectedRoomsColor(hue, action) {
 }
 
 function clearSelectedRoomsColor(action) {
+    // set the hue to null
     setSelectedRoomsColor(null, action);
 }
 
@@ -325,11 +365,11 @@ function loadModelFromUrl() {
 		return false;
 	}
 
+    // parse the model string, accounting for quotes but not removing them
 	var roomStrings = quotedSplit(modelString, "_", true);
 	for (var rs = 0; rs < roomStrings.length; rs++) {
 		var room = roomFromString(roomStrings[rs]);
 	    addRoom(room);
-//	    room.addDisplay(getRoomContainer());
 	    room.resetPositionAndConnectDoors();
 	}
 	return true;
@@ -395,13 +435,6 @@ function centerViewOnIfNotVisible(mx, my, floor, scale = null) {
 	}
 }
 
-function getViewCenter() {
-	var mx = ((windowWidth / 2) - viewPX) / viewScale;
-	var my = ((windowHeight / 2) - viewPY) / viewScale;
-	var ret = {mx: mx, my: my, floor: viewFloor, scale: viewScale}
-	return ret
-}
-
 //==============================================================
 // Misc
 //==============================================================
@@ -435,6 +468,7 @@ function initModel() {
         centerViewOn(0, 0, 2, 0);
         var starterRoom = new Room(getRoomMetadata("h1"));
         starterRoom.setPosition(0, 0, 0, 0);
+        // I smell hax
         starterRoom.placed = true;
 	    addRoom(starterRoom);
     }

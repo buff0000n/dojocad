@@ -42,7 +42,9 @@ function clearMenus(leave = 0) {
     while (getCurrentMenuLevel() > leave) {
         var menu = menus.pop();
         menu.remove();
+        // check if the menu had an undo action associated with it
         if (menu.undoAction) {
+            // undo the action
             menu.undoAction.undoAction();
         }
     }
@@ -104,6 +106,9 @@ function doCloseMenu() {
 
 function buildCloseMenuButton() {
     var buttonDiv = document.createElement("td");
+    // todo: there are some weird cases where the right hand column is wider than
+    // the icon for no apparent reason, just right-justify the button so it
+    // doesn't look dumb
     buttonDiv.style = "text-align: right";
 //    buttonDiv.className = "field";
     buttonDiv.innerHTML = `<img class="imgButton" src="icons/icon-close.png" srcset="icons2x/icon-close.png 2x" title="Close Menu"/>`;
@@ -292,6 +297,7 @@ function doAddMenu() {
     if (lastAddedRoomMetadata || copiedRooms) {
         menuDiv.appendChild(buildMenuDivider(6));
         if (copiedRooms) {
+            // paste menu, yummy delicious paste
             menuDiv.appendChild(buildAddRoomButton(null, copiedRooms));
         }
 
@@ -334,63 +340,72 @@ function hasError(errors, error) {
 	return false;
 }
 
-function removeError(errors, error) {
-	if (errors) {
-	    var re = new RegExp(error, "i");
-	    removeMatchesFromList(errors, (err) => err.search(re) > -1)
-	}
-	return errors;
-}
-
 function buildAddRoomButton(roomMetadata, rooms = null, errors = null) {
+    // this menu item is used in four different situations
+
+    // as the paste option under the + menu
     if (rooms && rooms == copiedRooms) {
         var menuTitle = "Paste " + (copiedRooms.length > 1 ? (copiedRooms.length + " Rooms") : copiedRooms[0].metadata.name);
 
+    // as the duplicate option under a single room menu or a multiselect rooms menu
     } else if (rooms) {
         var menuTitle = "Duplicate";
 
+    // as a new room option under the + menu
     } else {
         var count = roomCounter.getRoomCount(roomMetadata);
         var menuTitle = roomMetadata.name + (count > 0 ? (" (" + count + ")") : "");
     }
 
+    // for the new room + option and the duplicate single room option, use the
+    // room type's icon
     if (roomMetadata) {
+        // callback is for adding a single room
         var roomButtonDiv = buildMenuButton(menuTitle, doAddRoomButton, icon="icon-room-" + roomMetadata.image);
 
+    // for the paste option use the paste icon
     } else if (rooms == copiedRooms) {
+        // callback is for pasting copied rooms
         var roomButtonDiv = buildMenuButton(menuTitle, pasteCopiedRooms, icon="icon-paste");
 
+    // for the multiselect rooms duplicate option, use the copy icon
+    // todo: this looks kind of weird directly above the actual copy option
     } else {
-        var roomButtonDiv = buildMenuButton(menuTitle, duplicateSelectedRooms);
+        // callback is for dupicating selected rooms
+        var roomButtonDiv = buildMenuButton(menuTitle, duplicateSelectedRooms, icon="icon-copy");
     }
 
-    for (var i = 0; i < roomButtonDiv.children.length; i++) {
-	    roomButtonDiv.children[i].roomMetadata = roomMetadata;
-	    if (rooms) {
-    	    roomButtonDiv.children[i].room = rooms[0];
-	    }
-    }
-
+    // for single room + and duplicate
     if (roomMetadata) {
+        // add a reference to the metadata to the add button, if we have metadata
+        for (var i = 0; i < roomButtonDiv.children.length; i++) {
+            roomButtonDiv.children[i].roomMetadata = roomMetadata;
+        }
+        // pre-get errors and warnings from adding one more of this type of room
         var errors = getNewRoomErrors(roomMetadata);
         var warns = getNewRoomWarnings(roomMetadata);
 
+    // for multi-room duplicate and paste
     } else {
         // this is too big to cram into this function
         var { errors, warns, combinedMetaData } = getErrorsWarningsAndCombinedMetadata(rooms);
+        // use the combined metadata for the upcoming energy, capacity, and resource UIs
         roomMetadata = combinedMetaData;
     }
 
+    // show required/provided energy
 	var tdenergy = document.createElement("td")
 	tdenergy.className = hasError(errors, "energy") ? "field-error" : "field";
     tdenergy.innerHTML = `${roomMetadata.energy}<img src="icons/icon-energy.png" srcset="icons2x/icon-energy.png 2x" title="Energy"/>`;
     roomButtonDiv.appendChild(tdenergy);
 
+    // show required/provided capacity
 	var tdcapacity = document.createElement("td")
 	tdcapacity.className = hasError(errors, "capacity") ? "field-error" : "field";
     tdcapacity.innerHTML = `${roomMetadata.capacity}<img src="icons/icon-capacity.png" srcset="icons2x/icon-capacity.png 2x" title="Capacity"/>`;
     roomButtonDiv.appendChild(tdcapacity);
 
+    // show required resources
 	var tdresources = document.createElement("td")
 	tdresources.className = "field clickable";
     tdresources.innerHTML = `<img onclick="showResources()" src="icons/icon-resources.png" srcset="icons2x/icon-resources.png 2x" title="Resources"/>`;
@@ -399,6 +414,7 @@ function buildAddRoomButton(roomMetadata, rooms = null, errors = null) {
     resourcesButton.metadata = roomMetadata;
     roomButtonDiv.appendChild(tdresources);
 
+    // error/warning icon, if necessary
     if (errors || warns) {
 		var errorDiv = buildErrorPopup(errors, warns, false);
 	    roomButtonDiv.appendChild(errorDiv);
@@ -408,6 +424,7 @@ function buildAddRoomButton(roomMetadata, rooms = null, errors = null) {
 }
 
 function doAddRoomButton() {
+    // relatively simple for adding a single room
     var e = window.event;
     e.preventDefault();
     clearMenus();
@@ -419,12 +436,15 @@ function doAddRoomButton() {
 	lastAddedRoomMetadata = roomMetadata;
 
 	var newRooms;
+	// if we have a base room then clone it, so we get the same rotation, label, and hue
 	if (baseRoom) {
 	    newRooms = cloneRooms([baseRoom]);
+    // otherwise, create a brand new room
 	} else {
         newRooms = [new Room(roomMetadata)];
 	}
 
+    // start the add rooms process
 	doAddRooms(e, newRooms);
 }
 
@@ -436,6 +456,7 @@ function doRoomMenu(e, rooms) {
     var errors = null;
     var warnings = null;
 
+    // append errors and warnings for all rooms
     for (var r = 0; r < rooms.length; r++) {
         var roomErrors = rooms[r].getAllErrors();
         if (roomErrors && roomErrors.length > 0) {
@@ -459,17 +480,22 @@ function doRoomMenu(e, rooms) {
 
 	var tr = document.createElement("tr");
 
+    // the options are different depending on whether there are one or multiple rooms selected
     var room = rooms.length == 1 ? rooms[0] : null;
 
+    // optional error icon
     if (errors || warnings) {
         tr.appendChild(buildErrorPopup(errors, warnings, span = false));
     } else {
         tr.appendChild(buildBlank());
     }
     if (room) {
+        // if we have a single room then the menu title is the room type plus a count of how many of that
+        // type of room are in the dojo
         var roomCount = roomCounter.getRoomCount(room.metadata);
         tr.appendChild(buildMenuLabel(room.metadata.name, 4, roomCount <= 1 ? null : `&nbsp;(${roomCount} built)`));
     } else {
+        // if there are multiple rooms then the lable is a count of the number of selected rooms
         tr.appendChild(buildMenuLabel(`${rooms.length} rooms`, 4, null));
     }
     tr.appendChild(buildCloseMenuButton());
@@ -479,25 +505,34 @@ function doRoomMenu(e, rooms) {
     menuDiv.appendChild(buildMenuButton("Rotate", rotateSelectedRoom, "icon-rotate-cw"));
 
     if (room && room.multifloor) {
+        // change floor options is only available when a single room is selected
         menuDiv.appendChild(buildMenuButton("Change Floor", rotateFloorSelectedRoom, "icon-change-floor"));
     }
 
+    // duplicate option
     menuDiv.appendChild(buildAddRoomButton(room ? room.metadata : null, rooms));
 
+    // copy option
     menuDiv.appendChild(buildMenuButton("Copy", copySelectedRooms, "icon-copy"));
 
+    // cut option
     menuDiv.appendChild(buildMenuButton("Cut", cutSelectedRooms, "icon-cut"));
 
+    // divider
     menuDiv.appendChild(buildMenuDivider(6));
 
+    // color option
     menuDiv.appendChild(buildMenuButton("Color", doColorMenu, "icon-color"));
 
     if (room) {
+        // label option is only available when a single room is selected
         menuDiv.appendChild(buildMenuButton("Label", doLabelMenu, "icon-room-label"));
     }
 
+    // divider
     menuDiv.appendChild(buildMenuDivider(6));
 
+    // delete option
     menuDiv.appendChild(buildMenuButton("Delete", deleteSelectedRooms, "icon-delete"));
 
     showMenuAt(menuDiv, e.clientX, e.clientY);
@@ -624,120 +659,155 @@ function showResources() {
 
 function doLabelMenu() {
 	var button = getMenuTarget();
+	// has to be a single selected room
 	var room = selectedRooms[0];
-	var room = room;
 
     var menuDiv = buildMenu();
+    // start a label change action and put it on the menu
+    // if this menu is closed without clicking save then the changes will be reverted
     var action = new ChangeLabelAction(room);
     menuDiv.undoAction = action;
+    // title
     menuDiv.appendChild(buildMenuHeaderLine("Label", 3));
 
+    // row for the label editor text area
     var tr = document.createElement("tr");
     var td = document.createElement("td");
 	td.colSpan = "3";
 
+    // text area for editing the label
     var textArea = document.createElement("textarea");
     textArea.className = "labelEditArea";
     textArea.rows = "3";
     textArea.cols = "32";
+    // init the value with the room's current label
     textArea.value = room.label;
-    textArea.previousValue = room.label;
 
+    // add to the menu
     td.appendChild(textArea);
     tr.appendChild(td);
     menuDiv.appendChild(tr);
 
+    // escape will be ignored by the default key event handler because it's
+    // in a text area,
     textArea.onkeydown = () => {
         var e = window.event;
         switch (e.code) {
             case "Escape" :
+                // escape close the menu
                 clearMenus(0);
                 break;
         }
     }
+    // key up handler for updating the label on the room in real time
     textArea.onkeyup = () => {
-        var newValue = textArea.value;
-        if (newValue != textArea.previousValue) {
-            room.setLabel(newValue);
-            textArea.previousValue = newValue;
-        }
+        // update the room label
+        // this does its own change checking, so we can call this as much as we want
+        room.setLabel(textArea.value);
     }
 
+    // save option
     menuDiv.appendChild(buildMenuButton("Save", () => { menuDiv.undoAction = null ; setSelectedRoomsLabels(textArea.value, action); }));
+
+    // clear option
     menuDiv.appendChild(buildMenuButton("Clear", () => { menuDiv.undoAction = null ; clearSelectedRoomsLabels(action); } ));
 
     showMenu(menuDiv, button);
 
+    // after the menu is shown, automatically put the cursor into the text area
+    // and select its contents
     textArea.focus();
     textArea.select();
 }
 
-var colorPickerStyle = document.createElement("style");
-colorPickerStyle.type="text/css";
-document.head.appendChild(colorPickerStyle);
-
-function setColorSliderThumbColor(hue, sat) {
-    // goddamn this is ugly
-    // todo: also, it doesn't work.
-    colorPickerStyle.textContent = `
-        input[type=range]::-webkit-slider-thumb {
-          background-color: hls(${hue}, ${sat}%, 50%);
-        }
-        input[type=range]::-moz-range-thumb {
-          background-color: hls(${hue}, ${sat}%, 50%);
-        }
-        input[type=range]::-ms-thumb {
-          background-color: hls(${hue}, ${sat}%, 50%);
-        }
-    `;
-}
+// todo: this doesn't work
+//var colorPickerStyle = document.createElement("style");
+//colorPickerStyle.type="text/css";
+//document.head.appendChild(colorPickerStyle);
+//
+//function setColorSliderThumbColor(hue, sat) {
+//    // goddamn this is ugly
+//    colorPickerStyle.textContent = `
+//        input[type=range]::-webkit-slider-thumb {
+//          background-color: hls(${hue}, ${sat}%, 50%);
+//        }
+//        input[type=range]::-moz-range-thumb {
+//          background-color: hls(${hue}, ${sat}%, 50%);
+//        }
+//        input[type=range]::-ms-thumb {
+//          background-color: hls(${hue}, ${sat}%, 50%);
+//        }
+//    `;
+//}
 
 function doColorMenu() {
 	var button = getMenuTarget();
 
     var menuDiv = buildMenu();
     var action = new ChangeHueAction(selectedRooms);
+    // start a hue change action and put it on the menu
+    // if this menu is closed without clicking save then the changes will be reverted
     menuDiv.undoAction = action;
+    // title
     menuDiv.appendChild(buildMenuHeaderLine("Color", 3));
 
+    // row for the hue slider
     var tr = document.createElement("tr");
     var td = document.createElement("td");
 	td.colSpan = "3";
 
+    // container for the slider
+    // this puts the color picker image in the background, behind the slider
 	var div = document.createElement("div");
 	div.className="colorPicker";
 
+    // slider input
     var slider = document.createElement("input");
     slider.className = "colorSlider";
     slider.type = "range";
+    // hue goes from 0 to 360
     slider.min = "0";
     slider.max = "360";
+    // fit the slider as closely as possible into the background color picker image
     slider.style.width ="360px";
     slider.style.padding = "0";
-    if (selectedRooms[0].hue) {
+    // meh, just pick the first room in the selection list to initialize the value
+    if (selectedRooms[0].hue != null) {
         slider.value = selectedRooms[0].hue;
-        setColorSliderThumbColor(slider.value, 50);
+        // todo: this doesn't work
+        // setColorSliderThumbColor(slider.value, 50);
     } else {
+        // if there's no value to start with, start with red
         slider.value = 0;
-        setColorSliderThumbColor(0, 0);
+        // todo: this doesn't work
+        // setColorSliderThumbColor(0, 0);
     }
 
+    // event handler for changes to the slider
     function onChange() {
+        // get the value
         var hue = slider.value;
-        setColorSliderThumbColor(hue, 50);
+        // todo: this doesn't work
+        // setColorSliderThumbColor(hue, 50);
+        // update each room's hue in real time
         for (var r = 0; r < selectedRooms.length; r++) {
             selectedRooms[r].setHue(hue);
         }
     }
+    // register the listener for both change and input values, not sure change is necessary
     slider.addEventListener("change", onChange);
     slider.addEventListener("input", onChange);
 
+    // assemb the div and put it into the table
     div.appendChild(slider);
     td.appendChild(div);
     tr.appendChild(td);
     menuDiv.appendChild(tr);
 
+    // save option
     menuDiv.appendChild(buildMenuButton("Save", () => { menuDiv.undoAction = null; setSelectedRoomsColor(slider.value, action); } ));
+
+    // clear option
     menuDiv.appendChild(buildMenuButton("Clear", () => { menuDiv.undoAction = null; clearSelectedRoomsColor(action); } ));
 
     showMenu(menuDiv, button);
