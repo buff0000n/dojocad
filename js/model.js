@@ -1193,7 +1193,7 @@ class Room {
     }
 
     addDisplayImageElement(element, zIndex = 200) {
-        element.style = "position: absolute;";
+        element.style.position = "absolute";
         element.style.zIndex = zIndex;
         element.roomId = this.id;
 		// have to explicitly tell Chrome that none of these listeners are passive or it will cry
