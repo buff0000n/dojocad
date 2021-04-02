@@ -705,9 +705,7 @@ function doColorMenu() {
 	td.colSpan = "3";
 
 	var div = document.createElement("div");
-    div.style = "width: 360px; margin: 0; padding: 0";
-//    div.style.position = "absolute";
-    div.style.backgroundImage = 'url("../icons/color-picker.png")';
+	div.className="colorPicker";
 
     var slider = document.createElement("input");
     slider.className = "colorSlider";
@@ -715,7 +713,6 @@ function doColorMenu() {
     slider.min = "0";
     slider.max = "360";
     slider.style.width ="360px";
-//    slider.style.margin = "0";
     slider.style.padding = "0";
     if (selectedRooms[0].hue) {
         slider.value = selectedRooms[0].hue;
