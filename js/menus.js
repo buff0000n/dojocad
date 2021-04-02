@@ -490,10 +490,10 @@ function doRoomMenu(e, rooms) {
 
     menuDiv.appendChild(buildMenuDivider(6));
 
-    menuDiv.appendChild(buildMenuButton("Color", doColorMenu));
+    menuDiv.appendChild(buildMenuButton("Color", doColorMenu, "icon-color"));
 
     if (room) {
-        menuDiv.appendChild(buildMenuButton("Label", doLabelMenu));
+        menuDiv.appendChild(buildMenuButton("Label", doLabelMenu, "icon-room-label"));
     }
 
     menuDiv.appendChild(buildMenuDivider(6));
@@ -999,17 +999,20 @@ function doGenerateColorPicker() {
     var menuDiv = buildMenu();
 	menuDiv.appendChild(buildMenuHeaderLine("Color Picker", 3));
 
-    for (scale = 1; scale <= 2; scale++) {
+    function generate(width, height, name) {
+        var tr = document.createElement("tr");
         var td = document.createElement("td");
-        var link = generateColorPickerPNGLink(scale);
+        var link = generateColorPickerPNGLink(width, height, name);
         link.onclick = doPngClick;
         td.appendChild(link);
-        var tr = document.createElement("tr");
         tr.appendChild(buildBlank());
         tr.appendChild(td);
         menuDiv.appendChild(tr);
     }
 
+    generate(360, 40, "color-picker");
+    generate(64, 32, "icon-color");
+    generate(32, 16, "icon-color");
 
     showMenu(menuDiv, button);
 }
