@@ -101,6 +101,7 @@ function doCloseMenu() {
 
 function buildCloseMenuButton() {
     var buttonDiv = document.createElement("td");
+    buttonDiv.style = "text-align: right";
 //    buttonDiv.className = "field";
     buttonDiv.innerHTML = `<img class="imgButton" src="icons/icon-close.png" srcset="icons2x/icon-close.png 2x" title="Close Menu"/>`;
     buttonDiv.onclick = doCloseMenu;
@@ -485,6 +486,14 @@ function doRoomMenu(e, rooms) {
 
     menuDiv.appendChild(buildMenuDivider(6));
 
+    menuDiv.appendChild(buildMenuButton("Color", doColorMenu));
+
+    if (room) {
+        menuDiv.appendChild(buildMenuButton("Label", doLabelMenu));
+    }
+
+    menuDiv.appendChild(buildMenuDivider(6));
+
     menuDiv.appendChild(buildMenuButton("Delete", deleteSelectedRooms, "icon-delete"));
 
     showMenuAt(menuDiv, e.clientX, e.clientY);
@@ -607,6 +616,54 @@ function showResources() {
     }
 
     showMenuAt(menuDiv, e.clientX, e.clientY);
+}
+
+function doLabelMenu() {
+	var button = getMenuTarget();
+	var room = selectedRooms[0];
+
+    var menuDiv = buildMenu();
+    menuDiv.appendChild(buildMenuHeaderLine("Label", 3));
+
+    var tr = document.createElement("tr");
+    var td = document.createElement("td");
+	td.colSpan = "3";
+
+    var textArea = document.createElement("textarea");
+    textArea.className = "labelEditArea";
+    textArea.rows = "3";
+    textArea.cols = "32";
+    textArea.value = room.label;
+
+    td.appendChild(textArea);
+    tr.appendChild(td);
+    menuDiv.appendChild(tr);
+
+    textArea.onkeydown = () => {
+        var e = window.event;
+        switch (e.code) {
+            case "Escape" :
+                clearMenus(0);
+                break;
+        }
+    }
+    menuDiv.appendChild(buildMenuButton("Save", () => { setSelectedRoomsLabels(textArea.value) }));
+    menuDiv.appendChild(buildMenuButton("Clear", clearSelectedRoomsLabels));
+
+    showMenu(menuDiv, button);
+
+    textArea.focus();
+    textArea.select();
+}
+
+function doColorMenu() {
+	var button = getMenuTarget();
+
+    var menuDiv = buildMenu();
+    menuDiv.appendChild(buildMenuHeaderLine("Color", 3));
+    menuDiv.appendChild(buildMenuButton("Clear", clearSelectedRoomsLabels));
+
+    showMenu(menuDiv, button);
 }
 
 function buildMenuInput(label, input, units = null) {

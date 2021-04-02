@@ -167,6 +167,38 @@ function sortKeys(map) {
 	return map2;
 }
 
+function quotedSplit(string, splitChar, keepQuotes=false) {
+    var split = [];
+    var token = "";
+    var quoted = false;
+    for (var i = 0; i < string.length; i++) {
+        var c = string[i];
+        if (c == splitChar && !quoted) {
+            split.push(token);
+            token = "";
+            continue;
+
+        } else if (c == '"') {
+            quoted = !quoted;
+            if (keepQuotes) {
+                token = token + c;
+            }
+            continue;
+
+        } else if (c == '\\') {
+            if (i < string.length - 1 && string[i+1] == '"') {
+                if (keepQuotes) {
+                    token = token + c;
+                }
+                i++;
+            }
+        }
+        token = token + string[i];
+    }
+    split.push(token);
+    return split;
+}
+
 class Vect {
     constructor(x, y) {
         this.x = x;

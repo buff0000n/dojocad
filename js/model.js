@@ -29,7 +29,7 @@ class Bound {
         this.z1 = (this.room.floor * roomMetadata.general.floor_distance) + this.metadata.floor;
         this.z2 = (this.room.floor * roomMetadata.general.floor_distance) + this.metadata.ceil;
     }
-    
+
 	setDebug(debug) {
 		if (debug) {
 	        this.debugBorder = document.createElement("div");
@@ -249,7 +249,7 @@ class Door {
     showDoorMarker() {
         if (this.floor == viewFloor && !this.otherDoor) {
 	        if (!this.marker) {
-	            this.marker = this.room.addDisplayElement(".png", 205, "marker-door", true);
+	            this.marker = this.room.addDisplayImage(".png", 205, "marker-door", true);
 	        } else {
 		        this.room.viewContainer.appendChild(this.marker);
 	        }
@@ -307,7 +307,7 @@ class Marker {
 
     addDisplay(viewContainer) {
         if (this.floor == viewFloor) {
-	        this.marker = this.room.addDisplayElement(".png", 204, this.metadata.image, true);
+	        this.marker = this.room.addDisplayImage(".png", 204, this.metadata.image, true);
         }
     }
 
@@ -330,15 +330,34 @@ class Marker {
 // Room object utils
 //==============================================================
 
+// needs to be a global regex so all occurrences are replaced
+var quoteRegex = new RegExp('"', "g");
+var newlineRegex = new RegExp('\n', "g");
+
 function roomToString(room) {
-    return room.metadata.id + "," + room.mv.x + "," + room.mv.y + "," + room.floor + "," + (room.rotation / 90)
+    var s = room.metadata.id + "," + room.mv.x + "," + room.mv.y + "," + room.floor + "," + (room.rotation / 90)
+    if (room.hue != null || room.label != null) {
+        s = s + "," + (room.hue == null ? "" : room.hue);
+        if (room.label != null) {
+            s = s + ',"' + room.label.replace(quoteRegex, '\\"') + '"'
+        }
+    }
+    return s;
 }
 
 function roomFromString(string) {
-    var s = string.split(",");
+    var s = quotedSplit(string, ",");
     var room = new Room(getRoomMetadata(s[0]));
     // room coordinates may be fractional because of old dojo rooms, floor and rotation are still ints
     room.setPosition(parseFloat(s[1]), parseFloat(s[2]), parseInt(s[3]), parseInt(s[4]) * 90);
+    if (s.length > 5) {
+        if (s[5].length > 0) {
+            room.setHue(parseInt(s[5]));
+        }
+        if (s.length > 6) {
+            room.setLabel(s[6]);
+        }
+    }
     return room;
 }
 
@@ -397,7 +416,12 @@ class Room {
         this.otherFloorDisplay = null;
         this.outline = null;
         this.grid = null;
+        this.labelDisplay = null;
+
         this.selected = false;
+
+        this.hue = null;
+        this.label = null;
 
         this.calculateAnchor();
         this.ruleErrors = Array();
@@ -724,7 +748,7 @@ class Room {
 		if (collidedRooms.length > 0) {
 			if (this.viewContainer) {
 				if (!this.grid) {
-			        this.grid = this.addDisplayElement("-bounds-blue.png", 201);
+			        this.grid = this.addDisplayImage("-bounds-blue.png", 201);
 				}
 			    this.grid.style.filter = "hue-rotate(120deg) brightness(200%)";
 			}
@@ -753,7 +777,7 @@ class Room {
 		if (errors) {
 			if (this.viewContainer) {
 				if (!this.outline) {
-			        this.outline = this.addDisplayElement("-line-blue.png", 203);
+			        this.outline = this.addDisplayImage("-line-blue.png", 203);
 				}
 			    if (this.isSelected()) {
 				    this.outline.style.filter = "hue-rotate(120deg) saturate(50%) brightness(250%)";
@@ -770,7 +794,7 @@ class Room {
 
 		} else if (this.isSelected()) {
 			if (!this.outline) {
-		        this.outline = this.addDisplayElement("-line-blue.png", 203);
+		        this.outline = this.addDisplayImage("-line-blue.png", 203);
 		    }
 		    this.outline.style.filter = "";
 
@@ -807,15 +831,21 @@ class Room {
         // The min X and Y coords are what the image will be anchored to
         this.anchorMX = minBoundsMX - this.mv.x;
         this.anchorMY = minBoundsMY - this.mv.y;
+
+        for (var b = this.bounds.length - 1; b >= 1; b--) {
+            if (this.metadata.bounds[b].discard) {
+                this.bounds.splice(b, 1);
+            }
+        }
     }
 
     select() {
         this.selected = true;
         if (!this.outline) {
-	        this.outline = this.addDisplayElement("-line-blue.png", 203);
+	        this.outline = this.addDisplayImage("-line-blue.png", 203);
         }
         if (!this.grid) {
-	        this.grid = this.addDisplayElement("-bounds-blue.png", 201);
+	        this.grid = this.addDisplayImage("-bounds-blue.png", 201);
         }
 		// see if the outline should be red
 	    this.checkCollided();
@@ -1073,14 +1103,49 @@ class Room {
         }
     }
 
+    getDisplayImageSuffix() {
+        return this.hue ? "-display-red.png" : "-display.png";
+    }
+
+    getDisplayImageFilter() {
+        return this.hue ? " hue-rotate(" + this.hue + "deg)" : "";
+    }
+
+    setLabel(label) {
+        showDebug("Set label: " + this.label);
+        this.label = label;
+        this.updateLabelDisplay();
+        this.updateView();
+    }
+
+    setHue(hue) {
+        this.hue = hue;
+        showDebug("Set hue: " + this.hue);
+    }
+
+
+    updateLabelDisplay() {
+        if (this.label) {
+            if (!this.labelDisplay) {
+	            this.labelDisplay = this.addDisplayLabel();
+            }
+            this.labelDisplay.innerHTML = this.label.replace(newlineRegex, "<br/>");
+        } else if (this.labelDisplay) {
+            this.labelDisplay = this.removeDisplayElement(this.labelDisplay);
+        }
+    }
+
     addDisplay(viewContainer) {
         this.viewContainer = viewContainer;
         if (this.isVisible()) {
-	        this.display = this.addDisplayElement("-display.png", 202);
+            // main visible display
+	        this.display = this.addDisplayImage(this.getDisplayImageSuffix(), 202);
 	        if (!this.isOnFloor()) {
-		        this.otherFloorDisplay = this.addDisplayElement("-display.png", 100 + this.floor, this.getImageBase(this.floor));
-			    this.otherFloorDisplay.style.filter = "brightness(25%)";
+	            // additional other floor display
+		        this.otherFloorDisplay = this.addDisplayImage(this.getDisplayImageSuffix(), 100 + this.floor, this.getImageBase(this.floor));
+			    this.otherFloorDisplay.style.filter = "brightness(25%)" + this.getDisplayImageFilter();
 	        }
+            this.updateLabelDisplay();
 			for (var m = 0; m < this.markers.length; m++) {
 				this.markers[m].addDisplay(viewContainer);
 			}
@@ -1093,15 +1158,16 @@ class Room {
 	        this.updateView();
 
         } else {
-	        this.otherFloorDisplay = this.addDisplayElement("-display.png", 100 + this.floor);
-		    this.otherFloorDisplay.style.filter = "brightness(25%)";
+	        // just the other floor display
+	        this.otherFloorDisplay = this.addDisplayImage(this.getDisplayImageSuffix(), 100 + this.floor);
+		    this.otherFloorDisplay.style.filter = "brightness(25%)" + this.getDisplayImageFilter();
         }
 
 		this.checkCollided();
 	    this.checkErrors();
     }
 
-    addDisplayElement(imageSuffix, zIndex = 200, imageBase = null, marker = false) {
+    addDisplayImage(imageSuffix, zIndex = 200, imageBase = null, marker = false) {
         if (!imageBase) {
             imageBase = this.getImageBase();
         }
@@ -1110,11 +1176,24 @@ class Room {
         }
         // Ugh, have to build the <img> element the hard way
         var element = document.createElement("img");
-        element.style = "position: absolute;";
         if (!marker) {
 	        // Need to explicitly set the transform origin for off-center rooms
 	        element.style.transformOrigin = (-this.anchorMX * imgScale) + "px " + (-this.anchorMY * imgScale) + "px";
         }
+        element.src = "img" + imgScale + "x/" + imageBase + imageSuffix;
+
+        return this.addDisplayImageElement(element, zIndex);
+    }
+
+    addDisplayLabel(zIndex = 300) {
+        var element = document.createElement("div");
+        element.className = "roomLabel";
+
+        return this.addDisplayImageElement(element, zIndex);
+    }
+
+    addDisplayImageElement(element, zIndex = 200) {
+        element.style = "position: absolute;";
         element.style.zIndex = zIndex;
         element.roomId = this.id;
 		// have to explicitly tell Chrome that none of these listeners are passive or it will cry
@@ -1122,7 +1201,6 @@ class Room {
         element.addEventListener("contextmenu", contextMenu, { passive: false });
         element.addEventListener("touchstart", touchStart, { passive: false });
         element.addEventListener("wheel", wheel, { passive: false });
-        element.src = "img" + imgScale + "x/" + imageBase + imageSuffix;
         element.room = this;
         this.viewContainer.appendChild(element);
         return element;
@@ -1150,6 +1228,8 @@ class Room {
 	    this.otherFloorDisplay = this.removeDisplayElement(this.otherFloorDisplay);
 	    this.outline = this.removeDisplayElement(this.outline);
 	    this.grid = this.removeDisplayElement(this.grid);
+		this.labelDisplay = this.removeDisplayElement(this.labelDisplay);
+
 		for (var m = 0; m < this.markers.length; m++) {
 			this.markers[m].removeDisplay();
 		}
@@ -1207,6 +1287,10 @@ class Room {
 				this.updateViewElement(this.otherFloorDisplay, transform);
 	        }
         }
+        if (this.labelDisplay) {
+            var transform = this.getLabelTransform(viewPX, viewPY, viewScale);
+            this.updateViewElement(this.labelDisplay, transform);
+        }
     }
 
 	getImageTransform(viewPX, viewPY, viewScale) {
@@ -1225,6 +1309,19 @@ class Room {
 	    // https://www.w3schools.com/cssref/css3_pr_transform.asp
 	    // translate() need to be before rotate() and scale()
 		return "translate(" + roomViewPX + "px, " + roomViewPY + "px) rotate(" + roomRotation + "deg) scale(" + scale + ", " + scale + ")";
+	}
+
+	getLabelTransform(viewPX, viewPY, viewScale) {
+        // transform the anchor coords to pixel coords
+		var roomViewCenterPX = ((this.mv.x + this.mdragOffset.x) * viewScale) + viewPX;
+		var roomViewCenterPY = ((this.mv.y + this.mdragOffset.y) * viewScale) + viewPY;
+
+//		// final scaling of the image
+		var scale = viewScale;
+
+	    // https://www.w3schools.com/cssref/css3_pr_transform.asp
+	    // translate() need to be before rotate() and scale()
+		return "translate(" + roomViewCenterPX + "px, " + roomViewCenterPY + "px) translate(-50%, -50%) scale(" + scale + ", " + scale + ")";
 	}
 
 	getMarkerImageTransform(mx, my, viewPX, viewPY, viewScale) {
@@ -1313,6 +1410,8 @@ function cloneRooms(rooms, reposition=true) {
                 room.floor,
                 room.rotation, false, false);
         }
+        newRoom.label = room.label;
+        newRoom.hue = room.hue;
         newRooms.push(newRoom);
     }
 
@@ -1579,6 +1678,7 @@ function convertToPngs(db, margin, scale) {
 var drawnImages = 0;
 var loadedImages = 0;
 var loadedImageData = null;
+var labelData = null;
 
 function convertFloorToPngLink(targets, db, margin, scale, f) {
 	// calculate the point in the image that represents (0, 0) in meter-space
@@ -1589,11 +1689,31 @@ function convertFloorToPngLink(targets, db, margin, scale, f) {
 	drawnImages = 0;
 	loadedImages = 0;
 	loadedImageData = Array();
+	labelData = Array();
 
 	for (var r = 0; r < roomList.length; r++) {
 		var room = roomList[r];
 		// check if the room is visible on the given floor
 		if (room.isVisible(f)) {
+		    // check for a label
+            if (room.label) {
+                // start with the room's position
+				var v = new Vect(room.mv.x, room.mv.y)
+	                // scale by the scale, they are now pixel coords
+	                .scale(scale)
+	                // add to the center point
+	                .addTo(roomViewCenterPX, roomViewCenterPY);
+	            // scale font size
+                var fontSize = 16 * scale;
+				// calculate basis vectors starting from the transformed anchor point
+        		labelData.push([room.label, v.x, v.y, fontSize]);
+            }
+
+		    if (room.metadata.num == 0) {
+		        // skip the rest if it's a special non-counting room
+		        continue;
+		    }
+
 			// build an image link because that's what context.drawImage wants
             var img = new Image();
             // we have store parameters in the img object itself
@@ -1622,7 +1742,7 @@ function convertFloorToPngLink(targets, db, margin, scale, f) {
 //				imageLoaded(targets, db, margin, scale, f, 1);
 				imageLoaded(targets, db, margin, scale, f, index, this, vx.x, vx.y, vy.x, vy.y, av.x, av.y);
             }
-            img.src = "img" + imgScale + "x/" + room.getImageBase(f) + "-display.png";
+            img.src = "img" + imgScale + "x/" + room.getImageBase(f) + room.getDisplayImageSuffix();
 			localDrawnImages++;
 
 			// see if the room has any markers
@@ -1702,8 +1822,28 @@ function imageLoaded(targets, db, margin, scale, f, index, image, xx, xy, yx, yy
         var a = loadedImageData[i];
         // set the transform with the two basis vectors and the translate vector
         context.setTransform(a[1], a[2], a[3], a[4], a[5], a[6]);
+        // todo: hue transformation
 		// draw the image at the center of the new coordinate space
 		context.drawImage(a[0], 0, 0);
+		// reset the transform
+		context.resetTransform();
+    }
+
+    for (var i = 0; i < labelData.length; i++) {
+        var a = labelData[i];
+        // set the transform with the two basis vectors and the translate vector
+        context.translate(a[1], a[2]);
+        // todo: hue transformation
+		// draw the image at the center of the new coordinate space
+		var fontSize = a[3];
+		var texts = a[0].split("\n");
+        context.font = "bold " + fontSize + "px Arial";
+        context.textAlign = "center";
+        context.fillStyle = "#FFFFFF";
+		for (var t = 0; t < texts.length; t++) {
+		    var y = (t - ((texts.length - 1)/2) + 0.5) * fontSize;
+            context.fillText(texts[t], 0, y);
+		}
 		// reset the transform
 		context.resetTransform();
     }

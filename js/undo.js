@@ -281,6 +281,124 @@ class MoveRoomAction extends Action {
 	}
 }
 
+class ChangeHueAction extends Action {
+	constructor(rooms) {
+		super();
+		this.rooms = rooms;
+		this.recordFrom(this.rooms);
+	}
+
+	recordFrom() {
+	    this.from = [];
+	    for (var r = 0; r < this.rooms.length; r++) {
+	        this.from.push(this.rooms[r].hue);
+	    }
+	    this.center = new DojoBounds(this.rooms).centerPosition();
+	}
+
+	recordTo() {
+	    this.to = [];
+	    for (var r = 0; r < this.rooms.length; r++) {
+	        this.to.push(this.rooms[r].hue);
+	    }
+	}
+
+	isAChange() {
+		this.recordTo(this.rooms);
+		for (var r = 0; r < this.rooms.length; r++) {
+		    if (this.from[r] != this.to[r]) {
+		        return true;
+            }
+		}
+		return false;
+	}
+
+	prepareUndoAction() {
+		return this.prepareAction();
+	}
+
+	undoAction() {
+        this.action(this.from);
+	}
+
+	prepareRedoAction() {
+		return this.prepareAction();
+	}
+
+	redoAction() {
+        this.action(this.to);
+	}
+
+	prepareAction() {
+        centerViewOnIfNotVisible(center.MX, center.MY, center.Floor);
+		return true;
+	}
+
+	action(to) {
+	    for (var r = 0; r < this.rooms.length; r++) {
+	        this.rooms[r].setHue(to[r]);
+	    }
+
+		saveModelToUrl();
+	}
+
+	toString() {
+		return "Change hue on " + describeRoomList(this.rooms);
+	}
+}
+
+class ChangeLabelAction extends Action {
+	constructor(room) {
+		super();
+		this.room = room;
+		this.recordFrom();
+	}
+
+	recordFrom() {
+	    this.from = this.room.label;
+	}
+
+	recordTo() {
+	    this.to = this.room.label;
+	}
+
+	isAChange() {
+		this.recordTo();
+		return this.from != this.to;
+	}
+
+	prepareUndoAction() {
+		return this.prepareAction();
+	}
+
+	undoAction() {
+        this.action(this.from);
+	}
+
+	prepareRedoAction() {
+		return this.prepareAction();
+	}
+
+	redoAction() {
+        this.action(this.to);
+	}
+
+	prepareAction() {
+        centerViewOnIfNotVisible(this.room.mv.x, this.room.mv.y, this.room.floor);
+		return true;
+	}
+
+	action(to) {
+        this.room.setLabel(to);
+
+		saveModelToUrl();
+	}
+
+	toString() {
+		return "Change label on " + describeRoomList(this.rooms);
+	}
+}
+
 class AddDeleteRoomsAction extends Action {
 	constructor(rooms, add) {
 		super();

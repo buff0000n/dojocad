@@ -46,17 +46,28 @@ class RoomCountRule extends RoomRule {
 	}
 
 	roomAdded(room) {
-		this.numRooms++;
+	    if (room.metadata.num != null) {
+            this.numRooms += room.metadata.num;
+
+	    } else {
+    		this.numRooms++;
+	    }
 		updateStat("numRoomsStat", this.numRooms, this.numRooms > this.maxRooms, this);
 	}
 
 	roomRemoved(room) {
-		this.numRooms--;
+	    if (room.metadata.num != null) {
+            this.numRooms -= room.metadata.num;
+
+	    } else {
+    		this.numRooms--;
+	    }
+
 		updateStat("numRoomsStat", this.numRooms, this.numRooms > this.maxRooms, this);
 	}
 
 	getNewRoomError(roomMetaData, num=1) {
-	    if (roomMetaData.num) {
+	    if (roomMetaData.num != null) {
             num = roomMetaData.num;
 	    }
 		if (this.numRooms + num > this.maxRooms) {
