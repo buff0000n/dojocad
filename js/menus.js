@@ -42,6 +42,9 @@ function clearMenus(leave = 0) {
     while (getCurrentMenuLevel() > leave) {
         var menu = menus.pop();
         menu.remove();
+        if (menu.undoAction) {
+            menu.undoAction.undoAction();
+        }
     }
     // might as well clear all popups
 	clearErrors();
@@ -263,6 +266,7 @@ function doBurgerMenu() {
     menuDiv.appendChild(buildLinkMenuButton("New", "index.html", "icon-new"));
     if (debugEnabled) {
 	    menuDiv.appendChild(buildMenuButton("Collision Matrix", doCollisionMatrix));
+	    menuDiv.appendChild(buildMenuButton("Color Picker", doGenerateColorPicker));
     }
 
     showMenu(menuDiv, element);
@@ -621,8 +625,11 @@ function showResources() {
 function doLabelMenu() {
 	var button = getMenuTarget();
 	var room = selectedRooms[0];
+	var room = room;
 
     var menuDiv = buildMenu();
+    var action = new ChangeLabelAction(room);
+    menuDiv.undoAction = action;
     menuDiv.appendChild(buildMenuHeaderLine("Label", 3));
 
     var tr = document.createElement("tr");
@@ -634,6 +641,7 @@ function doLabelMenu() {
     textArea.rows = "3";
     textArea.cols = "32";
     textArea.value = room.label;
+    textArea.previousValue = room.label;
 
     td.appendChild(textArea);
     tr.appendChild(td);
@@ -647,8 +655,16 @@ function doLabelMenu() {
                 break;
         }
     }
-    menuDiv.appendChild(buildMenuButton("Save", () => { setSelectedRoomsLabels(textArea.value) }));
-    menuDiv.appendChild(buildMenuButton("Clear", clearSelectedRoomsLabels));
+    textArea.onkeyup = () => {
+        var newValue = textArea.value;
+        if (newValue != textArea.previousValue) {
+            room.setLabel(newValue);
+            textArea.previousValue = newValue;
+        }
+    }
+
+    menuDiv.appendChild(buildMenuButton("Save", () => { menuDiv.undoAction = null ; setSelectedRoomsLabels(textArea.value, action); }));
+    menuDiv.appendChild(buildMenuButton("Clear", () => { menuDiv.undoAction = null ; clearSelectedRoomsLabels(action); } ));
 
     showMenu(menuDiv, button);
 
@@ -656,12 +672,76 @@ function doLabelMenu() {
     textArea.select();
 }
 
+var colorPickerStyle = document.createElement("style");
+colorPickerStyle.type="text/css";
+document.head.appendChild(colorPickerStyle);
+
+function setColorSliderThumbColor(hue, sat) {
+    // goddamn this is ugly
+    // todo: also, it doesn't work.
+    colorPickerStyle.textContent = `
+        input[type=range]::-webkit-slider-thumb {
+          background-color: hls(${hue}, ${sat}%, 50%);
+        }
+        input[type=range]::-moz-range-thumb {
+          background-color: hls(${hue}, ${sat}%, 50%);
+        }
+        input[type=range]::-ms-thumb {
+          background-color: hls(${hue}, ${sat}%, 50%);
+        }
+    `;
+}
+
 function doColorMenu() {
 	var button = getMenuTarget();
 
     var menuDiv = buildMenu();
+    var action = new ChangeHueAction(selectedRooms);
+    menuDiv.undoAction = action;
     menuDiv.appendChild(buildMenuHeaderLine("Color", 3));
-    menuDiv.appendChild(buildMenuButton("Clear", clearSelectedRoomsLabels));
+
+    var tr = document.createElement("tr");
+    var td = document.createElement("td");
+	td.colSpan = "3";
+
+	var div = document.createElement("div");
+    div.style = "width: 360px; margin: 0; padding: 0";
+//    div.style.position = "absolute";
+    div.style.backgroundImage = 'url("../icons/color-picker.png")';
+
+    var slider = document.createElement("input");
+    slider.className = "colorSlider";
+    slider.type = "range";
+    slider.min = "0";
+    slider.max = "360";
+    slider.style.width ="360px";
+//    slider.style.margin = "0";
+    slider.style.padding = "0";
+    if (selectedRooms[0].hue) {
+        slider.value = selectedRooms[0].hue;
+        setColorSliderThumbColor(slider.value, 50);
+    } else {
+        slider.value = 0;
+        setColorSliderThumbColor(0, 0);
+    }
+
+    function onChange() {
+        var hue = slider.value;
+        setColorSliderThumbColor(hue, 50);
+        for (var r = 0; r < selectedRooms.length; r++) {
+            selectedRooms[r].setHue(hue);
+        }
+    }
+    slider.addEventListener("change", onChange);
+    slider.addEventListener("input", onChange);
+
+    div.appendChild(slider);
+    td.appendChild(div);
+    tr.appendChild(td);
+    menuDiv.appendChild(tr);
+
+    menuDiv.appendChild(buildMenuButton("Save", () => { menuDiv.undoAction = null; setSelectedRoomsColor(slider.value, action); } ));
+    menuDiv.appendChild(buildMenuButton("Clear", () => { menuDiv.undoAction = null; clearSelectedRoomsColor(action); } ));
 
     showMenu(menuDiv, button);
 }
@@ -910,6 +990,29 @@ function doCollisionMatrix() {
     var button = e.currentTarget;
 
     buildCollisionMatrix(menuDiv);
+
+    showMenu(menuDiv, button);
+}
+
+function doGenerateColorPicker() {
+	var button = getMenuTarget();
+
+    var e = e || window.event;
+
+    var menuDiv = buildMenu();
+	menuDiv.appendChild(buildMenuHeaderLine("Color Picker", 3));
+
+    for (scale = 1; scale <= 2; scale++) {
+        var td = document.createElement("td");
+        var link = generateColorPickerPNGLink(scale);
+        link.onclick = doPngClick;
+        td.appendChild(link);
+        var tr = document.createElement("tr");
+        tr.appendChild(buildBlank());
+        tr.appendChild(td);
+        menuDiv.appendChild(tr);
+    }
+
 
     showMenu(menuDiv, button);
 }

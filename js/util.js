@@ -1,3 +1,7 @@
+//////////////////////////////////////////////////////////////////////////
+// URL utils
+//////////////////////////////////////////////////////////////////////////
+
 var hrefUpdateDelay = 1000;
 var hrefUpdateTimeout = null;
 var hrefToUpdate = null;
@@ -81,6 +85,10 @@ function buildQueryUrl(query) {
     return url;
 }
 
+//////////////////////////////////////////////////////////////////////////
+// PNG conversion
+//////////////////////////////////////////////////////////////////////////
+
 function convertToPngLink(canvas, name) {
     // builds a huuuuge URL with the base-64 encoded PNG data embedded inside it
     var src = canvas.toDataURL();
@@ -93,6 +101,10 @@ function convertToPngLink(canvas, name) {
     a.innerHTML = fileName;
     return a;
 }
+
+//////////////////////////////////////////////////////////////////////////
+// general collection utils
+//////////////////////////////////////////////////////////////////////////
 
 // returns true if the list was changed
 function removeFromList(list, item) {
@@ -167,6 +179,10 @@ function sortKeys(map) {
 	return map2;
 }
 
+//////////////////////////////////////////////////////////////////////////
+// parsing
+//////////////////////////////////////////////////////////////////////////
+
 function quotedSplit(string, splitChar, keepQuotes=false) {
     var split = [];
     var token = "";
@@ -198,6 +214,10 @@ function quotedSplit(string, splitChar, keepQuotes=false) {
     split.push(token);
     return split;
 }
+
+//////////////////////////////////////////////////////////////////////////
+// vector class
+//////////////////////////////////////////////////////////////////////////
 
 class Vect {
     constructor(x, y) {
@@ -290,6 +310,10 @@ class Vect {
     }
 }
 
+//////////////////////////////////////////////////////////////////////////
+// collision search
+//////////////////////////////////////////////////////////////////////////
+
 /**
  * boxes1 and boxes2 are Arrays containg box objects.  Box objects contain six fields:
  *    x1, y1, z1, x2, y2, z2.  Where x1 < x2, y1 < y2, z1 < z2
@@ -312,4 +336,30 @@ function findCollisions(boxes1, boxes2, threshold = 0) {
 		}
 	}
 	return collisions;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// URL utils
+//////////////////////////////////////////////////////////////////////////
+
+function generateColorPickerPNGLink(scale) {
+	var canvas = document.createElement("canvas");
+	canvas.width = 360*scale;
+	canvas.height = 40*scale;
+    var context = canvas.getContext("2d");
+
+    context.fillStyle = "#000000";
+    context.fillRect(0, 0, canvas.width, canvas.height);
+    context.strokeStyle = "#FF0000";
+    context.lineWidth = 2*scale;
+
+    for (var i = 0; i < 360; i++) {
+        context.filter = "hue-rotate(" + i + "deg)";
+        context.beginPath();
+        context.moveTo((i + 0.5)*scale, 0);
+        context.lineTo((i + 0.5)*scale, 40*scale);
+        context.stroke();
+    }
+
+    return convertToPngLink(canvas, "color-picker");
 }

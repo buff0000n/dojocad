@@ -491,9 +491,9 @@ td.imgField {
  ************************************************************/
 
 .roomLabel {
-    color: #FFFFFF;
     font-weight: bold;
     font-size: 16;
+    line-height: 16px;
     text-align: center;
     white-space: nowrap;
     cursor: default;

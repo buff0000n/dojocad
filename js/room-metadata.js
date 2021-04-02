@@ -538,7 +538,7 @@ var roomMetadata =
 		{"resource": "Forma", "costs": [1, 1, 3, 25, 25]}], "unverified": true,
 	"blockedFromAboveBy": [
 	    ]},
-{"id": "la", "image": "label", "name": "Label", "category": "Utility", "prereq": null, "capacity": 0, "energy": 0, "maxnum": null, "floor": 0, "ceil": 0, "num": 0,
+{"id": "la", "image": "label", "name": "Label", "category": "Utility", "prereq": null, "capacity": 0, "energy": 0, "maxnum": null, "floor": 0, "ceil": 0, "num": 0, "defaultLabel": "Label",
 	"bounds": [
 		{"x1": -16, "y1": -16, "x2": 16, "y2": 16, "floor": 0, "ceil": 20, "discard": true}],
 	"doors": [

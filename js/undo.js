@@ -64,12 +64,10 @@ function addUndoAction(action) {
 
 function startUndoCombo() {
     undoCombos.push([]);
-    showDebug("Pushed undoCombo: " + undoCombos.length);
 }
 
 function endUndoCombo() {
     var undoList = undoCombos.pop()
-    showDebug("Poped undoCombo: " + undoCombos.length);
     var action = null;
     if (undoList.length >1) {
         action = new CompositeAction(undoList);
@@ -95,9 +93,7 @@ function endAllUndoCombos() {
 
 function cancelUndoCombo() {
     var undoList = undoCombos.pop()
-    showDebug("Poped undoCombo: " + undoCombos.length);
     for (var i = undoList.length - 1; i >= 0; i--) {
-        showDebug("undoing: " + undoList[i].toString());
         undoList[i].prepareUndoAction();
         undoList[i].undoAction();
     }
@@ -122,7 +118,6 @@ function doUndo() {
 
 		} else {
 			// we're prepared, so undo the action
-            showDebug("undoing: " + action.toString());
 			action.undoAction();
 			// put it on the redo stack
 			redoStack.push(action);
@@ -145,7 +140,6 @@ function doRedo() {
 
 		} else {
 			// we're prepared, so redo the action
-            showDebug("redoing: " + action.toString());
 			action.redoAction();
 			// put it back on the undo stack
 			undoStack.push(action);
@@ -330,7 +324,7 @@ class ChangeHueAction extends Action {
 	}
 
 	prepareAction() {
-        centerViewOnIfNotVisible(center.MX, center.MY, center.Floor);
+        centerViewOnIfNotVisible(this.center.MX, this.center.MY, this.center.Floor);
 		return true;
 	}
 

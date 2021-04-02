@@ -421,7 +421,7 @@ class Room {
         this.selected = false;
 
         this.hue = null;
-        this.label = null;
+        this.label = this.metadata.defaultLabel ? this.metadata.defaultLabel : null;
 
         this.calculateAnchor();
         this.ruleErrors = Array();
@@ -1103,6 +1103,47 @@ class Room {
         }
     }
 
+    setLabel(label) {
+        this.label = label ? label : this.metadata.defaultLabel ? this.metadata.defaultLabel : null;
+        this.updateLabelDisplay();
+        this.updateView();
+    }
+
+    setHue(hue) {
+        if (hue != this.hue) {
+            var previousHue = this.hue;
+            this.hue = hue;
+            if (previousHue == null || hue == null) {
+                this.resetColorDisplay();
+            }
+			this.display.style.filter = this.getDisplayImageFilter();
+			if (this.labelDisplay) {
+			    this.labelDisplay.style.color = this.getDisplayLabelColor();
+			}
+        }
+    }
+
+    updateLabelDisplay() {
+        if (this.label) {
+            if (!this.labelDisplay) {
+	            this.labelDisplay = this.addDisplayLabel();
+			    this.labelDisplay.style.color = this.getDisplayLabelColor();
+            }
+            this.labelDisplay.innerHTML = this.label.replace(newlineRegex, "<br/>");
+        } else if (this.labelDisplay) {
+            this.labelDisplay = this.removeDisplayElement(this.labelDisplay);
+        }
+    }
+
+    resetColorDisplay() {
+        if (this.display) {
+            this.display.remove();
+        }
+        this.display = this.addDisplayImage(this.getDisplayImageSuffix(), 202);
+        this.display.style.filter = this.getDisplayImageFilter();
+        this.updateView();
+    }
+
     getDisplayImageSuffix() {
         return this.hue ? "-display-red.png" : "-display.png";
     }
@@ -1111,28 +1152,8 @@ class Room {
         return this.hue ? " hue-rotate(" + this.hue + "deg)" : "";
     }
 
-    setLabel(label) {
-        showDebug("Set label: " + this.label);
-        this.label = label;
-        this.updateLabelDisplay();
-        this.updateView();
-    }
-
-    setHue(hue) {
-        this.hue = hue;
-        showDebug("Set hue: " + this.hue);
-    }
-
-
-    updateLabelDisplay() {
-        if (this.label) {
-            if (!this.labelDisplay) {
-	            this.labelDisplay = this.addDisplayLabel();
-            }
-            this.labelDisplay.innerHTML = this.label.replace(newlineRegex, "<br/>");
-        } else if (this.labelDisplay) {
-            this.labelDisplay = this.removeDisplayElement(this.labelDisplay);
-        }
+    getDisplayLabelColor() {
+        return this.hue ? "hsl(" + this.hue + ", 75%, 75%)" : "hsl(0, 0%, 100%)";
     }
 
     addDisplay(viewContainer) {
@@ -1140,6 +1161,7 @@ class Room {
         if (this.isVisible()) {
             // main visible display
 	        this.display = this.addDisplayImage(this.getDisplayImageSuffix(), 202);
+			this.display.style.filter = this.getDisplayImageFilter();
 	        if (!this.isOnFloor()) {
 	            // additional other floor display
 		        this.otherFloorDisplay = this.addDisplayImage(this.getDisplayImageSuffix(), 100 + this.floor, this.getImageBase(this.floor));
@@ -1706,7 +1728,14 @@ function convertFloorToPngLink(targets, db, margin, scale, f) {
 	            // scale font size
                 var fontSize = 16;
 				// calculate basis vectors starting from the transformed anchor point
-        		labelData.push([room.label, v.x, v.y, fontSize, scale]);
+        		labelData.push({
+        		    "text": room.label,
+        		    "x": v.x,
+        		    "y": v.y,
+        		    "fontSize": fontSize,
+        		    "hue": room.hue,
+        		    "scale": scale,
+                });
             }
 
 		    if (room.metadata.num == 0) {
@@ -1740,7 +1769,16 @@ function convertFloorToPngLink(targets, db, margin, scale, f) {
 
 				// notify
 //				imageLoaded(targets, db, margin, scale, f, 1);
-				imageLoaded(targets, db, margin, scale, f, index, this, vx.x, vx.y, vy.x, vy.y, av.x, av.y);
+				imageLoaded(targets, db, margin, scale, f, index, {
+				    "image": this,
+				    "xx": vx.x,
+				    "xy": vx.y,
+				    "yx": vy.x,
+				    "yy": vy.y,
+				    "tx": av.x,
+				    "ty": av.y,
+				    "hue": room.hue
+				});
             }
             img.src = "img" + imgScale + "x/" + room.getImageBase(f) + room.getDisplayImageSuffix();
 			localDrawnImages++;
@@ -1772,8 +1810,15 @@ function convertFloorToPngLink(targets, db, margin, scale, f) {
 		                .addTo(-this.width * (scale / imgScale) / 2, -this.height * (scale / imgScale) / 2);
 
 					// notify
-//					imageLoaded(targets, db, margin, scale, f, 1);
-					imageLoaded(targets, db, margin, scale, f, index, this, scale / imgScale, 0, 0, scale / imgScale, av2.x, av2.y);
+					imageLoaded(targets, db, margin, scale, f, index, {
+    					"image": this,
+    					"xx": scale / imgScale,
+    					"xy": 0,
+    					"yx": 0,
+    					"yy": scale / imgScale,
+    					"tx": av2.x,
+    					"ty": av2.y
+					});
 				}
 	            img2.src = "img" + imgScale + "x/" + marker.metadata.image + ".png";
 				localDrawnImages++;
@@ -1789,14 +1834,14 @@ function convertFloorToPngLink(targets, db, margin, scale, f) {
 	imageLoaded(targets, db, margin, scale, f, null, null);
 }
 
-function imageLoaded(targets, db, margin, scale, f, index, image, xx, xy, yx, yy, tx, ty) {
+function imageLoaded(targets, db, margin, scale, f, index, imageData) {
 	// todo: cancel if the menu has been closed before we're finished.
 
 	// if there's an image
-	if (image) {
+	if (imageData && imageData.image) {
 		// increment our count and save the image + transform for later
 		loadedImages++;
-		loadedImageData[index] = [image, xx, xy, yx, yy, tx, ty];
+		loadedImageData[index] = imageData;
 	}
 	// ether we haven't finished drawing images or we haven't finished loading them
 	if (drawnImages == 0 || loadedImages < drawnImages) {
@@ -1821,35 +1866,43 @@ function imageLoaded(targets, db, margin, scale, f, index, image, xx, xy, yx, yy
     for (var i = 0; i < loadedImageData.length; i++) {
         var a = loadedImageData[i];
         // set the transform with the two basis vectors and the translate vector
-        context.setTransform(a[1], a[2], a[3], a[4], a[5], a[6]);
-        // todo: hue transformation
+        context.setTransform(a.xx, a.xy, a.yx, a.yy, a.tx, a.ty);
+        // set the hue rotation if there is one
+        if (a.hue != null) {
+            // todo: this is not supported of safari because of reasons
+            context.filter = "hue-rotate(" + a.hue + "deg)";
+        }
 		// draw the image at the center of the new coordinate space
-		context.drawImage(a[0], 0, 0);
+		context.drawImage(a.image, 0, 0);
 		// reset the transform
 		context.resetTransform();
+		// reset the hue, if there is one
+		if (a.hue != null) {
+		    // you have to set it to "none"
+            context.filter = "none";
+		}
     }
 
     for (var i = 0; i < labelData.length; i++) {
         var a = labelData[i];
         // set the transform with the two basis vectors and the translate vector
-        context.translate(a[1], a[2]);
-        context.scale(a[4], a[4]);
-		var fontSize = a[3];
-        // todo: hue transformation
+        context.translate(a.x, a.y);
+        context.scale(a.scale, a.scale);
+		var fontSize = a.fontSize;
 		// draw the image at the center of the new coordinate space
-		var texts = a[0].split("\n");
+		var texts = a.text.split("\n");
         context.font = "bold " + fontSize + "px sans-serif";
         context.textAlign = "center";
 		for (var t = 0; t < texts.length; t++) {
 		    var y = (t - ((texts.length - 1)/2) + 0.5) * fontSize;
-		    // poor man's outline, this mirros the officially recommended way to do it in css, so shrug.
+		    // poor man's text outline, this mirrors the only officially supported way to do it in css, so shrug.
             context.fillStyle = "#000000";
             context.fillText(texts[t], -1, y-1);
             context.fillText(texts[t], 1, y-1);
             context.fillText(texts[t], -1, y+1);
             context.fillText(texts[t], 1, y+1);
 
-            context.fillStyle = "#FFFFFF";
+            context.fillStyle = a.hue != null ? ("hsl(" + a.hue + ", 75%, 75%)") : "#FFFFFF";
             context.fillText(texts[t], 0, y);
 		}
 		// reset the transform

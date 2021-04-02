@@ -1,0 +1,87 @@
+/* generated from http://danielstern.ca/range.css/
+   because sliders are too new to not be a pain in the neck
+*/
+
+input[type=range] {
+  width: 100%;
+  margin: 16px 0;
+  background-color: transparent;
+  -webkit-appearance: none;
+}
+input[type=range]:focus {
+  outline: none;
+}
+input[type=range]::-webkit-slider-runnable-track {
+  background: #c0c0c0;
+  border: 0;
+  width: 100%;
+  height: 0px;
+  cursor: pointer;
+}
+input[type=range]::-webkit-slider-thumb {
+  margin-top: -16px;
+  width: 16px;
+  height: 32px;
+  /*background: #808080;*/
+  border: 1px solid #ffffff;
+  cursor: pointer;
+  -webkit-appearance: none;
+}
+input[type=range]:focus::-webkit-slider-runnable-track {
+  background: #cdcdcd;
+}
+input[type=range]::-moz-range-track {
+  background: #c0c0c0;
+  border: 0;
+  width: 100%;
+  height: 0px;
+  cursor: pointer;
+}
+input[type=range]::-moz-range-thumb {
+  width: 16px;
+  height: 32px;
+  /*background: #808080;*/
+  border: 1px solid #ffffff;
+  cursor: pointer;
+}
+input[type=range]::-ms-track {
+  background: transparent;
+  border-color: transparent;
+  border-width: 16px 0;
+  color: transparent;
+  width: 100%;
+  height: 0px;
+  cursor: pointer;
+}
+input[type=range]::-ms-fill-lower {
+  background: #b3b3b3;
+  border: 0;
+}
+input[type=range]::-ms-fill-upper {
+  background: #c0c0c0;
+  border: 0;
+}
+input[type=range]::-ms-thumb {
+  width: 16px;
+  height: 32px;
+  /*background: #808080;*/
+  border: 1px solid #ffffff;
+  cursor: pointer;
+  margin-top: 0px;
+  /*Needed to keep the Edge thumb centred*/
+}
+input[type=range]:focus::-ms-fill-lower {
+  background: #c0c0c0;
+}
+input[type=range]:focus::-ms-fill-upper {
+  background: #cdcdcd;
+}
+/*TODO: Use one of the selectors from https://stackoverflow.com/a/20541859/7077589 and figure out
+how to remove the virtical space around the range input in IE*/
+@supports (-ms-ime-align:auto) {
+  /* Pre-Chromium Edge only styles, selector taken from hhttps://stackoverflow.com/a/32202953/7077589 */
+  input[type=range] {
+    margin: 0;
+    /*Edge starts the margin from the thumb, not the track as other browsers do*/
+  }
+}
