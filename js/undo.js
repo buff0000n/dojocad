@@ -64,12 +64,10 @@ function addUndoAction(action) {
 
 function startUndoCombo() {
     undoCombos.push([]);
-    showDebug("Pushed undoCombo: " + undoCombos.length);
 }
 
 function endUndoCombo() {
     var undoList = undoCombos.pop()
-    showDebug("Poped undoCombo: " + undoCombos.length);
     var action = null;
     if (undoList.length >1) {
         action = new CompositeAction(undoList);
@@ -95,9 +93,7 @@ function endAllUndoCombos() {
 
 function cancelUndoCombo() {
     var undoList = undoCombos.pop()
-    showDebug("Poped undoCombo: " + undoCombos.length);
     for (var i = undoList.length - 1; i >= 0; i--) {
-        showDebug("undoing: " + undoList[i].toString());
         undoList[i].prepareUndoAction();
         undoList[i].undoAction();
     }
@@ -122,7 +118,6 @@ function doUndo() {
 
 		} else {
 			// we're prepared, so undo the action
-            showDebug("undoing: " + action.toString());
 			action.undoAction();
 			// put it on the redo stack
 			redoStack.push(action);
@@ -145,7 +140,6 @@ function doRedo() {
 
 		} else {
 			// we're prepared, so redo the action
-            showDebug("redoing: " + action.toString());
 			action.redoAction();
 			// put it back on the undo stack
 			undoStack.push(action);
@@ -278,6 +272,124 @@ class MoveRoomAction extends Action {
 
 	toString() {
 		return "Move " + describeRoomList(this.rooms);
+	}
+}
+
+class ChangeHueAction extends Action {
+	constructor(rooms) {
+		super();
+		this.rooms = rooms;
+		this.recordFrom(this.rooms);
+	}
+
+	recordFrom() {
+	    this.from = [];
+	    for (var r = 0; r < this.rooms.length; r++) {
+	        this.from.push(this.rooms[r].hue);
+	    }
+	    this.center = new DojoBounds(this.rooms).centerPosition();
+	}
+
+	recordTo() {
+	    this.to = [];
+	    for (var r = 0; r < this.rooms.length; r++) {
+	        this.to.push(this.rooms[r].hue);
+	    }
+	}
+
+	isAChange() {
+		this.recordTo(this.rooms);
+		for (var r = 0; r < this.rooms.length; r++) {
+		    if (this.from[r] != this.to[r]) {
+		        return true;
+            }
+		}
+		return false;
+	}
+
+	prepareUndoAction() {
+		return this.prepareAction();
+	}
+
+	undoAction() {
+        this.action(this.from);
+	}
+
+	prepareRedoAction() {
+		return this.prepareAction();
+	}
+
+	redoAction() {
+        this.action(this.to);
+	}
+
+	prepareAction() {
+        centerViewOnIfNotVisible(this.center.MX, this.center.MY, this.center.Floor);
+		return true;
+	}
+
+	action(to) {
+	    for (var r = 0; r < this.rooms.length; r++) {
+	        this.rooms[r].setHue(to[r]);
+	    }
+
+		saveModelToUrl();
+	}
+
+	toString() {
+		return "Change hue on " + describeRoomList(this.rooms);
+	}
+}
+
+class ChangeLabelAction extends Action {
+	constructor(room) {
+		super();
+		this.room = room;
+		this.recordFrom();
+	}
+
+	recordFrom() {
+	    this.from = this.room.label;
+	}
+
+	recordTo() {
+	    this.to = this.room.label;
+	}
+
+	isAChange() {
+		this.recordTo();
+		return this.from != this.to;
+	}
+
+	prepareUndoAction() {
+		return this.prepareAction();
+	}
+
+	undoAction() {
+        this.action(this.from);
+	}
+
+	prepareRedoAction() {
+		return this.prepareAction();
+	}
+
+	redoAction() {
+        this.action(this.to);
+	}
+
+	prepareAction() {
+        centerViewOnIfNotVisible(this.room.mv.x, this.room.mv.y, this.room.floor);
+		return true;
+	}
+
+	action(to) {
+        this.room.setLabel(to);
+
+		saveModelToUrl();
+	}
+
+	toString() {
+		return "Change label on " + describeRoomList(this.rooms);
 	}
 }
 

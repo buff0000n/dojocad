@@ -242,6 +242,38 @@ function pasteCopiedRooms() {
     }
 }
 
+function setSelectedRoomsLabels(label, action) {
+    if (selectedRooms.length == 1) {
+        clearMenus(0);
+        action.room.setLabel(label);
+        if (action.isAChange()) {
+            addUndoAction(action);
+        	saveModelToUrl();
+        }
+    }
+}
+
+function clearSelectedRoomsLabels(action) {
+    setSelectedRoomsLabels(null, action);
+}
+
+function setSelectedRoomsColor(hue, action) {
+    if (selectedRooms.length > 0) {
+        clearMenus(0);
+        for (var r = 0; r < action.rooms.length; r++) {
+            action.rooms[r].setHue(hue);
+        }
+        if (action.isAChange()) {
+            addUndoAction(action);
+        	saveModelToUrl();
+        }
+    }
+}
+
+function clearSelectedRoomsColor(action) {
+    setSelectedRoomsColor(null, action);
+}
+
 function movedSelectedRoom() {
 	saveModelToUrl();
 }
@@ -293,7 +325,7 @@ function loadModelFromUrl() {
 		return false;
 	}
 
-	var roomStrings = modelString.split("_");
+	var roomStrings = quotedSplit(modelString, "_", true);
 	for (var rs = 0; rs < roomStrings.length; rs++) {
 		var room = roomFromString(roomStrings[rs]);
 	    addRoom(room);

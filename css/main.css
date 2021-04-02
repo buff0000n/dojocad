@@ -1,0 +1,605 @@
+/* z-index groups:
+    0: body, grid
+    100x: background rooms not on the current floor
+    200x: foreground rooms on the current floor
+    300x: headers, footers, sidebars
+    400x: menus
+    500x: help
+*/
+
+/* common formatting */
+
+* {
+    font-family: sans-serif;
+    color: #A0A0C0;
+    touch-action: manipulation;
+}
+
+/************************************************************
+ * key element formatting
+ ************************************************************/
+
+/* remove borders from the body */
+body {
+    padding: 0;
+    border: 0;
+}
+
+/* remove borders from the body and document, disable scrollbars */
+html, body {
+    margin: 0;
+    height: 100%;
+    overflow: hidden
+    overflow-anchor: none;
+    /*
+    position: fixed;
+    width: 100vw;
+    height: 100vh;
+    @supports (-webkit-appearance:none) {
+        height: calc(var(--vh100, 100vh) - 200px);
+    }
+    */
+
+  /* Hide scrollbar for IE and Edge */
+  -ms-overflow-style: none;
+  /* Hide scrollbar for Firefox */
+  scrollbar-width: none;
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+html::-webkit-scrollbar, body::-webkit-scrollbar {
+  display: none;
+}
+
+/* grid div, fill the window with no border and add a repeating background image.
+   the position of the image is changed as the background is dragged */
+#grid {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100vw;
+    height: 100vh;
+    padding: 0;
+    border: 0;
+    background-image: url("../img5x/bg-grid.png");
+    background-repeat: repeat;
+    background-position: 0px 0px;
+    background-size: 160px 160px;
+}
+
+/* floating header at the top */
+#header {
+    background-color: #303050;
+    position: absolute;
+    left: 0ex;
+    top: 0ex;
+    margin: 0;
+    padding: 1ex 1ex;
+    border-radius: 1ex;
+    z-index: 305;
+}
+
+/* floating footer at the bottom */
+#footer {
+    background-color: #303050;
+    position: absolute;
+    bottom: 0ex;
+    right: 0ex;
+    max-width: 75ex;
+    margin: 0;
+    padding: 1ex;
+    border-radius: 1ex;
+    z-index: 308;
+}
+/* All the footer stuff was moved to the Help section to save screen real estate
+#footerToggle {
+    cursor: pointer;
+}
+#footerHidden {
+    display: none;
+}
+*/
+
+/* floating stats bar at the bottom */
+#statsBar {
+    background-color: #303050;
+    position: absolute;
+    bottom: 0ex;
+    left: 0ex;
+    margin: 0;
+    padding: 1.5ex 1ex;
+    border-radius: 1ex;
+    z-index: 308;
+}
+
+/* floating sidebar */
+#sidebar {
+    background-color: #303050;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    left: 0ex;
+    margin: 0;
+    padding: 0ex 0ex;
+    border-radius: 1ex;
+    z-index: 308;
+}
+
+/* floating help container, fills the right side up to a max width */
+#help {
+    background-color: #303050;
+    position: absolute;
+    right: 2ex;
+    top: 8ex;
+    bottom: 8ex;
+    max-width: 75ex;
+    margin: 0 0 0 2ex;
+    padding: 2ex;
+    border-radius: 1ex;
+    visibility: hidden;
+    z-index: 500;
+}
+
+/* absolutely position the help show/hide button in the upper right corner */
+#helpToggle {
+    position: absolute;
+    right: 0ex;
+    top: 0ex;
+    z-index: 501;
+}
+
+/* help box fills the help container and contains its own scrollbar */
+.helpBox {
+    height: 100%;
+    /* need to take 3ex off for the 'top' link */
+    height: calc(100% - 3ex);
+    border-radius: 1ex;
+    background: #000000;
+    overflow: auto;
+    overflow-anchor: none;
+}
+.helpContainer {
+    padding: 1ex;
+    overflow-anchor: none;
+}
+
+/************************************************************
+ * help section formatting
+ ************************************************************/
+
+h1, h2, h3, h4 {
+    color: A0C0F0;
+}
+strong {
+    color: 6080B0;
+}
+.warn, .warn * {
+    color: D06040;
+}
+a, a i {
+    color: #8080FF
+}
+a:visited, a:visited i {
+    color: #D080FF
+}
+ul {
+    list-style-type: disc;
+}
+li {
+    margin: 0;
+}
+.title {
+    color: #6080B0;
+    font-size: 300%;
+    font-variant: small-caps;
+    font-weight: bold;
+}
+.helpTop {
+    text-align: right;
+    padding: 0 0 1ex 0;
+}
+
+/************************************************************
+ * button/menu formatting
+ ************************************************************/
+
+.button, .button-disabled, .button-error, .button-clear {
+    margin: 0.5ex;
+    border: none;
+    padding: 0.5ex;
+    text-align: center;
+    text-decoration: none;
+    font-size: 100%;
+    border-radius: 1ex;
+    user-select: none;
+}
+
+.button, a.link-button {
+    cursor: pointer;
+    background-color: #7070A0;
+    color: #FFFFFF;
+}
+
+.button-disabled {
+    background-color: #303050;
+    color: #808080;
+}
+
+.button-disabled > img {
+    filter: saturate(0%) brightness(50%);
+}
+
+.button-error {
+    cursor: pointer;
+    background-color: #802020;
+    color: #FFFFFF;
+}
+
+#header .button, #header .button-disabled {
+    margin: 1ex;
+    padding: 1ex;
+}
+
+.docButton, .docButton-error, .docImgButton, .docImgButton-error, .docImgButton-clear {
+    border: none;
+    text-decoration: none;
+    font-size: 100%;
+    border-radius: 0.5ex;
+}
+
+.docButton {
+    margin: 0;
+    padding: 0.1ex 0.5ex;
+    background-color: #7070A0;
+    color: #FFFFFF;
+}
+
+.docButton-error {
+    margin: 0;
+    padding: 0.1ex 0.5ex;
+    background-color: #802020;
+    color: #FFFFFF;
+}
+
+.docImgButton {
+    margin: 0;
+    padding: 0.5ex 0.5ex;
+    background-color: #7070A0;
+    color: #FFFFFF;
+}
+
+.docImgButton-error {
+    margin: 0;
+    padding: 1ex 0.5ex;
+    background-color: #802020;
+    color: #FFFFFF;
+}
+
+.docImgButton-clear {
+    margin: 0;
+    padding: 1ex 0;
+}
+
+.button > img, .button-disabled > img, .button-error > img, .button-clear > img,
+.docImgButton > img, .docImgButton-error > img, .docImgButton-clear > img,
+.field > img, .field-error > img,
+.menu-button > img, .menu-button-error > img, .menu-button-clear > img {
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.docImgButton > img, .docImgButton-error > img , .docImgButton-clear > img {
+    transform: scale(0.75, 0.75);
+}
+
+.label {
+    color: #FFFFFF;
+    user-select: none;
+}
+
+.field, .field-error {
+    margin: 1ex 1ex 1ex 1ex;
+    border: none;
+    padding: 1ex;
+    text-align: center;
+    text-decoration: none;
+    font-size: 100%;
+    border-radius: 1ex;
+}
+
+input, textarea {
+    background-color: #101020;
+    border: none;
+    color: #D0D0F0;
+    padding: 1ex;
+    border-radius: 1ex;
+}
+input:invalid {
+    background: #801010;
+}
+
+.field, .imgField {
+    background-color: #202030;
+    color: #FFFFFF;
+}
+
+.field-error {
+    background-color: #B02020;
+    color: #FFFFFF;
+}
+
+td.field {
+    margin: 0;
+    padding: 0ex, 0.5ex;
+    border: 0;
+}
+
+td.imgField {
+    margin: 0;
+    padding: 0ex, 0ex;
+    border: 0;
+    border-radius: 1ex;
+}
+
+.menu-table, .menu-table-error, .menu-table-warn {
+    margin: 1ex 1ex 1ex 1ex;
+    color: #FFFFFF;
+    border: none;
+    padding: 0;
+    margin: 0;
+    border-spacing: 1ex;
+    border-collapse: separate;
+    text-decoration: none;
+    font-size: 100%;
+    border-radius: 1ex;
+    position: absolute;
+    user-select: none;
+    z-index: 400;
+    box-shadow: 0 0 3px 3px #000000;
+}
+
+.menu-table {
+    background-color: #303050;
+}
+
+.menu-table-error {
+    background-color: #402020;
+}
+
+.menu-table-warn {
+    background-color: #808000;
+    color: #000000;
+}
+
+.menu-button, .menu-button-error, .menu-button-warn {
+    margin: 1ex 1ex 1ex 1ex;
+    border: none;
+    padding: 1ex;
+    text-align: center;
+    text-decoration: none;
+    font-size: 100%;
+    border-radius: 1ex;
+    cursor: pointer;
+}
+
+.menu-button-clear {
+    margin: 0ex;
+    border: none;
+    padding: 0ex;
+    text-align: center;
+    text-decoration: none;
+    font-size: 100%;
+    border-radius: 1ex;
+    cursor: pointer;
+}
+
+.clickable {
+    cursor: pointer;
+}
+
+.menu-button {
+    background-color: #7070A0;
+    color: #FFFFFF;
+    user-select: none;
+}
+
+.menu-button-error {
+    background-color: #802020;
+    color: #FFFFFF;
+}
+
+.menu-button-warn {
+    background-color: #B0B020;
+    color: #000000;
+}
+
+.menu-divider {
+    margin: 1ex 1ex 1ex 1ex;
+    background-color: #202030;
+    padding: 1ex;
+    border-radius: 1ex;
+}
+
+.imgButton {
+    cursor: pointer;
+}
+
+.menu-table-error tr td.field, .menu-table-error tr td.imgField  {
+    background-color: #381818;
+}
+
+.menu-table-warn tr td.field, .menu-table-warn tr td.imgField  {
+    background-color: #707000;
+    color: #000000;
+}
+
+/************************************************************
+ * elevator formatting
+ ************************************************************/
+
+.floor-button, .floor-button-selected, .floor-button-error, .floor-button-error-selected, .floor-button-empty, .floor-button-empty-selected {
+    margin: 0.5ex;
+    border: none;
+    padding: 1ex;
+    text-align: center;
+    text-decoration: none;
+    font-size: 100%;
+    border-radius: 1ex;
+    user-select: none;
+}
+
+.floor-button {
+    cursor: pointer;
+    background-color: #202030;
+    color: #7070A0;
+}
+
+.floor-button-selected {
+    background-color: #505080;
+    color: #FFFFFF;
+}
+
+.floor-button-error {
+    cursor: pointer;
+    background-color: #802020;
+    color: #7070A0;
+}
+
+.floor-button-error-selected {
+    background-color: #F02020;
+    color: #FFFFFF;
+}
+
+.floor-button-empty {
+    cursor: pointer;
+    background-color: #303050;
+    color: #7070A0;
+}
+
+.floor-button-empty-selected {
+    background-color: #303050;
+    color: #FFFFFF;
+}
+
+#header .button, #header .field, #header .button-error, #header .button-clear, #header .button-disabled,
+#statsBar .button, #statsBar .field, #statsBar .button-error, #statsBar .button-disabled {
+    margin: 0ex;
+}
+
+/************************************************************
+ * Label formatting
+ ************************************************************/
+
+.roomLabel {
+    font-weight: bold;
+    font-size: 16;
+    line-height: 16px;
+    text-align: center;
+    white-space: nowrap;
+    cursor: default;
+    text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+}
+
+/************************************************************
+ * Color picker formatting
+ ************************************************************/
+.colorPicker {
+    width: 360px;
+    margin: 0;
+    padding: 0;
+    background-image: url("../icons/color-picker.png");
+}
+
+/************************************************************
+ * multiselect formatting
+ ************************************************************/
+
+.multiselectBox {
+    position: absolute;
+    border-style: dashed;
+    border-width: 2px;
+    z-index: 499;
+    pointer-events: none;
+    border-color: #00FF00;
+}
+
+/************************************************************
+ * error/debug formatting
+ ************************************************************/
+
+#errorBar {
+    background-color: #B00000;
+    font-weight: bold;
+    text-align: left;
+    color: #FFFFFF;
+    position: absolute;
+    left: 10ex;
+    right: 2ex;
+    top: 10ex;
+    margin: 0;
+    padding: 2ex;
+    border-radius: 1ex;
+    z-index: 307;
+}
+
+#debugBar {
+    background-color: #0000B0;
+    font-weight: bold;
+    text-align: left;
+    color: #FFFFFF;
+    position: absolute;
+    left: 10ex;
+    right: 2ex;
+    bottom: 10ex;
+    margin: 0;
+    padding: 2ex;
+    border-radius: 1ex;
+    z-index: 307;
+    visibility: hidden;
+}
+
+#errorBar *, #debugBar * {
+    color: #FFFFFF;
+}
+
+.debugBounds, .debugOverlapBounds, .debugDoorBounds, .debugOverlapDoorBounds {
+    position: absolute;
+    border-style: solid;
+    border-width: 1px;
+    z-index: 299;
+    pointer-events: none;
+}
+.debugBounds {
+    border-color: #0000FF;
+}
+.debugOverlapBounds {
+    border-color: #FF00FF;
+}
+.debugDoorBounds {
+    border-color: #00FF00;
+}
+.debugOverlapDoorBounds {
+    border-color: #FFFF00;
+}
+
+.matrix-table {
+    color: #FFFFFF;
+    background-color: #202030;
+    border: none;
+    padding: 1ex;
+    margin: 1ex;
+    border-collapse: collapse;
+    text-decoration: none;
+    font-size: 100%;
+    position: absolute;
+    z-index: 400;
+}
+
+.matrix-table tr td, .matrix-table tr th {
+    border: 1px solid #404040;
+}
+
+.matrix-error {
+    background-color: #802020;
+}
+

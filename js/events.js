@@ -262,7 +262,7 @@ var mouseDownTarget = null;
 var mouseDownTargetStartPX = 0;
 var mouseDownTargetStartPY = 0;
 var selectedRooms = [];
-var copiedRooms = [];
+var copiedRooms = null;
 var lastClickedRoom = null;
 var dragged = false;
 var dragMoveUndoAction = false;
@@ -739,6 +739,14 @@ function nothingElseGoingOn() {
 
 function keyDown(e) {
     e = e || window.event;
+
+    nodeName = e.target.nodeName;
+
+    // ignote typing in a text box
+    if (nodeName == "TEXTAREA" || nodeName == "INPUT") {
+        return;
+    }
+
     switch (e.code) {
 		case "Escape" :
 		    clearMenus(0);

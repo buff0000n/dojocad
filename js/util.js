@@ -1,3 +1,7 @@
+//////////////////////////////////////////////////////////////////////////
+// URL utils
+//////////////////////////////////////////////////////////////////////////
+
 var hrefUpdateDelay = 1000;
 var hrefUpdateTimeout = null;
 var hrefToUpdate = null;
@@ -81,6 +85,10 @@ function buildQueryUrl(query) {
     return url;
 }
 
+//////////////////////////////////////////////////////////////////////////
+// PNG conversion
+//////////////////////////////////////////////////////////////////////////
+
 function convertToPngLink(canvas, name) {
     // builds a huuuuge URL with the base-64 encoded PNG data embedded inside it
     var src = canvas.toDataURL();
@@ -93,6 +101,10 @@ function convertToPngLink(canvas, name) {
     a.innerHTML = fileName;
     return a;
 }
+
+//////////////////////////////////////////////////////////////////////////
+// general collection utils
+//////////////////////////////////////////////////////////////////////////
 
 // returns true if the list was changed
 function removeFromList(list, item) {
@@ -166,6 +178,46 @@ function sortKeys(map) {
 	}
 	return map2;
 }
+
+//////////////////////////////////////////////////////////////////////////
+// parsing
+//////////////////////////////////////////////////////////////////////////
+
+function quotedSplit(string, splitChar, keepQuotes=false) {
+    var split = [];
+    var token = "";
+    var quoted = false;
+    for (var i = 0; i < string.length; i++) {
+        var c = string[i];
+        if (c == splitChar && !quoted) {
+            split.push(token);
+            token = "";
+            continue;
+
+        } else if (c == '"') {
+            quoted = !quoted;
+            if (keepQuotes) {
+                token = token + c;
+            }
+            continue;
+
+        } else if (c == '\\') {
+            if (i < string.length - 1 && string[i+1] == '"') {
+                if (keepQuotes) {
+                    token = token + c;
+                }
+                i++;
+            }
+        }
+        token = token + string[i];
+    }
+    split.push(token);
+    return split;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// vector class
+//////////////////////////////////////////////////////////////////////////
 
 class Vect {
     constructor(x, y) {
@@ -258,6 +310,10 @@ class Vect {
     }
 }
 
+//////////////////////////////////////////////////////////////////////////
+// collision search
+//////////////////////////////////////////////////////////////////////////
+
 /**
  * boxes1 and boxes2 are Arrays containg box objects.  Box objects contain six fields:
  *    x1, y1, z1, x2, y2, z2.  Where x1 < x2, y1 < y2, z1 < z2
@@ -280,4 +336,30 @@ function findCollisions(boxes1, boxes2, threshold = 0) {
 		}
 	}
 	return collisions;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// URL utils
+//////////////////////////////////////////////////////////////////////////
+
+function generateColorPickerPNGLink(width, height, name) {
+	var canvas = document.createElement("canvas");
+	canvas.width = width;
+	canvas.height = height;
+    var context = canvas.getContext("2d");
+
+    context.fillStyle = "#000000";
+    context.fillRect(0, 0, canvas.width, canvas.height);
+    context.strokeStyle = "#FF0000";
+    context.lineWidth = Math.ceil(width / 360);
+
+    for (var i = 0; i < 360; i++) {
+        context.filter = "hue-rotate(" + i + "deg)";
+        context.beginPath();
+        context.moveTo((i + 0.5)*(width/360), 0);
+        context.lineTo((i + 0.5)*(width/360), height);
+        context.stroke();
+    }
+
+    return convertToPngLink(canvas, name);
 }
