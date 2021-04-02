@@ -1173,13 +1173,13 @@ class Room {
         }
     }
 
-    updateLabelDisplay() {
+    updateLabelDisplay(visible=true) {
         if (this.label) {
             if (!this.labelDisplay) {
                 // we need a label for don't have one, create it
-	            this.labelDisplay = this.addDisplayLabel();
+	            this.labelDisplay = this.addDisplayLabel(visible ? 300 : 199);
 	            // init the hue filter, if there is one
-			    this.labelDisplay.style.color = this.getDisplayLabelColor();
+			    this.labelDisplay.style.color = this.getDisplayLabelColor(visible);
             }
             // update the label contents, replacing newlines with <br/>
             this.labelDisplay.innerHTML = this.label.replace(newlineRegex, "<br/>");
@@ -1212,13 +1212,15 @@ class Room {
     }
 
     getDisplayImageFilter() {
-        // CSS filter value for the dispaly image, if necessary
+        // CSS filter value for the display image, if necessary
         return this.hue ? " hue-rotate(" + this.hue + "deg)" : "";
     }
 
-    getDisplayLabelColor() {
+    getDisplayLabelColor(visible=true) {
         // CSS color value for the label, depending on whether there is a hue specified
-        return this.hue ? "hsl(" + this.hue + ", 75%, 75%)" : "hsl(0, 0%, 100%)";
+        return this.hue ?
+            visible ? "hsl(" + this.hue + ", 75%, 75%)" : "hsl(" + this.hue + ", 75%, 15%)" :
+            visible ? "hsl(0, 0%, 100%)" : "hsl(0, 0%, 15%)";
     }
 
     addDisplay(viewContainer) {
@@ -1236,6 +1238,8 @@ class Room {
 	            // additional other floor display
 		        this.otherFloorDisplay = this.addDisplayImage(this.getDisplayImageSuffix(), 100 + this.floor, this.getImageBase(this.floor));
 			    this.otherFloorDisplay.style.filter = "brightness(25%)" + this.getDisplayImageFilter();
+                // init the label, if necessary
+                this.updateLabelDisplay(false);
 	        }
 			for (var m = 0; m < this.markers.length; m++) {
 				this.markers[m].addDisplay(viewContainer);
@@ -1252,6 +1256,8 @@ class Room {
 	        // just the other floor display
 	        this.otherFloorDisplay = this.addDisplayImage(this.getDisplayImageSuffix(), 100 + this.floor);
 		    this.otherFloorDisplay.style.filter = "brightness(25%)" + this.getDisplayImageFilter();
+            // init the label, if necessary
+            this.updateLabelDisplay(false);
         }
 
 		this.checkCollided();
