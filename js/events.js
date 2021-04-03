@@ -611,9 +611,11 @@ function selectRoom(room, undoable = false, multiselect = false) {
         }
         // if we have a new selection
         if (room) {
+            // clear out the selection before changing the view so it doesn't try to add an extra undo action
+            selectedRooms = [];
             // go to the floor the room is on, if it's not on the current floor
             if (!room.isOnFloor()) {
-                setViewP(viewPX, viewPY, viewScale, room.floor);
+                setViewP(viewPX, viewPY, viewScale, room.floor, false);
             }
 
             // select just that one room
@@ -881,7 +883,7 @@ function keyDown(e) {
     switch (e.code) {
 		case "Escape" :
 		    // escape cancels menus and drag operations
-		    clearMenus(0);
+		    clearLastMenu();
 		    cancelRoomDrag();
             e.preventDefault();
 		    break;

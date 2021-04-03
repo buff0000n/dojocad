@@ -629,14 +629,13 @@
             <p>
                 By default, rooms are gray like they appear in the in-game map.  However, under the room menu is a
                 <span class="docImgButton"><img src="icons/icon-color.png" srcset="icons2x/icon-color.png 2x" title="Color"/></span>
-                Color option.  This allows you to assign a color to all the selected rooms.
+                Color option.  This will bring up a color picker that can assign a color to all the selected rooms.
             </p>
             <p>
                 Use the slider to adjust the hue.  Saturation and Brightness are fixed.
             </p>
             <p>
-                Click <span class="docButton">Save</span> to save the color change.  Using <strong>Escape</strong> or
-                otherwise closing the color menu without saving will revert any changes.
+                Click <span class="docButton">Save</span> or just close the color picker to save the color change.
             </p>
             <p>
                 Click <span class="docButton">Clear</span> to reset the selected rooms back to gray.
@@ -657,15 +656,14 @@
             <p>
                 Any room can have a label assigned to it.  Under the room menu is a
                 <span class="docImgButton"><img src="icons/icon-room-label.png" srcset="icons2x/icon-room-label.png 2x" title="Label"/></span>
-                Label option.  It's only available if a single room is selected.
+                Label option that will bring up a label editor.  It's only available if a single room is selected.
             </p>
             <p>
                 Enter the room's label in the the text box.  The label can have multiple lines.  It will be centered
                 on the selected room.
             </p>
             <p>
-                Click <span class="docButton">Save</span> to save the label change.  Using <strong>Escape</strong> or
-                otherwise closing the label menu without saving will revert any changes.
+                Click <span class="docButton">Save</span> or just close the label editor to save the label change.
             </p>
             <p>
                 Click <span class="docButton">Clear</span> to remove the label from the selected room.
@@ -675,10 +673,6 @@
             </p>
             <p>
                 A room can be selected and dragged by clicking on its label.
-            </p>
-            <p>
-                <strong class="warn">There's no limit on the size of a label, but the size of the exported PNG is
-                    determined by the visible dojo rooms and not the labels</strong>
             </p>
 
             <h3 id="LabelObject">Label Object</h3>
@@ -692,6 +686,11 @@
             <p>
                 The Label object does not count towards the resource totals or dojo boundaries.  It allows you to place
                 a label that's not tied to the center of a dojo room.  You can place as many of these as you want.
+            </p>
+            <p>
+                <strong class="warn">When generating a PNG, the boundaries of the image are determined by the actual rooms
+                and not the labels.</strong>  There is a little bit of a margin, but if a label is too big, or if
+                a label object is placed too far away from the rooms themselves, then it won't show up completely.
             </p>
 
 

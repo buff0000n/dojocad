@@ -44,8 +44,14 @@ function clearMenus(leave = 0) {
         menu.remove();
         // check if the menu had an undo action associated with it
         if (menu.undoAction) {
-            // undo the action
-            menu.undoAction.undoAction();
+            // handle the undo action
+            if (menu.actionSuccessful) {
+                if (menu.undoAction.isAChange()) {
+                    addUndoAction(menu.undoAction);
+                }
+            } else {
+                menu.undoAction.undoAction();
+            }
         }
     }
     // might as well clear all popups
@@ -54,6 +60,12 @@ function clearMenus(leave = 0) {
     if (!debugEnabled) {
         hideDebug();
 	}
+}
+
+function clearLastMenu() {
+    if (getCurrentMenuLevel() > 0) {
+        clearMenus(getCurrentMenuLevel() - 1);
+    }
 }
 
 function buildMenu(className = "menu-table") {
@@ -111,7 +123,7 @@ function buildCloseMenuButton() {
     // doesn't look dumb
     buttonDiv.style = "text-align: right";
 //    buttonDiv.className = "field";
-    buttonDiv.innerHTML = `<img class="imgButton" src="icons/icon-close.png" srcset="icons2x/icon-close.png 2x" title="Close Menu"/>`;
+    buttonDiv.innerHTML = `<img class="imgButton closeMenuButton" src="icons/icon-close.png" srcset="icons2x/icon-close.png 2x" title="Close Menu"/>`;
     buttonDiv.onclick = doCloseMenu;
     buttonDiv.menuLevel = getCurrentMenuLevel();
     return buttonDiv;
@@ -245,7 +257,7 @@ function menuPlacementHack2(menuDiv) {
     }
 }
 
-function showMenu(menuDiv, element, fullWidth = false) {
+function getMenuCoordsFromElement(element, fullWidth = false) {
 	var elementBcr = element.getBoundingClientRect();
 	if (getCurrentMenuLevel() == 0) {
 		var left = fullWidth ? 0 : elementBcr.left;
@@ -255,7 +267,11 @@ function showMenu(menuDiv, element, fullWidth = false) {
 		var left = fullWidth ? 0 : elementBcr.right;
 		var top = elementBcr.top;
 	}
+	return [left, top];
+}
 
+function showMenu(menuDiv, element, fullWidth = false) {
+    var [left, top] = getMenuCoordsFromElement(element, fullWidth)
 	showMenuAt(menuDiv, left, top);
 }
 
@@ -662,13 +678,19 @@ function doLabelMenu() {
 	// has to be a single selected room
 	var room = selectedRooms[0];
 
+	// get the menu coords directly and close the original menu
+    var [left, top] = getMenuCoordsFromElement(button)
+    clearMenus(0);
+
     var menuDiv = buildMenu();
     // start a label change action and put it on the menu
     // if this menu is closed without clicking save then the changes will be reverted
     var action = new ChangeLabelAction(room);
     menuDiv.undoAction = action;
+    // just go ahead and commit whatever was done regardless of how the menu was closed.  That's what we have undo for.
+    menuDiv.actionSuccessful = true;
     // title
-    menuDiv.appendChild(buildMenuHeaderLine("Label", 3));
+    menuDiv.appendChild(buildMenuHeaderLine("Label", 3, menuLevel=0));
 
     // row for the label editor text area
     var tr = document.createElement("tr");
@@ -712,7 +734,7 @@ function doLabelMenu() {
     // clear option
     menuDiv.appendChild(buildMenuButton("Clear", () => { menuDiv.undoAction = null ; clearSelectedRoomsLabels(action); } ));
 
-    showMenu(menuDiv, button);
+    showMenuAt(menuDiv, left, top);
 
     // after the menu is shown, automatically put the cursor into the text area
     // and select its contents
@@ -746,13 +768,19 @@ var sliderShiftKey = false;
 function doColorMenu() {
 	var button = getMenuTarget();
 
+	// get the menu coords directly and close the original menu
+    var [left, top] = getMenuCoordsFromElement(button)
+    clearMenus(0);
+
     var menuDiv = buildMenu();
     var action = new ChangeHueAction(selectedRooms);
     // start a hue change action and put it on the menu
     // if this menu is closed without clicking save then the changes will be reverted
     menuDiv.undoAction = action;
+    // just go ahead and commit whatever was done regardless of how the menu was closed.  That's what we have undo for.
+    menuDiv.actionSuccessful = true;
     // title
-    menuDiv.appendChild(buildMenuHeaderLine("Color", 3));
+    menuDiv.appendChild(buildMenuHeaderLine("Color", 3, menuLevel=0));
 
     // row for the hue slider
     var tr = document.createElement("tr");
@@ -855,7 +883,7 @@ function doColorMenu() {
     // clear option
     menuDiv.appendChild(buildMenuButton("Clear", () => { menuDiv.undoAction = null; clearSelectedRoomsColor(action); } ));
 
-    showMenu(menuDiv, button);
+    showMenuAt(menuDiv, left, top);
 }
 
 function buildMenuInput(label, input, units = null) {
