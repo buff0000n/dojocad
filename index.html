@@ -230,7 +230,7 @@
         <div class="helpContainer">
             <p style="text-align: center;">
                 <span class="title">DojoCAD</span><br/>
-                v1.5.7: 2021-03-30<br/>
+                v2.0.0: 2021-04-04<br/>
                 <a href="https://github.com/buff0000n/dojoarch">Source</a>&nbsp;
                 <a href="https://github.com/buff0000n/dojoarch/issues/2">Feedback</a>&nbsp;
                 <a href="https://github.com/buff0000n/dojocad/issues/new">Bugs</a><br/>
@@ -318,14 +318,34 @@
                 <li>
                     <a href="#Editing">Editing</a>
                     <ul>
-                        <li><a href="#SelectingARoom">Selecting a Room</a></li>
-                        <li><a href="#AddingARoom">Adding a Room</a></li>
-                        <li><a href="#MovingARoom">Moving a Room</a></li>
-                        <li><a href="#RotatingARoom">Rotating a Room</a></li>
+                        <li>
+                            <a href="#SelectingARoom">Selecting a Room</a>
+                            <ul>
+                                <li>
+                                    <a href="#Multiselection">Multiselection</a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li><a href="#AddingARoom">Adding Rooms</a></li>
+                        <li><a href="#MovingARoom">Moving Rooms</a></li>
+                        <li><a href="#RotatingARoom">Rotating Rooms</a></li>
                         <li><a href="#ChangingARoomsFloor">Changing an Elevator's Floor</a></li>
-                        <li><a href="#DeletingARoom">Deleting a Room</a></li>
+                        <li><a href="#DeletingARoom">Deleting Rooms</a></li>
+                        <li><a href="#CopyAndPaste">Copy and Paste</a></li>
                         <li><a href="#DeletingEverything">Deleting Everything</a></li>
                         <li><a href="#UndoRedo">Undo and Redo</a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#Cosmetics">Cosmetics</a>
+                    <ul>
+                        <li><a href="#Colors">Colors</a></li>
+                        <li>
+                            <a href="#Labels">Labels</a>
+                            <ul>
+                                <li><a href="#LabelObject">Label Object</a></li>
+                            </ul>
+                        </li>
                     </ul>
                 </li>
                 <li>
@@ -424,7 +444,22 @@
                 if you can see the lower room through the holes in the upper one.</strong>
             </p>
 
-            <h2 id="AddingARoom">Adding a Room</h2>
+            <h3 id="Multiselection">Multiselection</h3>
+            <p>
+                Hold the <strong>Shift</strong> key or click the
+                <span class="docImgButton"><img src="icons/icon-multiselect.png" srcset="icons2x/icon-multiselect.png 2x" title="Multiselect"/></span>
+                button to enable multiselect mode.
+            </p>
+            <p>
+                While multiselect is enabled, clicking on rooms will add them to the current selection.  Clicking on an
+                already selected room will unselect it.
+            </p>
+            <p>
+                While multiselect is enabled, clicking and dragging will create a selection box.  All rooms in the selection
+                box will be added to the current selection when the mouse button or touch is released.
+            </p>
+
+            <h2 id="AddingARoom">Adding Rooms</h2>
             <p>
                 Click the <span class="docImgButton"><img src="icons/icon-add.png" srcset="icons2x/icon-add.png 2x" title="Add Room"/></span>
                 button to show a menu of room categories.  Click one of these categories to show a menu of rooms.
@@ -432,33 +467,34 @@
                 place it.
             </p>
             <p>
-                If you have already added a room once, then the <span class="docImgButton"><img src="icons/icon-add.png" srcset="icons2x/icon-add.png 2x" title="Add Room"/></span>
+                If you have already added a room once, then the
+                <span class="docImgButton"><img src="icons/icon-add.png" srcset="icons2x/icon-add.png 2x" title="Add Room"/></span>
                 menu will contain a quick option at the bottom to add another copy of the last room you added.
             </p>
             <p>
-                Clicking again on the currently selected room will bring up a menu.  Click
-                <span class="docButton">Duplicate</span> to create a copy of that room to place somewhere else.
+                Clicking on the currently selected room or rooms will bring up the room menu.  Click
+                <span class="docButton">Duplicate</span> to create a copy of the room or rooms to place somewhere else.
             </p>
             <p>
-                Hitting the <strong>D</strong> key when a room is selected will duplicate it without having to bring
-                up the menu.
+                Hitting the <strong>D</strong> key when a room or rooms are selected will duplicate the without having
+                to bring up the menu.
             </p>
             <p>
-                Hitting <strong>Escape</strong> while dragging a newly created room for the first time will cancel the
-                add operation and remove the room.
+                Hitting <strong>Escape</strong> while dragging a newly created room or rooms for the first time will
+                cancel the add operation and remove the room or rooms.
             </p>
 
-            <h2 id="MovingARoom">Moving a Room</h2>
+            <h2 id="MovingARoom">Moving Rooms</h2>
             <p>
-                After selecting a room, click again and drag on that room to move it.
+                After selecting one or more rooms, click again and drag on one of the selected rooms to move them.
             </p>
             <p>
-                Hold down <strong>Shift</strong> while dragging a room to snap its position to the nearest 8 meters
-                on the grid.  Otherwise the room's position is snapped to the nearest meter.
+                Hold down <strong>Shift</strong> while dragging rooms to snap their position to the nearest 8 meters
+                on the grid.  Otherwise the rooms' positions are snapped to the nearest meter.
             </p>
             <p>
-                If you drag the room so one of its doors is close to another room's door that's facing the opposite
-                direction, then your room will be snapped to that door.
+                If you drag one room so one of its doors is close to another room's door that's facing the opposite
+                direction, then all of your currently selected rooms will be snapped to connect those doors.
             </p>
             <ul>
                 <li>The zone of sensitivity with door snapping does not change with zoom.  If you're having trouble
@@ -471,44 +507,78 @@
                 in the process of being placed for the first time.
             </p>
             <p>
-                Hitting <strong>Escape</strong> while dragging a room will cancel the operation and return the room
-                to where it started.
+                Hitting <strong>Escape</strong> while dragging one or more rooms will cancel the operation and return
+                the rooms to where they started.
             </p>
 
-            <h2 id="RotatingARoom">Rotating a Room</h2>
+            <h2 id="RotatingARoom">Rotating Rooms</h2>
             <p>
-                Clicking again on the currently selected room will bring up a menu.  Click
+                Clicking again on the a currently selected room will bring up a menu.  Click
                 <span class="docImgButton"><img src="icons/icon-rotate-cw.png" srcset="icons2x/icon-rotate-cw.png 2x" title="Rotate"/></span>
-                to rotate the room 90 degrees.
+                to rotate the rooms 90 degrees.
             </p>
             <p>
-                Hold down <strong>Shift</strong> and click on the selected room to rotate it 90 degrees without
-                having to bring up a menu.
+                You can also press the <strong>R</strong> key to rotate the seleted rooms.  This also works while
+                dragging the rooms.
             </p>
             <p>
-                You can also press the <strong>R</strong> key to rotate the seleted room.  This also works while
-                dragging the room.
+                If more than one room is selected, then all of the rooms will be rotated together.  The center of
+                rotation depends on how the rotation was triggered.
             </p>
+            <ul>
+                <li>If the rotation was triggered from the
+                    <span class="docImgButton"><img src="icons/icon-rotate-cw.png" srcset="icons2x/icon-rotate-cw.png 2x" title="Rotate"/></span>
+                    option on the room menu, then the room that was clicked on to bring up the menu is the center or
+                    rotation.</li>
+                <li>If the rotation was triggered while dragging rooms, the room that was clicked to start the
+                    drag operation is the center of rotation.</li>
+                <li>If you're just using the <strong>R</strong> key with a set of selected rooms, then the center of
+                    rotation is the center of the rooms' combined bounding box.</li>
+            </ul>
 
             <h2 id="ChangingARoomsFloor">Changing an Elevator's Floor</h2>
             <p>
                 Elevators span two floors, either going up from the current floor or going down.  To switch which
-                direction an elevator is going, select it and then click again to bring up a menu.  Select
+                direction an elevator is going, select only that elevator and then click again to bring up the room menu.  Select
                 <span class="docImgButton"><img src="icons/icon-change-floor.png" srcset="icons2x/icon-change-floor.png 2x" title="Change Floor"/></span>
                 to swap the direction the elevator is going.
             </p>
 
-            <h2 id="DeletingARoom">Deleting a Room</h2>
+            <h2 id="DeletingARoom">Deleting Rooms</h2>
             <p>
-                Clicking again on the currently selected room will bring up a menu.  Click
+                Clicking again on a currently selected room will bring up the room menu.  Click
                 <span class="docImgButton"><img src="icons/icon-delete.png" srcset="icons2x/icon-delete.png 2x" title="Delete"/></span>
-                to delete the room.
+                to delete the selected room or rooms.
             </p>
             <p>
-                Press the <strong>Delete</strong> key to delete the selected room without having to bring up a menu.
+                Press the <strong>Delete</strong> key to delete the selected rooms without having to bring up a menu.
             </p>
             <p>
-                Hold down <strong>Alt</strong> and click on a room to delete it with one click.
+                Hold down <strong>Alt</strong> and click on an unselected room to delete it with one click.
+            </p>
+            <p>
+                Hold down <strong>Alt</strong> and click on an selected room to delete all selected rooms with one click.
+            </p>
+
+            <h2 id="CopyAndPaste">Copy and Paste</h2>
+            <p>
+                With one or more rooms selected, click on a selected room and use the
+                <span class="docImgButton"><img src="icons/icon-copy.png" srcset="icons2x/icon-copy.png 2x" title="Copy"/></span>
+                Copy option in the room menu to copy the selected rooms to an internal clipboard.  You can also use
+                <strong>Control-C</strong>.
+            </p>
+            <p>
+                Use the
+                <span class="docImgButton"><img src="icons/icon-cut.png" srcset="icons2x/icon-cut.png 2x" title="Cut"/></span>
+                Cut option or <strong>Control-X</strong> to copy the selected room or rooms to
+                the internal clipboard and delete the originals.
+            </p>
+            <p>
+                When there are rooms on the clipboard, Under the
+                <span class="docImgButton"><img src="icons/icon-add.png" srcset="icons2x/icon-add.png 2x" title="Add Room"/></span>
+                Add menu will be a
+                <span class="docImgButton"><img src="icons/icon-paste.png" srcset="icons2x/icon-paste.png 2x" title="Paste"/></span>
+                Paste option.  You can also use <strong>Control-P</strong>.
             </p>
 
             <h2 id="DeletingEverything">Deleting Everything</h2>
@@ -525,23 +595,94 @@
             <h2 id="UndoRedo">Undo and Redo</h2>
             <p>
                 Click on <span class="docImgButton"><img src="icons/icon-undo.png" srcset="icons2x/icon-undo.png 2x" title="Undo"/></span>
-                do undo your last action.  Actions include <strong>moving</strong>, <strong>rotating</strong>,
-                <strong>changing floors</strong>, <strong>adding</strong>, and <strong>deleting</strong> a room.  You
-                can continue clicking <span class="docImgButton"><img src="icons/icon-undo.png" srcset="icons2x/icon-undo.png 2x" title="Undo"/></span>
-                to undo previous actions.
+                or use <strong>Control-Z</strong> to undo your last action.  Actions include <strong>moving</strong>,
+                <strong>rotating</strong>, <strong>changing floors</strong>, <strong>adding</strong>,
+                <strong>deleting</strong>, and <strong>changing the selection</strong>.  You can continue clicking
+                <span class="docImgButton"><img src="icons/icon-undo.png" srcset="icons2x/icon-undo.png 2x" title="Undo"/></span>
+                or using <strong>Control-Z</strong> to undo previous actions.
             </p>
             <p>
                 Click <span class="docImgButton"><img src="icons/icon-redo.png" srcset="icons2x/icon-redo.png 2x" title="Redo"/></span>
-                to redo an action you have just undone.  You can continue clicking
+                or use <strong>Control-Shift-Z</strong> or <strong>Control-Y</strong> to redo an action you have just
+                undone.  You can continue clicking
                 <span class="docImgButton"><img src="icons/icon-undo.png" srcset="icons2x/icon-undo.png 2x" title="Undo"/></span>
-                to redo previously undone actions.
+                or using <strong>Control-Shift-Z</strong>/<strong>Control-Y</strong> to redo previously undone actions.
             </p>
             <p>
                 Performing another action after undoing will clear out all the redoable actions.
             </p>
             <p>
-                <strong class="warn">You can undo a maximum of 100 actions.</strong>
+                <strong class="warn">You can undo a maximum of 250 actions.</strong>
             </p>
+
+            <h1 id="Cosmetics">Cosmetics</h1>
+            <p>
+                There are a few cosmetic options available, beyond what's in the game.  They don't affect any of the
+                core layout mechanics or rules.  They are intended for making the layout easier to follow and
+                understand.
+            </p>
+            <p>
+                Duplicating or copying a room will carry over any cosmetic customizations.
+            </p>
+
+            <h2 id="Colors">Colors</h2>
+            <p>
+                By default, rooms are gray like they appear in the in-game map.  However, under the room menu is a
+                <span class="docImgButton"><img src="icons/icon-color.png" srcset="icons2x/icon-color.png 2x" title="Color"/></span>
+                Color option.  This allows you to assign a color to all the selected rooms.
+            </p>
+            <p>
+                Use the slider to adjust the hue.  Saturation and Brightness are fixed.
+            </p>
+            <p>
+                Click <span class="docButton">Save</span> to save the color change.  Using <strong>Escape</strong> or
+                otherwise closing the color menu without saving will revert any changes.
+            </p>
+            <p>
+                Click <span class="docButton">Clear</span> to reset the selected rooms back to gray.
+            </p>
+
+            <h2 id="Labels">Labels</h2>
+            <p>
+                Any room can have a label assigned to it.  Under the room menu is a
+                <span class="docImgButton"><img src="icons/icon-room-label.png" srcset="icons2x/icon-room-label.png 2x" title="Label"/></span>
+                Label option.  It's only available if a single room is selected.
+            </p>
+            <p>
+                Enter the room's label in the the text box.  The label can have multiple lines.  It will be centered
+                on the selected room.
+            </p>
+            <p>
+                Click <span class="docButton">Save</span> to save the label change.  Using <strong>Escape</strong> or
+                otherwise closing the label menu without saving will revert any changes.
+            </p>
+            <p>
+                Click <span class="docButton">Clear</span> to remove the label from the selected room.
+            </p>
+            <p>
+                If a room has a color customization then that color also applies to the label.
+            </p>
+            <p>
+                A room can be selected and dragged by clicking on its label.
+            </p>
+            <p>
+                <strong class="warn">There's no limit on the size of a label, but the size of the exported PNG is
+                    determined by the visible dojo rooms and not the labels</strong>
+            </p>
+
+            <h3 id="LabelObject">Label Object</h3>
+            <p>
+               Under the <strong>Utility</strong> section of the
+                <span class="docImgButton"><img src="icons/icon-add.png" srcset="icons2x/icon-add.png 2x" title="Add Room"/></span>
+                Add menu there is a
+                <span class="docImgButton"><img src="icons/icon-room-label.png" srcset="icons2x/icon-room-label.png 2x" title="Label"/></span>
+                Label object.
+            </p>
+            <p>
+                The Label object does not count towards the resource totals or dojo boundaries.  It allows you to place
+                a label that's not tied to the center of a dojo room.  You can place as many of these as you want.
+            </p>
+
 
             <h1 id="Constraints">Constraints</h1>
             <p>
@@ -557,8 +698,8 @@
                 <li><strong>Room Count:</strong> There's a hard limit of 128 rooms total.</li>
                 <li><strong>Energy:</strong> Each room requires some amount of Energy.  You must build
                     <strong>Reactors</strong> to increase the available energy.</li>
-                <li><strong>Capacity:</strong> Each room requires some amount of Capacity.  You must build each
-                    <strong>Clan Hall</strong> to get more capacity.</li>
+                <li><strong>Capacity:</strong> Each room requires some amount of Capacity.  You must build
+                    <strong>Clan Halls</strong> or other Halls to get more capacity.</li>
             </ul>
             <p>
                 The current Room count, Energy, and Capacity of your dojo is displayed in the lower left.  When any
@@ -620,14 +761,18 @@
                 There are a handful of constraints that apply to specific rooms:
             </p>
             <ul>
-                <li>You can only have one of each <strong>Clan Hall</strong></li>
-                <li>You need at least one <strong>Clan Hall</strong></li>
                 <li>
-                    Each <strong>Clan Hall</strong> is the prerequisite for the next bigger <strong>Clan Hall</strong>
-                    <ul><li>With the exception of the starter <strong>Hall</strong>, which can be demolished after
-                        building the <strong>Clan Great Hall</strong></li></ul>
+                    You need at least one <strong>Spawn Room</strong>.  Possible spawn rooms are:
+                    <ul>
+                        <li>Any of the <strong>Clan Halls</strong></li>
+                        <li><strong>Inspiration Hall</strong></li>
+                        <li><strong>Entrati Audience Chamber</strong></li>
+                        <li><strong>Infested Chamber</strong></li>
+                        <li><strong>Starlight Market</strong></li>
+                    </ul>
                 </li>
                 <li>An <strong>Oracle</strong> is the prequisite for all the Labs</li>
+                <li>You can only have one of each <strong>Clan Hall</strong></li>
                 <li>You can only have up to three <strong>Inspiration Halls</strong></li>
                 <li>You can only have up to five <strong>Obstacle Course Architect</strong> rooms</li>
                 <li>You can only have up to four <strong>Barracks</strong></li>
@@ -802,11 +947,15 @@
                 <li>The Infested Hall and Starlight Market require 5 energy instead of 2 for some reason
                     (Thanks <strong>Smerkut</strong>)</li>
             </ul>
+            <h3 id="UpdateNotes2.0">v2.0: 2021-04-04</h3>
+            <ul>
+                <li>Multiselect, copy/paste</li>
+                <li>Labels</li>
+                <li>Color coding</li>
+            </ul>
 
             <h1 id="ToDo">To Do</h1>
             <ul>
-                <li>Labels</li>
-                <li>MULTISELECT</li>
                 <li>
                     Tree structure like a real dojo
                     <ul>
@@ -854,6 +1003,12 @@
                 </li>
                 <li>
                     PNGs exported with Safari look like ass.
+                </li>
+                <li>
+                    Color coding doesn't work when generating PNGs on Safari.
+                </li>
+                <li>
+                    You can't click anywhere on the color slider to select a color, you have to drag the button.
                 </li>
             </ul>
         </div>

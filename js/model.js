@@ -1219,8 +1219,8 @@ class Room {
     getDisplayLabelColor(visible=true) {
         // CSS color value for the label, depending on whether there is a hue specified
         return this.hue ?
-            visible ? "hsl(" + this.hue + ", 75%, 75%)" : "hsl(" + this.hue + ", 75%, 15%)" :
-            visible ? "hsl(0, 0%, 100%)" : "hsl(0, 0%, 15%)";
+            visible ? "hsl(" + this.hue + ", 75%, 75%)" : "hsl(" + this.hue + ", 75%, 10%)" :
+            visible ? "hsl(0, 0%, 100%)" : "hsl(0, 0%, 10%)";
     }
 
     addDisplay(viewContainer) {
