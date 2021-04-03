@@ -510,6 +510,16 @@ td.imgField {
     background-image: url("../icons/color-picker.png");
 }
 
+.colorPickerPreset {
+    border: 1px;
+    border-color: #FFFFFF;
+    border-style: solid;
+    margin: 0;
+    padding: 0;
+    position: absolute;
+    pointer-events: none;
+}
+
 /************************************************************
  * multiselect formatting
  ************************************************************/

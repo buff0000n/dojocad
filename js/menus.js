@@ -740,6 +740,9 @@ function doLabelMenu() {
 //    `;
 //}
 
+// Ugh this is hacky
+var sliderShiftKey = false;
+
 function doColorMenu() {
 	var button = getMenuTarget();
 
@@ -771,6 +774,31 @@ function doColorMenu() {
     // fit the slider as closely as possible into the background color picker image
     slider.style.width ="360px";
     slider.style.padding = "0";
+
+    // get a list of the hues currently in use
+    var snapHues = [];
+    for (var r = 0; r < roomList.length; r++) {
+        if (roomList[r].hue != null) {
+            addToListIfNotPresent(snapHues, roomList[r].hue);
+        }
+    }
+    // distance under which we'll snap the slider to an existing hue
+    var snapDistance = 10;
+
+    // add preset markers
+    for (var h = 0; h < snapHues.length; h++) {
+        var hueDiv = document.createElement("div");
+        hueDiv.className = "colorPickerPreset";
+        // gotta be honest, this is pure guesswork
+        hueDiv.style = `
+            left: ${(16 + snapHues[h]) * (360/376)}px;
+            top: ${(div.boxHeight / 2) - 1}px;
+            width: 0px;
+            height: 3px;
+        `;
+        div.appendChild(hueDiv);
+    }
+
     // meh, just pick the first room in the selection list to initialize the value
     if (selectedRooms[0].hue != null) {
         slider.value = selectedRooms[0].hue;
@@ -786,7 +814,24 @@ function doColorMenu() {
     // event handler for changes to the slider
     function onChange() {
         // get the value
-        var hue = slider.value;
+        var hue = parseInt(slider.value);
+        if (!sliderShiftKey) {
+            // find the nearest existing hue
+            var snapHue = null;
+            var distance = 360;
+            for (var c = 0; c < snapHues.length; c++) {
+                var d = Math.abs(hue - snapHues[c]);
+                if (d < distance) {
+                    snapHue = snapHues[c];
+                    distance = d;
+                }
+            }
+            // if the nearest hue is under the snap distance then snap to that hue
+            if (distance <= snapDistance) {
+                hue = snapHue;
+                slider.value = snapHue;
+            }
+        }
         // todo: this doesn't work
         // setColorSliderThumbColor(hue, 50);
         // update each room's hue in real time

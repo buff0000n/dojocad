@@ -863,7 +863,18 @@ function keyDown(e) {
 
     // ignore typing in a text box
     nodeName = e.target.nodeName;
-    if (nodeName == "TEXTAREA" || nodeName == "INPUT") {
+    if (nodeName == "TEXTAREA") {
+        return;
+    }
+
+    if (nodeName == "INPUT") {
+        switch (e.code) {
+            case "ShiftLeft" :
+            case "ShiftRight" :
+    		    // quick hack to allow disabling snapping in the color picker
+                sliderShiftKey = true;
+                break;
+        }
         return;
     }
 
@@ -998,6 +1009,8 @@ function keyUp(e) {
 		case "ShiftRight" :
 		    // letting up on the shift key disabled multiselect mode
 		    setMultiselectEnabled(false);
+		    // quick hack to allow disabling snapping in the color picker
+            sliderShiftKey = false;
 	}
 }
 

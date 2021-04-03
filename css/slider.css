@@ -23,7 +23,7 @@ input[type=range]::-webkit-slider-thumb {
   width: 16px;
   height: 32px;
   /*background: #808080;*/
-  border: 1px solid #ffffff;
+  border: 2px solid #ffffff;
   cursor: pointer;
   -webkit-appearance: none;
 }
@@ -41,7 +41,7 @@ input[type=range]::-moz-range-thumb {
   width: 16px;
   height: 32px;
   /*background: #808080;*/
-  border: 1px solid #ffffff;
+  border: 2px solid #ffffff;
   cursor: pointer;
 }
 input[type=range]::-ms-track {
@@ -65,7 +65,7 @@ input[type=range]::-ms-thumb {
   width: 16px;
   height: 32px;
   /*background: #808080;*/
-  border: 1px solid #ffffff;
+  border: 2px solid #ffffff;
   cursor: pointer;
   margin-top: 0px;
   /*Needed to keep the Edge thumb centred*/
