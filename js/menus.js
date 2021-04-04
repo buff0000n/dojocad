@@ -45,7 +45,7 @@ function clearMenus(leave = 0) {
         // check if the menu had an undo action associated with it
         if (menu.undoAction) {
             // handle the undo action
-            if (menu.actionSuccessful) {
+            if (menu.actionSuccess) {
                 if (menu.undoAction.isAChange()) {
                     addUndoAction(menu.undoAction);
                 }
@@ -673,6 +673,18 @@ function showResources() {
     showMenuAt(menuDiv, e.clientX, e.clientY);
 }
 
+function addEscapeListener(element) {
+    element.onkeydown = () => {
+        var e = window.event;
+        switch (e.code) {
+            case "Escape" :
+                // escape close the menu
+                clearLastMenu();
+                break;
+        }
+    }
+}
+
 function doLabelMenu() {
 	var button = getMenuTarget();
 	// has to be a single selected room
@@ -688,14 +700,16 @@ function doLabelMenu() {
     var action = new ChangeLabelAction(room);
     menuDiv.undoAction = action;
     // just go ahead and commit whatever was done regardless of how the menu was closed.  That's what we have undo for.
-    menuDiv.actionSuccessful = true;
+    menuDiv.actionSuccess = true;
     // title
-    menuDiv.appendChild(buildMenuHeaderLine("Label", 3, menuLevel=0));
+    menuDiv.appendChild(buildMenuHeaderLine("Label", 3, "icon-room-label"));
 
     // row for the label editor text area
     var tr = document.createElement("tr");
+    tr.append(document.createElement("td"));
+
     var td = document.createElement("td");
-	td.colSpan = "3";
+//	td.colSpan = "3";
 
     // text area for editing the label
     var textArea = document.createElement("textarea");
@@ -708,19 +722,13 @@ function doLabelMenu() {
     // add to the menu
     td.appendChild(textArea);
     tr.appendChild(td);
+    tr.append(document.createElement("td"));
     menuDiv.appendChild(tr);
 
     // escape will be ignored by the default key event handler because it's
-    // in a text area,
-    textArea.onkeydown = () => {
-        var e = window.event;
-        switch (e.code) {
-            case "Escape" :
-                // escape close the menu
-                clearMenus(0);
-                break;
-        }
-    }
+    // in an input element
+    addEscapeListener(textArea);
+
     // key up handler for updating the label on the room in real time
     textArea.onkeyup = () => {
         // update the room label
@@ -728,11 +736,14 @@ function doLabelMenu() {
         room.setLabel(textArea.value);
     }
 
-    // save option
-    menuDiv.appendChild(buildMenuButton("Save", () => { menuDiv.undoAction = null ; setSelectedRoomsLabels(textArea.value, action); }));
-
     // clear option
-    menuDiv.appendChild(buildMenuButton("Clear", () => { menuDiv.undoAction = null ; clearSelectedRoomsLabels(action); } ));
+    menuDiv.appendChild(buildMenuButton("Clear", () => { menuDiv.undoAction = null ; clearSelectedRoomsLabels(action); }, "icon-delete" ));
+
+    // save option
+    menuDiv.appendChild(buildMenuButton("Save", () => { menuDiv.undoAction = null ; setSelectedRoomsLabels(textArea.value, action); }, "icon-save"));
+
+    // cancel option
+    menuDiv.appendChild(buildMenuButton("Cancel", () => { menuDiv.actionSuccess = false; clearLastMenu(); }, "icon-undo"));
 
     showMenuAt(menuDiv, left, top);
 
@@ -778,14 +789,15 @@ function doColorMenu() {
     // if this menu is closed without clicking save then the changes will be reverted
     menuDiv.undoAction = action;
     // just go ahead and commit whatever was done regardless of how the menu was closed.  That's what we have undo for.
-    menuDiv.actionSuccessful = true;
+    menuDiv.actionSuccess = true;
     // title
-    menuDiv.appendChild(buildMenuHeaderLine("Color", 3, menuLevel=0));
+    menuDiv.appendChild(buildMenuHeaderLine("Color", 3, "icon-color"));
 
     // row for the hue slider
     var tr = document.createElement("tr");
+    tr.append(document.createElement("td"));
     var td = document.createElement("td");
-	td.colSpan = "3";
+//	td.colSpan = "3";
 
     // container for the slider
     // this puts the color picker image in the background, behind the slider
@@ -800,8 +812,12 @@ function doColorMenu() {
     slider.min = "0";
     slider.max = "360";
     // fit the slider as closely as possible into the background color picker image
-    slider.style.width ="360px";
+    slider.style.width ="376px";
     slider.style.padding = "0";
+
+    // escape will be ignored by the default key event handler because it's
+    // in an input element
+    addEscapeListener(slider);
 
     // get a list of the hues currently in use
     var snapHues = [];
@@ -817,10 +833,10 @@ function doColorMenu() {
     for (var h = 0; h < snapHues.length; h++) {
         var hueDiv = document.createElement("div");
         hueDiv.className = "colorPickerPreset";
-        // gotta be honest, this is pure guesswork
+        // have to tweak the horizontal position to account for the slider's width
         hueDiv.style = `
-            left: ${(16 + snapHues[h]) * (360/376)}px;
-            top: ${(div.boxHeight / 2) - 1}px;
+            left: ${7 + (snapHues[h])}px;
+            top: 0px;
             width: 0px;
             height: 3px;
         `;
@@ -875,13 +891,17 @@ function doColorMenu() {
     div.appendChild(slider);
     td.appendChild(div);
     tr.appendChild(td);
+    tr.append(document.createElement("td"));
     menuDiv.appendChild(tr);
 
-    // save option
-    menuDiv.appendChild(buildMenuButton("Save", () => { menuDiv.undoAction = null; setSelectedRoomsColor(slider.value, action); } ));
-
     // clear option
-    menuDiv.appendChild(buildMenuButton("Clear", () => { menuDiv.undoAction = null; clearSelectedRoomsColor(action); } ));
+    menuDiv.appendChild(buildMenuButton("Clear", () => { menuDiv.undoAction = null; clearSelectedRoomsColor(action); }, "icon-delete" ));
+
+    // save option
+    menuDiv.appendChild(buildMenuButton("Save", () => { menuDiv.undoAction = null; setSelectedRoomsColor(slider.value, action); }, "icon-save"));
+
+    // cancel option
+    menuDiv.appendChild(buildMenuButton("Cancel", () => { menuDiv.actionSuccess = false; clearLastMenu(); }, "icon-undo"));
 
     showMenuAt(menuDiv, left, top);
 }
@@ -1142,10 +1162,10 @@ function doGenerateColorPicker() {
     var menuDiv = buildMenu();
 	menuDiv.appendChild(buildMenuHeaderLine("Color Picker", 3));
 
-    function generate(width, height, name) {
+    function generate(width, height, name, margin=1) {
         var tr = document.createElement("tr");
         var td = document.createElement("td");
-        var link = generateColorPickerPNGLink(width, height, name);
+        var link = generateColorPickerPNGLink(width, height, name, margin);
         link.onclick = doPngClick;
         td.appendChild(link);
         tr.appendChild(buildBlank());
@@ -1153,7 +1173,7 @@ function doGenerateColorPicker() {
         menuDiv.appendChild(tr);
     }
 
-    generate(360, 40, "color-picker");
+    generate(376, 40, "color-picker", 8);
     generate(64, 32, "icon-color");
     generate(32, 16, "icon-color");
 

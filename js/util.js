@@ -342,7 +342,7 @@ function findCollisions(boxes1, boxes2, threshold = 0) {
 // URL utils
 //////////////////////////////////////////////////////////////////////////
 
-function generateColorPickerPNGLink(width, height, name) {
+function generateColorPickerPNGLink(width, height, name, margin=0) {
 	var canvas = document.createElement("canvas");
 	canvas.width = width;
 	canvas.height = height;
@@ -356,8 +356,9 @@ function generateColorPickerPNGLink(width, height, name) {
     for (var i = 0; i < 360; i++) {
         context.filter = "hue-rotate(" + i + "deg)";
         context.beginPath();
-        context.moveTo((i + 0.5)*(width/360), 0);
-        context.lineTo((i + 0.5)*(width/360), height);
+        var x = margin + ((i + 0.5)*((width - (margin*2))/360));
+        context.moveTo(x, 0);
+        context.lineTo(x, height);
         context.stroke();
     }
 

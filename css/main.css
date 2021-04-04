@@ -504,9 +504,10 @@ td.imgField {
  * Color picker formatting
  ************************************************************/
 .colorPicker {
-    width: 360px;
+    width: 376px;
     margin: 0;
     padding: 0;
+    position: relative;
     background-image: url("../icons/color-picker.png");
 }
 

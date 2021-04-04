@@ -1142,6 +1142,10 @@ class Room {
     }
 
     setLabel(label) {
+        // treat blank as null
+        if (label != null && label.length == 0) {
+            label = null;
+        }
         // check for change
         if (label != this.label) {
             // set the label, taking into account the metadata's default if there is one
@@ -1208,17 +1212,17 @@ class Room {
         // it's in color or not
         // this wouldn't be necessary if CSS had a way to directly filter the
         // red, green, and blue channels of an image
-        return this.hue ? "-display-red.png" : "-display.png";
+        return this.hue != null ? "-display-red.png" : "-display.png";
     }
 
     getDisplayImageFilter() {
         // CSS filter value for the display image, if necessary
-        return this.hue ? " hue-rotate(" + this.hue + "deg)" : "";
+        return this.hue != null ? " hue-rotate(" + this.hue + "deg)" : "";
     }
 
     getDisplayLabelColor(visible=true) {
         // CSS color value for the label, depending on whether there is a hue specified
-        return this.hue ?
+        return this.hue != null ?
             visible ? "hsl(" + this.hue + ", 75%, 75%)" : "hsl(" + this.hue + ", 75%, 10%)" :
             visible ? "hsl(0, 0%, 100%)" : "hsl(0, 0%, 10%)";
     }
