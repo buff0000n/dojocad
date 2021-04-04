@@ -319,12 +319,16 @@ class Vect {
  *    x1, y1, z1, x2, y2, z2.  Where x1 < x2, y1 < y2, z1 < z2
  * The return value is a list of pairs of boxes, one from each side, that collide.
  */
-function findCollisions(boxes1, boxes2, threshold = 0) {
+function findCollisions(boxes1, boxes2, threshold = 0, ignore=true) {
 	var collisions = Array();
 	for (b1 = 0; b1 < boxes1.length; b1++) {
 		for (b2 = 0; b2 < boxes2.length; b2++) {
 			var box1 = boxes1[b1];
 			var box2 = boxes2[b2];
+            // check for ignored flag
+			if (ignore && (box1.ignore || box2.ignore)) {
+			    continue;
+			}
 			if ((box1.x2 + threshold > box2.x1) &&
 			    (box2.x2 + threshold > box1.x1) &&
 			    (box1.y2 + threshold > box2.y1) &&

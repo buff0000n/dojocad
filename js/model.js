@@ -10,6 +10,7 @@ class Bound {
         this.metadata = doorMetadata;
         this.invisible = "true" == doorMetadata.invis;
         this.debugBorder = null;
+        this.ignore = doorMetadata.ignore;
 
         this.collisions = Array();
     }
@@ -847,15 +848,6 @@ class Room {
         // The min X and Y coords are what the image will be anchored to
         this.anchorMX = minBoundsMX - this.mv.x;
         this.anchorMY = minBoundsMY - this.mv.y;
-
-        // check for bounds marked as "discard' in the metadata and
-        // remove them.  They're just for determining the anchor point
-        // This is just the "label" room
-        for (var b = this.bounds.length - 1; b >= 0; b--) {
-            if (this.metadata.bounds[b].discard) {
-                this.bounds.splice(b, 1);
-            }
-        }
     }
 
     select() {
@@ -1765,7 +1757,7 @@ class DojoBounds {
 	includeRoom(room) {
 		for (var b = 0; b < room.bounds.length; b++) {
 			var bound = room.bounds[b];
-			if (!bound.invisible) {
+			if (!bound.invisible && !bound.ignore) {
 				this.includeBound(bound);
 			}
 			var floors = room.getFloors();

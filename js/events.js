@@ -1088,7 +1088,7 @@ function updateMultiselectRooms(mx1, my1, mx2, my2) {
         }
 
         // find collisions
-        var cols = findCollisions(bounds, room.bounds);
+        var cols = findCollisions(bounds, room.bounds, 0, false);
         // check if there are collisions and the room is not currently in the multiselection list
         if (cols.length > 0 && !multiselectRooms.includes(room)) {
             // add to teh list
