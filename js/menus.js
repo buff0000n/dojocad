@@ -534,6 +534,12 @@ function doRoomMenu(e, rooms) {
     // cut option
     menuDiv.appendChild(buildMenuButton("Cut", cutSelectedRooms, "icon-cut"));
 
+    // select all option
+    menuDiv.appendChild(buildMenuButton("Select All", () => {
+        selectAllRoomsOfType(rooms);
+        clearMenus();
+    }, "icon-multiselect"));
+
     // divider
     menuDiv.appendChild(buildMenuDivider(6));
 
@@ -773,9 +779,6 @@ function doLabelMenu() {
 //    `;
 //}
 
-// Ugh this is hacky
-var sliderShiftKey = false;
-
 function doColorMenu() {
 	var button = getMenuTarget();
 
@@ -859,7 +862,7 @@ function doColorMenu() {
     function onChange() {
         // get the value
         var hue = parseInt(slider.value);
-        if (!sliderShiftKey) {
+        if (!snapDisabled) {
             // find the nearest existing hue
             var snapHue = null;
             var distance = 360;
@@ -902,6 +905,9 @@ function doColorMenu() {
 
     // cancel option
     menuDiv.appendChild(buildMenuButton("Cancel", () => { menuDiv.actionSuccess = false; clearLastMenu(); }, "icon-undo"));
+
+    // select all option
+    menuDiv.appendChild(buildMenuButton("Select All", () => { menuDiv.undoAction = null; clearLastMenu(); selectAllRoomsOfColor(selectedRooms)}, "icon-multiselect"));
 
     showMenuAt(menuDiv, left, top);
 }

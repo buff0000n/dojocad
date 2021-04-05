@@ -1160,11 +1160,16 @@ class Room {
             if (reset) {
                 this.resetColorDisplay();
             }
-            // update or clear the hue filter
-			this.display.style.filter = this.getDisplayImageFilter();
-			// if there is a label then update it's filter, too
+            if (this.display) {
+                // update or clear the hue filter
+                this.display.style.filter = this.getDisplayImageFilter();
+            } else if (this.otherFloorDisplay) {
+                // update or clear the hue filter
+                this.otherFloorDisplay.style.filter = "brightness(25%)" + this.getDisplayImageFilter();
+            }
+			// if there is a label then update its filter, too
 			if (this.labelDisplay) {
-			    this.labelDisplay.style.color = this.getDisplayLabelColor();
+			    this.labelDisplay.style.color = this.getDisplayLabelColor(this.isVisible());
 			}
         }
     }
@@ -1191,12 +1196,19 @@ class Room {
         if (this.display) {
             this.display.remove();
         }
-        // create a new display image, either grayscale or with color
-        this.display = this.addDisplayImage(this.getDisplayImageSuffix(), 202);
-        // set the hue filter, if any
-        this.display.style.filter = this.getDisplayImageFilter();
-        // init the display's position, rotation, etc
-        this.updateView();
+        if (viewFloor != null) {
+            if (this.isVisible()) {
+                // create a new display image, either grayscale or with color
+                this.display = this.addDisplayImage(this.getDisplayImageSuffix(), 202);
+                // set the hue filter, if any
+                this.display.style.filter = this.getDisplayImageFilter();
+            } else {
+                this.otherFloorDisplay = this.addDisplayImage(this.getDisplayImageSuffix(), 100 + this.floor);
+                this.otherFloorDisplay.style.filter = "brightness(25%)" + this.getDisplayImageFilter();
+            }
+            // init the display's position, rotation, etc
+            this.updateView();
+        }
     }
 
     getDisplayImageSuffix() {
@@ -1757,7 +1769,7 @@ class DojoBounds {
 	includeRoom(room) {
 		for (var b = 0; b < room.bounds.length; b++) {
 			var bound = room.bounds[b];
-			if (!bound.invisible && !bound.ignore) {
+			if (!bound.invisible) {
 				this.includeBound(bound);
 			}
 			var floors = room.getFloors();

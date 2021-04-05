@@ -321,9 +321,8 @@
                         <li>
                             <a href="#SelectingARoom">Selecting a Room</a>
                             <ul>
-                                <li>
-                                    <a href="#Multiselection">Multiselection</a>
-                                </li>
+                                <li><a href="#Multiselection">Multiselection</a></li>
+                                <li><a href="#SelectAll">Select All</a></li>
                             </ul>
                         </li>
                         <li><a href="#AddingARoom">Adding Rooms</a></li>
@@ -375,15 +374,17 @@
             <ul>
                 <li><strong>Shift-click</strong>: Add a room to the selection</li>
                 <li><strong>Shift-drag</strong>: Add an area of rooms to the selection</li>
-                <li><strong>R</strong>: Rotate the selected room (<i>works while dragging</i>)</li>
-                <li><strong>D</strong>: Duplicate the selected room</li>
+                <li><strong>Drag room-Shift</strong>: Disable door snapping while dragging rooms</li>
+                <li><strong>Drag room-Alt</strong>: Snap to the nearest 8m while dragging rooms</li>
+                <li><strong>R</strong>: Rotate the selected rooms (<i>works while dragging</i>)</li>
+                <li><strong>D</strong>: Duplicate the selected rooms</li>
                 <li><strong>Alt-click</strong>: Delete a room or the selected rooms</li>
                 <li><strong>Control-C</strong>: Copy the selected rooms</li>
                 <li><strong>Control-X</strong>: Cut the selected rooms</li>
                 <li><strong>Control-V</strong>: Paste the previously copied or cut rooms</li>
                 <li><strong>Up arrow key</strong>: Move the view up a floor</li>
                 <li><strong>Down arrow key</strong>: Move the view down a floor</li>
-                <li><strong>Escape</strong>: Cancel adding/moving a room or rooms, cancel the open menu</li>
+                <li><strong>Escape</strong>: Cancel adding/moving a room or rooms or cancel the open menu</li>
             </ul>
             <h1 id="Navigation">Navigation</h1>
             <p>
@@ -463,6 +464,20 @@
                 box will be added to the current selection when the mouse button or touch is released.
             </p>
 
+            <h3 id="SelectAll">Select All</h3>
+            <p>
+                Use <strong>Control-A</strong> to select all rooms on the current floor.
+            </p>
+            <p>
+                Under the room menu, use
+                <span class="docImgButton"><img src="icons/icon-multiselect.png" srcset="icons2x/icon-multiselect.png 2x" title="Select All"/></span>
+                Select All to select all rooms of the same type across the whole dojo.
+            </p>
+            <p>
+                <strong class="warn">Selecting rooms on multiple floors isn't fully baked, but it's in there to make
+                color coding room types easier.</strong>
+            </p>
+
             <h2 id="AddingARoom">Adding Rooms</h2>
             <p>
                 Click the <span class="docImgButton"><img src="icons/icon-add.png" srcset="icons2x/icon-add.png 2x" title="Add Room"/></span>
@@ -493,7 +508,7 @@
                 After selecting one or more rooms, click again and drag on one of the selected rooms to move them.
             </p>
             <p>
-                Hold down <strong>Shift</strong> while dragging rooms to snap their position to the nearest 8 meters
+                Hold down <strong>Alt</strong> while dragging rooms to snap their position to the nearest 8 meters
                 on the grid.  Otherwise the rooms' positions are snapped to the nearest meter.
             </p>
             <p>
@@ -507,8 +522,11 @@
                     particular door when dragging.</li>
             </ul>
             <p>
-                Note that <strong>Shift</strong>-dragging and door snapping also apply to newly created rooms that are
-                in the process of being placed for the first time.
+                Hold down <strong>Shift</strong> while dragging rooms to disable door snapping.
+            </p>
+            <p>
+                Note that <strong>Shift</strong>-dragging, <strong>Alt</strong>-dragging, and door snapping also
+                apply to newly created or pasted rooms that are in the process of being placed for the first time.
             </p>
             <p>
                 Hitting <strong>Escape</strong> while dragging one or more rooms will cancel the operation and return
@@ -652,6 +670,11 @@
                 Click
                 <span class="docImgButton"><img src="icons/icon-undo.png" srcset="icons2x/icon-undo.png 2x" title="Cancel"/></span>
                 Cancel to close the color picker and reset and changes.
+            </p>
+            <p>
+                Click
+                <span class="docImgButton"><img src="icons/icon-multiselect.png" srcset="icons2x/icon-multiselect.png 2x" title="Select All"/></span>
+                Select All to select all rooms with the same color across the whole dojo.
             </p>
             <p>
                 If there are already some rooms with colors in the layout, then those colors will be marked in the
@@ -1042,6 +1065,10 @@
                 </li>
                 <li>
                     You can't click anywhere on the color slider to select a color, you have to drag the button.
+                </li>
+                <li>
+                    Selecting rooms on multiple floors with the <strong>Select All</strong> functions isn't fully
+                    baked right now, but I put in because it makes color coding across the entire dojo easier.
                 </li>
             </ul>
         </div>

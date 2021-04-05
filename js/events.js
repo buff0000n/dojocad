@@ -272,6 +272,8 @@ var multiselectEnabled = false;
 var multiselectCornerPX = null;
 var multiselectCornerPY = null;
 
+var snapDisabled = false;
+
 // adapted from https://www.w3schools.com/howto/howto_js_draggable.asp
 function downEvent(e) {
 	if (mouseDownTarget != null) {
@@ -397,7 +399,8 @@ function dragEvent(e) {
         }
 
         // handle room drag
-        handleRoomDrag(offsetM, clickM, e.shiftKey, dragged);
+        // 8m snapping is enabled with alt key on windows
+        handleRoomDrag(offsetM, clickM, e.altKey, dragged);
 
         // todo: necessary?
 	    for (var r = 0; r < selectedRooms.length; r++) {
@@ -440,30 +443,31 @@ function dragEvent(e) {
     dragged = true;
 }
 
-function handleRoomDrag(offsetM, clickM, shiftKey) {
+function handleRoomDrag(offsetM, clickM, altKey) {
     // track the best door pair for snapping
     var snapDoor = null;
     var snapOtherDoor = null;
 
-    for (var r = 0; r < selectedRooms.length; r++) {
-        // make sure the room is ignoring all selected rooms for checking doors and bounds
-        selectedRooms[r].ignoreRooms = selectedRooms;
-        // set the room's new position and door positions
-        // don't commit in case we need to change the offset for snapping
-        selectedRooms[r].setDragOffset(offsetM.x, offsetM.y, null, false);
-        // find the best door pair for snaping this room
-        var doorPair = selectedRooms[r].getClosestDoorSnapPair();
-        // if there's a door snap pair
-        if (doorPair) {
-            // replace the current door pair if there isn't one or if the new one is closer to the cursor
-            if (!snapDoor ||
-                    doorPair.door.mv.distanceSquared(clickM) < snapDoor.mv.distanceSquared(clickM)) {
-                snapDoor = doorPair.door;
-                snapOtherDoor = doorPair.otherDoor;
+    if (!snapDisabled) {
+        for (var r = 0; r < selectedRooms.length; r++) {
+            // make sure the room is ignoring all selected rooms for checking doors and bounds
+            selectedRooms[r].ignoreRooms = selectedRooms;
+            // set the room's new position and door positions
+            // don't commit in case we need to change the offset for snapping
+            selectedRooms[r].setDragOffset(offsetM.x, offsetM.y, null, false);
+            // find the best door pair for snaping this room
+            var doorPair = selectedRooms[r].getClosestDoorSnapPair();
+            // if there's a door snap pair
+            if (doorPair) {
+                // replace the current door pair if there isn't one or if the new one is closer to the cursor
+                if (!snapDoor ||
+                        doorPair.door.mv.distanceSquared(clickM) < snapDoor.mv.distanceSquared(clickM)) {
+                    snapDoor = doorPair.door;
+                    snapOtherDoor = doorPair.otherDoor;
+                }
             }
         }
     }
-
     // show door markers before snapping, in case any doors reconnect after snapping
     if (!dragged) {
         showDoorMarkers();
@@ -478,7 +482,7 @@ function handleRoomDrag(offsetM, clickM, shiftKey) {
         newOffsetM = offsetM.add(snapOtherDoor.mv.subtract(snapDoor.mv));
 
     // Are we dragging with the shift key down?
-    } else if (shiftKey) {
+    } else if (altKey) {
         // calculate the round adjustment using the dragged location of the clicked room
         var refM = mouseDownTarget.room.mv.add(offsetM);
         // round to the nearest 8m
@@ -724,15 +728,55 @@ function selectRooms(rooms, append=false, undoable=true) {
 // Ctrl-A handler
 function selectAllRoomsOnFloor() {
     // get every room that has at least some part on the current floor
-    var floorRooms = [];
+    var rooms = [];
     for (var r = 0; r < roomList.length; r++) {
         if (roomList[r].getFloors().includes(viewFloor)) {
-            floorRooms.push(roomList[r]);
+            rooms.push(roomList[r]);
         }
     }
 
     // replace the current selection
-    selectRooms(floorRooms, false, true);
+    selectRooms(rooms, false, true);
+}
+
+// select all rooms of a certain type
+function selectAllRoomsOfType(matchingRooms) {
+    // get every room that has at least some part on the current floor
+    var rooms = [];
+    var metadataIds = [];
+    for (var r = 0; r < matchingRooms.length; r++) {
+        addToListIfNotPresent(metadataIds, matchingRooms[r].metadata.id);
+    }
+    for (var r = 0; r < roomList.length; r++) {
+        if (metadataIds.includes(roomList[r].metadata.id)) {
+            rooms.push(roomList[r]);
+        }
+    }
+
+    // replace the current selection
+    selectRooms(rooms, false, true);
+}
+
+// select all rooms of a certain type
+function selectAllRoomsOfColor(matchingRooms) {
+    // get every room that has at least some part on the current floor
+    var rooms = [];
+    var hues = [];
+    for (var r = 0; r < matchingRooms.length; r++) {
+        // filter out null color, for now.
+        // I'm not ready for an easy way to select every room on every floor just yet.
+        if (matchingRooms[r].hue != null) {
+            addToListIfNotPresent(hues, matchingRooms[r].hue);
+        }
+    }
+    for (var r = 0; r < roomList.length; r++) {
+        if (hues.includes(roomList[r].hue)) {
+            rooms.push(roomList[r]);
+        }
+    }
+
+    // replace the current selection
+    selectRooms(rooms, false, true);
 }
 
 function cancelRoomDrag() {
@@ -874,7 +918,7 @@ function keyDown(e) {
             case "ShiftLeft" :
             case "ShiftRight" :
     		    // quick hack to allow disabling snapping in the color picker
-                sliderShiftKey = true;
+                snapDisabled = true;
                 break;
         }
         return;
@@ -927,9 +971,13 @@ function keyDown(e) {
 		    break;
 		case "ShiftLeft" :
 		case "ShiftRight" :
-		    // shift toggles multiselect mode on
+		    // shift toggles multiselect mode on unless we're dragging a room
 		    if (!isDraggingRoom()) {
     		    setMultiselectEnabled(true);
+                e.preventDefault();
+		    } else {
+		        // disables snap when we are dragging a room
+		        snapDisabled = true;
                 e.preventDefault();
 		    }
 		    // drag snapping is taken care of elsewhere
@@ -1009,10 +1057,10 @@ function keyUp(e) {
     switch (e.code) {
 		case "ShiftLeft" :
 		case "ShiftRight" :
-		    // letting up on the shift key disabled multiselect mode
+		    // letting up on the shift key disables multiselect mode
 		    setMultiselectEnabled(false);
-		    // quick hack to allow disabling snapping in the color picker
-            sliderShiftKey = false;
+		    // also disables snapping in the color picker and while dragging rooms
+            snapDisabled = false;
 	}
 }
 
