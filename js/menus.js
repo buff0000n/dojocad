@@ -815,7 +815,7 @@ function doColorMenu() {
     slider.min = "0";
     slider.max = "360";
     // fit the slider as closely as possible into the background color picker image
-    slider.style.width ="376px";
+    slider.style.width ="256px";
     slider.style.padding = "0";
 
     // escape will be ignored by the default key event handler because it's
@@ -838,7 +838,7 @@ function doColorMenu() {
         hueDiv.className = "colorPickerPreset";
         // have to tweak the horizontal position to account for the slider's width
         hueDiv.style = `
-            left: ${7 + (snapHues[h])}px;
+            left: ${7 + ((snapHues[h] * (240/360)))}px;
             top: 0px;
             width: 0px;
             height: 3px;
@@ -1179,7 +1179,7 @@ function doGenerateColorPicker() {
         menuDiv.appendChild(tr);
     }
 
-    generate(376, 40, "color-picker", 8);
+    generate(256, 40, "color-picker", 8);
     generate(64, 32, "icon-color");
     generate(32, 16, "icon-color");
 
