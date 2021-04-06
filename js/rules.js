@@ -5,11 +5,11 @@ class RoomRule {
 	roomRemoved(room) {
 	}
 
-	getNewRoomError(roomMetaData) {
+	getNewRoomError(roomMetaData, num=1) {
 		return null;
 	}
 
-	getNewRoomWarning(roomMetaData) {
+	getNewRoomWarning(roomMetaData, num=1) {
 		return null;
 	}
 
@@ -46,17 +46,34 @@ class RoomCountRule extends RoomRule {
 	}
 
 	roomAdded(room) {
-		this.numRooms++;
+	    if (room.metadata.num != null) {
+    	    // metadata has a num override
+            this.numRooms += room.metadata.num;
+
+	    } else {
+    		this.numRooms++;
+	    }
 		updateStat("numRoomsStat", this.numRooms, this.numRooms > this.maxRooms, this);
 	}
 
 	roomRemoved(room) {
-		this.numRooms--;
+	    if (room.metadata.num != null) {
+    	    // metadata has a num override
+            this.numRooms -= room.metadata.num;
+
+	    } else {
+    		this.numRooms--;
+	    }
+
 		updateStat("numRoomsStat", this.numRooms, this.numRooms > this.maxRooms, this);
 	}
 
-	getNewRoomError(roomMetaData) {
-		if (this.numRooms >= this.maxRooms) {
+	getNewRoomError(roomMetaData, num=1) {
+        // metadata has a num override
+	    if (roomMetaData.num != null) {
+            num = roomMetaData.num;
+	    }
+		if (this.numRooms + num > this.maxRooms) {
 			return this.toString();
 		} else {
 			return null;
@@ -84,8 +101,9 @@ class EnergyRule extends RoomRule {
 		updateStat("energyStat", this.energy, this.energy < 0, this);
 	}
 
-	getNewRoomError(roomMetaData) {
-		if (this.energy + roomMetaData.energy < 0) {
+	getNewRoomError(roomMetaData, num=1) {
+	    // does not apply metadata num override
+		if (this.energy + (roomMetaData.energy * num) < 0) {
 			return this.toString();
 		} else {
 			return null;
@@ -113,8 +131,9 @@ class CapacityRule extends RoomRule {
 		updateStat("capacityStat", this.capacity, this.capacity < 0, this);
 	}
 
-	getNewRoomError(roomMetaData) {
-		if (this.capacity + roomMetaData.capacity < 0) {
+	getNewRoomError(roomMetaData, num=1) {
+	    // does not apply metadata num override
+		if (this.capacity + (roomMetaData.capacity * num) < 0) {
 			return this.toString();
 		} else {
 			return null;
@@ -166,8 +185,9 @@ class MaxNumRule extends RoomRule {
 		}
 	}
 
-	getNewRoomError(roomMetaData) {
-		if (roomMetaData.id == this.id && this.list.length >= this.maxnum) {
+	getNewRoomError(roomMetaData, num=1) {
+	    // does not apply metadata num override
+		if (roomMetaData.id == this.id && (this.list.length + num) > this.maxnum) {
 			return this.toString();
 		} else {
 			return null;
@@ -202,6 +222,8 @@ class PrereqRule extends RoomRule {
 			if (added) {
 				if (addToListIfNotPresent(this.room_list, room) && this.prereq_list.length == 0) {
 					room.addRuleError(this);
+				} else {
+                    room.removeRuleError(this);
 				}
 			} else {
 				removeFromList(this.room_list, room);
@@ -226,7 +248,8 @@ class PrereqRule extends RoomRule {
 		}
 	}
 
-	getNewRoomError(roomMetaData) {
+	getNewRoomError(roomMetaData, num=1) {
+	    // does not apply metadata num override
 		if (roomMetaData.id == this.room_id && this.prereq_list.length == 0) {
 			return this.toString();
 		} else {
@@ -312,7 +335,7 @@ class DiscontinuedRule extends RoomRule {
 		}
 	}
 
-	getNewRoomWarning(roomMetaData) {
+	getNewRoomWarning(roomMetaData, num=1) {
 		if (roomMetaData.discontinued) {
 			return this.toString();
 
@@ -496,10 +519,10 @@ function runRulesOnRoomRemoved(room) {
 	}
 }
 
-function getNewRoomErrors(roomMetaData) {
+function getNewRoomErrors(roomMetaData, num=1) {
 	var errors = Array();
 	for (var i = 0; i < roomRules.length; i++) {
-		var error = roomRules[i].getNewRoomError(roomMetaData);
+		var error = roomRules[i].getNewRoomError(roomMetaData, num);
 		if (error) {
 			errors.push(error);
 		}
@@ -510,7 +533,7 @@ function getNewRoomErrors(roomMetaData) {
 function getNewRoomWarnings(roomMetaData) {
 	var warnings = Array();
 	for (var i = 0; i < roomRules.length; i++) {
-		var warning = roomRules[i].getNewRoomWarning(roomMetaData);
+		var warning = roomRules[i].getNewRoomWarning(roomMetaData, num=1);
 		if (warning) {
 			warnings.push(warning);
 		}

@@ -13,576 +13,8 @@
 <meta name="generator" content="Hands 1.0"/>
 <!-- embedded favicon because why not -->
 <link href="data:image/png;base64,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" rel="icon" type="image/png" />
-<style type="text/css">
-    /* z-index groups:
-        0: body, grid
-        100x: background rooms not on the current floor
-        200x: foreground rooms on the current floor
-        300x: headers, footers, sidebars
-        400x: menus
-        500x: help
-    */
-
-    /* common formatting */
-
-    * {
-        font-family: sans-serif;
-        color: #A0A0C0;
-        touch-action: manipulation;
-    }
-
-    /************************************************************
-     * key element formatting
-     ************************************************************/
-
-    /* remove borders from the body */
-    body {
-        padding: 0;
-        border: 0;
-    }
-
-    /* remove borders from the body and document, disable scrollbars */
-    html, body {
-        margin: 0;
-        height: 100%;
-        overflow: hidden
-        overflow-anchor: none;
-        /*
-        position: fixed;
-        width: 100vw;
-        height: 100vh;
-        @supports (-webkit-appearance:none) {
-            height: calc(var(--vh100, 100vh) - 200px);
-        }
-        */
-
-      /* Hide scrollbar for IE and Edge */
-      -ms-overflow-style: none;
-      /* Hide scrollbar for Firefox */
-      scrollbar-width: none;
-    }
-
-    /* Hide scrollbar for Chrome, Safari and Opera */
-    html::-webkit-scrollbar, body::-webkit-scrollbar {
-      display: none;
-    }
-
-    /* grid div, fill the window with no border and add a repeating background image.
-       the position of the image is changed as the background is dragged */
-    #grid {
-        position: absolute;
-        left: 0;
-        top: 0;
-        width: 100vw;
-        height: 100vh;
-        padding: 0;
-        border: 0;
-        background-image: url("img5x/bg-grid.png");
-        background-repeat: repeat;
-        background-position: 0px 0px;
-        background-size: 160px 160px;
-    }
-
-    /* floating header at the top */
-    #header {
-        background-color: #303050;
-        position: absolute;
-        left: 0ex;
-        top: 0ex;
-        margin: 0;
-        padding: 1ex 1ex;
-        border-radius: 1ex;
-        z-index: 305;
-    }
-
-    /* floating footer at the bottom */
-    #footer {
-        background-color: #303050;
-        position: absolute;
-        bottom: 0ex;
-        right: 0ex;
-        max-width: 75ex;
-        margin: 0;
-        padding: 1ex;
-        border-radius: 1ex;
-        z-index: 308;
-    }
-    /* All the footer stuff was moved to the Help section to save screen real estate
-    #footerToggle {
-        cursor: pointer;
-    }
-    #footerHidden {
-        display: none;
-    }
-    */
-
-    /* floating stats bar at the bottom */
-    #statsBar {
-        background-color: #303050;
-        position: absolute;
-        bottom: 0ex;
-        left: 0ex;
-        margin: 0;
-        padding: 1.5ex 1ex;
-        border-radius: 1ex;
-        z-index: 308;
-    }
-
-    /* floating sidebar */
-    #sidebar {
-        background-color: #303050;
-        position: absolute;
-        top: 50%;
-        transform: translateY(-50%);
-        left: 0ex;
-        margin: 0;
-        padding: 0ex 0ex;
-        border-radius: 1ex;
-        z-index: 308;
-    }
-
-    /* floating help container, fills the right side up to a max width */
-    #help {
-        background-color: #303050;
-        position: absolute;
-        right: 2ex;
-        top: 8ex;
-        bottom: 8ex;
-        max-width: 75ex;
-        margin: 0 0 0 2ex;
-        padding: 2ex;
-        border-radius: 1ex;
-        visibility: hidden;
-        z-index: 500;
-    }
-
-    /* absolutely position the help show/hide button in the upper right corner */
-    #helpToggle {
-        position: absolute;
-        right: 0ex;
-        top: 0ex;
-        z-index: 501;
-    }
-
-    /* help box fills the help container and contains its own scrollbar */
-    .helpBox {
-        height: 100%;
-        /* need to take 3ex off for the 'top' link */
-        height: calc(100% - 3ex);
-        border-radius: 1ex;
-        background: #000000;
-        overflow: auto;
-        overflow-anchor: none;
-    }
-    .helpContainer {
-        padding: 1ex;
-        overflow-anchor: none;
-    }
-
-    /************************************************************
-     * help section formatting
-     ************************************************************/
-
-    h1, h2, h3, h4 {
-        color: A0C0F0;
-    }
-    strong {
-        color: 6080B0;
-    }
-    .warn, .warn * {
-        color: D06040;
-    }
-    a, a i {
-        color: #8080FF
-    }
-    a:visited, a:visited i {
-        color: #D080FF
-    }
-    ul {
-        list-style-type: disc;
-    }
-    li {
-        margin: 0;
-    }
-    .title {
-        color: #6080B0;
-        font-size: 300%;
-        font-variant: small-caps;
-        font-weight: bold;
-    }
-    .helpTop {
-        text-align: right;
-        padding: 0 0 1ex 0;
-    }
-
-    /************************************************************
-     * button/menu formatting
-     ************************************************************/
-
-    .button, .button-disabled, .button-error, .button-clear {
-        margin: 0.5ex;
-        border: none;
-        padding: 0.5ex;
-        text-align: center;
-        text-decoration: none;
-        font-size: 100%;
-        border-radius: 1ex;
-        user-select: none;
-    }
-
-    .button, a.link-button {
-        cursor: pointer;
-        background-color: #7070A0;
-        color: #FFFFFF;
-    }
-
-    .button-disabled {
-        background-color: #303050;
-        color: #808080;
-    }
-
-    .button-disabled > img {
-        filter: saturate(0%) brightness(50%);
-    }
-
-    .button-error {
-        cursor: pointer;
-        background-color: #802020;
-        color: #FFFFFF;
-    }
-
-    #header .button, #header .button-disabled {
-        margin: 1ex;
-        padding: 1ex;
-    }
-
-    .docButton, .docButton-error, .docImgButton, .docImgButton-error, .docImgButton-clear {
-        border: none;
-        text-decoration: none;
-        font-size: 100%;
-        border-radius: 0.5ex;
-    }
-
-    .docButton {
-        margin: 0;
-        padding: 0.1ex 0.5ex;
-        background-color: #7070A0;
-        color: #FFFFFF;
-    }
-
-    .docButton-error {
-        margin: 0;
-        padding: 0.1ex 0.5ex;
-        background-color: #802020;
-        color: #FFFFFF;
-    }
-
-    .docImgButton {
-        margin: 0;
-        padding: 0.5ex 0.5ex;
-        background-color: #7070A0;
-        color: #FFFFFF;
-    }
-
-    .docImgButton-error {
-        margin: 0;
-        padding: 1ex 0.5ex;
-        background-color: #802020;
-        color: #FFFFFF;
-    }
-
-    .docImgButton-clear {
-        margin: 0;
-        padding: 1ex 0;
-    }
-
-    .button > img, .button-disabled > img, .button-error > img, .button-clear > img,
-    .docImgButton > img, .docImgButton-error > img, .docImgButton-clear > img,
-    .field > img, .field-error > img,
-    .menu-button > img, .menu-button-error > img, .menu-button-clear > img {
-        display: inline-block;
-        vertical-align: middle;
-    }
-
-    .docImgButton > img, .docImgButton-error > img , .docImgButton-clear > img {
-        transform: scale(0.75, 0.75);
-    }
-
-    .label {
-        color: #FFFFFF;
-        user-select: none;
-    }
-
-    .field, .field-error {
-        margin: 1ex 1ex 1ex 1ex;
-        border: none;
-        padding: 1ex;
-        text-align: center;
-        text-decoration: none;
-        font-size: 100%;
-        border-radius: 1ex;
-    }
-
-    input, textarea {
-        background-color: #101020;
-        border: none;
-        color: #D0D0F0;
-        padding: 1ex;
-        border-radius: 1ex;
-    }
-    input:invalid {
-        background: #801010;
-    }
-
-    .field, .imgField {
-        background-color: #202030;
-        color: #FFFFFF;
-    }
-
-    .field-error {
-        background-color: #B02020;
-        color: #FFFFFF;
-    }
-
-    td.field {
-        margin: 0;
-        padding: 0ex, 0.5ex;
-        border: 0;
-    }
-
-    td.imgField {
-        margin: 0;
-        padding: 0ex, 0ex;
-        border: 0;
-        border-radius: 1ex;
-    }
-
-    .menu-table, .menu-table-error, .menu-table-warn {
-        margin: 1ex 1ex 1ex 1ex;
-        color: #FFFFFF;
-        border: none;
-        padding: 0;
-        margin: 0;
-        border-spacing: 1ex;
-        border-collapse: separate;
-        text-decoration: none;
-        font-size: 100%;
-        border-radius: 1ex;
-        position: absolute;
-        user-select: none;
-        z-index: 400;
-        box-shadow: 0 0 3px 3px #000000;
-    }
-
-    .menu-table {
-        background-color: #303050;
-    }
-
-    .menu-table-error {
-        background-color: #402020;
-    }
-
-    .menu-table-warn {
-        background-color: #808000;
-        color: #000000;
-    }
-
-    .menu-button, .menu-button-error, .menu-button-warn {
-        margin: 1ex 1ex 1ex 1ex;
-        border: none;
-        padding: 1ex;
-        text-align: center;
-        text-decoration: none;
-        font-size: 100%;
-        border-radius: 1ex;
-        cursor: pointer;
-    }
-
-    .menu-button-clear {
-        margin: 0ex;
-        border: none;
-        padding: 0ex;
-        text-align: center;
-        text-decoration: none;
-        font-size: 100%;
-        border-radius: 1ex;
-        cursor: pointer;
-    }
-
-    .clickable {
-        cursor: pointer;
-    }
-
-    .menu-button {
-        background-color: #7070A0;
-        color: #FFFFFF;
-        user-select: none;
-    }
-
-    .menu-button-error {
-        background-color: #802020;
-        color: #FFFFFF;
-    }
-
-    .menu-button-warn {
-        background-color: #B0B020;
-        color: #000000;
-    }
-
-    .menu-divider {
-        margin: 1ex 1ex 1ex 1ex;
-        background-color: #202030;
-        padding: 1ex;
-        border-radius: 1ex;
-    }
-
-    .imgButton {
-        cursor: pointer;
-    }
-
-    .menu-table-error tr td.field, .menu-table-error tr td.imgField  {
-        background-color: #381818;
-    }
-
-    .menu-table-warn tr td.field, .menu-table-warn tr td.imgField  {
-        background-color: #707000;
-        color: #000000;
-    }
-
-    /************************************************************
-     * elevator formatting
-     ************************************************************/
-
-    .floor-button, .floor-button-selected, .floor-button-error, .floor-button-error-selected, .floor-button-empty, .floor-button-empty-selected {
-        margin: 0.5ex;
-        border: none;
-        padding: 1ex;
-        text-align: center;
-        text-decoration: none;
-        font-size: 100%;
-        border-radius: 1ex;
-        user-select: none;
-    }
-
-    .floor-button {
-        cursor: pointer;
-        background-color: #202030;
-        color: #7070A0;
-    }
-
-    .floor-button-selected {
-        background-color: #505080;
-        color: #FFFFFF;
-    }
-
-    .floor-button-error {
-        cursor: pointer;
-        background-color: #802020;
-        color: #7070A0;
-    }
-
-    .floor-button-error-selected {
-        background-color: #F02020;
-        color: #FFFFFF;
-    }
-
-    .floor-button-empty {
-        cursor: pointer;
-        background-color: #303050;
-        color: #7070A0;
-    }
-
-    .floor-button-empty-selected {
-        background-color: #303050;
-        color: #FFFFFF;
-    }
-
-    #header .button, #header .field, #header .button-error, #header .button-clear, #header .button-disabled,
-    #statsBar .button, #statsBar .field, #statsBar .button-error, #statsBar .button-disabled {
-        margin: 0ex;
-    }
-
-    /************************************************************
-     * error/debug formatting
-     ************************************************************/
-
-    #errorBar {
-        background-color: #B00000;
-	    font-weight: bold;
-	    text-align: left;
-	    color: #FFFFFF;
-        position: absolute;
-        left: 10ex;
-        right: 2ex;
-        top: 10ex;
-        margin: 0;
-        padding: 2ex;
-        border-radius: 1ex;
-        z-index: 307;
-    }
-
-    #debugBar {
-        background-color: #0000B0;
-	    font-weight: bold;
-	    text-align: left;
-	    color: #FFFFFF;
-        position: absolute;
-        left: 10ex;
-        right: 2ex;
-        bottom: 10ex;
-        margin: 0;
-        padding: 2ex;
-        border-radius: 1ex;
-        z-index: 307;
-        visibility: hidden;
-    }
-
-    #errorBar *, #debugBar * {
-	    color: #FFFFFF;
-    }
-
-    .debugBounds, .debugOverlapBounds, .debugDoorBounds, .debugOverlapDoorBounds {
-        position: absolute;
-        border-style: solid;
-        border-width: 1px;
-        z-index: 299;
-        pointer-events: none;
-    }
-    .debugBounds {
-        border-color: #0000FF;
-    }
-    .debugOverlapBounds {
-        border-color: #FF00FF;
-    }
-    .debugDoorBounds {
-        border-color: #00FF00;
-    }
-    .debugOverlapDoorBounds {
-        border-color: #FFFF00;
-    }
-
-    .matrix-table {
-        color: #FFFFFF;
-        background-color: #202030;
-        border: none;
-        padding: 1ex;
-        margin: 1ex;
-        border-collapse: collapse;
-        text-decoration: none;
-        font-size: 100%;
-        position: absolute;
-        z-index: 400;
-    }
-
-    .matrix-table tr td, .matrix-table tr th {
-        border: 1px solid #404040;
-    }
-
-    .matrix-error {
-        background-color: #802020;
-    }
-
-</style>
+<link rel="stylesheet" type="text/css" href="css/main.css"/>
+<link rel="stylesheet" type="text/css" href="css/slider.css"/>
 <!-- imported libs -->
 <script type="text/javascript" language="javascript" src="js/lib/lz-string.js" ></script>
 <!-- internal libs -->
@@ -756,7 +188,7 @@
     }
 
 </script>
-<body onload="init()" onkeydown="keyDown()" onscroll="onScroll()" onresize="onresize()">
+<body onload="init()" onkeydown="keyDown()" onkeyup="keyUp()" onscroll="onScroll()" onresize="onresize()">
 
 <!-- Grid background -->
 <div id="grid"></div>
@@ -770,6 +202,7 @@
     <span id="addRoomButton" class="button" onclick="doAddMenu(this)"><img src="icons/icon-add.png" srcset="icons2x/icon-add.png 2x" title="Add Room"/></span>
     <span id="undoButton" class="button-disabled" onclick="doUndo(this)"><img src="icons/icon-undo.png" srcset="icons2x/icon-undo.png 2x" title="Undo"/></span>
     <span id="redoButton" class="button-disabled" onclick="doRedo(this)"><img src="icons/icon-redo.png" srcset="icons2x/icon-redo.png 2x" title="Redo"/></span>
+    <span id="multiselectButton" class="button-disabled" onclick="doToggleMultiselect(this)"><img src="icons/icon-multiselect.png" srcset="icons2x/icon-multiselect.png 2x" title="Enable Multiselect Mode"/></span>
     <span id="allErrorsButton" class="button-clear" onclick="doShowAllErrors(this)"><img src="icons/icon-ok.png" srcset="icons2x/icon-ok.png 2x" title="OK"/></span>
 </div>
 
@@ -797,7 +230,7 @@
         <div class="helpContainer">
             <p style="text-align: center;">
                 <span class="title">DojoCAD</span><br/>
-                v1.5.7: 2021-03-30<br/>
+                v2.0.0: 2021-04-06<br/>
                 <a href="https://github.com/buff0000n/dojoarch">Source</a>&nbsp;
                 <a href="https://github.com/buff0000n/dojoarch/issues/2">Feedback</a>&nbsp;
                 <a href="https://github.com/buff0000n/dojocad/issues/new">Bugs</a><br/>
@@ -885,14 +318,33 @@
                 <li>
                     <a href="#Editing">Editing</a>
                     <ul>
-                        <li><a href="#SelectingARoom">Selecting a Room</a></li>
-                        <li><a href="#AddingARoom">Adding a Room</a></li>
-                        <li><a href="#MovingARoom">Moving a Room</a></li>
-                        <li><a href="#RotatingARoom">Rotating a Room</a></li>
+                        <li>
+                            <a href="#SelectingARoom">Selecting a Room</a>
+                            <ul>
+                                <li><a href="#Multiselection">Multiselection</a></li>
+                                <li><a href="#SelectAll">Select All</a></li>
+                            </ul>
+                        </li>
+                        <li><a href="#AddingARoom">Adding Rooms</a></li>
+                        <li><a href="#MovingARoom">Moving Rooms</a></li>
+                        <li><a href="#RotatingARoom">Rotating Rooms</a></li>
                         <li><a href="#ChangingARoomsFloor">Changing an Elevator's Floor</a></li>
-                        <li><a href="#DeletingARoom">Deleting a Room</a></li>
+                        <li><a href="#DeletingARoom">Deleting Rooms</a></li>
+                        <li><a href="#CopyAndPaste">Copy and Paste</a></li>
                         <li><a href="#DeletingEverything">Deleting Everything</a></li>
                         <li><a href="#UndoRedo">Undo and Redo</a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#Cosmetics">Cosmetics</a>
+                    <ul>
+                        <li><a href="#Colors">Colors</a></li>
+                        <li>
+                            <a href="#Labels">Labels</a>
+                            <ul>
+                                <li><a href="#LabelObject">Label Object</a></li>
+                            </ul>
+                        </li>
                     </ul>
                 </li>
                 <li>
@@ -920,13 +372,19 @@
 
             <h3 id="KeyboardShortcuts">Keyboard shortcut cheat sheet</h3>
             <ul>
-                <li><strong>Shift-click</strong>: Rotate the selected room</li>
-                <li><strong>R</strong>: Rotate the selected room (<i>works while dragging</i>)</li>
-                <li><strong>D</strong>: Duplicate the selected room</li>
-                <li><strong>Alt-click</strong>: Delete a room</li>
+                <li><strong>Shift-click</strong>: Add a room to the selection</li>
+                <li><strong>Shift-drag</strong>: Add an area of rooms to the selection</li>
+                <li><strong>Drag room-Shift</strong>: Disable door snapping while dragging rooms</li>
+                <li><strong>Drag room-Alt</strong>: Snap to the nearest 8m while dragging rooms</li>
+                <li><strong>R</strong>: Rotate the selected rooms (<i>works while dragging</i>)</li>
+                <li><strong>D</strong>: Duplicate the selected rooms</li>
+                <li><strong>Alt-click</strong>: Delete a room or the selected rooms</li>
+                <li><strong>Control-C</strong>: Copy the selected rooms</li>
+                <li><strong>Control-X</strong>: Cut the selected rooms</li>
+                <li><strong>Control-V</strong>: Paste the previously copied or cut rooms</li>
                 <li><strong>Up arrow key</strong>: Move the view up a floor</li>
                 <li><strong>Down arrow key</strong>: Move the view down a floor</li>
-                <li><strong>Escape</strong>: Cancel adding/moving a room, cancel menu</li>
+                <li><strong>Escape</strong>: Cancel adding/moving a room or rooms or cancel the open menu</li>
             </ul>
             <h1 id="Navigation">Navigation</h1>
             <p>
@@ -985,17 +443,42 @@
                 outline around it.
             </p>
             <p>
-                You can also <strong>shift</strong>-click on a room to automatically select it and start dragging it
-                without having to click twice.
-            </p>
-            <p>
                 You can also click on a room that's not in the current floor but visible in the background in gray to go
                 directly to that room's floor and select it.  <strong class="warn">Note that if there's a room on a
                 floor directly above the room where you're trying to click then you will select that one instead, even
                 if you can see the lower room through the holes in the upper one.</strong>
             </p>
 
-            <h2 id="AddingARoom">Adding a Room</h2>
+            <h3 id="Multiselection">Multiselection</h3>
+            <p>
+                Hold the <strong>Shift</strong> key or click the
+                <span class="docImgButton"><img src="icons/icon-multiselect.png" srcset="icons2x/icon-multiselect.png 2x" title="Multiselect"/></span>
+                button to enable multiselect mode.
+            </p>
+            <p>
+                While multiselect is enabled, clicking on rooms will add them to the current selection.  Clicking on an
+                already selected room will unselect it.
+            </p>
+            <p>
+                While multiselect is enabled, clicking and dragging will create a selection box.  All rooms in the selection
+                box will be added to the current selection when the mouse button or touch is released.
+            </p>
+
+            <h3 id="SelectAll">Select All</h3>
+            <p>
+                Use <strong>Control-A</strong> to select all rooms on the current floor.
+            </p>
+            <p>
+                Under the room menu, use
+                <span class="docImgButton"><img src="icons/icon-multiselect.png" srcset="icons2x/icon-multiselect.png 2x" title="Select All"/></span>
+                Select All to select all rooms of the same type across the whole dojo.
+            </p>
+            <p>
+                <strong class="warn">Selecting rooms on multiple floors isn't fully baked, but it's in there to make
+                color coding room types easier.</strong>
+            </p>
+
+            <h2 id="AddingARoom">Adding Rooms</h2>
             <p>
                 Click the <span class="docImgButton"><img src="icons/icon-add.png" srcset="icons2x/icon-add.png 2x" title="Add Room"/></span>
                 button to show a menu of room categories.  Click one of these categories to show a menu of rooms.
@@ -1003,33 +486,34 @@
                 place it.
             </p>
             <p>
-                If you have already added a room once, then the <span class="docImgButton"><img src="icons/icon-add.png" srcset="icons2x/icon-add.png 2x" title="Add Room"/></span>
+                If you have already added a room once, then the
+                <span class="docImgButton"><img src="icons/icon-add.png" srcset="icons2x/icon-add.png 2x" title="Add Room"/></span>
                 menu will contain a quick option at the bottom to add another copy of the last room you added.
             </p>
             <p>
-                Clicking again on the currently selected room will bring up a menu.  Click
-                <span class="docButton">Duplicate</span> to create a copy of that room to place somewhere else.
+                Clicking on the currently selected room or rooms will bring up the room menu.  Click
+                <span class="docButton">Duplicate</span> to create a copy of the room or rooms to place somewhere else.
             </p>
             <p>
-                Hitting the <strong>D</strong> key when a room is selected will duplicate it without having to bring
-                up the menu.
+                Hitting the <strong>D</strong> key when a room or rooms are selected will duplicate the without having
+                to bring up the menu.
             </p>
             <p>
-                Hitting <strong>Escape</strong> while dragging a newly created room for the first time will cancel the
-                add operation and remove the room.
+                Hitting <strong>Escape</strong> while dragging a newly created room or rooms for the first time will
+                cancel the add operation and remove the room or rooms.
             </p>
 
-            <h2 id="MovingARoom">Moving a Room</h2>
+            <h2 id="MovingARoom">Moving Rooms</h2>
             <p>
-                After selecting a room, click again and drag on that room to move it.
+                After selecting one or more rooms, click again and drag on one of the selected rooms to move them.
             </p>
             <p>
-                Hold down <strong>Shift</strong> while dragging a room to snap its position to the nearest 8 meters
-                on the grid.  Otherwise the room's position is snapped to the nearest meter.
+                Hold down <strong>Alt</strong> while dragging rooms to snap their position to the nearest 8 meters
+                on the grid.  Otherwise the rooms' positions are snapped to the nearest meter.
             </p>
             <p>
-                If you drag the room so one of its doors is close to another room's door that's facing the opposite
-                direction, then your room will be snapped to that door.
+                If you drag one room so one of its doors is close to another room's door that's facing the opposite
+                direction, then all of your currently selected rooms will be snapped to connect those doors.
             </p>
             <ul>
                 <li>The zone of sensitivity with door snapping does not change with zoom.  If you're having trouble
@@ -1038,48 +522,85 @@
                     particular door when dragging.</li>
             </ul>
             <p>
-                Note that <strong>Shift</strong>-dragging and door snapping also apply to newly created rooms that are
-                in the process of being placed for the first time.
+                Hold down <strong>Shift</strong> while dragging rooms to disable door snapping.
             </p>
             <p>
-                Hitting <strong>Escape</strong> while dragging a room will cancel the operation and return the room
-                to where it started.
+                Note that <strong>Shift</strong>-dragging, <strong>Alt</strong>-dragging, and door snapping also
+                apply to newly created or pasted rooms that are in the process of being placed for the first time.
+            </p>
+            <p>
+                Hitting <strong>Escape</strong> while dragging one or more rooms will cancel the operation and return
+                the rooms to where they started.
             </p>
 
-            <h2 id="RotatingARoom">Rotating a Room</h2>
+            <h2 id="RotatingARoom">Rotating Rooms</h2>
             <p>
-                Clicking again on the currently selected room will bring up a menu.  Click
+                Clicking again on the a currently selected room will bring up a menu.  Click
                 <span class="docImgButton"><img src="icons/icon-rotate-cw.png" srcset="icons2x/icon-rotate-cw.png 2x" title="Rotate"/></span>
-                to rotate the room 90 degrees.
+                to rotate the rooms 90 degrees.
             </p>
             <p>
-                Hold down <strong>Shift</strong> and click on the selected room to rotate it 90 degrees without
-                having to bring up a menu.
+                You can also press the <strong>R</strong> key to rotate the seleted rooms.  This also works while
+                dragging the rooms.
             </p>
             <p>
-                You can also press the <strong>R</strong> key to rotate the seleted room.  This also works while
-                dragging the room.
+                If more than one room is selected, then all of the rooms will be rotated together.  The center of
+                rotation depends on how the rotation was triggered.
             </p>
+            <ul>
+                <li>If the rotation was triggered from the
+                    <span class="docImgButton"><img src="icons/icon-rotate-cw.png" srcset="icons2x/icon-rotate-cw.png 2x" title="Rotate"/></span>
+                    option on the room menu, then the room that was clicked on to bring up the menu is the center or
+                    rotation.</li>
+                <li>If the rotation was triggered while dragging rooms, the room that was clicked to start the
+                    drag operation is the center of rotation.</li>
+                <li>If you're just using the <strong>R</strong> key with a set of selected rooms, then the center of
+                    rotation is the center of the rooms' combined bounding box.</li>
+            </ul>
 
             <h2 id="ChangingARoomsFloor">Changing an Elevator's Floor</h2>
             <p>
                 Elevators span two floors, either going up from the current floor or going down.  To switch which
-                direction an elevator is going, select it and then click again to bring up a menu.  Select
+                direction an elevator is going, select only that elevator and then click again to bring up the room menu.  Select
                 <span class="docImgButton"><img src="icons/icon-change-floor.png" srcset="icons2x/icon-change-floor.png 2x" title="Change Floor"/></span>
                 to swap the direction the elevator is going.
             </p>
 
-            <h2 id="DeletingARoom">Deleting a Room</h2>
+            <h2 id="DeletingARoom">Deleting Rooms</h2>
             <p>
-                Clicking again on the currently selected room will bring up a menu.  Click
+                Clicking again on a currently selected room will bring up the room menu.  Click
                 <span class="docImgButton"><img src="icons/icon-delete.png" srcset="icons2x/icon-delete.png 2x" title="Delete"/></span>
-                to delete the room.
+                to delete the selected room or rooms.
             </p>
             <p>
-                Press the <strong>Delete</strong> key to delete the selected room without having to bring up a menu.
+                Press the <strong>Delete</strong> key to delete the selected rooms without having to bring up a menu.
             </p>
             <p>
-                Hold down <strong>Alt</strong> and click on a room to delete it with one click.
+                Hold down <strong>Alt</strong> and click on an unselected room to delete it with one click.
+            </p>
+            <p>
+                Hold down <strong>Alt</strong> and click on an selected room to delete all selected rooms with one click.
+            </p>
+
+            <h2 id="CopyAndPaste">Copy and Paste</h2>
+            <p>
+                With one or more rooms selected, click on a selected room and use the
+                <span class="docImgButton"><img src="icons/icon-copy.png" srcset="icons2x/icon-copy.png 2x" title="Copy"/></span>
+                Copy option in the room menu to copy the selected rooms to an internal clipboard.  You can also use
+                <strong>Control-C</strong>.
+            </p>
+            <p>
+                Use the
+                <span class="docImgButton"><img src="icons/icon-cut.png" srcset="icons2x/icon-cut.png 2x" title="Cut"/></span>
+                Cut option or <strong>Control-X</strong> to copy the selected room or rooms to
+                the internal clipboard and delete the originals.
+            </p>
+            <p>
+                When there are rooms on the clipboard, Under the
+                <span class="docImgButton"><img src="icons/icon-add.png" srcset="icons2x/icon-add.png 2x" title="Add Room"/></span>
+                Add menu will be a
+                <span class="docImgButton"><img src="icons/icon-paste.png" srcset="icons2x/icon-paste.png 2x" title="Paste"/></span>
+                Paste option.  You can also use <strong>Control-P</strong>.
             </p>
 
             <h2 id="DeletingEverything">Deleting Everything</h2>
@@ -1096,23 +617,128 @@
             <h2 id="UndoRedo">Undo and Redo</h2>
             <p>
                 Click on <span class="docImgButton"><img src="icons/icon-undo.png" srcset="icons2x/icon-undo.png 2x" title="Undo"/></span>
-                do undo your last action.  Actions include <strong>moving</strong>, <strong>rotating</strong>,
-                <strong>changing floors</strong>, <strong>adding</strong>, and <strong>deleting</strong> a room.  You
-                can continue clicking <span class="docImgButton"><img src="icons/icon-undo.png" srcset="icons2x/icon-undo.png 2x" title="Undo"/></span>
-                to undo previous actions.
+                or use <strong>Control-Z</strong> to undo your last action.  Actions include <strong>moving</strong>,
+                <strong>rotating</strong>, <strong>changing floors</strong>, <strong>adding</strong>,
+                <strong>deleting</strong>, and <strong>changing the selection</strong>.  You can continue clicking
+                <span class="docImgButton"><img src="icons/icon-undo.png" srcset="icons2x/icon-undo.png 2x" title="Undo"/></span>
+                or using <strong>Control-Z</strong> to undo previous actions.
             </p>
             <p>
                 Click <span class="docImgButton"><img src="icons/icon-redo.png" srcset="icons2x/icon-redo.png 2x" title="Redo"/></span>
-                to redo an action you have just undone.  You can continue clicking
+                or use <strong>Control-Shift-Z</strong> or <strong>Control-Y</strong> to redo an action you have just
+                undone.  You can continue clicking
                 <span class="docImgButton"><img src="icons/icon-undo.png" srcset="icons2x/icon-undo.png 2x" title="Undo"/></span>
-                to redo previously undone actions.
+                or using <strong>Control-Shift-Z</strong>/<strong>Control-Y</strong> to redo previously undone actions.
             </p>
             <p>
                 Performing another action after undoing will clear out all the redoable actions.
             </p>
             <p>
-                <strong class="warn">You can undo a maximum of 100 actions.</strong>
+                <strong class="warn">You can undo a maximum of 250 actions.</strong>
             </p>
+
+            <h1 id="Cosmetics">Cosmetics</h1>
+            <p>
+                There are a few cosmetic options available, beyond what's in the game.  They don't affect any of the
+                core layout mechanics or rules.  They are intended for making the layout easier to follow and
+                understand.
+            </p>
+            <p>
+                Duplicating or copying a room will carry over any cosmetic customizations.
+            </p>
+
+            <h2 id="Colors">Colors</h2>
+            <p>
+                By default, rooms are gray like they appear in the in-game map.  However, under the room menu is a
+                <span class="docImgButton"><img src="icons/icon-color.png" srcset="icons2x/icon-color.png 2x" title="Color"/></span>
+                Color option.  This will bring up a color picker that can assign a color to all the selected rooms.
+            </p>
+            <p>
+                Use the slider to adjust the hue.  Saturation and Brightness are fixed.
+            </p>
+            <p>
+                Click
+                <span class="docImgButton"><img src="icons/icon-delete.png" srcset="icons2x/icon-delete.png 2x" title="Clear"/></span>
+                Clear to reset the selected rooms back to gray.
+            </p>
+            <p>
+                Click
+                <span class="docImgButton"><img src="icons/icon-save.png" srcset="icons2x/icon-save.png 2x" title="Save"/></span>
+                Save or just close the color picker to save the color change.
+            </p>
+            <p>
+                Click
+                <span class="docImgButton"><img src="icons/icon-undo.png" srcset="icons2x/icon-undo.png 2x" title="Cancel"/></span>
+                Cancel to close the color picker and reset and changes.
+            </p>
+            <p>
+                Click
+                <span class="docImgButton"><img src="icons/icon-multiselect.png" srcset="icons2x/icon-multiselect.png 2x" title="Select All"/></span>
+                Select All to select all rooms with the same color across the whole dojo.
+            </p>
+            <p>
+                If there are already some rooms with colors in the layout, then those colors will be marked in the
+                color picker, and moving the slider close enough will snap to them.  The snapping can be disabled
+                by holding the shift key.
+            </p>
+            <p>
+                <strong>Q</strong>: Is this entirely too much attention paid to a color picker?
+            </p>
+            <p>
+                <strong>A</strong>: Not for Warframe
+            </p>
+
+            <h2 id="Labels">Labels</h2>
+            <p>
+                Any room can have a label assigned to it.  Under the room menu is a
+                <span class="docImgButton"><img src="icons/icon-room-label.png" srcset="icons2x/icon-room-label.png 2x" title="Label"/></span>
+                Label option that will bring up a label editor.  It's only available if a single room is selected.
+            </p>
+            <p>
+                Enter the room's label in the the text box.  The label can have multiple lines.  It will be centered
+                on the selected room.
+            </p>
+            <p>
+                Click
+                <span class="docImgButton"><img src="icons/icon-delete.png" srcset="icons2x/icon-delete.png 2x" title="Clear"/></span>
+                Clear to remove the label from the selected room.
+            </p>
+            <p>
+                Click
+                <span class="docImgButton"><img src="icons/icon-save.png" srcset="icons2x/icon-save.png 2x" title="Save"/></span>
+                Save or just close the label editor to save the label change.
+            </p>
+            <p>
+                Click
+                <span class="docImgButton"><img src="icons/icon-undo.png" srcset="icons2x/icon-undo.png 2x" title="Cancel"/></span>
+                Cancel to close the label editor and reset and changes.
+            </p>
+            <p>
+                If a room has a color customization then that color also applies to the label.
+            </p>
+            <p>
+                A room can be selected and dragged by clicking on its label.
+            </p>
+
+            <h3 id="LabelObject">Label Object</h3>
+            <p>
+               Under the <strong>Utility</strong> section of the
+                <span class="docImgButton"><img src="icons/icon-add.png" srcset="icons2x/icon-add.png 2x" title="Add Room"/></span>
+                Add menu there is a
+                <span class="docImgButton"><img src="icons/icon-room-label.png" srcset="icons2x/icon-room-label.png 2x" title="Label"/></span>
+                Label object.
+            </p>
+            <p>
+                The Label object does not count towards the resource totals or dojo boundaries.  It allows you to place
+                a label that's not tied to the center of a dojo room.  You can place as many of these as you want.
+            </p>
+            <p>
+                <strong class="warn">When generating a PNG, the boundaries of the image are determined by the actual rooms
+                and not the labels.</strong>  There is a little bit of a margin, but if a label is too big, or if
+                a label object is placed too far away from the rooms themselves, then it won't show up completely or at
+                all.
+            </p>
+
 
             <h1 id="Constraints">Constraints</h1>
             <p>
@@ -1128,8 +754,8 @@
                 <li><strong>Room Count:</strong> There's a hard limit of 128 rooms total.</li>
                 <li><strong>Energy:</strong> Each room requires some amount of Energy.  You must build
                     <strong>Reactors</strong> to increase the available energy.</li>
-                <li><strong>Capacity:</strong> Each room requires some amount of Capacity.  You must build each
-                    <strong>Clan Hall</strong> to get more capacity.</li>
+                <li><strong>Capacity:</strong> Each room requires some amount of Capacity.  You must build
+                    <strong>Clan Halls</strong> or other Halls to get more capacity.</li>
             </ul>
             <p>
                 The current Room count, Energy, and Capacity of your dojo is displayed in the lower left.  When any
@@ -1191,14 +817,18 @@
                 There are a handful of constraints that apply to specific rooms:
             </p>
             <ul>
-                <li>You can only have one of each <strong>Clan Hall</strong></li>
-                <li>You need at least one <strong>Clan Hall</strong></li>
                 <li>
-                    Each <strong>Clan Hall</strong> is the prerequisite for the next bigger <strong>Clan Hall</strong>
-                    <ul><li>With the exception of the starter <strong>Hall</strong>, which can be demolished after
-                        building the <strong>Clan Great Hall</strong></li></ul>
+                    You need at least one <strong>Spawn Room</strong>.  Possible spawn rooms are:
+                    <ul>
+                        <li>Any of the <strong>Clan Halls</strong></li>
+                        <li><strong>Inspiration Hall</strong></li>
+                        <li><strong>Entrati Audience Chamber</strong></li>
+                        <li><strong>Infested Chamber</strong></li>
+                        <li><strong>Starlight Market</strong></li>
+                    </ul>
                 </li>
                 <li>An <strong>Oracle</strong> is the prequisite for all the Labs</li>
+                <li>You can only have one of each <strong>Clan Hall</strong></li>
                 <li>You can only have up to three <strong>Inspiration Halls</strong></li>
                 <li>You can only have up to five <strong>Obstacle Course Architect</strong> rooms</li>
                 <li>You can only have up to four <strong>Barracks</strong></li>
@@ -1373,11 +1003,15 @@
                 <li>The Infested Hall and Starlight Market require 5 energy instead of 2 for some reason
                     (Thanks <strong>Smerkut</strong>)</li>
             </ul>
+            <h3 id="UpdateNotes2.0">v2.0: 2021-04-04</h3>
+            <ul>
+                <li>Multiselect, copy/paste</li>
+                <li>Labels</li>
+                <li>Color coding</li>
+            </ul>
 
             <h1 id="ToDo">To Do</h1>
             <ul>
-                <li>Labels</li>
-                <li>MULTISELECT</li>
                 <li>
                     Tree structure like a real dojo
                     <ul>
@@ -1425,6 +1059,16 @@
                 </li>
                 <li>
                     PNGs exported with Safari look like ass.
+                </li>
+                <li>
+                    Color coding doesn't work when generating PNGs on Safari.
+                </li>
+                <li>
+                    You can't click anywhere on the color slider to select a color, you have to drag the button.
+                </li>
+                <li>
+                    Selecting rooms on multiple floors with the <strong>Select All</strong> functions isn't fully
+                    baked right now, but I put in because it makes color coding across the entire dojo easier.
                 </li>
             </ul>
         </div>

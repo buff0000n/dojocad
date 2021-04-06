@@ -1,3 +1,7 @@
+//////////////////////////////////////////////////////////////////////////
+// URL utils
+//////////////////////////////////////////////////////////////////////////
+
 var hrefUpdateDelay = 1000;
 var hrefUpdateTimeout = null;
 var hrefToUpdate = null;
@@ -81,6 +85,10 @@ function buildQueryUrl(query) {
     return url;
 }
 
+//////////////////////////////////////////////////////////////////////////
+// PNG conversion
+//////////////////////////////////////////////////////////////////////////
+
 function convertToPngLink(canvas, name) {
     // builds a huuuuge URL with the base-64 encoded PNG data embedded inside it
     var src = canvas.toDataURL();
@@ -93,6 +101,10 @@ function convertToPngLink(canvas, name) {
     a.innerHTML = fileName;
     return a;
 }
+
+//////////////////////////////////////////////////////////////////////////
+// general collection utils
+//////////////////////////////////////////////////////////////////////////
 
 // returns true if the list was changed
 function removeFromList(list, item) {
@@ -167,6 +179,46 @@ function sortKeys(map) {
 	return map2;
 }
 
+//////////////////////////////////////////////////////////////////////////
+// parsing
+//////////////////////////////////////////////////////////////////////////
+
+function quotedSplit(string, splitChar, keepQuotes=false) {
+    var split = [];
+    var token = "";
+    var quoted = false;
+    for (var i = 0; i < string.length; i++) {
+        var c = string[i];
+        if (c == splitChar && !quoted) {
+            split.push(token);
+            token = "";
+            continue;
+
+        } else if (c == '"') {
+            quoted = !quoted;
+            if (keepQuotes) {
+                token = token + c;
+            }
+            continue;
+
+        } else if (c == '\\') {
+            if (i < string.length - 1 && string[i+1] == '"') {
+                if (keepQuotes) {
+                    token = token + c;
+                }
+                i++;
+            }
+        }
+        token = token + string[i];
+    }
+    split.push(token);
+    return split;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// vector class
+//////////////////////////////////////////////////////////////////////////
+
 class Vect {
     constructor(x, y) {
         this.x = x;
@@ -203,12 +255,29 @@ class Vect {
         return this;
     }
 
+    round(rx, ry = rx) {
+        return new Vect(
+            rx * (Math.round(this.x / rx)),
+            ry * (Math.round(this.y / ry))
+         );
+    }
+
     length() {
         return Math.sqrt(this.lengthSquared());
     }
 
     lengthSquared() {
         return (this.x * this.x) + (this.y * this.y);
+    }
+
+    distance(other) {
+        return Math.sqrt(distanceSquared(other));
+    }
+
+    distanceSquared(other) {
+        var dx = this.x - other.x;
+        var dy = this.y - other.y;
+        return (dx * dx) + (dy * dy);
     }
 
     addTo(x, y) {
@@ -235,19 +304,31 @@ class Vect {
     equals(v) {
         return this.x == v.x && this.y == v.y;
     }
+
+    toString() {
+        return `(${this.x.toFixed(2)}, ${this.y.toFixed()})`;
+    }
 }
+
+//////////////////////////////////////////////////////////////////////////
+// collision search
+//////////////////////////////////////////////////////////////////////////
 
 /**
  * boxes1 and boxes2 are Arrays containg box objects.  Box objects contain six fields:
  *    x1, y1, z1, x2, y2, z2.  Where x1 < x2, y1 < y2, z1 < z2
  * The return value is a list of pairs of boxes, one from each side, that collide.
  */
-function findCollisions(boxes1, boxes2, threshold = 0) {
+function findCollisions(boxes1, boxes2, threshold = 0, ignore=true) {
 	var collisions = Array();
 	for (b1 = 0; b1 < boxes1.length; b1++) {
 		for (b2 = 0; b2 < boxes2.length; b2++) {
 			var box1 = boxes1[b1];
 			var box2 = boxes2[b2];
+            // check for ignored flag
+			if (ignore && (box1.ignore || box2.ignore)) {
+			    continue;
+			}
 			if ((box1.x2 + threshold > box2.x1) &&
 			    (box2.x2 + threshold > box1.x1) &&
 			    (box1.y2 + threshold > box2.y1) &&
@@ -259,4 +340,31 @@ function findCollisions(boxes1, boxes2, threshold = 0) {
 		}
 	}
 	return collisions;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// URL utils
+//////////////////////////////////////////////////////////////////////////
+
+function generateColorPickerPNGLink(width, height, name, margin=0) {
+	var canvas = document.createElement("canvas");
+	canvas.width = width;
+	canvas.height = height;
+    var context = canvas.getContext("2d");
+
+    context.fillStyle = "#000000";
+    context.fillRect(0, 0, canvas.width, canvas.height);
+    context.strokeStyle = "#FF0000";
+    context.lineWidth = Math.ceil(width / 360);
+
+    for (var i = 0; i < 360; i++) {
+        context.filter = "hue-rotate(" + i + "deg)";
+        context.beginPath();
+        var x = margin + ((i + 0.5)*((width - (margin*2))/360));
+        context.moveTo(x, 0);
+        context.lineTo(x, height);
+        context.stroke();
+    }
+
+    return convertToPngLink(canvas, name);
 }

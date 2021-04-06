@@ -10,6 +10,7 @@ class Bound {
         this.metadata = doorMetadata;
         this.invisible = "true" == doorMetadata.invis;
         this.debugBorder = null;
+        this.ignore = doorMetadata.ignore;
 
         this.collisions = Array();
     }
@@ -29,7 +30,7 @@ class Bound {
         this.z1 = (this.room.floor * roomMetadata.general.floor_distance) + this.metadata.floor;
         this.z2 = (this.room.floor * roomMetadata.general.floor_distance) + this.metadata.ceil;
     }
-    
+
 	setDebug(debug) {
 		if (debug) {
 	        this.debugBorder = document.createElement("div");
@@ -70,9 +71,13 @@ class Bound {
 		}
 	}
 
-	clearCollisions() {
-		while (this.collisions.length > 0) {
-			this.removeCollision(this.collisions[this.collisions.length - 1]);
+	clearCollisions(exceptRooms = null) {
+	    // easiest to iterate from the end backwards
+	    for (var c = this.collisions.length - 1; c >= 0; c--) {
+	        // remove everything except rooms in the same selection
+	        if (!exceptRooms || !exceptRooms.includes(this.collisions[c].room)) {
+                this.removeCollision(this.collisions[c]);
+	        }
 		}
 	}
 
@@ -200,7 +205,7 @@ class Door {
 		this.otherDoor.connect(this, crossBranch, !incoming);
 
 		if (this.debugBorder) {
-			this.removeDisplay();
+            this.debugBorder.remove();
 		}
 
 		this.room.doorConnected(this);
@@ -247,7 +252,7 @@ class Door {
     showDoorMarker() {
         if (this.floor == viewFloor && !this.otherDoor) {
 	        if (!this.marker) {
-	            this.marker = this.room.addDisplayElement(".png", 205, "marker-door", true);
+	            this.marker = this.room.addDisplayImage(".png", 205, "marker-door", true);
 	        } else {
 		        this.room.viewContainer.appendChild(this.marker);
 	        }
@@ -305,7 +310,7 @@ class Marker {
 
     addDisplay(viewContainer) {
         if (this.floor == viewFloor) {
-	        this.marker = this.room.addDisplayElement(".png", 204, this.metadata.image, true);
+	        this.marker = this.room.addDisplayImage(".png", 204, this.metadata.image, true);
         }
     }
 
@@ -328,15 +333,42 @@ class Marker {
 // Room object utils
 //==============================================================
 
+// needs to be a global regex so all occurrences are replaced
+var quoteRegex = new RegExp('"', "g");
+var newlineRegex = new RegExp('\n', "g");
+
 function roomToString(room) {
-    return room.metadata.id + "," + room.mv.x + "," + room.mv.y + "," + room.floor + "," + (room.rotation / 90)
+    var s = room.metadata.id + "," + room.mv.x + "," + room.mv.y + "," + room.floor + "," + (room.rotation / 90)
+    // hue and label fields are optional
+    if (room.hue != null || room.label != null) {
+        // add the hue or blank if it's null
+        s = s + "," + (room.hue == null ? "" : room.hue);
+        // label is optional
+        if (room.label != null) {
+            // we just need to escape quotes, and then put it in quotes
+            s = s + ',"' + room.label.replace(quoteRegex, '\\"') + '"'
+        }
+    }
+    return s;
 }
 
 function roomFromString(string) {
-    var s = string.split(",");
+    // split by comma taking into account quotes, removing both commas and quotes
+    var s = quotedSplit(string, ",");
     var room = new Room(getRoomMetadata(s[0]));
     // room coordinates may be fractional because of old dojo rooms, floor and rotation are still ints
     room.setPosition(parseFloat(s[1]), parseFloat(s[2]), parseInt(s[3]), parseInt(s[4]) * 90);
+    // look for optional hue
+    if (s.length > 5) {
+        // blank is null
+        if (s[5].length > 0) {
+            room.setHue(parseInt(s[5]));
+        }
+        // look for optional label
+        if (s.length > 6) {
+            room.setLabel(s[6]);
+        }
+    }
     return room;
 }
 
@@ -348,6 +380,16 @@ var roomIdCount = 0;
 
 class Room {
     constructor(metadata) {
+        this.mv = new Vect(0, 0);
+        this.mdragOffset = new Vect(0, 0);
+        this.mdragOffsetRaw = new Vect(0, 0);
+        this.mdragOffsetRotation = 0;
+        this.mrotationOffset = null;
+        this.dragging = false;
+        this.placed = false;
+
+        this.ignoreRooms = null;
+
         this.metadata = metadata;
         this.id = "room" + (roomIdCount++);
 
@@ -378,17 +420,20 @@ class Room {
         this.multifloor = this.metadata.multifloor ? true : false;
 
         this.floor = null;
+        this.allFloors = null;
 
 		this.viewContainer = null;
         this.display = null;
         this.otherFloorDisplay = null;
         this.outline = null;
         this.grid = null;
+        this.labelDisplay = null;
+
         this.selected = false;
 
-        this.mdragOffset = new Vect(0, 0);
-        this.mdragOffsetRotation = 0;
-        this.dragging = false;
+        this.hue = null;
+        // pull default label from metadata, if present
+        this.label = this.metadata.defaultLabel ? this.metadata.defaultLabel : null;
 
         this.calculateAnchor();
         this.ruleErrors = Array();
@@ -499,16 +544,25 @@ class Room {
     }
 
     getFloors() {
-        if (!this.metadata.floor_images || this.metadata.floor_images.length == 1) {
-            return [this.floor];
+        // check for cached result
+        if (this.allFloors) {
+            return this.allFloors;
         }
-        // get the floor list from the doors.  The image list may contain extra floor images that we don't want to
-        // include unless there's something else on that floor.  It's the Dry Dock, I'm talking about the Dry Dock.
-        var floors = Array();
-		for (var d = 0 ; d < this.doors.length; d++) {
-			addToListIfNotPresent(floors, this.doors[d].floor);
-		}
-		return floors;
+
+        if (!this.metadata.floor_images || this.metadata.floor_images.length == 1) {
+            // simple case, room is only on one floor
+            this.allFloors = [this.floor];
+
+        } else {
+            // get the floor list from the doors.  The image list may contain extra floor images that we don't want to
+            // include unless there's something else on that floor.  It's the Dry Dock, I'm talking about the Dry Dock.
+            this.allFloors = Array();
+            for (var d = 0 ; d < this.doors.length; d++) {
+                addToListIfNotPresent(this.allFloors, this.doors[d].floor);
+            }
+        }
+
+		return this.allFloors;
     }
 
     setDebug(debug) {
@@ -520,23 +574,33 @@ class Room {
         }
     }
 
-    setPosition(nmx, nmy, nf, nr, updateFloors = true) {
+    setPosition(nmx, nmy, nf, nr, updateFloors = true, fullUpdate = true) {
         var isNewFloor = updateFloors && nf != this.floor;
         if (isNewFloor) {
 			this.removeAllRuleErrors();
         }
         this.mv = new Vect(nmx, nmy);
+        if (this.floor != nf) {
+            // floor has changed, reset any cached floor result
+            this.allFloors = null;
+        }
         this.floor = nf;
         this.rotation = nr;
-		this.updateMarkerPositions();
 
-		if (isNewFloor) {
-			this.removeDisplay();
-			this.addDisplay(getRoomContainer());
-			this.reAddAllRuleErrors();
-		}
-		this.updateDoorPositions();
-		this.updateBoundsPositions();
+        // only bother if it's a full update
+        // non-full updates are used mostly in clone/copy/paste, we don't need
+        // to do any of these updates in those cases
+        if (fullUpdate) {
+    		this.updateMarkerPositions();
+
+            if (isNewFloor) {
+                this.removeDisplay();
+                this.addDisplay(getRoomContainer());
+                this.reAddAllRuleErrors();
+            }
+            this.updateDoorPositions();
+            this.updateBoundsPositions();
+        }
     }
 
     setFloor(floor) {
@@ -555,7 +619,7 @@ class Room {
 		// recalc bounds
 		this.updateBoundsPositions();
 
-		this.moved = true;
+		this.placed = true;
     }
 
     resetPositionAndConnectDoors() {
@@ -607,8 +671,12 @@ class Room {
 				// iterate over the global room list
 				for (var r = 0; r < roomList.length; r++) {
 					var room = roomList[r];
+                    // don't chack collisions with rooms in the same selection
+                    if (this.ignoreRooms != null && this.ignoreRooms.includes(roomList[r])) {
+                        continue;
+                    }
 					// see if the room isn't this room and has doors facing the other direction
-					if (room != this && room.angleToDoors[a2]) {
+					if (room != this && room.angleToDoors[a2] && (this.ignoreRooms == null || !this.ignoreRooms.includes(room))) {
 						// find collisions in the two sets of door boxes
 						var cols = findCollisions(this.angleToDoors[a], room.angleToDoors[a2]);
 						// iterate over the collisions
@@ -659,11 +727,15 @@ class Room {
             bound.updatePosition();
 
             // clear the bound's collisions
-            bound.clearCollisions();
+            bound.clearCollisions(this.ignoreRooms);
 
 			// iterate over the global room list
 			for (var r = 0; r < roomList.length; r++) {
 				var room = roomList[r];
+				// skip omitted rooms
+				if (this.ignoreRooms != null && this.ignoreRooms.includes(roomList[r])) {
+				    continue;
+				}
 				// see if the room isn't this room
 				if (room != this) {
 					// find collisions in the two sets of bound boxes
@@ -693,7 +765,7 @@ class Room {
 		if (collidedRooms.length > 0) {
 			if (this.viewContainer) {
 				if (!this.grid) {
-			        this.grid = this.addDisplayElement("-bounds-blue.png", 201);
+			        this.grid = this.addDisplayImage("-bounds-blue.png", 201);
 				}
 			    this.grid.style.filter = "hue-rotate(120deg) brightness(200%)";
 			}
@@ -722,7 +794,7 @@ class Room {
 		if (errors) {
 			if (this.viewContainer) {
 				if (!this.outline) {
-			        this.outline = this.addDisplayElement("-line-blue.png", 203);
+			        this.outline = this.addDisplayImage("-line-blue.png", 203);
 				}
 			    if (this.isSelected()) {
 				    this.outline.style.filter = "hue-rotate(120deg) saturate(50%) brightness(250%)";
@@ -739,7 +811,7 @@ class Room {
 
 		} else if (this.isSelected()) {
 			if (!this.outline) {
-		        this.outline = this.addDisplayElement("-line-blue.png", 203);
+		        this.outline = this.addDisplayImage("-line-blue.png", 203);
 		    }
 		    this.outline.style.filter = "";
 
@@ -781,10 +853,10 @@ class Room {
     select() {
         this.selected = true;
         if (!this.outline) {
-	        this.outline = this.addDisplayElement("-line-blue.png", 203);
+	        this.outline = this.addDisplayImage("-line-blue.png", 203);
         }
         if (!this.grid) {
-	        this.grid = this.addDisplayElement("-bounds-blue.png", 201);
+	        this.grid = this.addDisplayImage("-bounds-blue.png", 200);
         }
 		// see if the outline should be red
 	    this.checkCollided();
@@ -809,17 +881,40 @@ class Room {
         return this.selected;
     }
 
-    rotate() {
-        if (this.dragging) {
-            // todo: save the original drag offset so we can reset the position if the room is rotated away from a door snapping zone
-	        this.setDragOffset(null, null, (this.mdragOffsetRotation + 90) % 360, 1);
+    rotateAround(centerM) {
+        // increment the rotation
+        var newRotation = (this.mdragOffsetRotation + 90) % 360;
+        // get a vector pointing from the center of rotation to our untransformed position
+        // and rotate
+        var fromCenter = this.mv.subtract(centerM).rotate(newRotation);
+        // add the new vector to the center to get our new position, and subtract our
+        // current untransformed position to get the delta
+        // save to the special rotation offset vector
+        var rotationOffsetM = fromCenter.add(centerM).subtract(this.mv);
+        // rotate as normal, but with an additional offset
+        this.rotate(rotationOffsetM);
+    }
 
+    rotate(rotationOffsetM = null) {
+        // if we're currently dragging
+        if (this.dragging) {
+            // save as a special offset that will get added to the normal drag offset
+            this.mrotationOffset = rotationOffsetM;
+            // go through the drag offset update
+	        this.setDragOffset(null, null, (this.mdragOffsetRotation + 90) % 360);
+
+        // not dragging, rotate the room in place
         } else {
-		    this.disconnectAllDoors();
-	        this.setPositionAndConnectDoors(this.mv.x, this.mv.y, this.floor, (this.rotation + 90) % 360);
+            // disconnect
+		    this.disconnectAllDoors(this.rooms);
+		    // move directly to the new rotated position, using the rotation offset if provided
+	        this.setPositionAndConnectDoors(
+	            this.mv.x + (rotationOffsetM ? rotationOffsetM.x : 0),
+	            this.mv.y + (rotationOffsetM ? rotationOffsetM.y : 0),
+	            this.floor, (this.rotation + 90) % 360);
         }
     }
-    
+
     rotateFloor() {
         if (!this.multifloor) {
             return;
@@ -863,6 +958,12 @@ class Room {
         if (!this.doorConnectionSaves) {
 			this.doorConnectionSaves = Array();
 			for (var d = 0; d < this.doors.length; d++) {
+			    var door = this.doors[d];
+                // don't disconect doors with rooms in the same selection
+			    if (this.ignoreRooms != null && this.ignoreRooms.includes(door.room) &&
+			        door.otherDoor && this.ignoreRooms.includes(door.otherDoor.room)) {
+			        continue;
+                }
 				var save = this.doors[d].disconnect();
 				if (save) {
 					this.doorConnectionSaves.push(save);
@@ -890,34 +991,72 @@ class Room {
 		}
 	}
 
-    setDragOffset(offsetPX, offsetPY, offsetRotation, snap) {
-		if (offsetPX != null && (offsetPX != 0 || offsetPY != 0) || (offsetRotation != null && offsetRotation != 0)) {
-			// We've actually been dragged.  Set the flag and disconnect doors.
-			this.dragging = true;
-			this.disconnectAllDoors();
-
-		} else if (((offsetPX != null && (offsetPX == 0 && offsetPY == 0)) || (offsetPX == null && this.mdragOffset.lengthSquared == 0))
-			&& ((offsetRotation != null && offsetRotation == 0) || (offsetRotation == null && this.mdragOffsetRotation == 0))) {
-			// either dragging was canceled or we've been dragged back to our starting position.  Reconnect doors that
-			// were disconnected.
-			this.reconnectAllDoors();
-		}
-
+    setDraggingDisplay() {
 		if (this.grid) {
 		    this.grid.style.filter = "brightness(200%)";
 		}
+    }
 
-        if (offsetPX != null) {
-	        // start by snapping to the nearest meter
-            this.mdragOffset.set(Math.round(offsetPX / viewScale), Math.round(offsetPY / viewScale));
+    getDoors() {
+        return this.doors;
+    }
+
+    setMDragOffset(offsetX, offsetY) {
+        // we need the original raw drag offset so rooms can be rotated without
+        // waiting for another drag event
+        this.mdragOffsetRaw.set(offsetX, offsetY);
+        // apply the rotation offset, if present
+        if (this.mrotationOffset) {
+            this.mdragOffset.set(offsetX + this.mrotationOffset.x, offsetY + this.mrotationOffset.y);
+        } else {
+            this.mdragOffset.set(offsetX, offsetY);
+        }
+    }
+
+    setDragOffset(offsetMX, offsetMY, offsetRotation, commit = true) {
+		if (offsetMX != null && (offsetMX != 0 || offsetMY != 0) || (offsetRotation != null && offsetRotation != 0)) {
+			// We've actually been dragged.  Set the flag and disconnect doors.
+			this.dragging = true;
+			this.disconnectAllDoors();
+		}
+
+        // update display
+        this.setDraggingDisplay();
+
+        if (offsetMX != null) {
+            // update the drag offset if there is an updated value
+            this.setMDragOffset(offsetMX, offsetMY);
         }
         if (offsetRotation != null) {
+            // update the rotation if there is an updated value
             this.mdragOffsetRotation = offsetRotation;
+            if (this.mrotationOffset) {
+                // update the drag offset if the rotation offset was also updated
+                this.setMDragOffset(this.mdragOffsetRaw.x, this.mdragOffsetRaw.y);
+            }
         }
 
-		// update door positions now so we can use them to figure out door snapping
+		// always update door positions now so we can use them to figure out door snapping
 		this.updateDoorPositions();
 
+        // check if this is the final offset
+		if (commit) {
+            // finally we can update the bounds positions
+            this.updateBoundsPositions();
+            // don't forget markers
+            this.updateMarkerPositions();
+		}
+    }
+
+    resetDragOffset() {
+        // has to be reset separately
+        this.mrotationOffset = null;
+        // go through the normal method to reset everything else
+        this.setDragOffset(0, 0, 0, true);
+    }
+
+    // get the closest door pair to smap together, if there is one
+    getClosestDoorSnapPair() {
 		// calculate the click point position
 		var click = this.clickP.add(this.mdragOffset);
 		// we want the door closest to the click point
@@ -926,8 +1065,9 @@ class Room {
 		var snapDoor = null;
 		var snapOtherDoor = null;
 		// iterate over our doors
-		for (var d = 0; d < this.doors.length; d++) {
-			var door = this.doors[d];
+		var doors = this.getDoors();
+		for (var d = 0; d < doors.length; d++) {
+			var door = doors[d];
 			// see if our door has any collisions
 			if (door.collisions.length > 0) {
 				// see if this door is closer to the click point than the previous door, if any
@@ -955,40 +1095,12 @@ class Room {
 			}
 		}
 
-		var snapped = false;
-
-		// did we find a pair of doors to snap?
 		if (snapDoor && snapOtherDoor) {
-			// calculate the difference between the two door positions
-			var snapOffset = snapOtherDoor.mv.subtract(snapDoor.mv);
-			// adjust the drag offset
-			this.mdragOffset.addTo(snapOffset.x, snapOffset.y);
-			snapped = true;
+		    return { "door": snapDoor, "otherDoor": snapOtherDoor };
 
-		// do we have a given snap resolution?
-		} else if (!snapped && snap > 1) {
-			// round the final x coordinate
-            var mx = this.mv.x + this.mdragOffset.x;
-            var mx2 = Math.round(mx / snap) * snap;
-
-			// round the final y coordinate
-            var my = this.mv.y + this.mdragOffset.y;
-            var my2 = Math.round(my / snap) * snap;
-
-			// adjust the drag offset
-            this.mdragOffset.addTo(mx2 - mx, my2 - my);
-            snapped = true;
-        }
-
-		if (snapped) {
-			// update the door positions again if we snapped.
-			this.updateDoorPositions();
+		} else {
+		    return null;
 		}
-
-		// finally we can update the bounds positions
-		this.updateBoundsPositions();
-		// don't forget markers
-		this.updateMarkerPositions();
     }
 
     dropDragOffset() {
@@ -997,10 +1109,15 @@ class Room {
             // calculate the new position
             var nmv = this.mv.add(this.mdragOffset);
 			var nr = (this.rotation + this.mdragOffsetRotation) % 360;
-            // reset the drag offset
+
+            // so much drag state to reset
+            // do this directly instead of through resetDragOffset() to save a few useless steps
             this.mdragOffset.set(0, 0);
+            this.mdragOffsetRaw.set(0, 0);
+            this.mdragOffsetRotation = 0;
+            this.mrotationOffset = null;
+
 	        // commit the position change
-	        this.mdragOffsetRotation = 0;
             this.setPositionAndConnectDoors(nmv.x, nmv.y, this.floor, nr);
 
         } else {
@@ -1009,6 +1126,7 @@ class Room {
 
 		// dragging is finished.
         this.dragging = false;
+
         if (this.grid) {
             this.checkCollided();
         }
@@ -1020,13 +1138,126 @@ class Room {
         this.clickP = null;
     }
 
+    setLabel(label) {
+        // treat blank as null
+        if (label != null && label.length == 0) {
+            label = null;
+        }
+        // check for change
+        if (label != this.label) {
+            // set the label, taking into account the metadata's default if there is one
+            this.label = label ? label : this.metadata.defaultLabel ? this.metadata.defaultLabel : null;
+            // update the display
+            this.updateLabelDisplay();
+            this.updateView();
+        }
+    }
+
+    setHue(hue) {
+        // check for change
+        if (hue != this.hue) {
+            // if it's changing from null to not null or vice versa then we will need
+            // to reset the display to use a different image
+            var reset = hue == null || this.hue == null;
+            // set the new value
+            this.hue = hue;
+            // reset the display if necessary
+            if (reset) {
+                this.resetColorDisplay();
+            }
+            if (this.display) {
+                // update or clear the hue filter
+                this.display.style.filter = this.getDisplayImageFilter();
+            } else if (this.otherFloorDisplay) {
+                // update or clear the hue filter
+                this.otherFloorDisplay.style.filter = "brightness(25%)" + this.getDisplayImageFilter();
+            }
+			// if there is a label then update its filter, too
+			if (this.labelDisplay) {
+			    this.labelDisplay.style.color = this.getDisplayLabelColor(this.isVisible());
+			}
+        }
+    }
+
+    updateLabelDisplay(visible=true) {
+        if (this.label) {
+            if (!this.labelDisplay) {
+                // we need a label for don't have one, create it
+	            this.labelDisplay = this.addDisplayLabel(299);
+	            // init the hue filter, if there is one
+			    this.labelDisplay.style.color = this.getDisplayLabelColor(visible);
+            }
+            // update the label contents, replacing newlines with <br/>
+            this.labelDisplay.innerHTML = this.label.replace(newlineRegex, "<br/>");
+
+        } else if (this.labelDisplay) {
+            // we have a label and don't need it anymore, remove it.
+            this.labelDisplay = this.removeDisplayElement(this.labelDisplay);
+        }
+    }
+
+    resetColorDisplay() {
+        // remove the old display image
+        if (this.display) {
+            this.display.remove();
+            this.display = null;
+        }
+        if (this.otherFloorDisplay) {
+            this.otherFloorDisplay.remove();
+            this.otherFloorDisplay = null;
+        }
+        if (viewFloor != null) {
+            if (this.isVisible()) {
+                // create a new display image, either grayscale or with color
+                this.display = this.addDisplayImage(this.getDisplayImageSuffix(), 202);
+                // set the hue filter, if any
+                this.display.style.filter = this.getDisplayImageFilter();
+            } else {
+                this.otherFloorDisplay = this.addDisplayImage(this.getDisplayImageSuffix(), 200 + this.floor);
+                this.otherFloorDisplay.style.filter = "brightness(25%)" + this.getDisplayImageFilter();
+            }
+            // init the display's position, rotation, etc
+            this.updateView();
+        }
+    }
+
+    getDisplayImageSuffix() {
+        // we need to use a different display image depending in whether
+        // it's in color or not
+        // this wouldn't be necessary if CSS had a way to directly filter the
+        // red, green, and blue channels of an image
+        return this.hue != null ? "-display-red.png" : "-display.png";
+    }
+
+    getDisplayImageFilter() {
+        // CSS filter value for the display image, if necessary
+        return this.hue != null ? " hue-rotate(" + this.hue + "deg)" : "";
+    }
+
+    getDisplayLabelColor(visible=true) {
+        // CSS color value for the label, depending on whether there is a hue specified
+        return this.hue != null ?
+            visible ? "hsl(" + this.hue + ", 75%, 75%)" : "hsl(" + this.hue + ", 75%, 10%)" :
+            visible ? "hsl(0, 0%, 100%)" : "hsl(0, 0%, 10%)";
+    }
+
     addDisplay(viewContainer) {
         this.viewContainer = viewContainer;
         if (this.isVisible()) {
-	        this.display = this.addDisplayElement("-display.png", 202);
-	        if (!this.isOnFloor()) {
-		        this.otherFloorDisplay = this.addDisplayElement("-display.png", 100 + this.floor, this.getImageBase(this.floor));
-			    this.otherFloorDisplay.style.filter = "brightness(25%)";
+            // main visible display
+	        this.display = this.addDisplayImage(this.getDisplayImageSuffix(), 202);
+	        // init the display hue filter, if necessary
+			this.display.style.filter = this.getDisplayImageFilter();
+	        if (this.isOnFloor()) {
+                // init the label, if necessary
+                this.updateLabelDisplay();
+
+	        } else {
+	            // additional other floor display
+		        this.otherFloorDisplay = this.addDisplayImage(this.getDisplayImageSuffix(), 200 + this.floor);
+			    this.otherFloorDisplay.style.filter = "brightness(25%)" + this.getDisplayImageFilter();
+                // init the label, if necessary
+                this.updateLabelDisplay(false);
 	        }
 			for (var m = 0; m < this.markers.length; m++) {
 				this.markers[m].addDisplay(viewContainer);
@@ -1040,15 +1271,18 @@ class Room {
 	        this.updateView();
 
         } else {
-	        this.otherFloorDisplay = this.addDisplayElement("-display.png", 100 + this.floor);
-		    this.otherFloorDisplay.style.filter = "brightness(25%)";
+	        // just the other floor display
+	        this.otherFloorDisplay = this.addDisplayImage(this.getDisplayImageSuffix(), 200 + this.floor);
+		    this.otherFloorDisplay.style.filter = "brightness(25%)" + this.getDisplayImageFilter();
+            // init the label, if necessary
+            this.updateLabelDisplay(false);
         }
 
 		this.checkCollided();
 	    this.checkErrors();
     }
 
-    addDisplayElement(imageSuffix, zIndex = 200, imageBase = null, marker = false) {
+    addDisplayImage(imageSuffix, zIndex = 200, imageBase = null, marker = false) {
         if (!imageBase) {
             imageBase = this.getImageBase();
         }
@@ -1057,11 +1291,33 @@ class Room {
         }
         // Ugh, have to build the <img> element the hard way
         var element = document.createElement("img");
-        element.style = "position: absolute;";
         if (!marker) {
 	        // Need to explicitly set the transform origin for off-center rooms
 	        element.style.transformOrigin = (-this.anchorMX * imgScale) + "px " + (-this.anchorMY * imgScale) + "px";
         }
+        element.src = "img" + imgScale + "x/" + imageBase + imageSuffix;
+
+        return this.addDisplayImageElement(element, zIndex);
+    }
+
+    addDisplayLabel(zIndex = 299) {
+        // labels should appear above all other elements
+        // labels are just a div with CSS
+        var element = document.createElement("div");
+        element.className = "roomLabel";
+
+        // add as a display element
+        return this.addDisplayImageElement(element, zIndex);
+    }
+
+    addDisplayImageElement(element, zIndex = 200) {
+        if (!this.isVisible()) {
+            zIndex -= 100;
+        } else if (!this.isOnFloor()) {
+            zIndex -= 10;
+        }
+
+        element.style.position = "absolute";
         element.style.zIndex = zIndex;
         element.roomId = this.id;
 		// have to explicitly tell Chrome that none of these listeners are passive or it will cry
@@ -1069,7 +1325,6 @@ class Room {
         element.addEventListener("contextmenu", contextMenu, { passive: false });
         element.addEventListener("touchstart", touchStart, { passive: false });
         element.addEventListener("wheel", wheel, { passive: false });
-        element.src = "img" + imgScale + "x/" + imageBase + imageSuffix;
         element.room = this;
         this.viewContainer.appendChild(element);
         return element;
@@ -1097,6 +1352,8 @@ class Room {
 	    this.otherFloorDisplay = this.removeDisplayElement(this.otherFloorDisplay);
 	    this.outline = this.removeDisplayElement(this.outline);
 	    this.grid = this.removeDisplayElement(this.grid);
+		this.labelDisplay = this.removeDisplayElement(this.labelDisplay);
+
 		for (var m = 0; m < this.markers.length; m++) {
 			this.markers[m].removeDisplay();
 		}
@@ -1154,6 +1411,11 @@ class Room {
 				this.updateViewElement(this.otherFloorDisplay, transform);
 	        }
         }
+        // update label, if present
+        if (this.labelDisplay) {
+            var transform = this.getLabelTransform(viewPX, viewPY, viewScale);
+            this.updateViewElement(this.labelDisplay, transform);
+        }
     }
 
 	getImageTransform(viewPX, viewPY, viewScale) {
@@ -1172,6 +1434,21 @@ class Room {
 	    // https://www.w3schools.com/cssref/css3_pr_transform.asp
 	    // translate() need to be before rotate() and scale()
 		return "translate(" + roomViewPX + "px, " + roomViewPY + "px) rotate(" + roomRotation + "deg) scale(" + scale + ", " + scale + ")";
+	}
+
+	getLabelTransform(viewPX, viewPY, viewScale) {
+        // transform the center coords to pixel coords
+		var roomViewCenterPX = ((this.mv.x + this.mdragOffset.x) * viewScale) + viewPX;
+		var roomViewCenterPY = ((this.mv.y + this.mdragOffset.y) * viewScale) + viewPY;
+
+//		// raw scaling
+		var scale = viewScale;
+
+        // no rotation, labels are always right-side-up
+
+	    // https://www.w3schools.com/cssref/css3_pr_transform.asp
+	    // translate() need to be before scale()
+		return "translate(" + roomViewCenterPX + "px, " + roomViewCenterPY + "px) translate(-50%, -50%) scale(" + scale + ", " + scale + ")";
 	}
 
 	getMarkerImageTransform(mx, my, viewPX, viewPY, viewScale) {
@@ -1215,23 +1492,294 @@ class Room {
 }
 
 //==============================================================
+// Room utils
+//==============================================================
+
+function cloneRooms(rooms, reposition=true) {
+    // reposition when cloning existing rooms to put on our clipboard,
+    // but not when cloning the clipboard to paste back in
+    if (reposition) {
+        // find the center room
+        var centerRoom;
+        if (rooms.length == 1) {
+            // easy case with one room
+            centerRoom = rooms[0];
+
+        } else {
+            // find the center point
+            var center = new DojoBounds(rooms).centerPosition().toVect();
+            // find the room closest to the center point
+            var closestDistSquared = Number.POSITIVE_INFINITY;
+            for (var r = 0; r < rooms.length; r++) {
+                var ds = rooms[r].mv.distanceSquared(center);
+                if (ds < closestDistSquared) {
+                    closestDistSquared = ds;
+                    centerRoom = rooms[r];
+                }
+            }
+        }
+        var newCenterRoom;
+    }
+
+    // cloned rooms go in here
+    var newRooms = [];
+
+    for (var r = 0; r < rooms.length; r++) {
+        var room = rooms[r];
+        // create a new room of the same type
+        var newRoom = new Room(room.metadata)
+        if (reposition) {
+            // set this room's relative position so the center room ends up at the origin on the floor 0
+            newRoom.setPosition(
+                room.mv.x - centerRoom.mv.x,
+                room.mv.y - centerRoom.mv.y,
+                room.floor - viewFloor,
+                room.rotation, false, false);
+            if (room == centerRoom) {
+                // this is the center room on the clone side
+                newCenterRoom = newRoom;
+            }
+        } else {
+            // otherwise just clone the position
+            newRoom.setPosition(
+                room.mv.x,
+                room.mv.y,
+                room.floor,
+                room.rotation, false, false);
+        }
+        // clone misc properties
+        newRoom.label = room.label;
+        newRoom.hue = room.hue;
+        // add the new room
+        newRooms.push(newRoom);
+    }
+
+    // okay connecting internal doors let's get stupid
+    // loop over original rooms
+    for (var r = 0; r < rooms.length; r++) {
+        var room1 = rooms[r];
+        var room2 = newRooms[r];
+        // loop over room's doors
+        for (var d = 0; d < room1.doors.length; d++) {
+            var door1 = room1.doors[d];
+            var door2 = room2.doors[d];
+            // if the door has a connection and it's not already connected in the new room
+            if (door1.otherDoor && !door2.otherDoor) {
+                // get the other door and other room
+                var otherDoor1 = door1.otherDoor;
+                var otherRoom1 = otherDoor1.room;
+                // see if the other room is in the room list
+                var or = rooms.indexOf(otherRoom1);
+                if (or >= 0) {
+                    // get the other door and other on on the new side
+                    var od = otherRoom1.doors.indexOf(otherDoor1);
+                    otherRoom2 = newRooms[or];
+                    otherDoor2 = otherRoom2.doors[od];
+                    // Got the two door we need to connect
+                    door2.connect(otherDoor2);
+                }
+            }
+        }
+    }
+
+    if (reposition) {
+        // move the center room to the top of the array, the UI will pick the first room as the cursor/rotation anchor
+        removeFromList(newRooms, newCenterRoom);
+        newRooms.unshift(newCenterRoom);
+    }
+
+    return newRooms;
+}
+
+function combineMetadata(rooms) {
+    // construct a synthetic metadata entry
+    var combo = {};
+    // use an id that won't match any room-specific rules
+    combo.id = "multi";
+    combo.name = rooms.length + " Rooms";
+    // start at zero
+    combo.capacity = 0;
+    combo.energy = 0;
+    // magic num property.  this tells some rules that this metadata actually counts as multiple rooms
+    combo.num = rooms.length;
+
+    // build up a resource map to combine resources
+    var resourceMap = {};
+
+    for (var r = 0; r < rooms.length; r++) {
+        var md = rooms[r].metadata;
+        // add capacity and energy
+        combo.capacity += md.capacity;
+        combo.energy += md.energy;
+        for (var i = 0; i < md.resources.length; i++) {
+            var res = md.resources[i];
+            // check if teh resource is already in the map
+            if (res.resource in resourceMap) {
+                // pull the current total costs
+                var costs = resourceMap[res.resource]
+                // add the cost array from this room
+                for (var j = 0; j < costs.length; j++) {
+                    costs[j] += res.costs[j];
+                }
+            } else {
+                // clone this room's cost array as the starting point for this resource
+                resourceMap[res.resource] = res.costs.slice();
+            }
+        }
+    }
+
+    // metadata needs things in an array of structs, I don't feel like changing the format
+    combo.resources = [];
+    for (resource in resourceMap) {
+        // convert to array of structs
+        combo.resources.push({
+            "resource": resource,
+            "costs": resourceMap[resource]
+        });
+    }
+
+    // that was an ordeal
+    return combo;
+}
+
+function removeError(errors, error) {
+    // remove any errors containing the given substring, case-insensitive
+	if (errors) {
+	    var re = new RegExp(error, "i");
+	    removeMatchesFromList(errors, (err) => err.search(re) > -1)
+	}
+	return errors;
+}
+
+function getErrorsWarningsAndCombinedMetadata(rooms) {
+    // keep a count of how many of each room type there are, along with the metadata itself
+    // this is a map of id => [metadata, count]
+    var metadataCounts = {};
+
+    for (var r = 0; r < rooms.length; r++) {
+        if (!(rooms[r].metadata.id in metadataCounts)) {
+            // start a new entry
+            metadataCounts[rooms[r].metadata.id] = [rooms[r].metadata, 1];
+
+        } else {
+            // increment the existing entry
+            metadataCounts[rooms[r].metadata.id][1] += 1;
+        }
+    }
+
+    var errors = [];
+    var warns = [];
+
+    // loop over room types
+    for (mdid in metadataCounts) {
+        // get errors from adding that many of this room type
+        var roomTypeErrors = getNewRoomErrors(metadataCounts[mdid][0], metadataCounts[mdid][1]);
+        if (roomTypeErrors) {
+            // add any new errors to the error list
+            addAllToListIfNotPresent(errors, roomTypeErrors);
+        }
+        // get warnings from adding that many of this room type
+        var roomTypeWarns = getNewRoomWarnings(metadataCounts[mdid][0], metadataCounts[mdid][1]);
+        if (roomTypeWarns) {
+            // add any new warns to the warn list
+            addAllToListIfNotPresent(warns, roomTypeWarns);
+        }
+    }
+    // the lazy way: just remove any energy and capacity errors we got from checking individual room types
+    // these could be erroneous if the room list includes room types with both positive and negative values for these
+    // this error type will be checked by running the combined metadata
+    removeError(errors, "energy");
+    removeError(errors, "capacity");
+
+    // combine the metadata
+    var combinedMetaData = combineMetadata(rooms);
+
+    // get errors from the combined metadata
+    var combinedErrors = getNewRoomErrors(combinedMetaData);
+    if (combinedErrors) {
+        // add any new errors to the error list
+        addAllToListIfNotPresent(errors, combinedErrors);
+    }
+    // get warns from the combined metadata
+    var combinedWarns = getNewRoomWarnings(combinedMetaData);
+    if (combinedWarns) {
+        // add any new warns to the warn list
+        addAllToListIfNotPresent(warns, combinedWarns);
+    }
+
+    // convention is to return null if there are no errors/warnings
+    if (errors.length == 0) errors = null;
+    if (warns.length == 0) warns = null;
+
+    // return multiple values
+    return { errors, warns, combinedMetaData };
+}
+
+//==============================================================
 // overall bounds calculation and PNG generation
 //==============================================================
 
+class Position {
+    constructor(mx, my, floor, rotation) {
+		this.MX = mx;
+		this.MY = my;
+		this.Floor = floor;
+		this.R = rotation;
+    }
+
+    toVect() {
+        return new Vect(this.MX, this.MY);
+    }
+
+    equals(other) {
+		return this.MX == other.MX
+				&& this.MY == other.MY
+				&& this.Floor == other.Floor
+				&& this.R == other.R;
+    }
+}
+
+class RoomPosition extends Position {
+    constructor(room) {
+        super(room.mv.x,
+            room.mv.y,
+            room.floor,
+            room.rotation);
+    }
+
+    equals(other) {
+		return this.MX == other.MX
+				&& this.MY == other.MY
+				&& this.Floor == other.Floor
+				&& this.R == other.R;
+    }
+}
+
 class DojoBounds {
-	constructor() {
+	constructor(rooms = null) {
 		this.x1 = 100000;
 		this.x2 = -100000;
 		this.y1 = 100000;
 		this.y2 = -100000;
 		this.f1 = 100000;
 		this.f2 = -100000;
+		this.floorCounts = {};
+		this.center = null;
+		if (rooms) {
+		    this.includeRooms(rooms);
+		}
 	}
 	
 	includeAll() {
 		for (var r = 0; r < roomList.length; r++) {
 			this.includeRoom(roomList[r]);
 		}
+	}
+
+	includeRooms(rooms) {
+	    for (var r = 0; r < rooms.length; r++) {
+	        this.includeRoom(rooms[r]);
+	    }
 	}
 	
 	includeRoom(room) {
@@ -1242,6 +1790,8 @@ class DojoBounds {
 			}
 			var floors = room.getFloors();
 			for (var f = 0; f < floors.length; f++) {
+			    if (!this.floorCounts[floors[f]]) this.floorCounts[floors[f]] = 0;
+			    this.floorCounts[floors[f]] += 1;
 				if (floors[f] < this.f1) { this.f1 = floors[f]; }
 				if (floors[f] > this.f2) { this.f2 = floors[f]; }
 			}
@@ -1258,6 +1808,24 @@ class DojoBounds {
 	width() { return Math.abs(this.x2 - this.x1); }
 
 	height() { return Math.abs(this.y2 - this.y1); }
+
+    centerPosition() {
+        if (!this.center) {
+            // find the center and round to the nearest 1m
+            var centerX = Math.round((this.x1 + this.x2) / 2);
+            var centerY = Math.round((this.y1 + this.y2) / 2);
+            // find the floor with the most rooms on it
+            var floor = null;
+            for (var f in this.floorCounts) {
+                f = parseInt(f);
+                if (floor == null || this.floorCounts[f] > this.floorCounts[floor]) {
+                    floor = f;
+                }
+            }
+            this.center = new Position(centerX, centerY, floor, 0);
+        }
+        return this.center;
+    }
 }
 
 function getDojoBounds() {
@@ -1288,6 +1856,7 @@ function convertToPngs(db, margin, scale) {
 var drawnImages = 0;
 var loadedImages = 0;
 var loadedImageData = null;
+var labelData = null;
 
 function convertFloorToPngLink(targets, db, margin, scale, f) {
 	// calculate the point in the image that represents (0, 0) in meter-space
@@ -1298,11 +1867,38 @@ function convertFloorToPngLink(targets, db, margin, scale, f) {
 	drawnImages = 0;
 	loadedImages = 0;
 	loadedImageData = Array();
+	labelData = Array();
 
 	for (var r = 0; r < roomList.length; r++) {
 		var room = roomList[r];
 		// check if the room is visible on the given floor
 		if (room.isVisible(f)) {
+		    // check for a label
+            if (room.label && room.isOnFloor(f)) {
+                // start with the room's position
+				var v = new Vect(room.mv.x, room.mv.y)
+	                // scale by the scale, they are now pixel coords
+	                .scale(scale)
+	                // add to the center point
+	                .addTo(roomViewCenterPX, roomViewCenterPY);
+	            // scale font size
+                var fontSize = 16;
+				// calculate basis vectors starting from the transformed anchor point
+        		labelData.push({
+        		    "text": room.label,
+        		    "x": v.x,
+        		    "y": v.y,
+        		    "fontSize": fontSize,
+        		    "hue": room.hue,
+        		    "scale": scale,
+                });
+            }
+
+		    if (room.metadata.num == 0) {
+		        // skip the rest if it's a special non-counting room
+		        continue;
+		    }
+
 			// build an image link because that's what context.drawImage wants
             var img = new Image();
             // we have store parameters in the img object itself
@@ -1329,9 +1925,20 @@ function convertFloorToPngLink(targets, db, margin, scale, f) {
 
 				// notify
 //				imageLoaded(targets, db, margin, scale, f, 1);
-				imageLoaded(targets, db, margin, scale, f, index, this, vx.x, vx.y, vy.x, vy.y, av.x, av.y);
+				imageLoaded(targets, db, margin, scale, f, index, {
+				    "image": this,
+				    "xx": vx.x,
+				    "xy": vx.y,
+				    "yx": vy.x,
+				    "yy": vy.y,
+				    "tx": av.x,
+				    "ty": av.y,
+				    "hue": room.hue,
+				    // if the room isn't actually on this floor, make sure the image is drawn underneath everything else
+				    "bottom": !room.isOnFloor(f)
+				});
             }
-            img.src = "img" + imgScale + "x/" + room.getImageBase(f) + "-display.png";
+            img.src = "img" + imgScale + "x/" + room.getImageBase(f) + room.getDisplayImageSuffix();
 			localDrawnImages++;
 
 			// see if the room has any markers
@@ -1361,8 +1968,16 @@ function convertFloorToPngLink(targets, db, margin, scale, f) {
 		                .addTo(-this.width * (scale / imgScale) / 2, -this.height * (scale / imgScale) / 2);
 
 					// notify
-//					imageLoaded(targets, db, margin, scale, f, 1);
-					imageLoaded(targets, db, margin, scale, f, index, this, scale / imgScale, 0, 0, scale / imgScale, av2.x, av2.y);
+					imageLoaded(targets, db, margin, scale, f, index, {
+    					"image": this,
+    					"xx": scale / imgScale,
+    					"xy": 0,
+    					"yx": 0,
+    					"yy": scale / imgScale,
+    					"tx": av2.x,
+    					"ty": av2.y,
+				        "bottom": false
+					});
 				}
 	            img2.src = "img" + imgScale + "x/" + marker.metadata.image + ".png";
 				localDrawnImages++;
@@ -1378,14 +1993,14 @@ function convertFloorToPngLink(targets, db, margin, scale, f) {
 	imageLoaded(targets, db, margin, scale, f, null, null);
 }
 
-function imageLoaded(targets, db, margin, scale, f, index, image, xx, xy, yx, yy, tx, ty) {
+function imageLoaded(targets, db, margin, scale, f, index, imageData) {
 	// todo: cancel if the menu has been closed before we're finished.
 
 	// if there's an image
-	if (image) {
+	if (imageData && imageData.image) {
 		// increment our count and save the image + transform for later
 		loadedImages++;
-		loadedImageData[index] = [image, xx, xy, yx, yy, tx, ty];
+		loadedImageData[index] = imageData;
 	}
 	// ether we haven't finished drawing images or we haven't finished loading them
 	if (drawnImages == 0 || loadedImages < drawnImages) {
@@ -1407,12 +2022,58 @@ function imageLoaded(targets, db, margin, scale, f, index, image, xx, xy, yx, yy
     context.fillStyle = "#000000";
     context.fillRect(0, 0, canvas.width, canvas.height);
 
-    for (var i = 0; i < loadedImageData.length; i++) {
-        var a = loadedImageData[i];
+    function drawImages(bottom) {
+        for (var i = 0; i < loadedImageData.length; i++) {
+            var a = loadedImageData[i];
+            if (a.bottom != bottom) {
+                continue;
+            }
+            // set the transform with the two basis vectors and the translate vector
+            context.setTransform(a.xx, a.xy, a.yx, a.yy, a.tx, a.ty);
+            // set the hue rotation if there is one
+            if (a.hue != null) {
+                // todo: this is not supported of safari because of reasons
+                context.filter = "hue-rotate(" + a.hue + "deg)";
+            }
+            // draw the image at the center of the new coordinate space
+            context.drawImage(a.image, 0, 0);
+            // reset the transform
+            context.resetTransform();
+            // reset the hue, if there is one
+            if (a.hue != null) {
+                // you have to set it to "none"
+                context.filter = "none";
+            }
+        }
+    }
+
+    // draw the bottom images first
+    drawImages(true);
+    // then the rest
+    drawImages(false);
+
+    for (var i = 0; i < labelData.length; i++) {
+        var a = labelData[i];
         // set the transform with the two basis vectors and the translate vector
-        context.setTransform(a[1], a[2], a[3], a[4], a[5], a[6]);
+        context.translate(a.x, a.y);
+        context.scale(a.scale, a.scale);
+		var fontSize = a.fontSize;
 		// draw the image at the center of the new coordinate space
-		context.drawImage(a[0], 0, 0);
+		var texts = a.text.split("\n");
+        context.font = "bold " + fontSize + "px sans-serif";
+        context.textAlign = "center";
+		for (var t = 0; t < texts.length; t++) {
+		    var y = (t - ((texts.length - 1)/2) + 0.5) * fontSize;
+		    // poor man's text outline, this mirrors the only officially supported way to do it in css, so shrug.
+            context.fillStyle = "#000000";
+            context.fillText(texts[t], -1, y-1);
+            context.fillText(texts[t], 1, y-1);
+            context.fillText(texts[t], -1, y+1);
+            context.fillText(texts[t], 1, y+1);
+
+            context.fillStyle = a.hue != null ? ("hsl(" + a.hue + ", 75%, 75%)") : "#FFFFFF";
+            context.fillText(texts[t], 0, y);
+		}
 		// reset the transform
 		context.resetTransform();
     }
