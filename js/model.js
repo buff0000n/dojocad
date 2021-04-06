@@ -1049,11 +1049,10 @@ class Room {
     }
 
     resetDragOffset() {
-        // so much drag state to reset
-        this.mdragOffset.set(0, 0);
-        this.mdragOffsetRaw.set(0, 0);
-        this.mdragOffsetRotation = 0;
+        // has to be reset separately
         this.mrotationOffset = null;
+        // go through the normal method to reset everything else
+        this.setDragOffset(0, 0, 0, true);
     }
 
     // get the closest door pair to smap together, if there is one
@@ -1110,8 +1109,14 @@ class Room {
             // calculate the new position
             var nmv = this.mv.add(this.mdragOffset);
 			var nr = (this.rotation + this.mdragOffsetRotation) % 360;
-            // reset the drag offsets
-            this.resetDragOffset();
+
+            // so much drag state to reset
+            // do this directly instead of through resetDragOffset() to save a few useless steps
+            this.mdragOffset.set(0, 0);
+            this.mdragOffsetRaw.set(0, 0);
+            this.mdragOffsetRotation = 0;
+            this.mrotationOffset = null;
+
 	        // commit the position change
             this.setPositionAndConnectDoors(nmv.x, nmv.y, this.floor, nr);
 
