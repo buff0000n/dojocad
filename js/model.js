@@ -856,7 +856,7 @@ class Room {
 	        this.outline = this.addDisplayImage("-line-blue.png", 203);
         }
         if (!this.grid) {
-	        this.grid = this.addDisplayImage("-bounds-blue.png", 201);
+	        this.grid = this.addDisplayImage("-bounds-blue.png", 200);
         }
 		// see if the outline should be red
 	    this.checkCollided();
@@ -1183,7 +1183,7 @@ class Room {
         if (this.label) {
             if (!this.labelDisplay) {
                 // we need a label for don't have one, create it
-	            this.labelDisplay = this.addDisplayLabel(visible ? 300 : 199);
+	            this.labelDisplay = this.addDisplayLabel(299);
 	            // init the hue filter, if there is one
 			    this.labelDisplay.style.color = this.getDisplayLabelColor(visible);
             }
@@ -1200,6 +1200,11 @@ class Room {
         // remove the old display image
         if (this.display) {
             this.display.remove();
+            this.display = null;
+        }
+        if (this.otherFloorDisplay) {
+            this.otherFloorDisplay.remove();
+            this.otherFloorDisplay = null;
         }
         if (viewFloor != null) {
             if (this.isVisible()) {
@@ -1208,7 +1213,7 @@ class Room {
                 // set the hue filter, if any
                 this.display.style.filter = this.getDisplayImageFilter();
             } else {
-                this.otherFloorDisplay = this.addDisplayImage(this.getDisplayImageSuffix(), 100 + this.floor);
+                this.otherFloorDisplay = this.addDisplayImage(this.getDisplayImageSuffix(), 200 + this.floor);
                 this.otherFloorDisplay.style.filter = "brightness(25%)" + this.getDisplayImageFilter();
             }
             // init the display's position, rotation, etc
@@ -1240,7 +1245,7 @@ class Room {
         this.viewContainer = viewContainer;
         if (this.isVisible()) {
             // main visible display
-	        this.display = this.addDisplayImage(this.getDisplayImageSuffix(), this.isOnFloor() ? 202 : 199);
+	        this.display = this.addDisplayImage(this.getDisplayImageSuffix(), 202);
 	        // init the display hue filter, if necessary
 			this.display.style.filter = this.getDisplayImageFilter();
 	        if (this.isOnFloor()) {
@@ -1249,7 +1254,7 @@ class Room {
 
 	        } else {
 	            // additional other floor display
-		        this.otherFloorDisplay = this.addDisplayImage(this.getDisplayImageSuffix(), 100 + this.floor, this.getImageBase(this.floor));
+		        this.otherFloorDisplay = this.addDisplayImage(this.getDisplayImageSuffix(), 200 + this.floor);
 			    this.otherFloorDisplay.style.filter = "brightness(25%)" + this.getDisplayImageFilter();
                 // init the label, if necessary
                 this.updateLabelDisplay(false);
@@ -1267,7 +1272,7 @@ class Room {
 
         } else {
 	        // just the other floor display
-	        this.otherFloorDisplay = this.addDisplayImage(this.getDisplayImageSuffix(), 100 + this.floor);
+	        this.otherFloorDisplay = this.addDisplayImage(this.getDisplayImageSuffix(), 200 + this.floor);
 		    this.otherFloorDisplay.style.filter = "brightness(25%)" + this.getDisplayImageFilter();
             // init the label, if necessary
             this.updateLabelDisplay(false);
@@ -1295,7 +1300,7 @@ class Room {
         return this.addDisplayImageElement(element, zIndex);
     }
 
-    addDisplayLabel(zIndex = 300) {
+    addDisplayLabel(zIndex = 299) {
         // labels should appear above all other elements
         // labels are just a div with CSS
         var element = document.createElement("div");
@@ -1306,6 +1311,12 @@ class Room {
     }
 
     addDisplayImageElement(element, zIndex = 200) {
+        if (!this.isVisible()) {
+            zIndex -= 100;
+        } else if (!this.isOnFloor()) {
+            zIndex -= 10;
+        }
+
         element.style.position = "absolute";
         element.style.zIndex = zIndex;
         element.roomId = this.id;
