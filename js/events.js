@@ -2,14 +2,18 @@
 // wrapper for handling both mouse and touch events
 //==============================================================
 
+var lastMTEvent = null;
+
 class MTEvent {
-	constructor(isTouch, currentTarget, clientX, clientY, altKey, shiftKey) {
+	constructor(isTouch, currentTarget, clientX, clientY, altKey, shiftKey, ctrlKey) {
 		this.isTouch = isTouch;
 		this.currentTarget = currentTarget;
 		this.clientX = clientX;
 		this.clientY = clientY;
 		this.altKey = altKey;
 		this.shiftKey = shiftKey;
+		this.ctrlKey = ctrlKey;
+		lastMTEvent = this;
 	}
 }
 
@@ -193,11 +197,8 @@ function touchCancel(e) {
 // Mouse event wrapper layer
 //==============================================================
 
-var lastMouseEvent = null;
-
 function mouseEventToMTEvent(e) {
-	lastMouseEvent = e;
-	return new MTEvent(false, e.currentTarget, e.clientX, e.clientY, e.altKey, e.shiftKey);
+	return new MTEvent(false, e.currentTarget, e.clientX, e.clientY, e.altKey, e.shiftKey, e.ctrlKey || e.metaKey);
 }
 
 function mouseDown(e) {
@@ -399,8 +400,8 @@ function dragEvent(e) {
         }
 
         // handle room drag
-        // 8m snapping is enabled with alt key on windows
-        handleRoomDrag(offsetM, clickM, e.altKey, dragged);
+        // 8m snapping is enabled with ctrl/meta key
+        handleRoomDrag(offsetM, clickM, e.ctrlKey, dragged);
 
         // todo: necessary?
 	    for (var r = 0; r < selectedRooms.length; r++) {
@@ -425,7 +426,7 @@ function dragEvent(e) {
             // update the multiselect box coordinates
             multiselectCornerPX = e.clientX;
             multiselectCornerPY = e.clientY;
-    	    updateMultiselectBox();
+    	    updateMultiselectBox(e);
             // scroll the screen if we're close enough to an edge
     	    checkAutoScroll(e);
         }
@@ -443,7 +444,7 @@ function dragEvent(e) {
     dragged = true;
 }
 
-function handleRoomDrag(offsetM, clickM, altKey) {
+function handleRoomDrag(offsetM, clickM, ctrlKey) {
     // track the best door pair for snapping
     var snapDoor = null;
     var snapOtherDoor = null;
@@ -482,7 +483,7 @@ function handleRoomDrag(offsetM, clickM, altKey) {
         newOffsetM = offsetM.add(snapOtherDoor.mv.subtract(snapDoor.mv));
 
     // Are we dragging with the shift key down?
-    } else if (altKey) {
+    } else if (ctrlKey) {
         // calculate the round adjustment using the dragged location of the clicked room
         var refM = mouseDownTarget.room.mv.add(offsetM);
         // round to the nearest 8m
@@ -635,7 +636,7 @@ function selectRoom(room, undoable = false, multiselect = false) {
 
     // selecting nothing while multiselect is active does nothing
     } else if (room) {
-        if (!room.isOnFloor()) {
+        if (!(lastMTEvent && lastMTEvent.ctrlKey) && !room.isOnFloor()) {
             // room is on a different floor, ignore
             return;
 
@@ -737,6 +738,10 @@ function selectAllRoomsOnFloor() {
 
     // replace the current selection
     selectRooms(rooms, false, true);
+}
+
+function selectAllRoomsLikeReallyAllOfThem() {
+    selectRooms(roomList, false, true);
 }
 
 // select all rooms of a certain type
@@ -841,7 +846,7 @@ function zoom(px, py, factor) {
 		// Oh god we're multiselecting and zooming at the same time *sweats profusely*
 		mouseDownTargetStartPX = (mouseDownTargetStartPX - viewPX) * (newViewScale / viewScale) + newViewPX;
 		mouseDownTargetStartPY = (mouseDownTargetStartPY - viewPY) * (newViewScale / viewScale) + newViewPY;
-		updateMultiselectBox();
+		updateMultiselectBox(lastMTEvent);
 
 	} else if (mouseDownTarget) {
 		// Oh double god we're dragging and zooming at the same time *nosebleed*
@@ -957,7 +962,7 @@ function keyDown(e) {
 		case "KeyD" :
 		    // deletes selected rooms
 			if (nothingElseGoingOn()) {
-    			duplicateSelectedRooms(lastMouseEvent);
+    			duplicateSelectedRooms(lastMTEvent);
                 e.preventDefault();
             }
 		    break;
@@ -965,7 +970,7 @@ function keyDown(e) {
 		    // still allow ctrl-R to work normally
 		    // allow rotation while dragging rooms, but not while in a menu or multiselecting
 		    if (!e.ctrlKey && !e.metaKey && getCurrentMenuLevel() == 0 && !isMultiselecting()) {
-    			rotateSelectedRoom(lastMouseEvent);
+    			rotateSelectedRoom(lastMTEvent);
                 e.preventDefault();
 		    }
 		    break;
@@ -1044,7 +1049,11 @@ function keyDown(e) {
 			if (nothingElseGoingOn()) {
 				// ctrlKey on Windows, metaKey on Mac
 				if (e.ctrlKey || e.metaKey) {
-                    selectAllRoomsOnFloor();
+				    if (e.shiftKey) {
+                        selectAllRoomsLikeReallyAllOfThem();
+				    } else {
+                        selectAllRoomsOnFloor();
+				    }
 				    e.preventDefault();
 				}
             }
@@ -1079,7 +1088,7 @@ function showMultiselectBox() {
         multiselectBox.className = "multiselectBox";
         multiselectBox.style.position = "absolute";
         // update initial box position
-        updateMultiselectBox();
+        updateMultiselectBox(lastMTEvent);
         // add to the usual container
         getRoomContainer().appendChild(multiselectBox);
     }
@@ -1093,7 +1102,7 @@ function hideMultiselectBox() {
     }
 }
 
-function updateMultiselectBox() {
+function updateMultiselectBox(e) {
     // normalize the min and max x and y coordinates
     var x1 = Math.min(mouseDownTargetStartPX, multiselectCornerPX);
     var x2 = Math.max(mouseDownTargetStartPX, multiselectCornerPX);
@@ -1112,18 +1121,18 @@ function updateMultiselectBox() {
     var mx2 = Math.round((x2 - viewPX) / viewScale);
     var my2 = Math.round((y2- viewPY) / viewScale);
     // see what rooms are selected
-    updateMultiselectRooms(mx1, my1, mx2, my2);
+    updateMultiselectRooms(mx1, my1, mx2, my2, e && e.ctrlKey);
 }
 
-function updateMultiselectRooms(mx1, my1, mx2, my2) {
+function updateMultiselectRooms(mx1, my1, mx2, my2, ctrlKey) {
     // create a bounds object representing the selection area
     var bounds = [{
         x1: mx1,
         y1: my1,
-        z1: (viewFloor * roomMetadata.general.floor_distance),
+        z1: ctrlKey ? -100000 : (viewFloor * roomMetadata.general.floor_distance),
         x2: mx2,
         y2: my2,
-        z2: (viewFloor * roomMetadata.general.floor_distance) + 1
+        z2: ctrlKey ? 100000 : (viewFloor * roomMetadata.general.floor_distance) + 1
     }];
 
     // iterate over the global room list
@@ -1131,7 +1140,7 @@ function updateMultiselectRooms(mx1, my1, mx2, my2) {
         var room = roomList[r];
 
         // skip rooms on other floors or ones that are already selected
-        if (!room.getFloors().includes(viewFloor) || selectedRooms.includes(room)) {
+        if ((!ctrlKey && !room.getFloors().includes(viewFloor)) || selectedRooms.includes(room)) {
             continue;
         }
 
