@@ -435,6 +435,13 @@ function centerViewOnIfNotVisible(mx, my, floor, scale = null) {
 	}
 }
 
+function getViewCenter() {
+	var mx = ((windowWidth / 2) - viewPX) / viewScale;
+	var my = ((windowHeight / 2) - viewPY) / viewScale;
+	var ret = {mx: mx, my: my, floor: viewFloor, scale: viewScale}
+	return ret
+}
+
 //==============================================================
 // Misc
 //==============================================================

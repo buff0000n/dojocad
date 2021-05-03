@@ -598,6 +598,7 @@ function dropEvent(e) {
 function selectRoom(room, undoable = false, multiselect = false) {
     // save the old selected rooms
     var oldSelectedRooms = selectedRooms;
+    var prevViewCenter = null;
 
     // One set of logic if we're not multiselecting
     if (!multiselect) {
@@ -620,6 +621,7 @@ function selectRoom(room, undoable = false, multiselect = false) {
             selectedRooms = [];
             // go to the floor the room is on, if it's not on the current floor
             if (!room.isOnFloor()) {
+                prevViewCenter = getViewCenter();
                 setViewP(viewPX, viewPY, viewScale, room.floor, false);
             }
 
@@ -669,7 +671,7 @@ function selectRoom(room, undoable = false, multiselect = false) {
     // check if this is an undoable section and the selection has changed
     if (undoable && oldSelectedRooms != selectedRooms) {
         // add a selection action to undo
-        addUndoAction(new SelectionAction(oldSelectedRooms, selectedRooms));
+        addUndoAction(new SelectionAction(oldSelectedRooms, selectedRooms), prevViewCenter);
     }
 }
 

@@ -3,16 +3,12 @@
 //==============================================================
 
 class Action {
-	prepareUndoAction() {
-		return true;
-	}
+    constructor() {
+        this.prevViewCenter = getViewCenter();
+    }
 
 	undoAction() {
 		throw "not implemented";
-	}
-
-	prepareRedoAction() {
-		return true;
 	}
 
 	redoAction() {
@@ -45,13 +41,19 @@ function updateButtons() {
 	updateUndoRedoButton(document.getElementById("redoButton"), redoStack, "Redo");
 }
 
-function addUndoAction(action) {
+function addUndoAction(action, prevViewCenter=null) {
     // check if there's a combo in progress
     if (undoCombos.length > 0) {
         // put in the combo
         undoCombos[undoCombos.length - 1].push(action);
         return;
     }
+
+    if (prevViewCenter) {
+        action.prevViewCenter = prevViewCenter;
+    }
+    action.viewCenter = getViewCenter();
+
 	// add to the stack
 	undoStack.push(action);
 	// trim the back of the stack if it's exceeded the max size
@@ -96,7 +98,6 @@ function endAllUndoCombos() {
 function cancelUndoCombo() {
     var undoList = undoCombos.pop()
     for (var i = undoList.length - 1; i >= 0; i--) {
-        undoList[i].prepareUndoAction();
         undoList[i].undoAction();
     }
 }
@@ -107,23 +108,27 @@ function cancelAllUndoCombos() {
     }
 }
 
+function resetViewForAction(viewCenter) {
+    if (viewCenter) {
+        if (viewCenter.floor != viewFloor) {
+            selectRooms([], false, false);
+        }
+        // ignore scale
+        centerViewOnIfNotVisible(viewCenter.mx, viewCenter.my, viewCenter.floor, null);
+    }
+}
+
 function doUndo() {
 	// pop the last action
 	var action = undoStack.pop();
 	// make sure there was a last action
 	if (action) {
-		// prepare the action, this can be nothing or can involve things like moving the view to where the action
-		// took place
-		if (!action.prepareUndoAction()) {
-			// if we had to prepare, then the user needs to undo again to actually undo the action
-			undoStack.push(action);
+	    resetViewForAction(action.prevViewCenter);
+        // undo the action
+        action.undoAction();
+        // put it on the redo stack
+        redoStack.push(action);
 
-		} else {
-			// we're prepared, so undo the action
-			action.undoAction();
-			// put it on the redo stack
-			redoStack.push(action);
-		}
 		// update UI
 		updateButtons();
 	}
@@ -134,18 +139,11 @@ function doRedo() {
 	var action = redoStack.pop();
 	// make sure is a next action
 	if (action) {
-		// prepare the action, this can be nothing or can involve things like moving the view to where the action
-		// takes place
-		if (!action.prepareRedoAction()) {
-			// if we had to prepare, then the user needs to redo again to actually redo the action
-			redoStack.push(action);
-
-		} else {
-			// we're prepared, so redo the action
-			action.redoAction();
-			// put it back on the undo stack
-			undoStack.push(action);
-		}
+	    resetViewForAction(action.viewCenter);
+        // redo the action
+        action.redoAction();
+        // put it back on the undo stack
+        undoStack.push(action);
 		// update UI
 		updateButtons();
 	}
@@ -157,24 +155,14 @@ class CompositeAction extends Action {
         this.actions = actions;
     }
 
-	prepareUndoAction() {
-		return this.actions[this.actions.length - 1].prepareUndoAction();
-	}
-
 	undoAction() {
 	    for (var a = this.actions.length - 1; a >= 0; a--) {
-	        this.actions[a].prepareUndoAction();
 	        this.actions[a].undoAction();
 	    }
 	}
 
-	prepareRedoAction() {
-		return this.actions[0].prepareRedoAction();
-	}
-
 	redoAction() {
 	    for (var a = 0; a < this.actions.length; a++) {
-	        this.actions[a].prepareRedoAction();
 	        this.actions[a].redoAction();
 	    }
 	}
@@ -239,26 +227,12 @@ class MoveRoomAction extends Action {
 		return false;
 	}
 
-	prepareUndoAction() {
-		return this.prepareAction(this.fromCenter);
-	}
-
 	undoAction() {
         this.action(this.to, this.from);
 	}
 
-	prepareRedoAction() {
-		return this.prepareAction(this.toCenter);
-	}
-
 	redoAction() {
         this.action(this.from, this.to);
-	}
-
-	prepareAction(center) {
-        centerViewOnIfNotVisible(center.MX, center.MY, center.Floor);
-		// having a prepare step to show what's about to change feels more confusing than not having it
-		return true;
 	}
 
 	action(from, to) {
@@ -325,25 +299,12 @@ class ChangeHueAction extends Action {
 		return false;
 	}
 
-	prepareUndoAction() {
-		return this.prepareAction();
-	}
-
 	undoAction() {
         this.action(this.from);
 	}
 
-	prepareRedoAction() {
-		return this.prepareAction();
-	}
-
 	redoAction() {
         this.action(this.to);
-	}
-
-	prepareAction() {
-        centerViewOnIfNotVisible(this.center.MX, this.center.MY, this.center.Floor);
-		return true;
 	}
 
 	action(to) {
@@ -383,25 +344,12 @@ class ChangeLabelAction extends Action {
 		return this.from != this.to;
 	}
 
-	prepareUndoAction() {
-		return this.prepareAction();
-	}
-
 	undoAction() {
         this.action(this.from);
 	}
 
-	prepareRedoAction() {
-		return this.prepareAction();
-	}
-
 	redoAction() {
         this.action(this.to);
-	}
-
-	prepareAction() {
-        centerViewOnIfNotVisible(this.room.mv.x, this.room.mv.y, this.room.floor);
-		return true;
 	}
 
 	action(to) {
@@ -427,16 +375,6 @@ class AddDeleteRoomsAction extends Action {
 		    this.records.push(new RoomPosition(this.rooms[r]));
 		}
 		this.add = add;
-	}
-
-	prepareUndoAction() {
-        centerViewOnIfNotVisible(this.center.MX, this.center.MY, this.center.Floor);
-		// having a prepare step to show what's about to change feels more confusing than not having it
-		return true;
-	}
-
-	prepareRedoAction() {
-		return this.prepareUndoAction();
 	}
 
 	undoAction() {
@@ -500,32 +438,12 @@ class SelectionAction extends Action {
 		    null;
 	}
 
-	prepareUndoAction() {
-	    return this.prepareAction(this.oldCenter, this.newCenter);
-	}
-
 	undoAction() {
 		selectRooms(this.oldSelections, false, false);
 	}
 
-	prepareRedoAction() {
-	    return this.prepareAction(this.newCenter, this.oldCenter);
-	}
-
 	redoAction() {
 		selectRooms(this.newSelections, false, false);
-	}
-
-	prepareAction(center1, center2) {
-	    var center = center1 ? center1 : center2;
-	    if (center) {
-	        // Changing floors with an active selection will add an undo action,
-	        // so preemptively clear the selection with no undo.
-	        selectRooms([], false, false);
-            centerViewOnIfNotVisible(center.MX, center.MY, center.Floor);
-	    }
-		// having a prepare step to show what's about to change feels more confusing than not having it
-		return true;
 	}
 
 	toString() {
