@@ -52,6 +52,7 @@ function clearMenus(leave = 0) {
             } else {
                 menu.undoAction.undoAction();
             }
+        	saveModelToUrl();
         }
     }
     // might as well clear all popups
@@ -288,6 +289,8 @@ function doBurgerMenu() {
     if (debugEnabled) {
 	    menuDiv.appendChild(buildMenuButton("Collision Matrix", doCollisionMatrix));
 	    menuDiv.appendChild(buildMenuButton("Color Picker", doGenerateColorPicker));
+	    menuDiv.appendChild(buildMenuButton("Saturation Picker", doGenerateSatPicker));
+	    menuDiv.appendChild(buildMenuButton("Luminance Picker", doGenerateLumPicker));
     }
 
     showMenu(menuDiv, element);
@@ -779,6 +782,121 @@ function doLabelMenu() {
 //    `;
 //}
 
+class ColorPicker {
+    constructor(pickerImage, range, defaultVal, snapDistance, getRoomValFunc, setRoomValFunc) {
+        this.pickerImage = pickerImage;
+        this.range = range;
+        this.defaultVal = defaultVal;
+        this.snapDistance = snapDistance;
+        this.getRoomValFunc = getRoomValFunc;
+        this.setRoomValFunc = setRoomValFunc;
+
+        this.buildUi();
+    }
+    
+    buildUi() {
+        // container for the slider
+        // this puts the color picker image in the background, behind the slider
+        var div = document.createElement("div");
+        div.className="colorPicker";
+    
+        var bg = document.createElement("img");
+        bg.className="colorPickerBackground";
+        bg.src = this.pickerImage;
+        div.appendChild(bg);
+    
+        // slider input
+        var slider = document.createElement("input");
+        slider.className = "colorSlider";
+        slider.type = "range";
+        // hue goes from 0 to 360
+        slider.min = "0";
+        slider.max = this.range;
+        // fit the slider as closely as possible into the background color picker image
+        slider.style.width ="256px";
+        slider.style.padding = "0";
+    
+        // escape will be ignored by the default key event handler because it's
+        // in an input element
+        addEscapeListener(slider);
+    
+        // get a list of the hues currently in use
+        var snapHues = [];
+        for (var r = 0; r < roomList.length; r++) {
+            if (this.getRoomValFunc(roomList[r]) != null) {
+                addToListIfNotPresent(snapHues, this.getRoomValFunc(roomList[r]));
+            }
+        }
+
+        // add preset markers
+        for (var h = 0; h < snapHues.length; h++) {
+            var hueDiv = document.createElement("div");
+            hueDiv.className = "colorPickerPreset";
+            // have to tweak the horizontal position to account for the slider's width
+            hueDiv.style = `
+                left: ${7 + ((snapHues[h] * (240/this.range)))}px;
+                top: 0px;
+                width: 0px;
+                height: 3px;
+            `;
+            div.appendChild(hueDiv);
+        }
+    
+        // meh, just pick the first room in the selection list to initialize the value
+        if (this.getRoomValFunc(selectedRooms[0]) != null) {
+            slider.value = this.getRoomValFunc(selectedRooms[0]);
+            // todo: this doesn't work
+            // setColorSliderThumbColor(slider.value, 50);
+        } else {
+            // if there's no value to start with, start with red
+            slider.value = this.defaultVal;
+            // todo: this doesn't work
+            // setColorSliderThumbColor(0, 0);
+        }
+    
+        // event handler for changes to the slider
+        function onChange() {
+            // get the value
+            var hue = parseInt(slider.value);
+            if (!snapDisabled) {
+                // find the nearest existing hue
+                var snapHue = null;
+                var distance = this.range;
+                for (var c = 0; c < snapHues.length; c++) {
+                    var d = Math.abs(hue - snapHues[c]);
+                    if (d < distance) {
+                        snapHue = snapHues[c];
+                        distance = d;
+                    }
+                }
+                // if the nearest hue is under the snap distance then snap to that hue
+                if (distance <= this.snapDistance) {
+                    hue = snapHue;
+                    slider.value = snapHue;
+                }
+            }
+            this.listener();
+        }
+        // register the listener for both change and input values, not sure change is necessary
+        slider.addEventListener("change", onChange);
+        slider.addEventListener("input", onChange);
+        slider.range = this.range;
+        slider.snapDistance = this.snapDistance;
+        slider.setRoomValFunc = this.setRoomValFunc;
+
+        // assemb the div and put it into the table
+        div.appendChild(slider);
+
+        this.container = div;
+        this.slider = slider;
+        this.bg = bg;
+    }
+
+    setListener(listener) {
+        this.slider.listener = listener;
+    }
+}
+
 function doColorMenu() {
 	var button = getMenuTarget();
 
@@ -800,85 +918,67 @@ function doColorMenu() {
     var tr = document.createElement("tr");
     tr.append(document.createElement("td"));
     var td = document.createElement("td");
-//	td.colSpan = "3";
-
-    // container for the slider
-    // this puts the color picker image in the background, behind the slider
-	var div = document.createElement("div");
-	div.className="colorPicker";
-
-    // slider input
-    var slider = document.createElement("input");
-    slider.className = "colorSlider";
-    slider.type = "range";
-    // hue goes from 0 to 360
-    slider.min = "0";
-    slider.max = "360";
-    // fit the slider as closely as possible into the background color picker image
-    slider.style.width ="256px";
-    slider.style.padding = "0";
-
-    // escape will be ignored by the default key event handler because it's
-    // in an input element
-    addEscapeListener(slider);
-
-    // get a list of the hues currently in use
-    var snapHues = [];
-    for (var r = 0; r < roomList.length; r++) {
-        if (roomList[r].hue != null) {
-            addToListIfNotPresent(snapHues, roomList[r].hue);
+    var huePicker = new ColorPicker(
+        "icons/color-picker.png", 360, 0, 10,
+        (room) => {
+            return room.hue == null ? null : room.hue[0];
         }
-    }
-    // distance under which we'll snap the slider to an existing hue
-    var snapDistance = 10;
+    );
+    td.appendChild(huePicker.container);
+    tr.appendChild(td);
+    tr.append(document.createElement("td"));
+    menuDiv.appendChild(tr);
 
-    // add preset markers
-    for (var h = 0; h < snapHues.length; h++) {
-        var hueDiv = document.createElement("div");
-        hueDiv.className = "colorPickerPreset";
-        // have to tweak the horizontal position to account for the slider's width
-        hueDiv.style = `
-            left: ${7 + ((snapHues[h] * (240/360)))}px;
-            top: 0px;
-            width: 0px;
-            height: 3px;
-        `;
-        div.appendChild(hueDiv);
-    }
-
-    // meh, just pick the first room in the selection list to initialize the value
-    if (selectedRooms[0].hue != null) {
-        slider.value = selectedRooms[0].hue;
-        // todo: this doesn't work
-        // setColorSliderThumbColor(slider.value, 50);
-    } else {
-        // if there's no value to start with, start with red
-        slider.value = 0;
-        // todo: this doesn't work
-        // setColorSliderThumbColor(0, 0);
-    }
-
-    // event handler for changes to the slider
-    function onChange() {
-        // get the value
-        var hue = parseInt(slider.value);
-        if (!snapDisabled) {
-            // find the nearest existing hue
-            var snapHue = null;
-            var distance = 360;
-            for (var c = 0; c < snapHues.length; c++) {
-                var d = Math.abs(hue - snapHues[c]);
-                if (d < distance) {
-                    snapHue = snapHues[c];
-                    distance = d;
-                }
-            }
-            // if the nearest hue is under the snap distance then snap to that hue
-            if (distance <= snapDistance) {
-                hue = snapHue;
-                slider.value = snapHue;
-            }
+    // row for the sat slider
+    var tr = document.createElement("tr");
+    tr.append(document.createElement("td"));
+    var td = document.createElement("td");
+    var satPicker = new ColorPicker(
+        "icons/sat-picker.png", 200, 25, 5,
+        (room) => {
+            return room.hue == null ? null : room.hue[1];
         }
+    );
+    td.appendChild(satPicker.container);
+    tr.appendChild(td);
+    tr.append(document.createElement("td"));
+    menuDiv.appendChild(tr);
+
+    // row for the lum slider
+    var tr = document.createElement("tr");
+    tr.append(document.createElement("td"));
+    var td = document.createElement("td");
+    var lumPicker = new ColorPicker(
+        "icons/lum-picker.png", 200, 200, 5,
+        (room) => {
+            return room.hue == null ? null : room.hue[2];
+        }
+    );
+    td.appendChild(lumPicker.container);
+    tr.appendChild(td);
+    tr.append(document.createElement("td"));
+    menuDiv.appendChild(tr);
+
+    var updatePickers = () => {
+        var hue = [huePicker.slider.value,
+                   satPicker.slider.value,
+                   lumPicker.slider.value];
+
+        var hueFilter = "hue-rotate(" + hue[0] + "deg)";
+        var satFilter = "saturate(" + hue[1] + "%)";
+        var lumFilter = "brightness(" + hue[2]+ "%)";
+
+        huePicker.bg.style.filter = satFilter + " " + lumFilter;
+        satPicker.bg.style.filter = hueFilter + " " + lumFilter;
+        lumPicker.bg.style.filter = hueFilter + " " + satFilter;
+    }
+
+    var coordinatorListener = () => {
+        updatePickers();
+        var hue = [huePicker.slider.value,
+                   satPicker.slider.value,
+                   lumPicker.slider.value];
+
         // todo: this doesn't work
         // setColorSliderThumbColor(hue, 50);
         // update each room's hue in real time
@@ -886,22 +986,25 @@ function doColorMenu() {
             selectedRooms[r].setHue(hue);
         }
     }
-    // register the listener for both change and input values, not sure change is necessary
-    slider.addEventListener("change", onChange);
-    slider.addEventListener("input", onChange);
 
-    // assemb the div and put it into the table
-    div.appendChild(slider);
-    td.appendChild(div);
-    tr.appendChild(td);
-    tr.append(document.createElement("td"));
-    menuDiv.appendChild(tr);
+    huePicker.setListener(coordinatorListener);
+    satPicker.setListener(coordinatorListener);
+    lumPicker.setListener(coordinatorListener);
+
+    updatePickers();
 
     // clear option
     menuDiv.appendChild(buildMenuButton("Clear", () => { menuDiv.undoAction = null; clearSelectedRoomsColor(action); }, "icon-delete" ));
 
     // save option
-    menuDiv.appendChild(buildMenuButton("Save", () => { menuDiv.undoAction = null; setSelectedRoomsColor(slider.value, action); }, "icon-save"));
+    menuDiv.appendChild(buildMenuButton("Save", () => {
+        menuDiv.undoAction = null;
+        setSelectedRoomsColor([
+            huePicker.slider.value,
+            satPicker.slider.value,
+            lumPicker.slider.value
+            ], action);
+    }, "icon-save"));
 
     // cancel option
     menuDiv.appendChild(buildMenuButton("Cancel", () => { menuDiv.actionSuccess = false; clearLastMenu(); }, "icon-undo"));
@@ -1161,17 +1264,44 @@ function doCollisionMatrix() {
 }
 
 function doGenerateColorPicker() {
+    doGeneratePicker(
+        "Color Picker",
+        (width, height, name, margin) => { return generateColorPickerPNGLink(width, height, name, margin); },
+        "color-picker",
+        "icon-color"
+    );
+}
+
+function doGenerateSatPicker() {
+    doGeneratePicker(
+        "Saturation Picker",
+        (width, height, name, margin) => { return generateSatPickerPNGLink(width, height, name, margin); },
+        "sat-picker",
+        "icon-sat"
+    );
+}
+
+function doGenerateLumPicker() {
+    doGeneratePicker(
+        "Luminance Picker",
+        (width, height, name, margin) => { return generateLumPickerPNGLink(width, height, name, margin); },
+        "lum-picker",
+        "icon-lum"
+    );
+}
+
+function doGeneratePicker(title, func, img_name_bar, img_name_icon) {
 	var button = getMenuTarget();
 
     var e = e || window.event;
 
     var menuDiv = buildMenu();
-	menuDiv.appendChild(buildMenuHeaderLine("Color Picker", 3));
+	menuDiv.appendChild(buildMenuHeaderLine(title, 3));
 
     function generate(width, height, name, margin=1) {
         var tr = document.createElement("tr");
         var td = document.createElement("td");
-        var link = generateColorPickerPNGLink(width, height, name, margin);
+        var link = func(width, height, name, margin);
         link.onclick = doPngClick;
         td.appendChild(link);
         tr.appendChild(buildBlank());
@@ -1179,9 +1309,9 @@ function doGenerateColorPicker() {
         menuDiv.appendChild(tr);
     }
 
-    generate(256, 40, "color-picker", 8);
-    generate(64, 32, "icon-color");
-    generate(32, 16, "icon-color");
+    generate(256, 32, img_name_bar, 8);
+    generate(64, 32, img_name_icon);
+    generate(32, 16, img_name_icon);
 
     showMenu(menuDiv, button);
 }

@@ -508,7 +508,17 @@ td.imgField {
     margin: 0;
     padding: 0;
     position: relative;
-    background-image: url("../icons/color-picker.png");
+}
+
+.colorPickerBackground {
+    width: 256px;
+    margin: 0;
+    padding: 0;
+    position: absolute;
+    left: 0px;
+    right: 0px;
+    height: 32px;
+    z-index: -100;
 }
 
 .colorPickerPreset {

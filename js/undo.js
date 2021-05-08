@@ -316,7 +316,7 @@ class ChangeHueAction extends Action {
 		this.recordTo(this.rooms);
 		// check if any corresponding positions are different
 		for (var r = 0; r < this.rooms.length; r++) {
-		    if (this.from[r] != this.to[r]) {
+		    if (!arrayEquals(this.from[r], this.to[r])) {
 		        // found a difference
 		        return true;
             }

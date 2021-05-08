@@ -342,7 +342,7 @@ function roomToString(room) {
     // hue and label fields are optional
     if (room.hue != null || room.label != null) {
         // add the hue or blank if it's null
-        s = s + "," + (room.hue == null ? "" : room.hue);
+        s = s + "," + (room.hue == null ? "" : (room.hue[0] + ":" + room.hue[1] + ":" + room.hue[2]));
         // label is optional
         if (room.label != null) {
             // we just need to escape quotes, and then put it in quotes
@@ -362,7 +362,14 @@ function roomFromString(string) {
     if (s.length > 5) {
         // blank is null
         if (s[5].length > 0) {
-            room.setHue(parseInt(s[5]));
+            if (s[5].includes(":")) {
+                var h = s[5].split(":");
+                room.setHue([parseInt(h[0]), parseInt(h[1]), parseInt(h[2])]);
+            } else {
+                // backwards compatible with old format with just the hue
+                // try to match as close as possible
+                room.setHue([parseInt(s[5]), 25, 200]);
+            }
         }
         // look for optional label
         if (s.length > 6) {
@@ -377,6 +384,25 @@ var roomIdCount = 0;
 //==============================================================
 // Room object
 //==============================================================
+
+function getDisplayImageFilter(hue, visible=true) {
+    // CSS filter value for the display image, if necessary
+    return hue == null ? (visible ? "" : "brightness(25%") : (
+        " hue-rotate(" + hue[0] + "deg)" +
+        " saturate(" + hue[1] * (visible ? 1 : 0.5) + "%)" +
+        " brightness(" + hue[2] * (visible ? 1 : 0.25) + "%)");
+}
+
+function getDisplayLabelColor(hue, visible=true) {
+    // CSS color value for the label, depending on whether there is a hue specified
+    return hue == null ?
+        (visible ? "hsl(0, 0%, 100%)" : "hsl(0, 0%, 10%)") :
+        (visible ?
+            "hsl(" + hue[0] + ", " + hue[1] + "%, " + (hue[2]/4) + "%)" :
+            "hsl(" + hue[0] + ", " + (hue[1] * 0.5) + "%, " + ((hue[2]/4) * 0.25) + "%)"
+        );
+}
+
 
 class Room {
     constructor(metadata) {
@@ -1155,7 +1181,7 @@ class Room {
 
     setHue(hue) {
         // check for change
-        if (hue != this.hue) {
+        if (!arrayEquals(hue, this.hue)) {
             // if it's changing from null to not null or vice versa then we will need
             // to reset the display to use a different image
             var reset = hue == null || this.hue == null;
@@ -1167,14 +1193,14 @@ class Room {
             }
             if (this.display) {
                 // update or clear the hue filter
-                this.display.style.filter = this.getDisplayImageFilter();
+                this.display.style.filter = getDisplayImageFilter(this.hue);
             } else if (this.otherFloorDisplay) {
                 // update or clear the hue filter
-                this.otherFloorDisplay.style.filter = "brightness(25%)" + this.getDisplayImageFilter();
+                this.otherFloorDisplay.style.filter = getDisplayImageFilter(this.hue, false);
             }
 			// if there is a label then update its filter, too
 			if (this.labelDisplay) {
-			    this.labelDisplay.style.color = this.getDisplayLabelColor(this.isVisible());
+			    this.labelDisplay.style.color = getDisplayLabelColor(this.hue, this.isVisible());
 			}
         }
     }
@@ -1185,7 +1211,7 @@ class Room {
                 // we need a label for don't have one, create it
 	            this.labelDisplay = this.addDisplayLabel(299);
 	            // init the hue filter, if there is one
-			    this.labelDisplay.style.color = this.getDisplayLabelColor(visible);
+			    this.labelDisplay.style.color = getDisplayLabelColor(this.hue, visible);
             }
             // update the label contents, replacing newlines with <br/>
             this.labelDisplay.innerHTML = this.label.replace(newlineRegex, "<br/>");
@@ -1211,10 +1237,10 @@ class Room {
                 // create a new display image, either grayscale or with color
                 this.display = this.addDisplayImage(this.getDisplayImageSuffix(), 202);
                 // set the hue filter, if any
-                this.display.style.filter = this.getDisplayImageFilter();
+                this.display.style.filter = getDisplayImageFilter(this.hue);
             } else {
                 this.otherFloorDisplay = this.addDisplayImage(this.getDisplayImageSuffix(), 200 + this.floor);
-                this.otherFloorDisplay.style.filter = "brightness(25%)" + this.getDisplayImageFilter();
+                this.otherFloorDisplay.style.filter = getDisplayImageFilter(this.hue, false);
             }
             // init the display's position, rotation, etc
             this.updateView();
@@ -1229,25 +1255,13 @@ class Room {
         return this.hue != null ? "-display-red.png" : "-display.png";
     }
 
-    getDisplayImageFilter() {
-        // CSS filter value for the display image, if necessary
-        return this.hue != null ? " hue-rotate(" + this.hue + "deg)" : "";
-    }
-
-    getDisplayLabelColor(visible=true) {
-        // CSS color value for the label, depending on whether there is a hue specified
-        return this.hue != null ?
-            visible ? "hsl(" + this.hue + ", 75%, 75%)" : "hsl(" + this.hue + ", 75%, 10%)" :
-            visible ? "hsl(0, 0%, 100%)" : "hsl(0, 0%, 10%)";
-    }
-
     addDisplay(viewContainer) {
         this.viewContainer = viewContainer;
         if (this.isVisible()) {
             // main visible display
 	        this.display = this.addDisplayImage(this.getDisplayImageSuffix(), 202);
 	        // init the display hue filter, if necessary
-			this.display.style.filter = this.getDisplayImageFilter();
+			this.display.style.filter = getDisplayImageFilter(this.hue);
 	        if (this.isOnFloor()) {
                 // init the label, if necessary
                 this.updateLabelDisplay();
@@ -1255,7 +1269,7 @@ class Room {
 	        } else {
 	            // additional other floor display
 		        this.otherFloorDisplay = this.addDisplayImage(this.getDisplayImageSuffix(), 200 + this.floor);
-			    this.otherFloorDisplay.style.filter = "brightness(25%)" + this.getDisplayImageFilter();
+			    this.otherFloorDisplay.style.filter = getDisplayImageFilter(this.hue, false);
                 // init the label, if necessary
                 this.updateLabelDisplay(false);
 	        }
@@ -1273,7 +1287,7 @@ class Room {
         } else {
 	        // just the other floor display
 	        this.otherFloorDisplay = this.addDisplayImage(this.getDisplayImageSuffix(), 200 + this.floor);
-		    this.otherFloorDisplay.style.filter = "brightness(25%)" + this.getDisplayImageFilter();
+		    this.otherFloorDisplay.style.filter = getDisplayImageFilter(this.hue, false);
             // init the label, if necessary
             this.updateLabelDisplay(false);
         }
@@ -2033,7 +2047,7 @@ function imageLoaded(targets, db, margin, scale, f, index, imageData) {
             // set the hue rotation if there is one
             if (a.hue != null) {
                 // todo: this is not supported of safari because of reasons
-                context.filter = "hue-rotate(" + a.hue + "deg)";
+                context.filter = getDisplayImageFilter(a.hue);
             }
             // draw the image at the center of the new coordinate space
             context.drawImage(a.image, 0, 0);
@@ -2071,7 +2085,7 @@ function imageLoaded(targets, db, margin, scale, f, index, imageData) {
             context.fillText(texts[t], -1, y+1);
             context.fillText(texts[t], 1, y+1);
 
-            context.fillStyle = a.hue != null ? ("hsl(" + a.hue + ", 75%, 75%)") : "#FFFFFF";
+            context.fillStyle = getDisplayLabelColor(a.hue);
             context.fillText(texts[t], 0, y);
 		}
 		// reset the transform
