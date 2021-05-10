@@ -183,7 +183,7 @@ var roomMetadata =
 		{"x": -32, "y": 16, "floor": 0, "outx": -1, "outy": 0}],
 	"floor_images": [
 		{"floor": 0, "image": "inspiration-hall"},
-		{"floor": 1, "image": "inspiration-hall"}],
+		{"floor": 1, "image": "inspiration-hall-other"}],
 	"resources": [
 		{"resource": "Credits", "costs": [1000, 3000, 10000, 30000, 100000]},
 		{"resource": "Alloy Plate", "costs": [150, 450, 1500, 4500, 15000]},
@@ -498,9 +498,9 @@ var roomMetadata =
 	"doors": [
 		{"x": 0, "y": 82, "floor": 0, "outx": 0, "outy": 1}],
 	"floor_images": [
-		{"floor": -1, "image": "open-space"},
+		{"floor": -1, "image": "open-space-other"},
 		{"floor": 0, "image": "open-space"},
-		{"floor": 1, "image": "open-space"}],
+		{"floor": 1, "image": "open-space-other"}],
 	"doors": [
 		{"x": 0, "y": 82, "floor": 0, "outx": 0, "outy": 1}],
 	"resources": [

@@ -1,6 +1,52 @@
 // Sorry, this is Grade-A Fancy spaghetti code
 
 //==============================================================
+// Common functions
+//==============================================================
+
+// part types:
+var part_bounds        = 1;
+var part_display_other = 2;
+var part_display       = 3;
+var part_outline       = 4;
+var part_marker        = 5;
+var part_doormarker    = 6;
+var part_label         = 7;
+var part_debug         = 8;
+
+// One function for handling all the z-index values for room images
+function getZIndex(room, part) {
+    if (room.isVisible()) {
+        // If it's just bleeding into this floort then it goes just below.
+        if (!room.isOnFloor()) return 10100 + part
+        // otherwise everything on the current floor is on top
+        else return 10200 + part;
+    } else {
+        // otherwise, there is a band of z-indexes for each floor's display layers
+        return (100 * part_debug) + (room.floor * part_debug) + part;
+    }
+}
+
+function getDisplayImageFilter(hue, visible=true) {
+    // CSS filter value for the display image, if necessary
+    return hue == null ? (visible ? "" : "brightness(25%") : (
+        " hue-rotate(" + (hue[0] - 120) + "deg)" +
+        " saturate(" + hue[1] * (visible ? 1 : 0.5) + "%)" +
+        " brightness(" + hue[2] * (visible ? 1 : 0.25) + "%)");
+}
+
+function getDisplayLabelColor(hue, visible=true) {
+    // CSS color value for the label, depending on whether there is a hue specified
+    return hue == null ?
+        (visible ? "hsl(0, 0%, 100%)" : "hsl(0, 0%, 10%)") :
+        // HSL doesn't quite translate from HSV, take my best stab at a match
+        (visible ?
+            "hsl(" + hue[0] + ", " + (hue[1] * 0.50) + "%, " + (Math.min(hue[2]*0.50, 66)) + "%)" :
+            "hsl(" + hue[0] + ", " + (hue[1] * 0.25) + "%, " + (Math.min(hue[2]*0.50, 66)*0.25) + "%)"
+        );
+}
+
+//==============================================================
 // Bound object
 //==============================================================
 
@@ -252,7 +298,7 @@ class Door {
     showDoorMarker() {
         if (this.floor == viewFloor && !this.otherDoor) {
 	        if (!this.marker) {
-	            this.marker = this.room.addDisplayImage(".png", 205, "marker-door", true);
+	            this.marker = this.room.addDisplayImage(".png", getZIndex(this.room, part_doormarker), "marker-door", true);
 	        } else {
 		        this.room.viewContainer.appendChild(this.marker);
 	        }
@@ -310,7 +356,7 @@ class Marker {
 
     addDisplay(viewContainer) {
         if (this.floor == viewFloor) {
-	        this.marker = this.room.addDisplayImage(".png", 204, this.metadata.image, true);
+	        this.marker = this.room.addDisplayImage(".png", getZIndex(this.room, part_marker), this.metadata.image, true);
         }
     }
 
@@ -342,7 +388,7 @@ function roomToString(room) {
     // hue and label fields are optional
     if (room.hue != null || room.label != null) {
         // add the hue or blank if it's null
-        s = s + "," + (room.hue == null ? "" : room.hue);
+        s = s + "," + (room.hue == null ? "" : (room.hue[0] + ":" + room.hue[1] + ":" + room.hue[2]));
         // label is optional
         if (room.label != null) {
             // we just need to escape quotes, and then put it in quotes
@@ -362,7 +408,14 @@ function roomFromString(string) {
     if (s.length > 5) {
         // blank is null
         if (s[5].length > 0) {
-            room.setHue(parseInt(s[5]));
+            if (s[5].includes(":")) {
+                var h = s[5].split(":");
+                room.setHue([parseInt(h[0]), parseInt(h[1]), parseInt(h[2])]);
+            } else {
+                // backwards compatible with old format with just the hue
+                // try to match saturation and brightness as close as possible
+                room.setHue([parseInt(s[5]), 50, 100]);
+            }
         }
         // look for optional label
         if (s.length > 6) {
@@ -765,7 +818,7 @@ class Room {
 		if (collidedRooms.length > 0) {
 			if (this.viewContainer) {
 				if (!this.grid) {
-			        this.grid = this.addDisplayImage("-bounds-blue.png", 201);
+			        this.grid = this.addDisplayImage("-bounds-blue.png", getZIndex(this, part_bounds));
 				}
 			    this.grid.style.filter = "hue-rotate(120deg) brightness(200%)";
 			}
@@ -794,7 +847,7 @@ class Room {
 		if (errors) {
 			if (this.viewContainer) {
 				if (!this.outline) {
-			        this.outline = this.addDisplayImage("-line-blue.png", 203);
+			        this.outline = this.addDisplayImage("-line-blue.png", getZIndex(this, part_outline));
 				}
 			    if (this.isSelected()) {
 				    this.outline.style.filter = "hue-rotate(120deg) saturate(50%) brightness(250%)";
@@ -811,7 +864,7 @@ class Room {
 
 		} else if (this.isSelected()) {
 			if (!this.outline) {
-		        this.outline = this.addDisplayImage("-line-blue.png", 203);
+		        this.outline = this.addDisplayImage("-line-blue.png", getZIndex(this, part_outline));
 		    }
 		    this.outline.style.filter = "";
 
@@ -853,10 +906,10 @@ class Room {
     select() {
         this.selected = true;
         if (!this.outline) {
-	        this.outline = this.addDisplayImage("-line-blue.png", 203);
+	        this.outline = this.addDisplayImage("-line-blue.png", getZIndex(this, part_outline));
         }
         if (!this.grid) {
-	        this.grid = this.addDisplayImage("-bounds-blue.png", 200);
+	        this.grid = this.addDisplayImage("-bounds-blue.png", getZIndex(this, part_bounds));
         }
 		// see if the outline should be red
 	    this.checkCollided();
@@ -1153,28 +1206,38 @@ class Room {
         }
     }
 
-    setHue(hue) {
+    setHue(hue, override=null) {
+
         // check for change
-        if (hue != this.hue) {
+        if (!arrayEquals(hue, this.hue)) {
             // if it's changing from null to not null or vice versa then we will need
             // to reset the display to use a different image
             var reset = hue == null || this.hue == null;
             // set the new value
-            this.hue = hue;
+            if (override && this.hue && hue) {
+                // only override certain parts of the color
+                this.hue = [
+                    override[0] ? hue[0] : this.hue[0],
+                    override[1] ? hue[1] : this.hue[1],
+                    override[2] ? hue[2] : this.hue[2]
+                ];
+            } else {
+                this.hue = hue;
+            }
             // reset the display if necessary
             if (reset) {
                 this.resetColorDisplay();
             }
             if (this.display) {
                 // update or clear the hue filter
-                this.display.style.filter = this.getDisplayImageFilter();
+                this.display.style.filter = getDisplayImageFilter(this.hue, true);
             } else if (this.otherFloorDisplay) {
                 // update or clear the hue filter
-                this.otherFloorDisplay.style.filter = "brightness(25%)" + this.getDisplayImageFilter();
+                this.otherFloorDisplay.style.filter = getDisplayImageFilter(this.hue, false);
             }
 			// if there is a label then update its filter, too
 			if (this.labelDisplay) {
-			    this.labelDisplay.style.color = this.getDisplayLabelColor(this.isVisible());
+			    this.labelDisplay.style.color = getDisplayLabelColor(this.hue, this.isVisible());
 			}
         }
     }
@@ -1183,9 +1246,9 @@ class Room {
         if (this.label) {
             if (!this.labelDisplay) {
                 // we need a label for don't have one, create it
-	            this.labelDisplay = this.addDisplayLabel(299);
+	            this.labelDisplay = this.addDisplayLabel(getZIndex(this, part_label));
 	            // init the hue filter, if there is one
-			    this.labelDisplay.style.color = this.getDisplayLabelColor(visible);
+			    this.labelDisplay.style.color = getDisplayLabelColor(this.hue, visible);
             }
             // update the label contents, replacing newlines with <br/>
             this.labelDisplay.innerHTML = this.label.replace(newlineRegex, "<br/>");
@@ -1209,12 +1272,12 @@ class Room {
         if (viewFloor != null) {
             if (this.isVisible()) {
                 // create a new display image, either grayscale or with color
-                this.display = this.addDisplayImage(this.getDisplayImageSuffix(), 202);
+                this.display = this.addDisplayImage(this.getDisplayImageSuffix(), getZIndex(this, part_display));
                 // set the hue filter, if any
-                this.display.style.filter = this.getDisplayImageFilter();
+                this.display.style.filter = getDisplayImageFilter(this.hue, true);
             } else {
-                this.otherFloorDisplay = this.addDisplayImage(this.getDisplayImageSuffix(), 200 + this.floor);
-                this.otherFloorDisplay.style.filter = "brightness(25%)" + this.getDisplayImageFilter();
+                this.otherFloorDisplay = this.addDisplayImage(this.getDisplayImageSuffix(), getZIndex(this, part_display));
+                this.otherFloorDisplay.style.filter = getDisplayImageFilter(this.hue, false);
             }
             // init the display's position, rotation, etc
             this.updateView();
@@ -1229,33 +1292,21 @@ class Room {
         return this.hue != null ? "-display-red.png" : "-display.png";
     }
 
-    getDisplayImageFilter() {
-        // CSS filter value for the display image, if necessary
-        return this.hue != null ? " hue-rotate(" + this.hue + "deg)" : "";
-    }
-
-    getDisplayLabelColor(visible=true) {
-        // CSS color value for the label, depending on whether there is a hue specified
-        return this.hue != null ?
-            visible ? "hsl(" + this.hue + ", 75%, 75%)" : "hsl(" + this.hue + ", 75%, 10%)" :
-            visible ? "hsl(0, 0%, 100%)" : "hsl(0, 0%, 10%)";
-    }
-
     addDisplay(viewContainer) {
         this.viewContainer = viewContainer;
         if (this.isVisible()) {
             // main visible display
-	        this.display = this.addDisplayImage(this.getDisplayImageSuffix(), 202);
+	        this.display = this.addDisplayImage(this.getDisplayImageSuffix(), getZIndex(this, part_display));
 	        // init the display hue filter, if necessary
-			this.display.style.filter = this.getDisplayImageFilter();
+			this.display.style.filter = getDisplayImageFilter(this.hue, true);
 	        if (this.isOnFloor()) {
                 // init the label, if necessary
-                this.updateLabelDisplay();
+                this.updateLabelDisplay(true);
 
 	        } else {
 	            // additional other floor display
-		        this.otherFloorDisplay = this.addDisplayImage(this.getDisplayImageSuffix(), 200 + this.floor);
-			    this.otherFloorDisplay.style.filter = "brightness(25%)" + this.getDisplayImageFilter();
+		        this.otherFloorDisplay = this.addDisplayImage(this.getDisplayImageSuffix(), getZIndex(this, part_display_other), this.getImageBase(this.floor));
+			    this.otherFloorDisplay.style.filter = getDisplayImageFilter(this.hue, false);
                 // init the label, if necessary
                 this.updateLabelDisplay(false);
 	        }
@@ -1272,8 +1323,8 @@ class Room {
 
         } else {
 	        // just the other floor display
-	        this.otherFloorDisplay = this.addDisplayImage(this.getDisplayImageSuffix(), 200 + this.floor);
-		    this.otherFloorDisplay.style.filter = "brightness(25%)" + this.getDisplayImageFilter();
+	        this.otherFloorDisplay = this.addDisplayImage(this.getDisplayImageSuffix(), getZIndex(this, part_display));
+		    this.otherFloorDisplay.style.filter = getDisplayImageFilter(this.hue, false);
             // init the label, if necessary
             this.updateLabelDisplay(false);
         }
@@ -1282,7 +1333,7 @@ class Room {
 	    this.checkErrors();
     }
 
-    addDisplayImage(imageSuffix, zIndex = 200, imageBase = null, marker = false) {
+    addDisplayImage(imageSuffix, zIndex, imageBase = null, marker = false) {
         if (!imageBase) {
             imageBase = this.getImageBase();
         }
@@ -1300,7 +1351,7 @@ class Room {
         return this.addDisplayImageElement(element, zIndex);
     }
 
-    addDisplayLabel(zIndex = 299) {
+    addDisplayLabel(zIndex) {
         // labels should appear above all other elements
         // labels are just a div with CSS
         var element = document.createElement("div");
@@ -1310,13 +1361,7 @@ class Room {
         return this.addDisplayImageElement(element, zIndex);
     }
 
-    addDisplayImageElement(element, zIndex = 200) {
-        if (!this.isVisible()) {
-            zIndex -= 100;
-        } else if (!this.isOnFloor()) {
-            zIndex -= 10;
-        }
-
+    addDisplayImageElement(element, zIndex) {
         element.style.position = "absolute";
         element.style.zIndex = zIndex;
         element.roomId = this.id;
@@ -2033,7 +2078,7 @@ function imageLoaded(targets, db, margin, scale, f, index, imageData) {
             // set the hue rotation if there is one
             if (a.hue != null) {
                 // todo: this is not supported of safari because of reasons
-                context.filter = "hue-rotate(" + a.hue + "deg)";
+                context.filter = getDisplayImageFilter(a.hue);
             }
             // draw the image at the center of the new coordinate space
             context.drawImage(a.image, 0, 0);
@@ -2071,7 +2116,7 @@ function imageLoaded(targets, db, margin, scale, f, index, imageData) {
             context.fillText(texts[t], -1, y+1);
             context.fillText(texts[t], 1, y+1);
 
-            context.fillStyle = a.hue != null ? ("hsl(" + a.hue + ", 75%, 75%)") : "#FFFFFF";
+            context.fillStyle = getDisplayLabelColor(a.hue);
             context.fillText(texts[t], 0, y);
 		}
 		// reset the transform

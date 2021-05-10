@@ -25,6 +25,8 @@ input[type=range]::-webkit-slider-thumb {
   /*background: #808080;*/
   border: 2px solid #ffffff;
   cursor: pointer;
+  /*shadow because we need something like and something dark*/
+  box-shadow: 2px 0px 0px #000000, -2px -0px 0px #000000;
   -webkit-appearance: none;
 }
 input[type=range]:focus::-webkit-slider-runnable-track {
@@ -43,6 +45,8 @@ input[type=range]::-moz-range-thumb {
   /*background: #808080;*/
   border: 2px solid #ffffff;
   cursor: pointer;
+  /*shadow because we need something like and something dark*/
+  box-shadow: 2px 0px 0px #000000, -2px -0px 0px #000000;
 }
 input[type=range]::-ms-track {
   background: transparent;
@@ -69,6 +73,8 @@ input[type=range]::-ms-thumb {
   cursor: pointer;
   margin-top: 0px;
   /*Needed to keep the Edge thumb centred*/
+  /*shadow because we need something like and something dark*/
+  box-shadow: 2px 0px 0px #000000, -2px -0px 0px #000000;
 }
 input[type=range]:focus::-ms-fill-lower {
   background: #c0c0c0;

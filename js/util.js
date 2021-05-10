@@ -179,6 +179,12 @@ function sortKeys(map) {
 	return map2;
 }
 
+function arrayEquals(a, b) {
+    return a == null ? b == null :
+        b == null ? false :
+        a.length == b.length && a.every((val, index) => val == b[index]);
+}
+
 //////////////////////////////////////////////////////////////////////////
 // parsing
 //////////////////////////////////////////////////////////////////////////
@@ -347,6 +353,42 @@ function findCollisions(boxes1, boxes2, threshold = 0, ignore=true) {
 //////////////////////////////////////////////////////////////////////////
 
 function generateColorPickerPNGLink(width, height, name, margin=0) {
+    return margin > 0 ?
+        generatePickerPNGLink(width, height, name, margin, (i) => {
+            return "hue-rotate(" + (i-120) + "deg)";
+        }) :
+        generatePickerPNGLink(width, height, name, margin, (i) => {
+            return "hue-rotate(" + (i-120) + "deg) brightness(200%)";
+        });
+}
+
+function generateSatPickerPNGLink(width, height, name, margin=0) {
+    return margin > 0 ?
+        generatePickerPNGLink(width, height, name, margin, (i) => {
+            var satVal = i * 100 / 360;
+            return "brightness(200%) saturate(" + satVal + "%)";
+        }) :
+        generatePickerPNGLink(width, height, name, margin, (i) => {
+            var satVal = i * 180 / 360;
+            return "saturate(" + (satVal) + "%) hue-rotate(-120deg) brightness(100%)";
+        });
+}
+
+function generateLumPickerPNGLink(width, height, name, margin=0) {
+    return margin > 0 ?
+        generatePickerPNGLink(width, height, name, margin, (i) => {
+            var lumVal = i * 100 / 360;
+            return "brightness(" + (lumVal*2) + "%)";
+
+        }) :
+        generatePickerPNGLink(width, height, name, margin, (i) => {
+            var lumVal = i * 100 / 360;
+            return "saturate(0%) brightness(" + (lumVal*2) + "%)";
+        });
+
+}
+
+function generatePickerPNGLink(width, height, name, margin, filterFunc) {
 	var canvas = document.createElement("canvas");
 	canvas.width = width;
 	canvas.height = height;
@@ -354,11 +396,11 @@ function generateColorPickerPNGLink(width, height, name, margin=0) {
 
     context.fillStyle = "#000000";
     context.fillRect(0, 0, canvas.width, canvas.height);
-    context.strokeStyle = "#FF0000";
+    context.strokeStyle = "#008000";
     context.lineWidth = Math.ceil(width / 360);
 
     for (var i = 0; i < 360; i++) {
-        context.filter = "hue-rotate(" + i + "deg)";
+        context.filter = filterFunc(i);
         context.beginPath();
         var x = margin + ((i + 0.5)*((width - (margin*2))/360));
         context.moveTo(x, 0);
