@@ -293,7 +293,7 @@ function clearSelectedRoomsLabels(action) {
     setSelectedRoomsLabels(null, action);
 }
 
-function setSelectedRoomsColor(hue, action, override=[true, true, true]) {
+function setSelectedRoomsColor(hue, action, override=null) {
     if (selectedRooms.length > 0) {
         clearMenus(0);
         // use the room list on the existing action

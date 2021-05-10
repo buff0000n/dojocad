@@ -1206,7 +1206,7 @@ class Room {
         }
     }
 
-    setHue(hue, override=[true, true, true]) {
+    setHue(hue, override=null) {
 
         // check for change
         if (!arrayEquals(hue, this.hue)) {
@@ -1214,7 +1214,7 @@ class Room {
             // to reset the display to use a different image
             var reset = hue == null || this.hue == null;
             // set the new value
-            if (override && this.hue) {
+            if (override && this.hue && hue) {
                 // only override certain parts of the color
                 this.hue = [
                     override[0] ? hue[0] : this.hue[0],
