@@ -353,23 +353,39 @@ function findCollisions(boxes1, boxes2, threshold = 0, ignore=true) {
 //////////////////////////////////////////////////////////////////////////
 
 function generateColorPickerPNGLink(width, height, name, margin=0) {
-    return generatePickerPNGLink(width, height, name, margin, (i) => {
-        return "hue-rotate(" + i + "deg)";
-    });
+    return margin > 0 ?
+        generatePickerPNGLink(width, height, name, margin, (i) => {
+            return "hue-rotate(" + (i-120) + "deg)";
+        }) :
+        generatePickerPNGLink(width, height, name, margin, (i) => {
+            return "hue-rotate(" + (i-120) + "deg) brightness(200%)";
+        });
 }
 
 function generateSatPickerPNGLink(width, height, name, margin=0) {
-    return generatePickerPNGLink(width, height, name, margin, (i) => {
-        var satVal = i * 100 / 360;
-        return "saturate(" + satVal + "%)";
-    });
+    return margin > 0 ?
+        generatePickerPNGLink(width, height, name, margin, (i) => {
+            var satVal = i * 100 / 360;
+            return "brightness(200%) saturate(" + satVal + "%)";
+        }) :
+        generatePickerPNGLink(width, height, name, margin, (i) => {
+            var satVal = i * 180 / 360;
+            return "saturate(" + (satVal) + "%) hue-rotate(-120deg) brightness(100%)";
+        });
 }
 
 function generateLumPickerPNGLink(width, height, name, margin=0) {
-    return generatePickerPNGLink(width, height, name, margin, (i) => {
-        var lumVal = i * 100 / 360;
-        return "brightness(" + lumVal + "%)";
-    });
+    return margin > 0 ?
+        generatePickerPNGLink(width, height, name, margin, (i) => {
+            var lumVal = i * 100 / 360;
+            return "brightness(" + (lumVal*2) + "%)";
+
+        }) :
+        generatePickerPNGLink(width, height, name, margin, (i) => {
+            var lumVal = i * 100 / 360;
+            return "saturate(0%) brightness(" + (lumVal*2) + "%)";
+        });
+
 }
 
 function generatePickerPNGLink(width, height, name, margin, filterFunc) {
@@ -380,7 +396,7 @@ function generatePickerPNGLink(width, height, name, margin, filterFunc) {
 
     context.fillStyle = "#000000";
     context.fillRect(0, 0, canvas.width, canvas.height);
-    context.strokeStyle = "#FF0000";
+    context.strokeStyle = "#008000";
     context.lineWidth = Math.ceil(width / 360);
 
     for (var i = 0; i < 360; i++) {

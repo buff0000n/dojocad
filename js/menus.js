@@ -66,6 +66,10 @@ function clearMenus(leave = 0) {
 function clearLastMenu() {
     if (getCurrentMenuLevel() > 0) {
         clearMenus(getCurrentMenuLevel() - 1);
+        return true;
+
+    } else {
+        return false;
     }
 }
 
@@ -101,13 +105,18 @@ function buildBlank(colSpan = 1) {
 	return td;
 }
 
-function buildMenuHeaderLine(title, colSpan, icon = null, className = "menu-button") {
-	var tr = document.createElement("tr");
+function buildIconCell(icon) {
     var iconTd = document.createElement("td");
 	if (icon) {
-		iconTd.innerHTML = `<img class="imgButton" src="icons/${icon}.png" srcset="icons2x/${icon}.png 2x"/>`;
+		iconTd.innerHTML = `<img src="icons/${icon}.png" srcset="icons2x/${icon}.png 2x"/>`;
 	}
-    tr.appendChild(iconTd);
+	// class="imgButton"
+	return iconTd;
+}
+
+function buildMenuHeaderLine(title, colSpan, icon = null, className = "menu-button") {
+	var tr = document.createElement("tr");
+    tr.appendChild(buildIconCell(icon));
 	tr.appendChild(buildMenuLabel(title, colSpan - 2));
 	tr.appendChild(buildCloseMenuButton());
     return tr;
@@ -783,13 +792,12 @@ function doLabelMenu() {
 //}
 
 class ColorPicker {
-    constructor(pickerImage, range, defaultVal, snapDistance, getRoomValFunc, setRoomValFunc) {
+    constructor(pickerImage, range, defaultVal, snapDistance, getRoomValFunc) {
         this.pickerImage = pickerImage;
         this.range = range;
         this.defaultVal = defaultVal;
         this.snapDistance = snapDistance;
         this.getRoomValFunc = getRoomValFunc;
-        this.setRoomValFunc = setRoomValFunc;
 
         this.buildUi();
     }
@@ -834,7 +842,7 @@ class ColorPicker {
             hueDiv.className = "colorPickerPreset";
             // have to tweak the horizontal position to account for the slider's width
             hueDiv.style = `
-                left: ${7 + ((snapHues[h] * (240/this.range)))}px;
+                left: ${6 + ((snapHues[h] * (240/this.range)))}px;
                 top: 0px;
                 width: 0px;
                 height: 3px;
@@ -882,7 +890,6 @@ class ColorPicker {
         slider.addEventListener("input", onChange);
         slider.range = this.range;
         slider.snapDistance = this.snapDistance;
-        slider.setRoomValFunc = this.setRoomValFunc;
 
         // assemb the div and put it into the table
         div.appendChild(slider);
@@ -912,52 +919,40 @@ function doColorMenu() {
     // just go ahead and commit whatever was done regardless of how the menu was closed.  That's what we have undo for.
     menuDiv.actionSuccess = true;
     // title
-    menuDiv.appendChild(buildMenuHeaderLine("Color", 3, "icon-color"));
+    menuDiv.appendChild(buildMenuHeaderLine("Color", 3, "icon-color-preview-red"));
+    // whatevs
+    var previewImg = menuDiv.firstChild.firstChild.firstChild;
 
-    // row for the hue slider
-    var tr = document.createElement("tr");
-    tr.append(document.createElement("td"));
-    var td = document.createElement("td");
-    var huePicker = new ColorPicker(
-        "icons/color-picker.png", 360, 0, 10,
+    function addSlider(icon, barImage, rage, defaultVal, snapDistance, getRoomValFunc) {
+        // row for the hue slider
+        var tr = document.createElement("tr");
+        tr.append(buildIconCell(icon));
+        var td = document.createElement("td");
+        var picker = new ColorPicker(barImage, rage, defaultVal, snapDistance, getRoomValFunc);
+        td.appendChild(picker.container);
+        tr.appendChild(td);
+        tr.append(document.createElement("td"));
+        menuDiv.appendChild(tr);
+        return picker;
+    }
+
+    var huePicker = addSlider("icon-color", "icons/color-picker.png", 360, 0, 10,
         (room) => {
             return room.hue == null ? null : room.hue[0];
         }
     );
-    td.appendChild(huePicker.container);
-    tr.appendChild(td);
-    tr.append(document.createElement("td"));
-    menuDiv.appendChild(tr);
 
-    // row for the sat slider
-    var tr = document.createElement("tr");
-    tr.append(document.createElement("td"));
-    var td = document.createElement("td");
-    var satPicker = new ColorPicker(
-        "icons/sat-picker.png", 200, 25, 5,
+    var satPicker = addSlider("icon-sat", "icons/sat-picker.png", 200, 50, 5,
         (room) => {
             return room.hue == null ? null : room.hue[1];
         }
     );
-    td.appendChild(satPicker.container);
-    tr.appendChild(td);
-    tr.append(document.createElement("td"));
-    menuDiv.appendChild(tr);
 
-    // row for the lum slider
-    var tr = document.createElement("tr");
-    tr.append(document.createElement("td"));
-    var td = document.createElement("td");
-    var lumPicker = new ColorPicker(
-        "icons/lum-picker.png", 200, 200, 5,
+    var lumPicker = addSlider("icon-lum", "icons/lum-picker.png", 200, 100, 5,
         (room) => {
             return room.hue == null ? null : room.hue[2];
         }
     );
-    td.appendChild(lumPicker.container);
-    tr.appendChild(td);
-    tr.append(document.createElement("td"));
-    menuDiv.appendChild(tr);
 
     var updatePickers = () => {
         var hue = [huePicker.slider.value,
@@ -965,12 +960,14 @@ function doColorMenu() {
                    lumPicker.slider.value];
 
         var hueFilter = "hue-rotate(" + hue[0] + "deg)";
+        var hueFilter2 = "hue-rotate(" + (hue[0] - 120) + "deg)";
         var satFilter = "saturate(" + hue[1] + "%)";
         var lumFilter = "brightness(" + hue[2]+ "%)";
 
         huePicker.bg.style.filter = satFilter + " " + lumFilter;
-        satPicker.bg.style.filter = hueFilter + " " + lumFilter;
-        lumPicker.bg.style.filter = hueFilter + " " + satFilter;
+        satPicker.bg.style.filter = hueFilter2 + " " + lumFilter;
+        lumPicker.bg.style.filter = hueFilter2 + " " + satFilter;
+        previewImg.style.filter = getDisplayImageFilter(hue);
     }
 
     var coordinatorListener = () => {
@@ -1009,8 +1006,67 @@ function doColorMenu() {
     // cancel option
     menuDiv.appendChild(buildMenuButton("Cancel", () => { menuDiv.actionSuccess = false; clearLastMenu(); }, "icon-undo"));
 
-    // select all option
-    menuDiv.appendChild(buildMenuButton("Select All", () => { menuDiv.undoAction = null; clearLastMenu(); selectAllRoomsOfColor(selectedRooms)}, "icon-multiselect"));
+    // "select all" menu line is very custom
+    {
+        var tr = document.createElement("tr");
+        var icon = "icon-multiselect";
+
+        var iconTd = document.createElement("td");
+        iconTd.className = "imgField";
+        iconTd.innerHTML = `<img src="icons/${icon}.png" srcset="icons2x/${icon}.png 2x"/>`;
+        iconTd.menuLevel = getCurrentMenuLevel() + 1;
+        tr.appendChild(iconTd);
+
+        var buttonDiv = document.createElement("td");
+
+        function addSelectButton(contents, func) {
+            var b0 = document.createElement("span");
+            b0.className = "menu-button";
+            b0.style.margin = "0px";
+            b0.innerHTML = contents;
+            b0.onclick = func;
+            b0.menuLevel = getCurrentMenuLevel() + 1;
+            buttonDiv.appendChild(b0);
+        }
+
+        addSelectButton(
+            `Select Exact`,
+            () => {
+                menuDiv.undoAction = null;
+                clearLastMenu();
+                selectAllRoomsOfColor(selectedRooms);
+            });
+
+        icon = "icon-color";
+        addSelectButton(
+            `<img class="imgButton" src="icons/${icon}.png" srcset="icons2x/${icon}.png 2x"/>`,
+            () => {
+                menuDiv.undoAction = null;
+                clearLastMenu();
+                selectAllRoomsOfColor(selectedRooms, 0);
+            });
+
+        icon = "icon-sat";
+        addSelectButton(
+            `<img class="imgButton" src="icons/${icon}.png" srcset="icons2x/${icon}.png 2x"/>`,
+            () => {
+                menuDiv.undoAction = null;
+                clearLastMenu();
+                selectAllRoomsOfColor(selectedRooms, 1);
+            });
+
+        icon = "icon-lum";
+        addSelectButton(
+            `<img class="imgButton" src="icons/${icon}.png" srcset="icons2x/${icon}.png 2x"/>`,
+            () => {
+                menuDiv.undoAction = null;
+                clearLastMenu();
+                selectAllRoomsOfColor(selectedRooms, 2);
+            });
+
+        tr.appendChild(buttonDiv);
+        menuDiv.appendChild(tr);
+    }
 
     showMenuAt(menuDiv, left, top);
 }
@@ -1298,7 +1354,7 @@ function doGeneratePicker(title, func, img_name_bar, img_name_icon) {
     var menuDiv = buildMenu();
 	menuDiv.appendChild(buildMenuHeaderLine(title, 3));
 
-    function generate(width, height, name, margin=1) {
+    function generate(width, height, name, margin=0) {
         var tr = document.createElement("tr");
         var td = document.createElement("td");
         var link = func(width, height, name, margin);
