@@ -230,7 +230,7 @@
         <div class="helpContainer">
             <p style="text-align: center;">
                 <span class="title">DojoCAD</span><br/>
-                v2.0.1: 2021-05-04<br/>
+                v2.0.2: 2021-05-10<br/>
                 <a href="https://github.com/buff0000n/dojoarch">Source</a>&nbsp;
                 <a href="https://github.com/buff0000n/dojoarch/issues/2">Feedback</a>&nbsp;
                 <a href="https://github.com/buff0000n/dojocad/issues/new">Bugs</a><br/>
@@ -654,7 +654,10 @@
                 Color option.  This will bring up a color picker that can assign a color to all the selected rooms.
             </p>
             <p>
-                Use the slider to adjust the hue.  Saturation and Brightness are fixed.
+                Use the three sliders to adjust the
+                <span class="docImgButton"><img src="icons/icon-color.png" srcset="icons2x/icon-color.png 2x" title="Hue"/></span> hue,
+                <span class="docImgButton"><img src="icons/icon-sat.png" srcset="icons2x/icon-sat.png 2x" title="Saturation"/></span> saturation,
+                and <span class="docImgButton"><img src="icons/icon-lum.png" srcset="icons2x/icon-lum.png 2x" title="Brightness"/></span> brightness.
             </p>
             <p>
                 Click
@@ -672,14 +675,36 @@
                 Cancel to close the color picker and reset and changes.
             </p>
             <p>
-                Click
+                Beside
                 <span class="docImgButton"><img src="icons/icon-multiselect.png" srcset="icons2x/icon-multiselect.png 2x" title="Select All"/></span>
-                Select All to select all rooms with the same color across the whole dojo.
+                there are four options for selecting rooms with similar colors.
+            </p>
+            <ul>
+                <li><strong>Select Exact</strong>: Selects all rooms in the dojo with the same hue, saturation, and
+                    brightness settings.</li>
+                <li>
+                    <span class="docImgButton"><img src="icons/icon-color.png" srcset="icons2x/icon-color.png 2x" title="Hue"/></span>:
+                    Selects all rooms in the dojo with the same hue, regardless of other color settings.
+                </li>
+                <li>
+                    <span class="docImgButton"><img src="icons/icon-sat.png" srcset="icons2x/icon-sat.png 2x" title="Saturation"/></span>:
+                    Selects all rooms in the dojo with the same saturation, regardless of other color settings.
+                </li>
+                <li>
+                    <span class="docImgButton"><img src="icons/icon-lum.png" srcset="icons2x/icon-lum.png 2x" title="Brightness"/></span>:
+                    Selects all rooms in the dojo with the same brightness, regardless of other color settings.
+                </li>
+            </ul>
+            <p>
+                If there are already some rooms with colors in the layout, then those colors will create markers on the
+                saturation, and luminance sliders.  Moving any slider close enough to a mark will snap to them.  The
+                snapping can be disabled by holding the shift key.
             </p>
             <p>
-                If there are already some rooms with colors in the layout, then those colors will be marked in the
-                color picker, and moving the slider close enough will snap to them.  The snapping can be disabled
-                by holding the shift key.
+                If you have multiple rooms selected that currently have different colors, then only the color parts that
+                are modified will be changed.  For example, if you have a red and a green room selected, and only adjust
+                the brightness slider without touching hue, then the rooms will still be red and green and only their
+                brightness will be changed.
             </p>
             <p>
                 <strong>Q</strong>: Is this entirely too much attention paid to a color picker?
@@ -1011,6 +1036,7 @@
                 <li>Fixed the bounds on the Entrati Audience Chamber, Infested Chamber, and Starlight Market (thanks
                     <strong>kukurbis</strong> and <strong>AeliosZero</strong>)</li>
                 <li>Fixed resources on the Dry Dock and Crimson Branch</li>
+                <li>Even more color coding</li>
             </ul>
 
             <h1 id="ToDo">To Do</h1>

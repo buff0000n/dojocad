@@ -798,6 +798,7 @@ class ColorPicker {
         this.defaultVal = defaultVal;
         this.snapDistance = snapDistance;
         this.getRoomValFunc = getRoomValFunc;
+        this.modified = false;
 
         this.buildUi();
     }
@@ -883,6 +884,7 @@ class ColorPicker {
                     slider.value = snapHue;
                 }
             }
+            this.modified = true;
             this.listener();
         }
         // register the listener for both change and input values, not sure change is necessary
@@ -980,7 +982,12 @@ function doColorMenu() {
         // setColorSliderThumbColor(hue, 50);
         // update each room's hue in real time
         for (var r = 0; r < selectedRooms.length; r++) {
-            selectedRooms[r].setHue(hue);
+            // if the room already has a color set, then only override the parts where the slider has been touched
+            selectedRooms[r].setHue(hue, [
+                huePicker.slider.modified,
+                satPicker.slider.modified,
+                lumPicker.slider.modified
+            ]);
         }
     }
 
@@ -997,10 +1004,14 @@ function doColorMenu() {
     menuDiv.appendChild(buildMenuButton("Save", () => {
         menuDiv.undoAction = null;
         setSelectedRoomsColor([
-            huePicker.slider.value,
-            satPicker.slider.value,
-            lumPicker.slider.value
-            ], action);
+                huePicker.slider.value,
+                satPicker.slider.value,
+                lumPicker.slider.value
+            ], action, [
+               huePicker.slider.modified,
+               satPicker.slider.modified,
+               lumPicker.slider.modified
+            ]);
     }, "icon-save"));
 
     // cancel option

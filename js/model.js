@@ -1206,14 +1206,24 @@ class Room {
         }
     }
 
-    setHue(hue) {
+    setHue(hue, override=[true, true, true]) {
+
         // check for change
         if (!arrayEquals(hue, this.hue)) {
             // if it's changing from null to not null or vice versa then we will need
             // to reset the display to use a different image
             var reset = hue == null || this.hue == null;
             // set the new value
-            this.hue = hue;
+            if (override && this.hue) {
+                // only override certain parts of the color
+                this.hue = [
+                    override[0] ? hue[0] : this.hue[0],
+                    override[1] ? hue[1] : this.hue[1],
+                    override[2] ? hue[2] : this.hue[2]
+                ];
+            } else {
+                this.hue = hue;
+            }
             // reset the display if necessary
             if (reset) {
                 this.resetColorDisplay();

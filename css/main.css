@@ -263,7 +263,7 @@ li {
 
 .docImgButton {
     margin: 0;
-    padding: 0.5ex 0.5ex;
+    /*padding: 0.5ex 0.5ex;*/
     background-color: #7070A0;
     color: #FFFFFF;
 }
