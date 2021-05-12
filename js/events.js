@@ -765,19 +765,27 @@ function selectAllRoomsOfType(matchingRooms) {
 }
 
 // select all rooms of a certain type
-function selectAllRoomsOfColor(matchingRooms) {
+function selectAllRoomsOfColor(matchingRooms, type=-1) {
+    function matchesHue(hue1, hue2) {
+        return type == -1 ?
+            arrayEquals(hue1, hue2) :
+            (hue1 != null && hue2 != null && hue1[type] == hue2[type]);
+    }
+
     // get every room that has at least some part on the current floor
     var rooms = [];
     var hues = [];
     for (var r = 0; r < matchingRooms.length; r++) {
+        var hue = matchingRooms[r].hue;
         // filter out null color, for now.
         // I'm not ready for an easy way to select every room on every floor just yet.
-        if (matchingRooms[r].hue != null) {
-            addToListIfNotPresent(hues, matchingRooms[r].hue);
+        if (hue != null &&
+            !hues.find(e => matchesHue(e, hue))) {
+            hues.push(hue);
         }
     }
     for (var r = 0; r < roomList.length; r++) {
-        if (hues.includes(roomList[r].hue)) {
+        if (hues.find(e => matchesHue(e, roomList[r].hue))) {
             rooms.push(roomList[r]);
         }
     }
@@ -828,6 +836,10 @@ function cancelRoomDrag() {
 
         // cancel any pending undo combinations
         cancelAllUndoCombos();
+        return true;
+
+    } else {
+        return false;
     }
 }
 
@@ -933,9 +945,11 @@ function keyDown(e) {
 
     switch (e.code) {
 		case "Escape" :
-		    // escape cancels menus and drag operations
-		    clearLastMenu();
-		    cancelRoomDrag();
+		    // escape either cancels menus, cancels a drag operation, or clears the selection, in that order.
+		    if (!clearLastMenu() &&
+		        !cancelRoomDrag()) {
+		        selectRooms([]);
+            }
             e.preventDefault();
 		    break;
 		case "Backspace" :

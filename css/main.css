@@ -1,10 +1,10 @@
 /* z-index groups:
     0: body, grid
-    100x: background rooms not on the current floor
-    200x: foreground rooms on the current floor
-    300x: headers, footers, sidebars
-    400x: menus
-    500x: help
+    0-10000: background rooms not on the current floor
+    10200x: foreground rooms on the current floor
+    10300x: headers, footers, sidebars
+    10400x: menus
+    10500x: help
 */
 
 /* common formatting */
@@ -76,7 +76,7 @@ html::-webkit-scrollbar, body::-webkit-scrollbar {
     margin: 0;
     padding: 1ex 1ex;
     border-radius: 1ex;
-    z-index: 305;
+    z-index: 10305;
 }
 
 /* floating footer at the bottom */
@@ -89,7 +89,7 @@ html::-webkit-scrollbar, body::-webkit-scrollbar {
     margin: 0;
     padding: 1ex;
     border-radius: 1ex;
-    z-index: 308;
+    z-index: 10308;
 }
 /* All the footer stuff was moved to the Help section to save screen real estate
 #footerToggle {
@@ -109,7 +109,7 @@ html::-webkit-scrollbar, body::-webkit-scrollbar {
     margin: 0;
     padding: 1.5ex 1ex;
     border-radius: 1ex;
-    z-index: 308;
+    z-index: 10308;
 }
 
 /* floating sidebar */
@@ -122,7 +122,7 @@ html::-webkit-scrollbar, body::-webkit-scrollbar {
     margin: 0;
     padding: 0ex 0ex;
     border-radius: 1ex;
-    z-index: 308;
+    z-index: 10308;
 }
 
 /* floating help container, fills the right side up to a max width */
@@ -137,7 +137,7 @@ html::-webkit-scrollbar, body::-webkit-scrollbar {
     padding: 2ex;
     border-radius: 1ex;
     visibility: hidden;
-    z-index: 500;
+    z-index: 10500;
 }
 
 /* absolutely position the help show/hide button in the upper right corner */
@@ -145,7 +145,7 @@ html::-webkit-scrollbar, body::-webkit-scrollbar {
     position: absolute;
     right: 0ex;
     top: 0ex;
-    z-index: 501;
+    z-index: 10501;
 }
 
 /* help box fills the help container and contains its own scrollbar */
@@ -263,7 +263,7 @@ li {
 
 .docImgButton {
     margin: 0;
-    padding: 0.5ex 0.5ex;
+    /*padding: 0.5ex 0.5ex;*/
     background-color: #7070A0;
     color: #FFFFFF;
 }
@@ -354,7 +354,7 @@ td.imgField {
     border-radius: 1ex;
     position: absolute;
     user-select: none;
-    z-index: 400;
+    z-index: 10400;
     box-shadow: 0 0 3px 3px #000000;
 }
 
@@ -508,15 +508,26 @@ td.imgField {
     margin: 0;
     padding: 0;
     position: relative;
-    background-image: url("../icons/color-picker.png");
+}
+
+.colorPickerBackground {
+    width: 256px;
+    margin: 0;
+    padding: 0;
+    position: absolute;
+    left: 0px;
+    right: 0px;
+    height: 32px;
+    z-index: -100;
 }
 
 .colorPickerPreset {
     border: 1px;
-    border-color: #FFFFFF;
+    background-color: #FFFFFF;
+    border-color: #000000;
     border-style: solid;
     margin: 0;
-    padding: 0;
+    padding: 1;
     position: absolute;
     pointer-events: none;
 }
@@ -529,7 +540,7 @@ td.imgField {
     position: absolute;
     border-style: dashed;
     border-width: 2px;
-    z-index: 499;
+    z-index: 10499;
     pointer-events: none;
     border-color: #00FF00;
 }
@@ -550,7 +561,7 @@ td.imgField {
     margin: 0;
     padding: 2ex;
     border-radius: 1ex;
-    z-index: 307;
+    z-index: 10307;
 }
 
 #debugBar {
@@ -565,7 +576,7 @@ td.imgField {
     margin: 0;
     padding: 2ex;
     border-radius: 1ex;
-    z-index: 307;
+    z-index: 10307;
     visibility: hidden;
 }
 
@@ -577,7 +588,7 @@ td.imgField {
     position: absolute;
     border-style: solid;
     border-width: 1px;
-    z-index: 299;
+    z-index: 10299;
     pointer-events: none;
 }
 .debugBounds {
@@ -603,7 +614,7 @@ td.imgField {
     text-decoration: none;
     font-size: 100%;
     position: absolute;
-    z-index: 400;
+    z-index: 10400;
 }
 
 .matrix-table tr td, .matrix-table tr th {

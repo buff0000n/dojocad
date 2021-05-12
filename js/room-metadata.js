@@ -183,7 +183,7 @@ var roomMetadata =
 		{"x": -32, "y": 16, "floor": 0, "outx": -1, "outy": 0}],
 	"floor_images": [
 		{"floor": 0, "image": "inspiration-hall"},
-		{"floor": 1, "image": "inspiration-hall"}],
+		{"floor": 1, "image": "inspiration-hall-other"}],
 	"resources": [
 		{"resource": "Credits", "costs": [1000, 3000, 10000, 30000, 100000]},
 		{"resource": "Alloy Plate", "costs": [150, 450, 1500, 4500, 15000]},
@@ -192,9 +192,9 @@ var roomMetadata =
 		{"resource": "Forma", "costs": [1, 1, 3, 8, 25]}],
 	"blockedFromAboveBy": [
 		"ce","ob","oc","re"]},
-{"id": "he", "image": "entrati-hall", "name": "Entrati Audience Chamber", "category": "Halls", "spawn": true, "prereq": null, "capacity": 200, "energy": -2, "maxnum": null, "floor": -12, "ceil": 32,
+{"id": "he", "image": "entrati-hall", "name": "Entrati Audience Chamber", "category": "Halls", "spawn": true, "prereq": null, "capacity": 200, "energy": -2, "maxnum": null, "floor": -12, "ceil": 36,
 	"bounds": [
-		{"x1": -32, "y1": -32, "x2": 32, "y2": 32, "floor": -12, "ceil": 32}],
+		{"x1": -32, "y1": -32, "x2": 32, "y2": 32, "floor": -12, "ceil": 36}],
 	"doors": [
 		{"x": 0, "y": 32, "floor": 0, "outx": 0, "outy": 1},
 		{"x": 32, "y": 16, "floor": 0, "outx": 1, "outy": 0},
@@ -209,10 +209,10 @@ var roomMetadata =
 		{"resource": "Salvage", "costs": [500, 1500, 5000, 15000, 50000]},
 		{"resource": "Forma", "costs": [1, 1, 1, 3, 10]}], "unverified": true,
 	"blockedFromAboveBy": [
-		"ce","ob","oc","re"]},
-{"id": "hf", "image": "infested-hall", "name": "Infested Chamber", "category": "Halls", "spawn": true, "prereq": null, "capacity": 200, "energy": -5, "maxnum": null, "floor": -12, "ceil": 32,
+		"ob"]},
+{"id": "hf", "image": "infested-hall", "name": "Infested Chamber", "category": "Halls", "spawn": true, "prereq": null, "capacity": 200, "energy": -5, "maxnum": null, "floor": -12, "ceil": 36,
 	"bounds": [
-		{"x1": -32, "y1": -32, "x2": 32, "y2": 32, "floor": -12, "ceil": 32}],
+		{"x1": -32, "y1": -32, "x2": 32, "y2": 32, "floor": -12, "ceil": 36}],
 	"doors": [
 		{"x": 0, "y": 32, "floor": 0, "outx": 0, "outy": 1},
 		{"x": 32, "y": 16, "floor": 0, "outx": 1, "outy": 0},
@@ -227,10 +227,10 @@ var roomMetadata =
 		{"resource": "Salvage", "costs": [500, 1500, 5000, 15000, 50000]},
 		{"resource": "Forma", "costs": [1, 1, 1, 3, 10]}], "unverified": true,
 	"blockedFromAboveBy": [
-		"ce","ob","oc","re"]},
-{"id": "sm", "image": "starlight-market", "name": "Starlight Market", "category": "Halls", "spawn": true, "prereq": null, "capacity": 200, "energy": -5, "maxnum": null, "floor": -12, "ceil": 32,
+		"ob"]},
+{"id": "sm", "image": "starlight-market", "name": "Starlight Market", "category": "Halls", "spawn": true, "prereq": null, "capacity": 200, "energy": -5, "maxnum": null, "floor": -12, "ceil": 36,
 	"bounds": [
-		{"x1": -32, "y1": -32, "x2": 32, "y2": 32, "floor": -12, "ceil": 32}],
+		{"x1": -32, "y1": -32, "x2": 32, "y2": 32, "floor": -12, "ceil": 36}],
 	"doors": [
 		{"x": 0, "y": 32, "floor": 0, "outx": 0, "outy": 1},
 		{"x": 32, "y": 16, "floor": 0, "outx": 1, "outy": 0},
@@ -245,7 +245,7 @@ var roomMetadata =
 		{"resource": "Salvage", "costs": [500, 1500, 5000, 15000, 50000]},
 		{"resource": "Forma", "costs": [1, 1, 1, 3, 10]}], "unverified": true,
 	"blockedFromAboveBy": [
-		"ce","ob","oc","re"]},
+		"ob"]},
 
 {"id": "or", "image": "oracle2", "name": "Oracle", "category": "Labs", "prereq": null, "capacity": -2, "energy": -5, "maxnum": null, "floor": -8, "ceil": 12,
 	"bounds": [
@@ -361,7 +361,7 @@ var roomMetadata =
 		{"resource": "Salvage", "costs": [25000, 75000, 250000, 750000, 2500000]},
 		{"resource": "Circuits", "costs": [850, 2550, 8500, 25500, 85000]},
 		{"resource": "Tellurium", "costs": [15, 45, 150, 450, 1500]},
-		{"resource": "Forma", "costs": [1, 1, 3, 8, 25]}],
+		{"resource": "Forma", "costs": [1, 1, 2, 5, 15]}],
 	"blockedFromAboveBy": [
 	    ]},
 {"id": "cr", "image": "crimson-branch", "name": "Crimson Branch", "category": "Interactive", "prereq": null, "capacity": -2, "energy": -4, "maxnum": null, "floor": 0, "ceil": 12,
@@ -375,7 +375,7 @@ var roomMetadata =
 		{"resource": "Hexenon", "costs": [250, 750, 2500, 7500, 25000]},
 		{"resource": "Alloy Plate", "costs": [8500, 25500, 85000, 255000, 850000]},
 		{"resource": "Orokin Cell", "costs": [25, 75, 250, 750, 2500]},
-		{"resource": "Forma", "costs": [1, 1, 3, 8, 25]}],
+		{"resource": "Forma", "costs": [1, 1, 1, 3, 10]}],
 	"blockedFromAboveBy": [
 	    ]},
 {"id": "du", "image": "dueling-room", "name": "Dueling Room", "category": "Interactive", "prereq": null, "capacity": -10, "energy": -10, "maxnum": null, "floor": 0, "ceil": 20,
@@ -498,9 +498,9 @@ var roomMetadata =
 	"doors": [
 		{"x": 0, "y": 82, "floor": 0, "outx": 0, "outy": 1}],
 	"floor_images": [
-		{"floor": -1, "image": "open-space"},
+		{"floor": -1, "image": "open-space-other"},
 		{"floor": 0, "image": "open-space"},
-		{"floor": 1, "image": "open-space"}],
+		{"floor": 1, "image": "open-space-other"}],
 	"doors": [
 		{"x": 0, "y": 82, "floor": 0, "outx": 0, "outy": 1}],
 	"resources": [
