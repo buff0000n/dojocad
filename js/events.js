@@ -270,6 +270,7 @@ var dragMoveUndoAction = false;
 var newRoom = false;
 
 var multiselectEnabled = false;
+var multifloorEnabled = false;
 var multiselectCornerPX = null;
 var multiselectCornerPY = null;
 
@@ -507,13 +508,8 @@ function dropEvent(e) {
     if (multiselectEnabled) {
         // were we multiselecting
         if (isMultiselecting()) {
-            // clear multiselect state
-            hideMultiselectBox();
-            multiselectCornerPX = null;
-            multiselectCornerPY = null;
+            stopMultiselecting();
             dragged = false;
-            // add any rooms inside the multiselect box to the current selection
-            commitMultiselectRooms();
 
         } else {
             // It was a click instead of a drag
@@ -889,8 +885,9 @@ function setMultiselectEnabled(enabled) {
         // update state
         multiselectEnabled = true;
         // update the button
+        var icon = multifloorEnabled ? "icon-multiselect-floors" : "icon-multiselect";
         button.className = "button";
-		button.children[0].title = "Disable Multiselect Mode";
+        button.innerHTML = `<img src="icons/${icon}.png" srcset="icons2x/${icon}.png 2x" alt="Disable Multiselect Mode"/>`;
 
     // if we're ending multiselect
     } else {
@@ -898,19 +895,26 @@ function setMultiselectEnabled(enabled) {
         multiselectEnabled = false;
         // update the button
         button.className = "button-disabled";
-		button.children[0].title = "Enable Multiselect Mode";
+        var icon = "icon-multiselect";
+        button.innerHTML = `<img src="icons/${icon}.png" srcset="icons2x/${icon}.png 2x" alt="Enable Multiselect Mode"/>`;
 
         // check if we actually had a multiselect box going
 		if (isMultiselecting()) {
-		    // clear multiselect box state
-            mouseDownTargetStartPX = multiselectCornerPX;
-            mouseDownTargetStartPY = multiselectCornerPY
-            multiselectCornerPX = null;
-            multiselectCornerPY = null;
-            // hide the box
-            hideMultiselectBox();
+		    stopMultiselecting();
 		}
     }
+}
+
+function stopMultiselecting() {
+    // hide the box
+    hideMultiselectBox();
+    // clear multiselect box state
+    mouseDownTargetStartPX = multiselectCornerPX;
+    mouseDownTargetStartPY = multiselectCornerPY
+    multiselectCornerPX = null;
+    multiselectCornerPY = null;
+    // add any rooms inside the multiselect box to the current selection
+    commitMultiselectRooms();
 }
 
 //==============================================================
@@ -1003,6 +1007,16 @@ function keyDown(e) {
 		    }
 		    // drag snapping is taken care of elsewhere
 		    break;
+		case "ControlLeft" :
+		case "ControlRight" :
+		case "MetaLeft" :
+		case "MetaRight" :
+		    multifloorEnabled = true;
+		    if (multiselectEnabled) {
+    		    setMultiselectEnabled(true);
+                e.preventDefault();
+		    }
+		    break;
 		case "KeyZ" :
 			// only enable undo/redo key shortcut if there is no menu visible and no dragging operation
 			if (nothingElseGoingOn()) {
@@ -1086,6 +1100,17 @@ function keyUp(e) {
 		    setMultiselectEnabled(false);
 		    // also disables snapping in the color picker and while dragging rooms
             snapDisabled = false;
+            break;
+		case "ControlLeft" :
+		case "ControlRight" :
+		case "MetaLeft" :
+		case "MetaRight" :
+		    multifloorEnabled = false;
+		    if (multiselectEnabled) {
+    		    setMultiselectEnabled(true);
+                e.preventDefault();
+		    }
+		    break;
 	}
 }
 

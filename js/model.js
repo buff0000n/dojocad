@@ -21,6 +21,9 @@ function getZIndex(room, part) {
         if (!room.isOnFloor()) return 10100 + part
         // otherwise everything on the current floor is on top
         else return 10200 + part;
+    } else if (part == part_outline) {
+        // for outlines, always put them on the top layer so we can see all selected rooms
+        return 10200 + part;
     } else {
         // otherwise, there is a band of z-indexes for each floor's display layers
         return (100 * part_debug) + (room.floor * part_debug) + part;
