@@ -426,7 +426,7 @@ class ResourceCounter extends RoomRule {
 	    var tier = this.getTier();
 
 	    var rr = room.metadata.resources;
-	    for (var i = 0; i < this.resources.length; i++) {
+	    for (var i = 0; i < rr.length; i++) {
             for (var j = 0; j <= this.maxTier; j++) {
                 this.resources[rr[i].resource][j] -= rr[i].costs[j];
             }

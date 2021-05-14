@@ -230,7 +230,7 @@
         <div class="helpContainer">
             <p style="text-align: center;">
                 <span class="title">DojoCAD</span><br/>
-                v2.1.0: 2021-05-14<br/>
+                v2.1.1: 2021-05-14<br/>
                 <a href="https://github.com/buff0000n/dojoarch">Source</a>&nbsp;
                 <a href="https://github.com/buff0000n/dojoarch/issues/2">Feedback</a>&nbsp;
                 <a href="https://github.com/buff0000n/dojocad/issues/new">Bugs</a><br/>
@@ -375,7 +375,7 @@
                 <li><strong>Shift-click</strong>: Add a room to the selection</li>
                 <li><strong>Shift-drag</strong>: Add an area of rooms to the selection</li>
                 <li><strong>Drag room-Shift</strong>: Disable door snapping while dragging rooms</li>
-                <li><strong>Drag room-Alt</strong>: Snap to the nearest 8m while dragging rooms</li>
+                <li><strong>Drag room-Control/Command</strong>: Snap to the nearest 8m while dragging rooms</li>
                 <li><strong>R</strong>: Rotate the selected rooms (<i>works while dragging</i>)</li>
                 <li><strong>D</strong>: Duplicate the selected rooms</li>
                 <li><strong>Alt-click</strong>: Delete a room or the selected rooms</li>
@@ -515,8 +515,8 @@
                 After selecting one or more rooms, click again and drag on one of the selected rooms to move them.
             </p>
             <p>
-                Hold down <strong>Alt</strong> while dragging rooms to snap their position to the nearest 8 meters
-                on the grid.  Otherwise the rooms' positions are snapped to the nearest meter.
+                Hold down <strong>Control/Command</strong> while dragging rooms to snap their position to the nearest
+                8 meters on the grid.  Otherwise the rooms' positions are snapped to the nearest meter.
             </p>
             <p>
                 If you drag one room so one of its doors is close to another room's door that's facing the opposite
@@ -1052,6 +1052,7 @@
             <h3 id="UpdateNotes2.1">v2.1: 2021-05-14</h3>
             <ul>
                 <li>Fixed a bunch of issues with selecting across floors and added more ways to do it.</li>
+                <li>Fixing total resources not decreasing when you delete a room (thanks <strong>flieee</strong>)</li>
             </ul>
 
             <h1 id="ToDo">To Do</h1>
