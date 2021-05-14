@@ -435,6 +435,125 @@ function centerViewOnIfNotVisible(mx, my, floor, scale = null) {
 	}
 }
 
+function centerViewOnBounds(viewCenter, bounds) {
+    // feels like I'm overthinking this
+
+    // changed flag
+    var changed = false;
+
+    if (viewCenter == null) {
+        // default view center
+        viewCenter = getViewCenter();
+    }
+
+    // get the current view floor
+    var floor = viewFloor;
+
+    // check if the bounds touch the visible floor
+    if (bounds && (floor < bounds.f1 || floor > bounds.f2)) {
+        // if we have a view center and it's in bounds then switch to that floor
+        if (viewCenter.floor >= bounds.f1 && viewCenter.floor <= bounds.f2) {
+            floor = viewCenter.floor;
+
+        // otherwise change the view floor to the nearest one in bounds
+        } else if (floor < bounds.f1) {
+            floor = bounds.f1;
+
+        } else {
+            floor = bounds.f2;
+        }
+        changed = true;
+
+    } else if (!bounds && viewCenter.floor != floor) {
+        // no bounds, just go straight to the previous view
+        floor = viewCenter.floor
+        changed = true;
+    }
+
+    // add a margin around whatever we scale the view to, use the same margin as the autoScroll area
+    var margin = autoScrollSize / viewScale;
+    // convert view parameters to a bounding box in model coordinates
+    // why did I make viewPX and viewPY so weird
+    var viewx1 = (-viewPX / viewScale) + margin;
+    var viewx2 = ((-viewPX + windowWidth) / viewScale) - margin;
+    var viewy1 = (-viewPY / viewScale) + margin;
+    var viewy2 = ((-viewPY + windowHeight) / viewScale) - margin;
+    var scale = viewScale;
+
+    if (viewx1 > bounds.x1) {
+        // move the view left just enough to include the left bounds
+        viewx2 += bounds.x1 - viewx1;
+        viewx1 = bounds.x1;
+        changed = true;
+    } else if (viewx2 < bounds.x2) {
+        // move the view right just enough to include the right bounds
+        viewx1 += bounds.x2 - viewx2;
+        viewx2 = bounds.x2;
+        changed = true;
+    }
+    if (viewx1 > bounds.x1 || viewx2 < bounds.x2) {
+        // view is not zoomed out enough to include both the left and right bounds
+        // calculate rescale factor
+        var rescale = (bounds.x2 - bounds.x1) / (viewx2 - viewx1);
+        // set the horizontal view to exactly cover the horizontal bounds
+        viewx1 = bounds.x1;
+        viewx2 = bounds.x2;
+        // convert vertical view to midpoint and distance
+        var midy = (viewy1 + viewy2) / 2;
+        var disty = (viewy2 - viewy1) / 2;
+        // zoom the vertical view out from its center to match the new scaling
+        viewy1 = midy - (disty * rescale);
+        viewy2 = midy + (disty * rescale);
+        // scale the scale
+        scale /= rescale;
+        changed = true;
+    }
+
+    if (viewy1 > bounds.y1) {
+        // move the view up just enough to include the upper bounds
+        viewy2 += bounds.y1 - viewy1;
+        viewy1 = bounds.y1;
+        changed = true;
+    } else if (viewy2 < bounds.y2) {
+        // move the view down just enough to include the lower bounds
+        viewy1 += bounds.y2 - viewy2;
+        viewy2 = bounds.y2;
+        changed = true;
+    }
+    if (viewy1 > bounds.y1 || viewy2 < bounds.y2) {
+        // view is not zoomed out enough to include both the upper and lower bounds
+        // calculate rescale factor
+        var rescale = (bounds.y2 - bounds.y1) / (viewy2 - viewy1);
+        // set the vertical view to exactly cover the vertical bounds
+        viewy1 = bounds.y1;
+        viewy2 = bounds.y2;
+        // convert horizontal view to midpoint and distance
+        var midx = (viewx1 + viewx2) / 2;
+        var distx = (viewx2 - viewx1) / 2;
+        // zoom the horizontal view out from its center to match the new scaling
+        viewx1 = midx - (distx * rescale);
+        viewx2 = midx + (distx * rescale);
+        // scale the scale
+        scale /= rescale;
+        changed = true;
+    }
+
+    if (changed) {
+        // convert back to the weird view parameters I seem to be using
+        var newPX = (-viewx1 * scale) + autoScrollSize;
+        var newPY = (-viewy1 * scale) + autoScrollSize;
+        // reset the view
+        setViewP(newPX, newPY, scale, floor);
+    }
+}
+
+function getViewCenter() {
+	var mx = ((windowWidth / 2) - viewPX) / viewScale;
+	var my = ((windowHeight / 2) - viewPY) / viewScale;
+	var ret = {mx: mx, my: my, floor: viewFloor, scale: viewScale}
+	return ret
+}
+
 //==============================================================
 // Misc
 //==============================================================

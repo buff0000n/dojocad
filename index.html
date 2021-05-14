@@ -230,7 +230,7 @@
         <div class="helpContainer">
             <p style="text-align: center;">
                 <span class="title">DojoCAD</span><br/>
-                v2.0.3: 2021-05-11<br/>
+                v2.1.0: 2021-05-14<br/>
                 <a href="https://github.com/buff0000n/dojoarch">Source</a>&nbsp;
                 <a href="https://github.com/buff0000n/dojoarch/issues/2">Feedback</a>&nbsp;
                 <a href="https://github.com/buff0000n/dojocad/issues/new">Bugs</a><br/>
@@ -463,19 +463,26 @@
                 While multiselect is enabled, clicking and dragging will create a selection box.  All rooms in the selection
                 box will be added to the current selection when the mouse button or touch is released.
             </p>
+            <p>
+                By default multiselect mode only selects rooms on the current floor.  Holding both
+                <strong>Shift</strong> and <strong>Control/Command</strong> while dragging or clicking a room will
+                select across all floors.  You will see a different multiselect icon,
+                <span class="docImgButton"><img src="icons/icon-multiselect-floors.png" srcset="icons2x/icon-multiselect-floors.png 2x" title="Multiselect"/></span>
+                when multi-floor selection is enabled.
+            </p>
 
             <h3 id="SelectAll">Select All</h3>
             <p>
                 Use <strong>Control-A</strong> to select all rooms on the current floor.
             </p>
             <p>
+                Use <strong>Shift-Control-A</strong> or <strong>Shift-Command-A</strong> to select all rooms in the
+                entire layout, across all floors.
+            </p>
+            <p>
                 Under the room menu, use
                 <span class="docImgButton"><img src="icons/icon-multiselect.png" srcset="icons2x/icon-multiselect.png 2x" title="Select All"/></span>
                 Select All to select all rooms of the same type across the whole dojo.
-            </p>
-            <p>
-                <strong class="warn">Selecting rooms on multiple floors isn't fully baked, but it's in there to make
-                color coding room types easier.</strong>
             </p>
 
             <h2 id="AddingARoom">Adding Rooms</h2>
@@ -1042,6 +1049,10 @@
                 <li>Fixed the new hall height yet again.  I swear I got it right this time.  (thanks
                     <strong>purzzle</strong>)</li>
             </ul>
+            <h3 id="UpdateNotes2.1">v2.1: 2021-05-14</h3>
+            <ul>
+                <li>Fixed a bunch of issues with selecting across floors and added more ways to do it.</li>
+            </ul>
 
             <h1 id="ToDo">To Do</h1>
             <ul>
@@ -1101,10 +1112,6 @@
                 </li>
                 <li>
                     You can't click anywhere on the color slider to select a color, you have to drag the button.
-                </li>
-                <li>
-                    Selecting rooms on multiple floors with the <strong>Select All</strong> functions isn't fully
-                    baked right now, but I put in because it makes color coding across the entire dojo easier.
                 </li>
             </ul>
         </div>

@@ -3,16 +3,12 @@
 //==============================================================
 
 class Action {
-	prepareUndoAction() {
-		return true;
-	}
+    constructor() {
+        this.fromViewCenter = getViewCenter();
+    }
 
 	undoAction() {
 		throw "not implemented";
-	}
-
-	prepareRedoAction() {
-		return true;
 	}
 
 	redoAction() {
@@ -45,13 +41,19 @@ function updateButtons() {
 	updateUndoRedoButton(document.getElementById("redoButton"), redoStack, "Redo");
 }
 
-function addUndoAction(action) {
+function addUndoAction(action, fromViewCenter=null) {
     // check if there's a combo in progress
     if (undoCombos.length > 0) {
         // put in the combo
         undoCombos[undoCombos.length - 1].push(action);
         return;
     }
+
+    if (fromViewCenter) {
+        action.fromViewCenter = fromViewCenter;
+    }
+    action.toViewCenter = getViewCenter();
+
 	// add to the stack
 	undoStack.push(action);
 	// trim the back of the stack if it's exceeded the max size
@@ -96,7 +98,6 @@ function endAllUndoCombos() {
 function cancelUndoCombo() {
     var undoList = undoCombos.pop()
     for (var i = undoList.length - 1; i >= 0; i--) {
-        undoList[i].prepareUndoAction();
         undoList[i].undoAction();
     }
 }
@@ -107,23 +108,40 @@ function cancelAllUndoCombos() {
     }
 }
 
+function resetViewForAction(viewCenter, bounds) {
+    if (viewCenter) {
+        // if the view hasn't moved then don't try to move it back
+        var currentCenter = getViewCenter();
+        if (currentCenter.mx == viewCenter.mx
+                && currentCenter.my == viewCenter.my
+                && currentCenter.scale == viewCenter.scale
+                && currentCenter.floor == viewCenter.floor) {
+            return;
+        }
+    }
+
+    if (bounds) {
+        centerViewOnBounds(viewCenter, bounds);
+
+    } else if (viewCenter) {
+        // ignore scale
+        centerViewOnIfNotVisible(viewCenter.mx, viewCenter.my, viewCenter.floor, null);
+    }
+}
+
 function doUndo() {
 	// pop the last action
 	var action = undoStack.pop();
 	// make sure there was a last action
 	if (action) {
-		// prepare the action, this can be nothing or can involve things like moving the view to where the action
-		// took place
-		if (!action.prepareUndoAction()) {
-			// if we had to prepare, then the user needs to undo again to actually undo the action
-			undoStack.push(action);
+	    resetViewForAction(
+	        action.fromViewCenter ? action.fromViewCenter : action.toViewCenter,
+	        action.fromBounds ? action.fromBounds : action.toBounds);
+        // undo the action
+        action.undoAction();
+        // put it on the redo stack
+        redoStack.push(action);
 
-		} else {
-			// we're prepared, so undo the action
-			action.undoAction();
-			// put it on the redo stack
-			redoStack.push(action);
-		}
 		// update UI
 		updateButtons();
 	}
@@ -134,18 +152,13 @@ function doRedo() {
 	var action = redoStack.pop();
 	// make sure is a next action
 	if (action) {
-		// prepare the action, this can be nothing or can involve things like moving the view to where the action
-		// takes place
-		if (!action.prepareRedoAction()) {
-			// if we had to prepare, then the user needs to redo again to actually redo the action
-			redoStack.push(action);
-
-		} else {
-			// we're prepared, so redo the action
-			action.redoAction();
-			// put it back on the undo stack
-			undoStack.push(action);
-		}
+	    resetViewForAction(
+	        action.toViewCenter ? action.toViewCenter : action.fromViewCenter,
+	        action.toBounds ? action.toBounds : action.fromBounds);
+        // redo the action
+        action.redoAction();
+        // put it back on the undo stack
+        undoStack.push(action);
 		// update UI
 		updateButtons();
 	}
@@ -157,24 +170,14 @@ class CompositeAction extends Action {
         this.actions = actions;
     }
 
-	prepareUndoAction() {
-		return this.actions[this.actions.length - 1].prepareUndoAction();
-	}
-
 	undoAction() {
 	    for (var a = this.actions.length - 1; a >= 0; a--) {
-	        this.actions[a].prepareUndoAction();
 	        this.actions[a].undoAction();
 	    }
 	}
 
-	prepareRedoAction() {
-		return this.actions[0].prepareRedoAction();
-	}
-
 	redoAction() {
 	    for (var a = 0; a < this.actions.length; a++) {
-	        this.actions[a].prepareRedoAction();
 	        this.actions[a].redoAction();
 	    }
 	}
@@ -212,7 +215,7 @@ class MoveRoomAction extends Action {
 	        this.from.push(new RoomPosition(this.rooms[r]));
 	    }
 	    // calculate the center point of the starting room positions
-	    this.fromCenter = new DojoBounds(this.rooms).centerPosition();
+	    this.fromBounds = new DojoBounds(this.rooms);
 	}
 
 	recordTo() {
@@ -222,7 +225,7 @@ class MoveRoomAction extends Action {
 	        this.to.push(new RoomPosition(this.rooms[r]));
 	    }
 	    // calculate the center point of the ending room positions
-	    this.toCenter = new DojoBounds(this.rooms).centerPosition();
+	    this.toBounds = new DojoBounds(this.rooms);
 	}
 
 	isAMove() {
@@ -239,26 +242,12 @@ class MoveRoomAction extends Action {
 		return false;
 	}
 
-	prepareUndoAction() {
-		return this.prepareAction(this.fromCenter);
-	}
-
 	undoAction() {
         this.action(this.to, this.from);
 	}
 
-	prepareRedoAction() {
-		return this.prepareAction(this.toCenter);
-	}
-
 	redoAction() {
         this.action(this.from, this.to);
-	}
-
-	prepareAction(center) {
-        centerViewOnIfNotVisible(center.MX, center.MY, center.Floor);
-		// having a prepare step to show what's about to change feels more confusing than not having it
-		return true;
 	}
 
 	action(from, to) {
@@ -300,7 +289,8 @@ class ChangeHueAction extends Action {
 	        this.from.push(this.rooms[r].hue);
 	    }
 	    // calculate the center point of the room positions
-	    this.center = new DojoBounds(this.rooms).centerPosition();
+	    this.fromBounds = new DojoBounds(this.rooms);
+		this.toBounds = this.fromBounds;
 	}
 
 	recordTo() {
@@ -325,25 +315,12 @@ class ChangeHueAction extends Action {
 		return false;
 	}
 
-	prepareUndoAction() {
-		return this.prepareAction();
-	}
-
 	undoAction() {
         this.action(this.from);
 	}
 
-	prepareRedoAction() {
-		return this.prepareAction();
-	}
-
 	redoAction() {
         this.action(this.to);
-	}
-
-	prepareAction() {
-        centerViewOnIfNotVisible(this.center.MX, this.center.MY, this.center.Floor);
-		return true;
 	}
 
 	action(to) {
@@ -369,6 +346,8 @@ class ChangeLabelAction extends Action {
 	recordFrom() {
 	    // record the starting label
 	    this.from = this.room.label;
+	    // calculate the center point of the room positions
+	    this.fromBounds = new DojoBounds([this.room]);
 	}
 
 	recordTo() {
@@ -383,25 +362,12 @@ class ChangeLabelAction extends Action {
 		return this.from != this.to;
 	}
 
-	prepareUndoAction() {
-		return this.prepareAction();
-	}
-
 	undoAction() {
         this.action(this.from);
 	}
 
-	prepareRedoAction() {
-		return this.prepareAction();
-	}
-
 	redoAction() {
         this.action(this.to);
-	}
-
-	prepareAction() {
-        centerViewOnIfNotVisible(this.room.mv.x, this.room.mv.y, this.room.floor);
-		return true;
 	}
 
 	action(to) {
@@ -420,23 +386,14 @@ class AddDeleteRoomsAction extends Action {
 		super();
 		this.rooms = rooms;
 		// remember the center position
-		this.center = new DojoBounds(rooms).centerPosition();
+		this.fromBounds = new DojoBounds(rooms);
+		this.toBounds = this.fromBounds;
 		// remember all the room positions
 		this.records = [];
 		for (var r = 0; r < this.rooms.length; r++) {
 		    this.records.push(new RoomPosition(this.rooms[r]));
 		}
 		this.add = add;
-	}
-
-	prepareUndoAction() {
-        centerViewOnIfNotVisible(this.center.MX, this.center.MY, this.center.Floor);
-		// having a prepare step to show what's about to change feels more confusing than not having it
-		return true;
-	}
-
-	prepareRedoAction() {
-		return this.prepareUndoAction();
 	}
 
 	undoAction() {
@@ -490,42 +447,22 @@ class SelectionAction extends Action {
 		super();
 		// remenber old selection and center
 		this.oldSelections = oldSelections;
-		this.oldCenter = this.oldSelections && this.oldSelections.length > 0 ? 
-		    new DojoBounds(this.oldSelections).centerPosition() :
+		this.fromBounds = this.oldSelections && this.oldSelections.length > 0 ?
+		    new DojoBounds(this.oldSelections) :
 		    null;
 		// remenber new selection and center
 		this.newSelections = newSelections;
-		this.newCenter = this.newSelections && this.newSelections.length > 0 ? 
-		    new DojoBounds(this.newSelections).centerPosition() :
+		this.toBounds = this.newSelections && this.newSelections.length > 0 ?
+		    new DojoBounds(this.newSelections) :
 		    null;
-	}
-
-	prepareUndoAction() {
-	    return this.prepareAction(this.oldCenter, this.newCenter);
 	}
 
 	undoAction() {
 		selectRooms(this.oldSelections, false, false);
 	}
 
-	prepareRedoAction() {
-	    return this.prepareAction(this.newCenter, this.oldCenter);
-	}
-
 	redoAction() {
 		selectRooms(this.newSelections, false, false);
-	}
-
-	prepareAction(center1, center2) {
-	    var center = center1 ? center1 : center2;
-	    if (center) {
-	        // Changing floors with an active selection will add an undo action,
-	        // so preemptively clear the selection with no undo.
-	        selectRooms([], false, false);
-            centerViewOnIfNotVisible(center.MX, center.MY, center.Floor);
-	    }
-		// having a prepare step to show what's about to change feels more confusing than not having it
-		return true;
 	}
 
 	toString() {
