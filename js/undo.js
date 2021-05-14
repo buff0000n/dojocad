@@ -4,7 +4,7 @@
 
 class Action {
     constructor() {
-        this.prevViewCenter = getViewCenter();
+        this.fromViewCenter = getViewCenter();
     }
 
 	undoAction() {
@@ -41,7 +41,7 @@ function updateButtons() {
 	updateUndoRedoButton(document.getElementById("redoButton"), redoStack, "Redo");
 }
 
-function addUndoAction(action, prevViewCenter=null) {
+function addUndoAction(action, fromViewCenter=null) {
     // check if there's a combo in progress
     if (undoCombos.length > 0) {
         // put in the combo
@@ -49,10 +49,10 @@ function addUndoAction(action, prevViewCenter=null) {
         return;
     }
 
-    if (prevViewCenter) {
-        action.prevViewCenter = prevViewCenter;
+    if (fromViewCenter) {
+        action.fromViewCenter = fromViewCenter;
     }
-    action.viewCenter = getViewCenter();
+    action.toViewCenter = getViewCenter();
 
 	// add to the stack
 	undoStack.push(action);
@@ -108,11 +108,22 @@ function cancelAllUndoCombos() {
     }
 }
 
-function resetViewForAction(viewCenter) {
+function resetViewForAction(viewCenter, bounds) {
     if (viewCenter) {
-        if (viewCenter.floor != viewFloor) {
-            selectRooms([], false, false);
+        // if the view hasn't moved then don't try to move it back
+        var currentCenter = getViewCenter();
+        if (currentCenter.mx == viewCenter.mx
+                && currentCenter.my == viewCenter.my
+                && currentCenter.scale == viewCenter.scale
+                && currentCenter.floor == viewCenter.floor) {
+            return;
         }
+    }
+
+    if (bounds) {
+        centerViewOnBounds(viewCenter, bounds);
+
+    } else if (viewCenter) {
         // ignore scale
         centerViewOnIfNotVisible(viewCenter.mx, viewCenter.my, viewCenter.floor, null);
     }
@@ -123,7 +134,9 @@ function doUndo() {
 	var action = undoStack.pop();
 	// make sure there was a last action
 	if (action) {
-	    resetViewForAction(action.prevViewCenter);
+	    resetViewForAction(
+	        action.fromViewCenter ? action.fromViewCenter : action.toViewCenter,
+	        action.fromBounds ? action.fromBounds : action.toBounds);
         // undo the action
         action.undoAction();
         // put it on the redo stack
@@ -139,7 +152,9 @@ function doRedo() {
 	var action = redoStack.pop();
 	// make sure is a next action
 	if (action) {
-	    resetViewForAction(action.viewCenter);
+	    resetViewForAction(
+	        action.toViewCenter ? action.toViewCenter : action.fromViewCenter,
+	        action.toBounds ? action.toBounds : action.fromBounds);
         // redo the action
         action.redoAction();
         // put it back on the undo stack
@@ -200,7 +215,7 @@ class MoveRoomAction extends Action {
 	        this.from.push(new RoomPosition(this.rooms[r]));
 	    }
 	    // calculate the center point of the starting room positions
-	    this.fromCenter = new DojoBounds(this.rooms).centerPosition();
+	    this.fromBounds = new DojoBounds(this.rooms);
 	}
 
 	recordTo() {
@@ -210,7 +225,7 @@ class MoveRoomAction extends Action {
 	        this.to.push(new RoomPosition(this.rooms[r]));
 	    }
 	    // calculate the center point of the ending room positions
-	    this.toCenter = new DojoBounds(this.rooms).centerPosition();
+	    this.toBounds = new DojoBounds(this.rooms);
 	}
 
 	isAMove() {
@@ -274,7 +289,8 @@ class ChangeHueAction extends Action {
 	        this.from.push(this.rooms[r].hue);
 	    }
 	    // calculate the center point of the room positions
-	    this.center = new DojoBounds(this.rooms).centerPosition();
+	    this.fromBounds = new DojoBounds(this.rooms);
+		this.toBounds = this.fromBounds;
 	}
 
 	recordTo() {
@@ -330,6 +346,8 @@ class ChangeLabelAction extends Action {
 	recordFrom() {
 	    // record the starting label
 	    this.from = this.room.label;
+	    // calculate the center point of the room positions
+	    this.fromBounds = new DojoBounds([this.room]);
 	}
 
 	recordTo() {
@@ -368,7 +386,8 @@ class AddDeleteRoomsAction extends Action {
 		super();
 		this.rooms = rooms;
 		// remember the center position
-		this.center = new DojoBounds(rooms).centerPosition();
+		this.fromBounds = new DojoBounds(rooms);
+		this.toBounds = this.fromBounds;
 		// remember all the room positions
 		this.records = [];
 		for (var r = 0; r < this.rooms.length; r++) {
@@ -428,13 +447,13 @@ class SelectionAction extends Action {
 		super();
 		// remenber old selection and center
 		this.oldSelections = oldSelections;
-		this.oldCenter = this.oldSelections && this.oldSelections.length > 0 ? 
-		    new DojoBounds(this.oldSelections).centerPosition() :
+		this.fromBounds = this.oldSelections && this.oldSelections.length > 0 ?
+		    new DojoBounds(this.oldSelections) :
 		    null;
 		// remenber new selection and center
 		this.newSelections = newSelections;
-		this.newCenter = this.newSelections && this.newSelections.length > 0 ? 
-		    new DojoBounds(this.newSelections).centerPosition() :
+		this.toBounds = this.newSelections && this.newSelections.length > 0 ?
+		    new DojoBounds(this.newSelections) :
 		    null;
 	}
 
