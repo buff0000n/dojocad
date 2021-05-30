@@ -428,7 +428,8 @@ var roomMetadata =
 
 {"id": "ob", "image": "observatory", "name": "Observatory", "category": "Misc", "prereq": null, "capacity": -2, "energy": -5, "maxnum": null, "floor": -32, "ceil": 52,
 	"bounds": [
-		{"x1": -50, "y1": -72, "x2": 50, "y2": 80, "floor": -32, "ceil": 52}],
+		{"x1": -50, "y1": -72, "x2": 50, "y2": 72, "floor": -32, "ceil": 52},
+		{"x1": -6, "y1": 72, "x2": 6, "y2": 80, "floor": -32, "ceil": 52}],
 	"doors": [
 		{"x": 0, "y": 80, "floor": 0, "outx": 0, "outy": 1}],
 	"resources": [
