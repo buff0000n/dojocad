@@ -232,7 +232,8 @@ function doAddRooms(e, rooms) {
 
     // start the drag process directly, the rooms will follow the cursor until
     // it is clicked and released
-    startNewRoomDrag(e, rooms, rooms[0].display);
+    // We need an anchor element, so pull either the display or otherFloorDisplay from the first room
+    startNewRoomDrag(e, rooms, rooms[0].display ? rooms[0].display : rooms[0].otherFloorDisplay);
 	// undo action will be created when the room is dropped
 }
 
@@ -270,7 +271,7 @@ function pasteCopiedRooms() {
         clearMenus(0);
         // create a copy of the rooms in the clipboard, not bothering to normalize
         // positions, and start the add process.
-        doAddRooms(lastMouseEvent, cloneRooms(copiedRooms, false));
+        doAddRooms(lastMTEvent, cloneRooms(copiedRooms, false));
     }
 }
 

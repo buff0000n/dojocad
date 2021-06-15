@@ -648,14 +648,15 @@ class Room {
         // to do any of these updates in those cases
         if (fullUpdate) {
     		this.updateMarkerPositions();
+    		// this needs to be before addDisplay() so the room knows what floor(s) it's on
+            this.updateDoorPositions();
+            this.updateBoundsPositions();
 
             if (isNewFloor) {
                 this.removeDisplay();
                 this.addDisplay(getRoomContainer());
                 this.reAddAllRuleErrors();
             }
-            this.updateDoorPositions();
-            this.updateBoundsPositions();
         }
     }
 
