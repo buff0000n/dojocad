@@ -335,6 +335,19 @@ var roomMetadata =
 		{"resource": "Forma", "costs": [1, 1, 2, 5, 20]}],
 	"blockedFromAboveBy": [
 	    ]},
+{"id": "lv", "image": "ventkid-lab", "name": "Ventkids' Bash Lab", "category": "Labs", "prereq": "lt", "capacity": -2, "energy": -5, "maxnum": null, "floor": 0, "ceil": 8,
+	"bounds": [
+		{"x1": -8, "y1": -16, "x2": 8, "y2": 8, "floor": 0, "ceil": 8}],
+	"doors": [
+		{"x": 0, "y": 8, "floor": 0, "outx": 0, "outy": 1}],
+	"resources": [
+		{"resource": "Credits", "costs": [1000, 3000, 10000, 30000, 100000]},
+		{"resource": "Ferrite", "costs": [450, 1350, 4500, 13500, 45000]},
+		{"resource": "Circuits", "costs": [250, 750, 2500, 7500, 25000]},
+		{"resource": "Thermal Sludge", "costs": [100, 300, 1000, 3000, 10000]},
+		{"resource": "Forma", "costs": [1, 1, 2, 5, 15]}],
+	"blockedFromAboveBy": [
+	    ]},
 
 {"id": "dd", "image": "dry-dock", "name": "Dry Dock", "category": "Interactive", "prereq": null, "capacity": -20, "energy": -6, "maxnum": 1, "floor": -80, "ceil": 200,
 	"bounds": [
