@@ -340,6 +340,8 @@ var roomMetadata =
 		{"x1": -8, "y1": -16, "x2": 8, "y2": 8, "floor": 0, "ceil": 8}],
 	"doors": [
 		{"x": 0, "y": 8, "floor": 0, "outx": 0, "outy": 1}],
+	"floor_images": [
+		{"floor": 0, "image": "ventkid-lab", "marker_images": [{"image": "marker-ventkid-lab", "x": 0, "y": 8}]}],
 	"resources": [
 		{"resource": "Credits", "costs": [1000, 3000, 10000, 30000, 100000]},
 		{"resource": "Ferrite", "costs": [450, 1350, 4500, 13500, 45000]},
