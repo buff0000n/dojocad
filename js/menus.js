@@ -754,6 +754,31 @@ function doLabelMenu() {
         room.setLabel(textArea.value);
     }
 
+    var sliderRange = 100;
+    var sliderToScale = (val) => { return val ? Math.pow(10, (val/(sliderRange/2))) / 10 : null; };
+    var scaleToSlider = (scale) => { return scale ? Math.log10(scale * 10) * (sliderRange/2) : null; };
+
+    // row for the scale slider
+    var tr = document.createElement("tr");
+    tr.append(buildIconCell("icon-label-scale"));
+    var td = document.createElement("td");
+    var picker = new ColorPicker("icons/scale-picker.png", sliderRange, scaleToSlider(1.0), 4, (room) => { return scaleToSlider(room.getLabelScale()); });
+    td.appendChild(picker.container);
+    tr.appendChild(td);
+    tr.append(document.createElement("td"));
+    menuDiv.appendChild(tr);
+
+    var listener = () => {
+        var labelScale = sliderToScale(picker.slider.value);
+
+        // update each room's label size in real time
+        for (var r = 0; r < selectedRooms.length; r++) {
+            selectedRooms[r].setLabelScale(labelScale);
+        }
+    }
+
+    picker.setListener(listener);
+
     // clear option
     menuDiv.appendChild(buildMenuButton("Clear", () => { menuDiv.undoAction = null ; clearSelectedRoomsLabels(action); }, "icon-delete" ));
 
@@ -808,12 +833,14 @@ class ColorPicker {
         // this puts the color picker image in the background, behind the slider
         var div = document.createElement("div");
         div.className="colorPicker";
-    
-        var bg = document.createElement("img");
-        bg.className="colorPickerBackground";
-        bg.src = this.pickerImage;
-        div.appendChild(bg);
-    
+
+        if (this.pickerImage) {
+            var bg = document.createElement("img");
+            bg.className="colorPickerBackground";
+            bg.src = this.pickerImage;
+            div.appendChild(bg);
+        }
+
         // slider input
         var slider = document.createElement("input");
         slider.className = "colorSlider";
@@ -829,21 +856,21 @@ class ColorPicker {
         // in an input element
         addEscapeListener(slider);
     
-        // get a list of the hues currently in use
-        var snapHues = [];
+        // get a list of the values currently in use
+        var snapVals = [];
         for (var r = 0; r < roomList.length; r++) {
             if (this.getRoomValFunc(roomList[r]) != null) {
-                addToListIfNotPresent(snapHues, this.getRoomValFunc(roomList[r]));
+                addToListIfNotPresent(snapVals, this.getRoomValFunc(roomList[r]));
             }
         }
 
         // add preset markers
-        for (var h = 0; h < snapHues.length; h++) {
+        for (var h = 0; h < snapVals.length; h++) {
             var hueDiv = document.createElement("div");
             hueDiv.className = "colorPickerPreset";
             // have to tweak the horizontal position to account for the slider's width
             hueDiv.style = `
-                left: ${6 + ((snapHues[h] * (240/this.range)))}px;
+                left: ${6 + ((snapVals[h] * (240/this.range)))}px;
                 top: 0px;
                 width: 0px;
                 height: 3px;
@@ -871,10 +898,10 @@ class ColorPicker {
                 // find the nearest existing hue
                 var snapHue = null;
                 var distance = this.range;
-                for (var c = 0; c < snapHues.length; c++) {
-                    var d = Math.abs(hue - snapHues[c]);
+                for (var c = 0; c < snapVals.length; c++) {
+                    var d = Math.abs(hue - snapVals[c]);
                     if (d < distance) {
-                        snapHue = snapHues[c];
+                        snapHue = snapVals[c];
                         distance = d;
                     }
                 }
@@ -925,12 +952,12 @@ function doColorMenu() {
     // whatevs
     var previewImg = menuDiv.firstChild.firstChild.firstChild;
 
-    function addSlider(icon, barImage, rage, defaultVal, snapDistance, getRoomValFunc) {
+    function addSlider(icon, barImage, range, defaultVal, snapDistance, getRoomValFunc) {
         // row for the hue slider
         var tr = document.createElement("tr");
         tr.append(buildIconCell(icon));
         var td = document.createElement("td");
-        var picker = new ColorPicker(barImage, rage, defaultVal, snapDistance, getRoomValFunc);
+        var picker = new ColorPicker(barImage, range, defaultVal, snapDistance, getRoomValFunc);
         td.appendChild(picker.container);
         tr.appendChild(td);
         tr.append(document.createElement("td"));

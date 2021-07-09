@@ -396,6 +396,9 @@ function roomToString(room) {
         if (room.label != null) {
             // we just need to escape quotes, and then put it in quotes
             s = s + ',"' + room.label.replace(quoteRegex, '\\"') + '"'
+            if (room.labelScale != 1) {
+                s = s + ',' + room.labelScale.toFixed(2)
+            }
         }
     }
     return s;
@@ -423,12 +426,16 @@ function roomFromString(string) {
         // look for optional label
         if (s.length > 6) {
             room.setLabel(s[6]);
+            if (s.length > 7) {
+                room.setLabelScale(parseFloat(s[7]));
+            }
         }
     }
     return room;
 }
 
 var roomIdCount = 0;
+var defaultLabelSize = 16;
 
 //==============================================================
 // Room object
@@ -484,6 +491,7 @@ class Room {
         this.outline = null;
         this.grid = null;
         this.labelDisplay = null;
+        this.labelScale = 1.0;
 
         this.selected = false;
 
@@ -1210,6 +1218,20 @@ class Room {
         }
     }
 
+    setLabelScale(labelScale) {
+        // check for change
+        if (labelScale != this.labelScale) {
+            this.labelScale = labelScale ? labelScale : 1.0;
+            // update the display
+            this.updateLabelDisplay();
+            this.updateView();
+        }
+    }
+
+    getLabelScale() {
+        return this.label ? this.labelScale : null;
+    }
+
     setHue(hue, override=null) {
 
         // check for change
@@ -1462,9 +1484,13 @@ class Room {
         }
         // update label, if present
         if (this.labelDisplay) {
-            var transform = this.getLabelTransform(viewPX, viewPY, viewScale);
-            this.updateViewElement(this.labelDisplay, transform);
+            this.updateLabelView();
         }
+    }
+
+    updateLabelView() {
+        var transform = this.getLabelTransform(viewPX, viewPY, viewScale);
+        this.updateViewElement(this.labelDisplay, transform);
     }
 
 	getImageTransform(viewPX, viewPY, viewScale) {
@@ -1491,7 +1517,7 @@ class Room {
 		var roomViewCenterPY = ((this.mv.y + this.mdragOffset.y) * viewScale) + viewPY;
 
 //		// raw scaling
-		var scale = viewScale;
+		var scale = viewScale * this.labelScale;
 
         // no rotation, labels are always right-side-up
 
@@ -1598,6 +1624,7 @@ function cloneRooms(rooms, reposition=true) {
         }
         // clone misc properties
         newRoom.label = room.label;
+        newRoom.labelScale = room.labelScale;
         newRoom.hue = room.hue;
         // add the new room
         newRooms.push(newRoom);
@@ -1931,15 +1958,14 @@ function convertFloorToPngLink(targets, db, margin, scale, f) {
 	                // add to the center point
 	                .addTo(roomViewCenterPX, roomViewCenterPY);
 	            // scale font size
-                var fontSize = 16;
 				// calculate basis vectors starting from the transformed anchor point
         		labelData.push({
         		    "text": room.label,
         		    "x": v.x,
         		    "y": v.y,
-        		    "fontSize": fontSize,
+        		    "fontSize": defaultLabelSize,
         		    "hue": room.hue,
-        		    "scale": scale,
+        		    "scale": scale * room.labelScale,
                 });
             }
 
@@ -2130,7 +2156,7 @@ function imageLoaded(targets, db, margin, scale, f, index, imageData) {
 	var floorName = getFloorName(f);
 
     // set up the title text
-    context.font = (16 * scale) + "px Arial";
+    context.font = (defaultLabelSize * scale) + "px Arial";
     context.textAlign = "left";
     context.fillStyle = "#8080FF";
     // title
