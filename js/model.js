@@ -1221,7 +1221,7 @@ class Room {
     setLabelScale(labelScale) {
         // check for change
         if (labelScale != this.labelScale) {
-            this.labelScale = labelScale;
+            this.labelScale = labelScale ? labelScale : 1.0;
             // update the display
             this.updateLabelDisplay();
             this.updateView();

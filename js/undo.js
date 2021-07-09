@@ -346,7 +346,7 @@ class ChangeLabelAction extends Action {
 	recordFrom() {
 	    // record the starting label
 	    this.from = this.room.label;
-	    this.fromSize = this.room.labelSize;
+	    this.fromScale = this.room.getLabelScale();
 	    // calculate the center point of the room positions
 	    this.fromBounds = new DojoBounds([this.room]);
 	}
@@ -354,27 +354,27 @@ class ChangeLabelAction extends Action {
 	recordTo() {
 	    // record the ending label
 	    this.to = this.room.label;
-	    this.toSize = this.room.labelSize;
+	    this.toScale = this.room.getLabelScale();
 	}
 
 	isAChange() {
 	    // automatically record the ending label
 		this.recordTo();
 		// see if the label changed
-		return this.from != this.to || this.fromSize != this.toSize;
+		return this.from != this.to || this.fromScale != this.toScale;
 	}
 
 	undoAction() {
-        this.action(this.from, this.fromSize);
+        this.action(this.from, this.fromScale);
 	}
 
 	redoAction() {
-        this.action(this.to, this.toSize);
+        this.action(this.to, this.toScale);
 	}
 
-	action(to, toSize) {
+	action(to, toScale) {
         this.room.setLabel(to);
-        this.room.setLabelSize(toSize);
+        this.room.setLabelScale(toScale);
 
 		saveModelToUrl();
 	}
