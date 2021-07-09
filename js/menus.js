@@ -755,8 +755,8 @@ function doLabelMenu() {
     }
 
     var sliderRange = 100;
-    var sliderToScale = (val) => { return Math.pow(10, (val/(sliderRange/2))) / 10; };
-    var scaleToSlider = (scale) => { return Math.log10(scale * 10) * (sliderRange/2); };
+    var sliderToScale = (val) => { return val ? Math.pow(10, (val/(sliderRange/2))) / 10 : null; };
+    var scaleToSlider = (scale) => { return scale ? Math.log10(scale * 10) * (sliderRange/2) : null; };
 
     // row for the scale slider
     var tr = document.createElement("tr");

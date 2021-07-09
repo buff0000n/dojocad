@@ -1229,7 +1229,7 @@ class Room {
     }
 
     getLabelScale() {
-        return this.labelScale;
+        return this.label ? this.labelScale : null;
     }
 
     setHue(hue, override=null) {
