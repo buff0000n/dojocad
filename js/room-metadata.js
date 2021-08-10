@@ -98,7 +98,7 @@ var roomMetadata =
 
 {"id": "h1", "image": "clan-hall", "name": "Clan Hall", "category": "Halls", "prereq": null, "capacity": 100, "energy": 5, "maxnum": 1, "spawn": true, "floor": -12, "ceil": 24,
 	"bounds": [
-		{"x1": -16, "y1": -32, "x2": 16, "y2": 32, "floor": -12, "ceil": 24},
+		{"x1": -8, "y1": -32, "x2": 8, "y2": 32, "floor": -12, "ceil": 24},
 		{"x1": -18, "y1": -24, "x2": 18, "y2": 24, "floor": -12, "ceil": 24}],
 	"doors": [
 		{"x": 0, "y": 32, "floor": 0, "outx": 0, "outy": 1},
@@ -335,7 +335,7 @@ var roomMetadata =
 		{"resource": "Forma", "costs": [1, 1, 2, 5, 20]}],
 	"blockedFromAboveBy": [
 	    ]},
-{"id": "lv", "image": "ventkid-lab", "name": "Ventkids' Bash Lab", "category": "Labs", "prereq": "lt", "capacity": -2, "energy": -5, "maxnum": null, "floor": 0, "ceil": 8,
+{"id": "lv", "image": "ventkid-lab", "name": "Ventkids' Bash Lab", "category": "Labs", "prereq": "or", "capacity": -2, "energy": -5, "maxnum": null, "floor": 0, "ceil": 8,
 	"bounds": [
 		{"x1": -8, "y1": -16, "x2": 8, "y2": 8, "floor": 0, "ceil": 8}],
 	"doors": [
