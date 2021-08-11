@@ -53,7 +53,7 @@ function getDisplayLabelTextShadowColor(hue, visible=true) {
     // CSS color value for the label, depending on the hue and whether it's visible
     // basic rule: switch from black to white outline at 50% luminance
     return hue == null ? "#000" :
-        hue[2] > 50 ? "#000" :
+        hue[2] > 70 ? "#000" :
         visible ? "#dddddd" :
         "#333333";
 }
