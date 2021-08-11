@@ -49,6 +49,22 @@ function getDisplayLabelColor(hue, visible=true) {
         );
 }
 
+function getDisplayLabelTextShadowColor(hue, visible=true) {
+    // CSS color value for the label, depending on the hue and whether it's visible
+    // basic rule: switch from black to white outline at 50% luminance
+    return hue == null ? "#000" :
+        hue[2] > 50 ? "#000" :
+        visible ? "#dddddd" :
+        "#333333";
+}
+
+function getDisplayLabelTextShadow(hue, visible=true) {
+    // get the shadow color
+    var color = getDisplayLabelTextShadowColor(hue, visible);
+    // build the drop shadow CSS
+    return "-1px -1px 0 " + color + ", 1px -1px 0 " + color + ", -1px 1px 0 " + color + ", 1px 1px 0 " + color;
+}
+
 //==============================================================
 // Bound object
 //==============================================================
@@ -1264,6 +1280,7 @@ class Room {
 			// if there is a label then update its filter, too
 			if (this.labelDisplay) {
 			    this.labelDisplay.style.color = getDisplayLabelColor(this.hue, this.isVisible());
+			    this.labelDisplay.style.textShadow = getDisplayLabelTextShadow(this.hue, this.isVisible());
 			}
         }
     }
@@ -1275,6 +1292,7 @@ class Room {
 	            this.labelDisplay = this.addDisplayLabel(getZIndex(this, part_label));
 	            // init the hue filter, if there is one
 			    this.labelDisplay.style.color = getDisplayLabelColor(this.hue, visible);
+                this.labelDisplay.style.textShadow = getDisplayLabelTextShadow(this.hue, this.isVisible());
             }
             // update the label contents, replacing newlines with <br/>
             this.labelDisplay.innerHTML = this.label.replace(newlineRegex, "<br/>");
@@ -2140,7 +2158,7 @@ function imageLoaded(targets, db, margin, scale, f, index, imageData) {
 		for (var t = 0; t < texts.length; t++) {
 		    var y = (t - ((texts.length - 1)/2) + 0.5) * fontSize;
 		    // poor man's text outline, this mirrors the only officially supported way to do it in css, so shrug.
-            context.fillStyle = "#000000";
+            context.fillStyle = getDisplayLabelTextShadowColor(a.hue);
             context.fillText(texts[t], -1, y-1);
             context.fillText(texts[t], 1, y-1);
             context.fillText(texts[t], -1, y+1);
