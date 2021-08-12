@@ -388,6 +388,7 @@ class Marker {
 
     removeDisplay() {
         if (this.marker) {
+            console.log("removing " + this.marker);
             this.marker.remove();
             this.marker = null;
         }
@@ -404,16 +405,25 @@ var newlineRegex = new RegExp('\n', "g");
 
 function roomToString(room) {
     var s = room.metadata.id + "," + room.mv.x + "," + room.mv.y + "," + room.floor + "," + (room.rotation / 90)
+    var flags = "";
+    if (room.isSpawnPoint()) {
+        flags = flags + "s";
+    }
     // hue and label fields are optional
-    if (room.hue != null || room.label != null) {
+    if (flags != "" || room.hue != null || room.label != null) {
         // add the hue or blank if it's null
         s = s + "," + (room.hue == null ? "" : (room.hue[0] + ":" + room.hue[1] + ":" + room.hue[2]));
         // label is optional
-        if (room.label != null) {
+        if (flags != "" || room.label != null) {
             // we just need to escape quotes, and then put it in quotes
-            s = s + ',"' + room.label.replace(quoteRegex, '\\"') + '"'
-            if (room.labelScale != 1) {
-                s = s + ',' + room.labelScale.toFixed(2)
+            s = s + ',' + (room.label ? ('"' + room.label.replace(quoteRegex, '\\"') + '"') : "");
+
+            if (flags != "" || room.labelScale != 1) {
+                s = s + ',' + (room.labelScale != 1 ? room.labelScale.toFixed(2) : "");
+
+                if (flags != "") {
+                    s = s + "," + flags;
+                }
             }
         }
     }
@@ -441,9 +451,24 @@ function roomFromString(string) {
         }
         // look for optional label
         if (s.length > 6) {
-            room.setLabel(s[6]);
+            if (s[6].length > 0) {
+                room.setLabel(s[6]);
+            }
+
+            // look for optional label size
             if (s.length > 7) {
-                room.setLabelScale(parseFloat(s[7]));
+                if (s[7].length > 0) {
+                    room.setLabelScale(parseFloat(s[7]));
+                }
+
+                // look for optional flag field
+                // how did it take me this long to add a generic flags field?
+                if (s.length > 8) {
+                    var flags = s[8];
+                    if (flags.includes("s")) {
+                        room.setSpawnPoint(true);
+                    }
+                }
             }
         }
     }
@@ -466,6 +491,7 @@ class Room {
         this.mrotationOffset = null;
         this.dragging = false;
         this.placed = false;
+        this.spawn = false;
 
         this.ignoreRooms = null;
 
@@ -518,6 +544,37 @@ class Room {
         this.calculateAnchor();
         this.ruleErrors = Array();
         this.ruleWarnings = Array();
+    }
+
+    setSpawnPoint(isSpawnPoint) {
+        if (isSpawnPoint != this.spawn) {
+            if (isSpawnPoint) {
+                var spawnMarker = new Marker(this, this.floor, spawnMarkerMetadata);
+                this.markers.push(spawnMarker);
+                // this can be set before the room is actually displayed
+                if (this.viewContainer) {
+                    // have to update position first
+                    spawnMarker.updatePosition();
+                    spawnMarker.addDisplay(this.viewContainer);
+                    spawnMarker.updateView();
+                }
+                this.spawn = true;
+            } else {
+                var index = this.markers.findIndex((marker) => marker.metadata == spawnMarkerMetadata);
+                if (index != -1) {
+                    var spawnMarker = this.markers[index];
+                    this.markers.splice(index, 1);
+                    if (this.viewContainer) {
+                        spawnMarker.removeDisplay(this.viewContainer);
+                    }
+                }
+                this.spawn = false;
+            }
+        }
+    }
+
+    isSpawnPoint() {
+        return this.spawn;
     }
 
 	addRuleError(rule) {

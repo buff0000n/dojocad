@@ -473,3 +473,36 @@ class SelectionAction extends Action {
     		(this.newSelections ? ("Select " + describeRoomList(this.newSelections)) : "");
 	}
 }
+
+class ChangeSpawnPointAction extends Action {
+	constructor(fromRoom, toRoom) {
+		super();
+		this.from = fromRoom;
+		this.to = toRoom;
+	}
+
+	undoAction() {
+        this.action(this.to, this.from);
+	}
+
+	redoAction() {
+        this.action(this.from, this.to);
+	}
+
+	action(from, to) {
+	    if (from) {
+    	    from.setSpawnPoint(false);
+	    }
+	    if (to) {
+    	    to.setSpawnPoint(true);
+	    }
+
+		saveModelToUrl();
+	}
+
+	toString() {
+		return "Change spawn point from "
+		    + describeRoomList(this.from ? [this.from] : null) + " to "
+		    + describeRoomList(this.to ? [this.to] : null);
+	}
+}
