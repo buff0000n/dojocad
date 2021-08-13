@@ -21,8 +21,9 @@ function getZIndex(room, part) {
         if (!room.isOnFloor()) return 10100 + part
         // otherwise everything on the current floor is on top
         else return 10200 + part;
-    } else if (part == part_outline) {
-        // for outlines, always put them on the top layer so we can see all selected rooms
+    } else if (part == part_outline && (room.isSelected() || room.hasCollision())) {
+        // for outlines, put the ones for selected/collided rooms on the top layer so we can see them all
+        // everything else (rule errors, warnings) can be behind stuff.
         return 10200 + part;
     } else {
         // otherwise, there is a band of z-indexes for each floor's display layers
@@ -404,16 +405,25 @@ var newlineRegex = new RegExp('\n', "g");
 
 function roomToString(room) {
     var s = room.metadata.id + "," + room.mv.x + "," + room.mv.y + "," + room.floor + "," + (room.rotation / 90)
+    var flags = "";
+    if (room.isSpawnPoint()) {
+        flags = flags + "s";
+    }
     // hue and label fields are optional
-    if (room.hue != null || room.label != null) {
+    if (flags != "" || room.hue != null || room.label != null) {
         // add the hue or blank if it's null
         s = s + "," + (room.hue == null ? "" : (room.hue[0] + ":" + room.hue[1] + ":" + room.hue[2]));
         // label is optional
-        if (room.label != null) {
+        if (flags != "" || room.label != null) {
             // we just need to escape quotes, and then put it in quotes
-            s = s + ',"' + room.label.replace(quoteRegex, '\\"') + '"'
-            if (room.labelScale != 1) {
-                s = s + ',' + room.labelScale.toFixed(2)
+            s = s + ',' + (room.label ? ('"' + room.label.replace(quoteRegex, '\\"') + '"') : "");
+
+            if (flags != "" || room.labelScale != 1) {
+                s = s + ',' + (room.labelScale != 1 ? room.labelScale.toFixed(2) : "");
+
+                if (flags != "") {
+                    s = s + "," + flags;
+                }
             }
         }
     }
@@ -441,9 +451,25 @@ function roomFromString(string) {
         }
         // look for optional label
         if (s.length > 6) {
-            room.setLabel(s[6]);
+            if (s[6].length > 0) {
+                room.setLabel(s[6]);
+            }
+
+            // look for optional label size
             if (s.length > 7) {
-                room.setLabelScale(parseFloat(s[7]));
+                if (s[7].length > 0) {
+                    room.setLabelScale(parseFloat(s[7]));
+                }
+
+                // look for optional flag field
+                // how did it take me this long to add a generic flags field?
+                if (s.length > 8) {
+                    var flags = s[8];
+                    if (flags.includes("s")) {
+                        // go through the global method to set the spawn point to make sure there's only one
+                        setSpawnPointRoom(room, false);
+                    }
+                }
             }
         }
     }
@@ -466,6 +492,7 @@ class Room {
         this.mrotationOffset = null;
         this.dragging = false;
         this.placed = false;
+        this.spawn = false;
 
         this.ignoreRooms = null;
 
@@ -520,6 +547,38 @@ class Room {
         this.ruleWarnings = Array();
     }
 
+    setSpawnPoint(isSpawnPoint) {
+        if (isSpawnPoint != this.spawn) {
+            if (isSpawnPoint) {
+                // appears on floor 0 relative to the room's base floor
+                var spawnMarker = new Marker(this, 0, spawnMarkerMetadata);
+                this.markers.push(spawnMarker);
+                // this can be set before the room is actually displayed
+                if (this.viewContainer) {
+                    // have to update position first
+                    spawnMarker.updatePosition();
+                    spawnMarker.addDisplay(this.viewContainer);
+                    spawnMarker.updateView();
+                }
+                this.spawn = true;
+            } else {
+                var index = this.markers.findIndex((marker) => marker.metadata == spawnMarkerMetadata);
+                if (index != -1) {
+                    var spawnMarker = this.markers[index];
+                    this.markers.splice(index, 1);
+                    if (this.viewContainer) {
+                        spawnMarker.removeDisplay(this.viewContainer);
+                    }
+                }
+                this.spawn = false;
+            }
+        }
+    }
+
+    isSpawnPoint() {
+        return this.spawn;
+    }
+
 	addRuleError(rule) {
 		if (addToListIfNotPresent(this.ruleErrors, rule) && this.ruleErrors.length == 1) {
 			addFloorError(this.floor, this);
@@ -537,11 +596,17 @@ class Room {
 	}
 
 	addRuleWarning(rule) {
-		addToListIfNotPresent(this.ruleWarnings, rule);
+		if (addToListIfNotPresent(this.ruleWarnings, rule)) {
+			this.checkErrors();
+			this.updateView();
+		}
 	}
 
 	removeRuleWarning(rule) {
-		removeFromList(this.ruleWarnings, rule);
+		if (removeFromList(this.ruleWarnings, rule)) {
+			this.checkErrors();
+			this.updateView();
+		}
 	}
 
 	removeAllRuleErrors() {
@@ -580,6 +645,12 @@ class Room {
 
     getAllWarnings() {
 		return this.ruleWarnings.length > 0 ? this.ruleWarnings : null;
+    }
+
+    getSomeWarnings() {
+		if (this.ruleWarnings.length == 0) return null;
+		if (this.ruleWarnings.length == 1 && this.ruleWarnings[0] == "Discontinued room") return null;
+		return this.ruleWarnings;
     }
 
 	dispose() {
@@ -798,6 +869,16 @@ class Room {
         return collidedRoomList;
     }
 
+    hasCollision() {
+        for (var b = 0; b < this.bounds.length; b++) {
+            var bound = this.bounds[b];
+	        if (bound.collisions.length > 0) {
+	            return true;
+	        }
+        }
+        return false;
+    }
+
     updateBoundsPositions() {
         // get all the rooms we were collided with before
 		var collidedRooms = this.getAllCollidedRooms();
@@ -872,20 +953,31 @@ class Room {
 
     checkErrors() {
         var errors = this.getAllErrors();
-		if (errors) {
+        // we don't want to show the outline when it's just a discontinued room, that's annoying
+        var warnings = this.getSomeWarnings();
+ 		if (errors || warnings) {
 			if (this.viewContainer) {
 				if (!this.outline) {
 			        this.outline = this.addDisplayImage("-line-blue.png", getZIndex(this, part_outline));
 				}
+				var hueRotate = errors ? 120 : 180;
+
 			    if (this.isSelected()) {
-				    this.outline.style.filter = "hue-rotate(120deg) saturate(50%) brightness(250%)";
+				    this.outline.style.filter = errors ?
+				        "hue-rotate(120deg) saturate(150%) brightness(250%)" :
+				        "hue-rotate(180deg) saturate(200%) brightness(400%)";
 
 			    } else if (this.isVisible()) {
-				    this.outline.style.filter = "hue-rotate(120deg)";
+				    this.outline.style.filter = errors ?
+				        "hue-rotate(120deg)" :
+				        "hue-rotate(180deg) saturate(200%) brightness(250%)";
 
 			    } else {
-			        this.outline = this.removeDisplayElement(this.outline);
-				    return false;
+//			        this.outline = this.removeDisplayElement(this.outline);
+				    this.outline.style.filter = errors ?
+				        "hue-rotate(120deg) saturate(150%) brightness(25%)" :
+				        "hue-rotate(180deg) saturate(200%) brightness(100%)";
+//				    return false;
 			    }
 			}
 		    return true;
@@ -1080,6 +1172,17 @@ class Room {
 
     getDoors() {
         return this.doors;
+    }
+
+    getConnectedRooms() {
+        var rooms = [];
+        for (var d = 0; d < this.doors.length; d++) {
+            var od = this.doors[d].otherDoor;
+            if (od) {
+                rooms.push(od.room);
+            }
+        }
+        return rooms;
     }
 
     setMDragOffset(offsetX, offsetY) {
@@ -1363,7 +1466,6 @@ class Room {
 			for (var b = 0; b < this.bounds.length; b++) {
 				this.bounds[b].addDisplay(viewContainer);
 			}
-	        this.updateView();
 
         } else {
 	        // just the other floor display
@@ -1375,6 +1477,7 @@ class Room {
 
 		this.checkCollided();
 	    this.checkErrors();
+        this.updateView();
     }
 
     addDisplayImage(imageSuffix, zIndex, imageBase = null, marker = false) {
@@ -1480,11 +1583,10 @@ class Room {
     updateView() {
         if (this.display || this.otherFloorDisplay || this.grid) {
             var transform = this.getImageTransform(viewPX, viewPY, viewScale);
-            if (this.display || this.grid) {
-				// update the three images, whichever ones are present
+            // update the three images, whichever ones are present
+            if (this.display) {
 				this.updateViewElement(this.display, transform);
-				this.updateViewElement(this.outline, transform);
-				this.updateViewElement(this.grid, transform);
+                // update these only if there's a legit display
 				for (var m = 0; m < this.markers.length; m++) {
 					this.markers[m].updateView();
 				}
@@ -1496,9 +1598,15 @@ class Room {
 					this.bounds[b].updateView();
 				}
             }
+            if (this.outline) {
+				this.updateViewElement(this.outline, transform);
+            }
+            if (this.grid) {
+				this.updateViewElement(this.grid, transform);
+            }
 	        if (this.otherFloorDisplay) {
 				this.updateViewElement(this.otherFloorDisplay, transform);
-	        }
+            }
         }
         // update label, if present
         if (this.labelDisplay) {

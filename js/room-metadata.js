@@ -613,3 +613,5 @@ var roomMetadata =
 	"blockedFromAboveBy": [
 	    ]},
 ]};
+
+var spawnMarkerMetadata = {"image": "marker-spawn", "x": 0, "y": 0};

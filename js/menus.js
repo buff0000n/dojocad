@@ -552,6 +552,14 @@ function doRoomMenu(e, rooms) {
         clearMenus();
     }, "icon-multiselect"));
 
+    if (room && room.metadata.spawn) {
+        if (room.spawn) {
+            menuDiv.appendChild(buildMenuButton("Remove Spawn Point", unsetSelectedRoomSpawn, "icon-spawn-delete"));
+        } else {
+            menuDiv.appendChild(buildMenuButton("Set Spawn Point", setSelectedRoomSpawn, "icon-spawn"));
+        }
+    }
+
     // divider
     menuDiv.appendChild(buildMenuDivider(6));
 

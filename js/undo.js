@@ -268,6 +268,7 @@ class MoveRoomAction extends Action {
         // automatically select the rooms
 		selectRooms(this.rooms, false, false);
 		saveModelToUrl();
+        treeUpdated();
 	}
 
 	toString() {
@@ -429,6 +430,7 @@ class AddDeleteRoomsAction extends Action {
         selectedRooms = this.rooms;
 
 		saveModelToUrl();3
+        treeUpdated();
 	}
 
 	removeAction() {
@@ -471,5 +473,39 @@ class SelectionAction extends Action {
 	toString() {
 		return (this.oldSelections ? ("Deselect " + describeRoomList(this.oldSelections)) : "") + ", " +
     		(this.newSelections ? ("Select " + describeRoomList(this.newSelections)) : "");
+	}
+}
+
+class ChangeSpawnPointAction extends Action {
+	constructor(fromRoom, toRoom) {
+		super();
+		this.from = fromRoom;
+		this.to = toRoom;
+	}
+
+	undoAction() {
+        this.action(this.to, this.from);
+	}
+
+	redoAction() {
+        this.action(this.from, this.to);
+	}
+
+	action(from, to) {
+	    if (from) {
+    	    from.setSpawnPoint(false);
+	    }
+	    if (to) {
+    	    to.setSpawnPoint(true);
+	    }
+
+		saveModelToUrl();
+        treeUpdated();
+	}
+
+	toString() {
+		return "Change spawn point from "
+		    + describeRoomList(this.from ? [this.from] : null) + " to "
+		    + describeRoomList(this.to ? [this.to] : null);
 	}
 }

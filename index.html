@@ -21,6 +21,7 @@
 <script type="text/javascript" language="javascript" src="js/room-metadata.js" ></script>
 <script type="text/javascript" language="javascript" src="js/util.js"></script>
 <script type="text/javascript" language="javascript" src="js/model.js"></script>
+<script type="text/javascript" language="javascript" src="js/analysis.js"></script>
 <script type="text/javascript" language="javascript" src="js/rules.js"></script>
 <script type="text/javascript" language="javascript" src="js/undo.js"></script>
 <script type="text/javascript" language="javascript" src="js/main.js"></script>
@@ -230,7 +231,7 @@
         <div class="helpContainer">
             <p style="text-align: center;">
                 <span class="title">DojoCAD</span><br/>
-                v2.1.8: 2021-08-11<br/>
+                v2.2.0: 2021-08-13<br/>
                 <a href="https://github.com/buff0000n/dojoarch">Source</a>&nbsp;
                 <a href="https://github.com/buff0000n/dojoarch/issues/2">Feedback</a>&nbsp;
                 <a href="https://github.com/buff0000n/dojocad/issues/new">Bugs</a><br/>
@@ -299,7 +300,7 @@
                     (thanks <a href="https://www.youtube.com/watch?v=lOXrHP3Y0zs">Vash</a>)
                 </li>
                 <li>
-                    <a href="??v=1,-66,-90,0&mz=BYRgNAzATJMAxnHAXFALMkE4H0DGeYAHAtGAgiAKwrqbb6EnkuU2oZa4HEIBsaVonZ0uOYDAC0ZMpTAB2KB3oIARAAkAhgBsAZgAIACgEsADgFNV5AHRUq4iIj6l4iYbU7YwqgOIAnc3MAOwAoACUAewiAWys4W3sAcwBnRBAYWRZFZS5vABUokIBZTSCATxCAIQBXABNa4E1kuOsIewC0mAEWcHQQHIZgQWYQdKFqDxVvMPNa8KjYmztxKl4wSTQicZFPNUrtavN5mJblvAAPRCgtgE4+FkcJgdxE7TWQeXuKd2fvADkIn5ojpjot4stXmAoOhYD0fqIvKoACJ+arREIAYWMfjw2ksS3seFS0MEki23yeCO4xJhim2kzERKh3Uy4EpuxwKShMOkrjYDMReWA5gqeB0eNq+mMABcQpp9NFjEF8fE2pziVR7rz6b9VDUAEb6vFVTTS4AtNVc65bbUUnZTVQASWlAHJkvpNJjtMZdLoLUliURyTqqd4AKpBALAvwAa00RqOGMBfmMtUB-vVUKDsLtArUAGVTFEYxUAOpRWrNGyWwNbbq53UY4V4GPmPzJYqmvDm6sBrO3L49e25VSGbSaPBHACCQQiZrbIQAYgAZR0AUXzGatmrAdyEeczJN3g4oz0zIBuMD3DdDeoi51mIUdQS3qRAzmP+7PHSPknrLD6b9zH7dZrzcQCqRwH9sz-QQ5Agjk8UgUlMkeYcGG0QgyFgh54UQ-Uri1f82XQ3BtAiblP1IPCVBwM1QPuTJ+V1CNajbfVxSrcE+0kEA0EEJiaJHUtNBlJVElBLc3kkPdbSHPNvGdN0PRCAApaogleFUEig4DeP4-coTQfpII6fTBH-GAENoiJNHWdAMlcNCFL1PwIlbUIAHl9WSaUJ2NJNqnbSx8EuGStWYG8OS5Zgjyih0tGxCpIhOXtOTeWK6XikchTbacAhCZdjESYBpQ7U4+2YaBvmY29KjDPI8jXMIl1XDcpLWCA+GDWrdm8SpzGAJU5gATQiaoKvwPxYQ+QdnLPeo1kkKA4B6oTERCTatvUR19CRTywgAaXzABCKwQGsIgoHShj1nSNb2QdXKQkMCIAHc20mydEEvMBurugDjLPC4fqvLUkCMkyORBqAdz3CHrMZYDYfuf7vkRhhamqO6DLkxwD2+nDeO6XioUh4G9JJkAYNcDHcEBSBHmuXCDwiQhwu5QcrKB0zgM2bk4MgcnIMJknYb5YXocp0loS2XpJdo0WZaoKzAahxXpfs5nHG59WxA6MgoCyoW6d0sB+eq3DTcJvjSWocG1YpnG7bgdGFaR527uw1Xrb0227phBGeY5A2MjRk3g9orlzIDh7SP6wFHxE7QYwzCJUmWtApHu3DHpHQsJyOJFjAAN3E-RKlsvw5lUQ8dxw7LEU8iJTA7KdtG0EIZy0rjWj7FHbsbtQATAfRHRdaIPX0TE3OSDskyCZU8GldM0u3cHmaH7wfHMaVpXEkIfAibQ2L8DMfx5HPqNNi-STAnXI7EbRpTAOwhHmyCIgI5hNjd1mM+hFqa0ud46qALpOfQ+ZvRsRCLXZI0R1jMGWqtOEedERJj8KEEoAAvbSyxhRGQQMg4MH8+qqCKBEZUFQTDSlrngAiRN3xEIyO7Bg9D1hix3ILa2GdZLvjWgeW+d0PwIF1sDXhQD+Y1TPMAXQhD7LGyQGeeBd0xjLWzHIf+kAqAyxQXINBexj7aDcicM2RNgHwUfhhEuiA4CC00UBWO9k9ERz1oMYwiBPjrCkfJXU+ZqgWD8JiShWNl6r24qFK4NpWTrReBqcGIjfG3jGtUTEpQXSyhqBUPITRpTaTVOOSARBSSRV8VwB0SJzB4EBKaWYtdCkQGKd4ta2RykjmfEYNyiQAhz3qXZRpdsTzkBUA6ViVSal5NqH0opgh3xCEAm0xE5YggZL2uMvwtTpkrS2Nsr8KARwpXRHkcwvkD5TgCJoWuZkc6ZzdqbQpvEvHE2YawZA+ym4WCCJA0whcQh5NOZpD0FzJoPNmrdPkbyHSeU+d835-z96As0MCgkOAHney4a895agURlD2mzGMfyTkIsSEC8wlyUWFKIUw+ymKKl+FxUifFhKAUkqRWSya0c9ylNPJBTl9xRgSwJi-bUzyaUPzcdwPS2FqbRMdiLKV2cSaCDESLMK0rfobDlYhOyIrfz2MhSOHFeKWzMuJaS8lET2Ex1FctcCVjuAMP9hzH29qgA">
+                    <a href="?v=2,-135,-90,0&mz=BYRgNAzATJMAxnHAXFALMkE4H0DGeYAHAtGAgiAKwrqbb6EnkuU2oZa4HEIBsaVonZ0uOYDAC0ZMpTAB2KB3oIARAAkAhgBsAZgAIACgEsADgFNV5AHRUq4iIj6l4iYbU7YwqgOIAnc3MAOwAoACUAewiAWys4W3sAcwBnRBAYWRZFZS5vABUokIBZTSCATxCAIQBXABNa4E1kuOsIewC0mAEWcHQQHIZgQWYQdKFqDxVvMPNa8KjYmztxKl4wSTQicZFPNUrtavN5mJa7MGT8AA9EKC2ATj4WRwmB3ETtNZB5R4p3V+8AHIRPzRHTHRbxZbvMBQdCwHp-UReVQAET81WiIQAwsY-HhtJYlvY8KlYYJJFtfi8kdxSXDFNtJmISTDuplwNTdjgUjC4dJXGwmci8sBzBU8DoCbV9MYAC4hTT6aLGIKE+JtbmkqiPfmM-6qGoAI0NBKqmllwBaGp5ty2uqpOymqgAkrKAOTJfSabHaYy6XRWpKkoiUvU07wAVSCAVBfgA1poTUcscC-MZasDA5qYSH4Q6hWoAMqmKJxioAdSitWaNmtwa23Xz+qxorwcfMfmSxXNeEttaDOfuPx6jtyqkM2k0eCOAEEghELR2QgAxAAyzoAooWszbtWAHkIC9myfvhxRXtmQHcYAem+GDRFLrMQs6gjvUiBnKfDxeOifJI2LB9L+5iDust5uMBNI4H+uYAYIchQVyBKQOSmTPKODDaIQZDwU8iLIYaNw6oBHKYbg2gRLy36kARKg4Ba4GPJkgr6lGtQdoako1pCA6SCAaCCCxdFjuWmhyiqiTgjuHySAe9ojgW3iuh6XohAAUtUQTvGqCQwaB-GCYeMJoP00EdIZgiATASH0REmjrOgGSuBhSkGn4ETtqEADyhrJLKU6mim1SdpYVxMeszB3lyPLMCe0VOlouIVJEJz9tyHxxQyCVjiKHazgEISrsYiTALKXanAOzDQL8rH3pUEZ5HkG5hCu65bjJawQHwoZ1bs3iVOYwAqnMACaETVJV+B+PCXzDq5F71GskhQHAvUiciIRbdt6jOvoKLeWEADShYAIRWCA1hEFAGURfxtxhv1qh5SEhgRAA7h2U3Tog15gD16xICZZlcng1xXjeOpA7ZzLXFAe4HtDpkXj98OPADvwwwwtTVIDRkKY4R4-Xh-HdPxMLAyjBlkyAcGuFjuDApAzwPbRR4RIQcmPLCw42cj5mgZsvIIZAlPQcTZPwwKYug9T5KwlsvQy-REvy1QNlAfzsvrJLD2OHzIP0R0ZBQNlosM-pYBCzV+EW8TAnktQUOa4bzIGQ7gNwJjytu3jju4Rrdvu-j6SCEjrsMMbGQY+bWv0TylmA6zin6pUwLPmJ2hxlmESpCtaBSOkoYLfexZTkcKLGAAbpJ+hp5ofhzKox57nhOXIt5ESmF2M7aNoIRzjpPGtAOaMRe3ahAmA+jOm60Revo2IeckXYpkEqp4LKmbpbuUPJ31To+OYsqypJIQ+BE2gcX4WZ-nyRe23HYh3+SEH60-WGymAZy-CXXIRERZgmxvbszzjzRyuZaKcidGXac+hCy+g4iEZuyRoiRQQCtNaCJoFjhTH4UIJQABeulliihMhg1axcNpqCKBEVUFQTCymbngIiJNPwUNjhHbgrDJZ7hFnbPO8lPzrSPC-QGX4EAGxRoInU6AREXmALochjkzZIAvKgwGYwVqQLcKAyAVB5ZYLkDg5Eac+4eROJbEmtoEQW20FXRAcARZyFEe7B6mCqEW2Gogb46whYT28IWaoFg-DYjoTjTe29eLhQfgpMiR5d7iNqtQ7w41qjYlKG6eUNQKh5CaLKXSGpJyQCIOSKKKcuBOhROYPAwJzSzGbsUiApS-HrWyJUscr4jAeUSAEFejSHLNMdmecgKgnTsRqXUgptQBklLDiM4CHTkSViCFk-aky-D1NmZQmERjWDIBQGOVKmI8jmH8mfGcARNDNwsrE9A3s7EOX4r40mHDzyHI7hYII8DTDlxCAU852kvRXKmsU55OoDwCgOU6byXyfl-IBafIFDdzDXKJDgMFAc+H7I+WoNEZR9oczjP8s5SLEjAtRaChyGD2GORxVUvwBKUREpJYC8lKK0XRITgecp55oLcseKMaWRMv66leXS9+XD8AGVwrTO0hMfYMGJrKsmggpHi2uGKiGfiXYXkxVIf8zjoVjnxYStsrKyUUs5XpFhfskl0t6B-bhdquYU3VbsIAA">
                         My actual clan dojo
                     </a>
                 </li>
@@ -361,6 +362,12 @@
                         <li><a href="#RoomRules">Specific Room Rules</a></li>
                         <li><a href="#ConstraintFeedback">Other Constraint Feedback</a></li>
                         <li><a href="#Resources">Resources</a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#SpawnPoint">Spawn Point</a>
+                    <ul>
+                        <li><a href="#Connectedness">Connectedness</a></li>
                     </ul>
                 </li>
                 <li><a href="#SavingAndSharing">Saving And Sharing</a></li>
@@ -866,6 +873,7 @@
                         <li><strong>Infested Chamber</strong></li>
                         <li><strong>Starlight Market</strong></li>
                     </ul>
+                    See below for more on <a href="#SpawnPoint">Spawn Points</a>.
                 </li>
                 <li>An <strong>Oracle</strong> is the prequisite for all the Labs</li>
                 <li>You can only have one of each <strong>Clan Hall</strong></li>
@@ -897,9 +905,10 @@
             </p>
             <p>
                 Finally, in the top bar there is a global error icon, either
-                <span class="docImgButton-clear"><img src="icons/icon-ok.png" srcset="icons2x/icon-ok.png 2x" title="OK"/></span> or
-                <span class="docImgButton-clear"><img src="icons/icon-error.png" srcset="icons2x/icon-error.png 2x" title="Error"/></span>.
-                Click on it to bring up a list of all errors detected in the dojo.
+                <span class="docImgButton-clear"><img src="icons/icon-ok.png" srcset="icons2x/icon-ok.png 2x" title="OK"/></span>,
+                <span class="docImgButton-clear"><img src="icons/icon-error.png" srcset="icons2x/icon-error.png 2x" title="Error"/></span>, or
+                <span class="docImgButton-clear"><img src="icons/icon-warn.png" srcset="icons2x/icon-warn.png 2x" title="Warning"/></span>.
+                Click on it to bring up a list of all errors or warnings detected in the dojo.
             </p>
 
             <h2 id="Resources">Resources</h2>
@@ -921,6 +930,33 @@
                 overestimate; you're going to build at least some of your dojo before building any Barracks.</span>
             </p>
 
+            <h1 id="SpawnPoint">Spawn Point</h1>
+            <p>
+                On rooms that support being a spawn point, click on the room menu and select
+                <span class="docImgButton"><img src="icons/icon-spawn.png" srcset="icons2x/icon-spawn.png 2x" title="Spawn Point"/></span>
+                <strong>Set Spawn Point</strong> to designate that room as the spawn point.  If another room is already
+                designaged as the spawn point then the spawn point will be moved.
+            </p>
+            <p>
+                The designated spawn point room will have a
+                <span class="docImgButton-clear"><img src="icons/icon-spawn.png" srcset="icons2x/icon-spawn.png 2x" title="Spawn Point"/></span>
+                marker on it.
+            </p>
+            <p>
+                To remove the spawn point from your layout, click on the spawn point room menu and select
+                <span class="docImgButton"><img src="icons/icon-spawn-delete.png" srcset="icons2x/icon-spawn-delete.png 2x" title="Spawn Point Delete"/></span>
+                <strong>Remove Spawn Point</strong>.  After this your layout will not have a spawn point.
+            </p>
+            <h2 id="Connectedness">Connectedness</h2>
+            <p>
+                When a spawn point is designated the dojo will be checked to make sure every room is connected to the
+                spawn point room, either directly or indirectly through other rooms.
+            </p>
+            <p>
+                Rooms that are not connected to the spawn point room will be highlighted in yellow and show up as
+                <span class="docImgButton-clear"><img src="icons/icon-warn.png" srcset="icons2x/icon-warn.png 2x" title="Warning"/></span>
+                warnings.
+            </p>
             <h1 id="SavingAndSharing">Saving And Sharing</h1>
             <p>
                 The current layout and view are continually saved to your browser's location bar.
@@ -1071,16 +1107,23 @@
                 <li>Fixed the Bash Lab prerequisite</li>
                 <li>Flip the label outline color to white when the brightness of a room's color is set low enough
                     (Thanks <strong>adrienne</strong>)</li>
+                <li>Added a spawn point marker and connectedness checking</li>
             </ul>
 
             <h1 id="ToDo">To Do</h1>
             <ul>
                 <li>
-                    Tree structure like a real dojo
+                    Build order analysis
+                </li>
+                <li>
+                    Local storage saving/loading
+                </li>
+                <li>
+                    More metadata
                     <ul>
-                        <li>spawn point designation</li>
-                        <li>disconnected rooms warning</li>
-                        <li>Build order analysis</li>
+                        <li>Clan XP</li>
+                        <li>Maybe find some place to cram in decoration capacity</li>
+                        <li>Maybe think about possibly considering throwing clan research data in here in some way perhaps</li>
                     </ul>
                 </li>
                 <li>

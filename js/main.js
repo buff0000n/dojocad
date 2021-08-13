@@ -114,13 +114,15 @@ function removeRoom(room) {
 	room.dispose();
 	runRulesOnRoomRemoved(room);
 	saveModelToUrl();
+    treeUpdated();
 }
 
 function addRoom(room) {
 	addToListIfNotPresent(roomList, room);
 	addFloorRoom(room);
-	saveModelToUrl();
 	runRulesOnRoomAdded(room);
+	saveModelToUrl();
+    treeUpdated();
 }
 
 function rotateSelectedRoom() {
@@ -167,6 +169,7 @@ function rotateSelectedRoom() {
 	    // add the action
         addUndoAction(action);
         saveModelToUrl();
+        treeUpdated();
 	}
 }
 
@@ -181,6 +184,7 @@ function rotateFloorSelectedRoom() {
 		saveModelToUrl();
         if (action.isAMove()) {
             addUndoAction(action);
+            treeUpdated();
         }
 	}
 }
@@ -201,6 +205,7 @@ function deleteSelectedRooms() {
 	    // add an undo action
 	    addUndoAction(new AddDeleteRoomsAction(oldRooms, false));
 	}
+    treeUpdated();
 }
 
 function doAddRooms(e, rooms) {
@@ -317,6 +322,45 @@ function clearSelectedRoomsColor(action) {
 
 function movedSelectedRoom() {
 	saveModelToUrl();
+    treeUpdated();
+}
+
+function getCurrentSpawnRoom() {
+    // todo: track this explicitly?
+    return roomList.find((r) => { return r.isSpawnPoint(); } );
+}
+
+function setSelectedRoomSpawn() {
+    if (selectedRooms.length == 1) {
+        var newSpawnRoom = selectedRooms[0];
+        clearMenus(0);
+        setSpawnPointRoom(newSpawnRoom, true);
+    	saveModelToUrl();
+    	treeUpdated();
+    }
+}
+
+function setSpawnPointRoom(newSpawnRoom, allowUndo=true) {
+    // factored out so we can call this when loading a layout
+    var currentSpawnRoom = getCurrentSpawnRoom();
+    if (currentSpawnRoom) {
+        currentSpawnRoom.setSpawnPoint(false);
+    }
+    newSpawnRoom.setSpawnPoint(true);
+    if (allowUndo) {
+        addUndoAction(new ChangeSpawnPointAction(currentSpawnRoom, newSpawnRoom));
+    }
+}
+
+function unsetSelectedRoomSpawn() {
+    if (selectedRooms.length == 1) {
+        currentSpawnRoom = selectedRooms[0];
+        clearMenus(0);
+        currentSpawnRoom.setSpawnPoint(false);
+        addUndoAction(new ChangeSpawnPointAction(currentSpawnRoom, null));
+    	saveModelToUrl();
+    	treeUpdated();
+    }
 }
 
 function showDoorMarkers() {
