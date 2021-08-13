@@ -388,7 +388,6 @@ class Marker {
 
     removeDisplay() {
         if (this.marker) {
-            console.log("removing " + this.marker);
             this.marker.remove();
             this.marker = null;
         }
@@ -594,11 +593,17 @@ class Room {
 	}
 
 	addRuleWarning(rule) {
-		addToListIfNotPresent(this.ruleWarnings, rule);
+		if (addToListIfNotPresent(this.ruleWarnings, rule)) {
+			this.checkErrors();
+			this.updateView();
+		}
 	}
 
 	removeRuleWarning(rule) {
-		removeFromList(this.ruleWarnings, rule);
+		if (removeFromList(this.ruleWarnings, rule)) {
+			this.checkErrors();
+			this.updateView();
+		}
 	}
 
 	removeAllRuleErrors() {
@@ -929,20 +934,30 @@ class Room {
 
     checkErrors() {
         var errors = this.getAllErrors();
-		if (errors) {
+        var warnings = this.getAllWarnings();
+ 		if (errors || warnings) {
 			if (this.viewContainer) {
 				if (!this.outline) {
 			        this.outline = this.addDisplayImage("-line-blue.png", getZIndex(this, part_outline));
 				}
+				var hueRotate = errors ? 120 : 180;
+
 			    if (this.isSelected()) {
-				    this.outline.style.filter = "hue-rotate(120deg) saturate(50%) brightness(250%)";
+				    this.outline.style.filter = errors ?
+				        "hue-rotate(120deg) saturate(150%) brightness(250%)" :
+				        "hue-rotate(180deg) saturate(200%) brightness(400%)";
 
 			    } else if (this.isVisible()) {
-				    this.outline.style.filter = "hue-rotate(120deg)";
+				    this.outline.style.filter = errors ?
+				        "hue-rotate(120deg)" :
+				        "hue-rotate(180deg) saturate(200%) brightness(250%)";
 
 			    } else {
-			        this.outline = this.removeDisplayElement(this.outline);
-				    return false;
+//			        this.outline = this.removeDisplayElement(this.outline);
+				    this.outline.style.filter = errors ?
+				        "hue-rotate(120deg) saturate(150%) brightness(25%)" :
+				        "hue-rotate(180deg) saturate(200%) brightness(100%)";
+//				    return false;
 			    }
 			}
 		    return true;
@@ -1137,6 +1152,17 @@ class Room {
 
     getDoors() {
         return this.doors;
+    }
+
+    getConnectedRooms() {
+        var rooms = [];
+        for (var d = 0; d < this.doors.length; d++) {
+            var od = this.doors[d].otherDoor;
+            if (od) {
+                rooms.push(od.room);
+            }
+        }
+        return rooms;
     }
 
     setMDragOffset(offsetX, offsetY) {
@@ -1420,7 +1446,6 @@ class Room {
 			for (var b = 0; b < this.bounds.length; b++) {
 				this.bounds[b].addDisplay(viewContainer);
 			}
-	        this.updateView();
 
         } else {
 	        // just the other floor display
@@ -1432,6 +1457,7 @@ class Room {
 
 		this.checkCollided();
 	    this.checkErrors();
+        this.updateView();
     }
 
     addDisplayImage(imageSuffix, zIndex, imageBase = null, marker = false) {
@@ -1537,11 +1563,10 @@ class Room {
     updateView() {
         if (this.display || this.otherFloorDisplay || this.grid) {
             var transform = this.getImageTransform(viewPX, viewPY, viewScale);
-            if (this.display || this.grid) {
-				// update the three images, whichever ones are present
+            // update the three images, whichever ones are present
+            if (this.display) {
 				this.updateViewElement(this.display, transform);
-				this.updateViewElement(this.outline, transform);
-				this.updateViewElement(this.grid, transform);
+                // update these only if there's a legit display
 				for (var m = 0; m < this.markers.length; m++) {
 					this.markers[m].updateView();
 				}
@@ -1553,9 +1578,15 @@ class Room {
 					this.bounds[b].updateView();
 				}
             }
+            if (this.outline) {
+				this.updateViewElement(this.outline, transform);
+            }
+            if (this.grid) {
+				this.updateViewElement(this.grid, transform);
+            }
 	        if (this.otherFloorDisplay) {
 				this.updateViewElement(this.otherFloorDisplay, transform);
-	        }
+            }
         }
         // update label, if present
         if (this.labelDisplay) {

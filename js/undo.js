@@ -268,6 +268,7 @@ class MoveRoomAction extends Action {
         // automatically select the rooms
 		selectRooms(this.rooms, false, false);
 		saveModelToUrl();
+        treeUpdated();
 	}
 
 	toString() {
@@ -429,6 +430,7 @@ class AddDeleteRoomsAction extends Action {
         selectedRooms = this.rooms;
 
 		saveModelToUrl();3
+        treeUpdated();
 	}
 
 	removeAction() {
@@ -498,6 +500,7 @@ class ChangeSpawnPointAction extends Action {
 	    }
 
 		saveModelToUrl();
+        treeUpdated();
 	}
 
 	toString() {

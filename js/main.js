@@ -114,13 +114,15 @@ function removeRoom(room) {
 	room.dispose();
 	runRulesOnRoomRemoved(room);
 	saveModelToUrl();
+    treeUpdated();
 }
 
 function addRoom(room) {
 	addToListIfNotPresent(roomList, room);
 	addFloorRoom(room);
-	saveModelToUrl();
 	runRulesOnRoomAdded(room);
+	saveModelToUrl();
+    treeUpdated();
 }
 
 function rotateSelectedRoom() {
@@ -167,6 +169,7 @@ function rotateSelectedRoom() {
 	    // add the action
         addUndoAction(action);
         saveModelToUrl();
+        treeUpdated();
 	}
 }
 
@@ -181,6 +184,7 @@ function rotateFloorSelectedRoom() {
 		saveModelToUrl();
         if (action.isAMove()) {
             addUndoAction(action);
+            treeUpdated();
         }
 	}
 }
@@ -201,6 +205,7 @@ function deleteSelectedRooms() {
 	    // add an undo action
 	    addUndoAction(new AddDeleteRoomsAction(oldRooms, false));
 	}
+    treeUpdated();
 }
 
 function doAddRooms(e, rooms) {
@@ -317,6 +322,7 @@ function clearSelectedRoomsColor(action) {
 
 function movedSelectedRoom() {
 	saveModelToUrl();
+    treeUpdated();
 }
 
 function getCurrentSpawnRoom() {
@@ -335,6 +341,7 @@ function setSelectedRoomSpawn() {
         addUndoAction(new ChangeSpawnPointAction(currentSpawnRoom, newSpawnRoom));
 
     	saveModelToUrl();
+    	treeUpdated();
     }
 }
 
@@ -345,6 +352,7 @@ function unsetSelectedRoomSpawn() {
         currentSpawnRoom.setSpawnPoint(false);
         addUndoAction(new ChangeSpawnPointAction(currentSpawnRoom, null));
     	saveModelToUrl();
+    	treeUpdated();
     }
 }
 
