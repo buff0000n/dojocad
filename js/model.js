@@ -21,8 +21,9 @@ function getZIndex(room, part) {
         if (!room.isOnFloor()) return 10100 + part
         // otherwise everything on the current floor is on top
         else return 10200 + part;
-    } else if (part == part_outline) {
-        // for outlines, always put them on the top layer so we can see all selected rooms
+    } else if (part == part_outline && (room.isSelected() || room.hasCollision())) {
+        // for outlines, put the ones for selected/collided rooms on the top layer so we can see them all
+        // everything else (rule errors, warnings) can be behind stuff.
         return 10200 + part;
     } else {
         // otherwise, there is a band of z-indexes for each floor's display layers
@@ -548,7 +549,8 @@ class Room {
     setSpawnPoint(isSpawnPoint) {
         if (isSpawnPoint != this.spawn) {
             if (isSpawnPoint) {
-                var spawnMarker = new Marker(this, this.floor, spawnMarkerMetadata);
+                // appears on floor 0 relative to the room's base floor
+                var spawnMarker = new Marker(this, 0, spawnMarkerMetadata);
                 this.markers.push(spawnMarker);
                 // this can be set before the room is actually displayed
                 if (this.viewContainer) {
@@ -642,6 +644,12 @@ class Room {
 
     getAllWarnings() {
 		return this.ruleWarnings.length > 0 ? this.ruleWarnings : null;
+    }
+
+    getSomeWarnings() {
+		if (this.ruleWarnings.length == 0) return null;
+		if (this.ruleWarnings.length == 1 && this.ruleWarnings[0] == "Discontinued room") return null;
+		return this.ruleWarnings;
     }
 
 	dispose() {
@@ -860,6 +868,16 @@ class Room {
         return collidedRoomList;
     }
 
+    hasCollision() {
+        for (var b = 0; b < this.bounds.length; b++) {
+            var bound = this.bounds[b];
+	        if (bound.collisions.length > 0) {
+	            return true;
+	        }
+        }
+        return false;
+    }
+
     updateBoundsPositions() {
         // get all the rooms we were collided with before
 		var collidedRooms = this.getAllCollidedRooms();
@@ -934,7 +952,8 @@ class Room {
 
     checkErrors() {
         var errors = this.getAllErrors();
-        var warnings = this.getAllWarnings();
+        // we don't want to show the outline when it's just a discontinued room, that's annoying
+        var warnings = this.getSomeWarnings();
  		if (errors || warnings) {
 			if (this.viewContainer) {
 				if (!this.outline) {

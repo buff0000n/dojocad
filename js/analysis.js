@@ -1,6 +1,7 @@
 // if it's worth engineering it's worth overengineering -B
 
-var treeUpdateDelay = 1000;
+// don't need much of a delay, if someone's sitting on the undo button we'll just end up canceling a bunch of runs
+var treeUpdateDelay = 50;
 var treeUpdateTimeout = null;
 
 function treeUpdated() {
@@ -26,7 +27,7 @@ function actuallyUpdateTree() {
 
     disconnectedCount = 0;
 
-    startTreeTraversal("connected", root, 10,
+    startTreeTraversal("connected", root, 25,
         (room) => {
             room.connected = false;
         },
@@ -92,7 +93,6 @@ class TreeTraversal {
     }
 
     schedule(fun) {
-//        console.log("scheduling: " + fun)
         this.timeout = setTimeout(fun, 1);
     }
 
