@@ -90,6 +90,7 @@ class TreeTraversal {
         // state
         this.runList = null;
         this.traversalStack = null;
+        this.count = 0;
     }
 
     schedule(fun) {
@@ -125,13 +126,13 @@ class TreeTraversal {
                 this.runList = roomList.slice();
             }
 
-            var count = 0;
-            while (this.runList.length > 0 && count < this.batchSize) {
-                count += 1;
+            while (this.runList.length > 0 && this.count < this.batchSize) {
+                this.count += 1;
                 this.preFun(this.runList.shift());
             }
 
             if (this.runList.length > 0) {
+                this.count = 0;
                 this.schedule(() => { this.runPre(); });
                 return;
             }
@@ -171,9 +172,8 @@ class TreeTraversal {
             this.runList = [this.root];
         }
 
-        var count = 0;
-        while (this.runList.length > 0 && count < this.batchSize) {
-            count += 1;
+        while (this.runList.length > 0 && this.count < this.batchSize) {
+            this.count += 1;
             var room = this.runList.shift();
             this.markVisited(room);
 
@@ -190,6 +190,7 @@ class TreeTraversal {
         }
 
         if (this.runList.length > 0) {
+            this.count = 0;
     	    this.schedule(() => { this.runTraversal(); });
 
         } else {
@@ -207,17 +208,17 @@ class TreeTraversal {
             this.runList = roomList.slice();
         }
 
-        var count = 0;
-        while (this.runList.length > 0 && count < this.batchSize) {
+        while (this.runList.length > 0 && this.count < this.batchSize) {
             var room = this.runList.shift();
             if (this.postFun) {
-                count += 1;
+                this.count += 1;
                 this.postFun(room);
             }
             this.clearVisited(room);
         }
 
         if (this.runList.length > 0) {
+            this.count = 0;
             this.schedule(() => { this.runPost(); });
             return;
         }
