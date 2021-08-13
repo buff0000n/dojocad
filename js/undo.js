@@ -423,13 +423,12 @@ class AddDeleteRoomsAction extends Action {
             this.rooms[r].floor = 100;
             this.rooms[r].setPositionAndConnectDoors(this.records[r].MX, this.records[r].MY, this.records[r].Floor, this.records[r].R);
             // select the rooms
-            this.rooms[r].select();
             this.rooms[r].updateView();
 	    }
-	    // directly set the room selection
-        selectedRooms = this.rooms;
+	    // use the selectRooms() function, not sure why I was doing this directly before
+        selectRooms(this.rooms, false, false);
 
-		saveModelToUrl();3
+		saveModelToUrl();
         treeUpdated();
 	}
 

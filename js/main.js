@@ -117,12 +117,14 @@ function removeRoom(room) {
     treeUpdated();
 }
 
-function addRoom(room) {
+function addRoom(room, updateTree=true) {
 	addToListIfNotPresent(roomList, room);
 	addFloorRoom(room);
 	runRulesOnRoomAdded(room);
-	saveModelToUrl();
-    treeUpdated();
+    if (updateTree) {
+    	saveModelToUrl();
+        treeUpdated();
+    }
 }
 
 function rotateSelectedRoom() {
@@ -228,7 +230,8 @@ function doAddRooms(e, rooms) {
             rooms[r].setDebug(true);
         }
         // add the room to the room list
-        addRoom(rooms[r]);
+        // disable the tree update, we're going to be dragging these rooms immediately
+        addRoom(rooms[r], false);
     }
 
     // not quite sure why this works
