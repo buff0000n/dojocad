@@ -231,7 +231,7 @@
         <div class="helpContainer">
             <p style="text-align: center;">
                 <span class="title">DojoCAD</span><br/>
-                v2.1.8: 2021-08-11<br/>
+                v2.2.0: 2021-08-13<br/>
                 <a href="https://github.com/buff0000n/dojoarch">Source</a>&nbsp;
                 <a href="https://github.com/buff0000n/dojoarch/issues/2">Feedback</a>&nbsp;
                 <a href="https://github.com/buff0000n/dojocad/issues/new">Bugs</a><br/>
@@ -362,6 +362,12 @@
                         <li><a href="#RoomRules">Specific Room Rules</a></li>
                         <li><a href="#ConstraintFeedback">Other Constraint Feedback</a></li>
                         <li><a href="#Resources">Resources</a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#SpawnPoint">Spawn Point</a>
+                    <ul>
+                        <li><a href="#Connectedness">Connectedness</a></li>
                     </ul>
                 </li>
                 <li><a href="#SavingAndSharing">Saving And Sharing</a></li>
@@ -867,6 +873,7 @@
                         <li><strong>Infested Chamber</strong></li>
                         <li><strong>Starlight Market</strong></li>
                     </ul>
+                    See below for more on <a href="#SpawnPoint">Spawn Points</a>.
                 </li>
                 <li>An <strong>Oracle</strong> is the prequisite for all the Labs</li>
                 <li>You can only have one of each <strong>Clan Hall</strong></li>
@@ -898,9 +905,10 @@
             </p>
             <p>
                 Finally, in the top bar there is a global error icon, either
-                <span class="docImgButton-clear"><img src="icons/icon-ok.png" srcset="icons2x/icon-ok.png 2x" title="OK"/></span> or
-                <span class="docImgButton-clear"><img src="icons/icon-error.png" srcset="icons2x/icon-error.png 2x" title="Error"/></span>.
-                Click on it to bring up a list of all errors detected in the dojo.
+                <span class="docImgButton-clear"><img src="icons/icon-ok.png" srcset="icons2x/icon-ok.png 2x" title="OK"/></span>,
+                <span class="docImgButton-clear"><img src="icons/icon-error.png" srcset="icons2x/icon-error.png 2x" title="Error"/></span>, or
+                <span class="docImgButton-clear"><img src="icons/icon-warn.png" srcset="icons2x/icon-warn.png 2x" title="Warning"/></span>.
+                Click on it to bring up a list of all errors or warnings detected in the dojo.
             </p>
 
             <h2 id="Resources">Resources</h2>
@@ -922,6 +930,33 @@
                 overestimate; you're going to build at least some of your dojo before building any Barracks.</span>
             </p>
 
+            <h1 id="SpawnPoint">Spawn Point</h1>
+            <p>
+                On rooms that support being a spawn point, click on the room menu and select
+                <span class="docImgButton"><img src="icons/icon-spawn.png" srcset="icons2x/icon-spawn.png 2x" title="Spawn Point"/></span>
+                <strong>Set Spawn Point</strong> to designate that room as the spawn point.  If another room is already
+                designaged as the spawn point then the spawn point will be moved.
+            </p>
+            <p>
+                The designated spawn point room will have a
+                <span class="docImgButton-clear"><img src="icons/icon-spawn.png" srcset="icons2x/icon-spawn.png 2x" title="Spawn Point"/></span>
+                marker on it.
+            </p>
+            <p>
+                To remove the spawn point from your layout, click on the spawn point room menu and select
+                <span class="docImgButton"><img src="icons/icon-spawn-delete.png" srcset="icons2x/icon-spawn-delete.png 2x" title="Spawn Point Delete"/></span>
+                <strong>Remove Spawn Point</strong>.  After this your layout will not have a spawn point.
+            </p>
+            <h2 id="Connectedness">Connectedness</h2>
+            <p>
+                When a spawn point is designated the dojo will be checked to make sure every room is connected to the
+                spawn point room, either directly or indirectly through other rooms.
+            </p>
+            <p>
+                Rooms that are not connected to the spawn point room will be highlighted in yellow and show up as
+                <span class="docImgButton-clear"><img src="icons/icon-warn.png" srcset="icons2x/icon-warn.png 2x" title="Warning"/></span>
+                warnings.
+            </p>
             <h1 id="SavingAndSharing">Saving And Sharing</h1>
             <p>
                 The current layout and view are continually saved to your browser's location bar.
@@ -1072,17 +1107,16 @@
                 <li>Fixed the Bash Lab prerequisite</li>
                 <li>Flip the label outline color to white when the brightness of a room's color is set low enough
                     (Thanks <strong>adrienne</strong>)</li>
+                <li>Added a spawn point marker and connectedness checking</li>
             </ul>
 
             <h1 id="ToDo">To Do</h1>
             <ul>
                 <li>
-                    Tree structure like a real dojo
-                    <ul>
-                        <li>spawn point designation</li>
-                        <li>disconnected rooms warning</li>
-                        <li>Build order analysis</li>
-                    </ul>
+                    Build order analysis
+                </li>
+                <li>
+                    Local storage saving/loading
                 </li>
                 <li>
                     Add some actions for the error menus, i.e. clicking on the "Oracle is required" error creates an Oracle room to place.

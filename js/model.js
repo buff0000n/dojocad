@@ -466,7 +466,8 @@ function roomFromString(string) {
                 if (s.length > 8) {
                     var flags = s[8];
                     if (flags.includes("s")) {
-                        room.setSpawnPoint(true);
+                        // go through the global method to set the spawn point to make sure there's only one
+                        setSpawnPointRoom(room, false);
                     }
                 }
             }

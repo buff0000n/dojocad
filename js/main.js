@@ -326,6 +326,7 @@ function movedSelectedRoom() {
 }
 
 function getCurrentSpawnRoom() {
+    // todo: track this explicitly?
     return roomList.find((r) => { return r.isSpawnPoint(); } );
 }
 
@@ -333,15 +334,21 @@ function setSelectedRoomSpawn() {
     if (selectedRooms.length == 1) {
         var newSpawnRoom = selectedRooms[0];
         clearMenus(0);
-        var currentSpawnRoom = getCurrentSpawnRoom();
-        if (currentSpawnRoom) {
-            currentSpawnRoom.setSpawnPoint(false);
-        }
-        newSpawnRoom.setSpawnPoint(true);
-        addUndoAction(new ChangeSpawnPointAction(currentSpawnRoom, newSpawnRoom));
-
+        setSpawnPointRoom(newSpawnRoom, true);
     	saveModelToUrl();
     	treeUpdated();
+    }
+}
+
+function setSpawnPointRoom(newSpawnRoom, allowUndo=true) {
+    // factored out so we can call this when loading a layout
+    var currentSpawnRoom = getCurrentSpawnRoom();
+    if (currentSpawnRoom) {
+        currentSpawnRoom.setSpawnPoint(false);
+    }
+    newSpawnRoom.setSpawnPoint(true);
+    if (allowUndo) {
+        addUndoAction(new ChangeSpawnPointAction(currentSpawnRoom, newSpawnRoom));
     }
 }
 
