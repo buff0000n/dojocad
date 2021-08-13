@@ -492,13 +492,7 @@ class ChangeSpawnPointAction extends Action {
 	}
 
 	action(from, to) {
-	    if (from) {
-    	    from.setSpawnPoint(false);
-	    }
-	    if (to) {
-    	    to.setSpawnPoint(true);
-	    }
-
+        setSpawnPointRoom(to, false);
 		saveModelToUrl();
         treeUpdated();
 	}

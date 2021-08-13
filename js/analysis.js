@@ -3,6 +3,8 @@
 // don't need much of a delay, if someone's sitting on the undo button we'll just end up canceling a bunch of runs
 var treeUpdateDelay = 50;
 var treeUpdateTimeout = null;
+// track if there has ever been a tree update
+var ranATreeUpdate = false;
 
 function treeUpdated() {
     // cancel any pending tree traversal, this is useful for when the user sits on the undo button or otherwise
@@ -10,12 +12,6 @@ function treeUpdated() {
 	if (treeUpdateTimeout) {
 		clearTimeout(treeUpdateTimeout);
 	}
-
-    // short circuit if there is no root
-    var root = getCurrentSpawnRoom();
-    if (!root) {
-        return;
-    }
 
     // schedule tree analysis
 	treeUpdateTimeout = setTimeout(actuallyUpdateTree, treeUpdateDelay);
@@ -28,11 +24,22 @@ class DisconnectedRule {
 var disconnectedRule = new DisconnectedRule();
 
 function actuallyUpdateTree() {
-    // short circuit if there is no root
+    // clear timeout reference
+    treeUpdateTimeout = null;
+
+    // short circuit if there is no root and there has never been a root
     var root = getCurrentSpawnRoom();
     if (!root) {
+        if (ranATreeUpdate) {
+            // if there is no spawn point but there was at some time then just clear all warnings
+            for (var r = 0; r < roomList.length; r++) {
+                roomList[r].removeRuleWarning(disconnectedRule);
+            }
+            removeAllWarning("Disconnected rooms");
+        }
         return;
     }
+	ranATreeUpdate = true;
 
     // keep a running tally of disconnected rooms for the final warning update
     disconnectedCount = 0;

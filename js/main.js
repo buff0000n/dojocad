@@ -346,7 +346,9 @@ function setSpawnPointRoom(newSpawnRoom, allowUndo=true) {
     if (currentSpawnRoom) {
         currentSpawnRoom.setSpawnPoint(false);
     }
-    newSpawnRoom.setSpawnPoint(true);
+    if (newSpawnRoom) {
+        newSpawnRoom.setSpawnPoint(true);
+    }
     if (allowUndo) {
         addUndoAction(new ChangeSpawnPointAction(currentSpawnRoom, newSpawnRoom));
     }
@@ -354,10 +356,8 @@ function setSpawnPointRoom(newSpawnRoom, allowUndo=true) {
 
 function unsetSelectedRoomSpawn() {
     if (selectedRooms.length == 1) {
-        currentSpawnRoom = selectedRooms[0];
         clearMenus(0);
-        currentSpawnRoom.setSpawnPoint(false);
-        addUndoAction(new ChangeSpawnPointAction(currentSpawnRoom, null));
+        setSpawnPointRoom(null, true);
     	saveModelToUrl();
     	treeUpdated();
     }
