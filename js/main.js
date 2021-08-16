@@ -378,6 +378,57 @@ function hideDoorMarkers() {
 	}
 }
 
+function setShowAllFloors(showAllFloors) {
+	settings.showAllFloors = showAllFloors;
+
+	if (showAllFloors) {
+	    for (var r = 0; r < roomList.length; r++) {
+	        var room = roomList[r];
+	        if (!room.isVisible()) {
+                room.addDisplay(getRoomContainer());
+	        }
+		}
+
+	} else {
+	    for (var r = 0; r < roomList.length; r++) {
+	        var room = roomList[r];
+	        if (!room.isVisible()) {
+                room.removeDisplay();
+	        }
+		}
+	}
+
+	settings.save();
+}
+
+function setShowMapMarkers(showMapMarkers) {
+	settings.showMapMarkers = showMapMarkers;
+
+	if (showMapMarkers) {
+	    for (var r = 0; r < roomList.length; r++) {
+	        var room = roomList[r];
+	        if (room.isVisible()) {
+                room.showMarkers();
+                room.updateView();
+	        }
+		}
+
+	} else {
+	    for (var r = 0; r < roomList.length; r++) {
+	        var room = roomList[r];
+	        if (room.isVisible()) {
+                room.hideMarkers();
+	        }
+		}
+	}
+
+	settings.save();
+}
+
+//==============================================================
+// model URL handling
+//==============================================================
+
 function buildModelParam() {
 	var value = "";
 	for (var r = 0; r < roomList.length; r++) {
@@ -426,6 +477,10 @@ function loadModelFromUrl() {
 	}
 	return true;
 }
+
+//==============================================================
+// View handling
+//==============================================================
 
 function buildViewParam() {
 	var centerPX = viewPX - (window.innerWidth / 2);

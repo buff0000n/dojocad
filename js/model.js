@@ -1457,9 +1457,9 @@ class Room {
                 // init the label, if necessary
                 this.updateLabelDisplay(false);
 	        }
-			for (var m = 0; m < this.markers.length; m++) {
-				this.markers[m].addDisplay(viewContainer);
-			}
+	        if (settings.showMapMarkers) {
+	            this.showMarkers();
+	        }
 			for (var b = 0; b < this.doors.length; b++) {
 				this.doors[b].addDisplay(viewContainer);
 			}
@@ -1467,7 +1467,7 @@ class Room {
 				this.bounds[b].addDisplay(viewContainer);
 			}
 
-        } else {
+        } else if (settings.showAllFloors) {
 	        // just the other floor display
 	        this.otherFloorDisplay = this.addDisplayImage(this.getDisplayImageSuffix(), getZIndex(this, part_display));
 		    this.otherFloorDisplay.style.filter = getDisplayImageFilter(this.hue, false);
@@ -1478,6 +1478,18 @@ class Room {
 		this.checkCollided();
 	    this.checkErrors();
         this.updateView();
+    }
+
+    showMarkers() {
+        for (var m = 0; m < this.markers.length; m++) {
+            this.markers[m].addDisplay(this.viewContainer);
+        }
+    }
+
+    hideMarkers() {
+        for (var m = 0; m < this.markers.length; m++) {
+            this.markers[m].removeDisplay();
+        }
     }
 
     addDisplayImage(imageSuffix, zIndex, imageBase = null, marker = false) {
@@ -2145,7 +2157,7 @@ function convertFloorToPngLink(targets, db, margin, scale, f) {
 			// see if the room has any markers
 			for (var m = 0; m < room.markers.length; m++) {
 				var marker = room.markers[m];
-				if (marker.floor != f) {
+				if (marker.floor != f || !settings.showMapMarkers) {
 					continue;
 				}
 				// build an image link because that's what context.drawImage wants

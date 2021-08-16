@@ -334,6 +334,7 @@ function doBurgerMenu() {
     menuDiv.appendChild(buildMenuButton("Local Storage", doStorageMenu, "icon-save"));
     menuDiv.appendChild(buildMenuButton("PNG", doPngMenu, "icon-png"));
     menuDiv.appendChild(buildLinkMenuButton("New", "index.html", "icon-new"));
+    menuDiv.appendChild(buildMenuButton("Settings", doSettingsMenu, "icon-settings"));
     if (debugEnabled) {
 	    menuDiv.appendChild(buildMenuButton("Collision Matrix", doCollisionMatrix));
 	    menuDiv.appendChild(buildMenuButton("Color Picker", doGenerateColorPicker));
@@ -1164,13 +1165,18 @@ function doColorMenu() {
 function buildMenuInput(label, input, units = null) {
     var tr = document.createElement("tr");
 
-    var td1 = document.createElement("td");
-    td1.className = "inputLabel";
-    td1.innerHTML = label + ":";
-    tr.appendChild(td1);
+    if (label) {
+        var td1 = document.createElement("td");
+        td1.className = "inputLabel";
+        td1.innerHTML = label + ":";
+        tr.appendChild(td1);
+    }
 
     var td2 = document.createElement("td");
     td2.appendChild(input);
+    if (!label) {
+        td2.colSpan = 2;
+    }
     tr.appendChild(td2);
 
     if (units) {
@@ -1427,13 +1433,44 @@ function doStorageSave(name) {
     doStorageMenu();
 }
 
-function doStorageOverwrite() {
-    console.log("OVERWRITE");
+
+function doSettingsMenu() {
+	var button = getMenuTarget();
+
+    var menuDiv = buildMenu();
+
+	menuDiv.appendChild(buildMenuHeaderLine("Settings", 4, "icon-settings"));
+
+    function addCheckbox(name, title, initialValue, callback) {
+        var settingDiv = document.createElement("div");
+        var settingInput = document.createElement("input");
+        settingInput.id = "input-" + name;
+        settingInput.class = "field";
+        settingInput.type = "checkbox";
+        if (initialValue) {
+            settingInput.checked = true;
+        }
+        settingInput.onchange = () => {
+            callback(settingInput.checked);
+        };
+        settingDiv.appendChild(settingInput);
+
+        var settingSpan = document.createElement("span");
+        settingSpan.innerHTML = "&nbsp;" + title;
+        settingSpan.className = "field-checkbox-label";
+        settingSpan.onclick = () => { settingInput.checked = !settingInput.checked; settingInput.onchange(); };
+        settingDiv.appendChild(settingSpan);
+        menuDiv.appendChild(buildMenuInput(null, settingDiv));
+    }
+
+    addCheckbox("showAllFloors", "Show All Floors", settings.showAllFloors, (value) => { setShowAllFloors(value); });
+
+    addCheckbox("showMapMarkers", "Show Map Markers", settings.showMapMarkers, (value) => { setShowMapMarkers(value); });
+
+    showMenu(menuDiv, button);
+//	pngScaleChanged();
 }
 
-function doStorageDelete() {
-    console.log("DLETEEE");
-}
 
 
 var errorRoomList = Array();

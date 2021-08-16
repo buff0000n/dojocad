@@ -1,6 +1,6 @@
 class Storage {
     constructor() {
-        this.keyPrefix = "dojo:";
+        this.keyPrefix = "dojocad:save:";
     }
 
     // returns [{name, timestamp, date}]
