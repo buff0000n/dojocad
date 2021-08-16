@@ -389,12 +389,16 @@ function buildModelParam() {
 	return value;
 }
 
+function buildCompressedModelParam() {
+    return LZString.compressToEncodedURIComponent(buildModelParam())
+}
+
 function saveModelToUrl() {
 	if (debugEnabled) {
 		modifyUrlQueryParam("m", buildModelParam());
 
 	} else {
-		modifyUrlQueryParam("mz", LZString.compressToEncodedURIComponent(buildModelParam()));
+		modifyUrlQueryParam("mz", buildCompressedModelParam());
 	}
 }
 

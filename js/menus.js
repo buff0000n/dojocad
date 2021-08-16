@@ -139,9 +139,7 @@ function buildCloseMenuButton() {
     return buttonDiv;
 }
 
-function buildMenuButton(label, callback, icon = null, className = "menu-button") {
-    var tr = document.createElement("tr");
-
+function buildMenuButtonIcon(icon=null, callback=null) {
     var iconTd = document.createElement("td");
 	if (icon) {
         iconTd.className = "imgField";
@@ -149,14 +147,24 @@ function buildMenuButton(label, callback, icon = null, className = "menu-button"
         iconTd.onclick = callback;
         iconTd.menuLevel = getCurrentMenuLevel() + 1;
 	}
-    tr.appendChild(iconTd);
+	return iconTd;
+}
 
+function buildButton(label, callback, className = "menu-button") {
     var buttonDiv = document.createElement("td");
     buttonDiv.className = className;
     buttonDiv.innerHTML = label;
     buttonDiv.onclick = callback;
     buttonDiv.menuLevel = getCurrentMenuLevel() + 1;
-    tr.appendChild(buttonDiv);
+    return buttonDiv;
+}
+
+function buildMenuButton(label, callback, icon = null, className = "menu-button") {
+    var tr = document.createElement("tr");
+
+    tr.appendChild(buildMenuButtonIcon(icon, callback));
+
+    tr.appendChild(buildButton(label, callback, className));
 
     return tr;
 }
@@ -195,6 +203,36 @@ function buildErrorPopup(errors, warns, span = true) {
     buttonDiv.menuLevel = getCurrentMenuLevel() + 1;
     buttonDiv.onclick = doShowErrors;
     return buttonDiv;
+}
+
+// callbacks = [{text, callback}]
+function doPopupDialog(title, text, error, ...callbacks) {
+	var button = getMenuTarget();
+
+    var menuDiv = buildMenu(error ? "menu-table-error" : "menu-table");
+
+	menuDiv.appendChild(buildMenuHeaderLine(title, callbacks.length + 2, error ? "icon-error" : null));
+
+    var tr = document.createElement("tr");
+    var td = document.createElement("td");
+    td.colSpan = callbacks.length + 2;
+    td.innerHTML = text;
+    td.className = "field";
+    tr.appendChild(td);
+    menuDiv.appendChild(tr);
+
+    var buttonsTr = document.createElement("tr");
+    buttonsTr.appendChild(document.createElement("td"));
+    for (var i = 0; i < callbacks.length; i++) {
+        buttonsTr.append(buildButton(
+            callbacks[i].text,
+            callbacks[i].callback ? callbacks[i].callback : clearLastMenu,
+            error ? "menu-button-error" : "menu-button"
+        ));
+    }
+    menuDiv.appendChild(buttonsTr);
+
+    showMenu(menuDiv, button);
 }
 
 function buildMenuDivider(colspan) {
@@ -292,7 +330,8 @@ function doBurgerMenu() {
 
 	menuDiv.appendChild(buildMenuHeaderLine("Menu", 3));
 
-    menuDiv.appendChild(buildMenuButton("Save", doSave, "icon-save"));
+    menuDiv.appendChild(buildMenuButton("Share", doShare, "icon-link"));
+    menuDiv.appendChild(buildMenuButton("Local Storage", doStorageMenu, "icon-save"));
     menuDiv.appendChild(buildMenuButton("PNG", doPngMenu, "icon-png"));
     menuDiv.appendChild(buildLinkMenuButton("New", "index.html", "icon-new"));
     if (debugEnabled) {
@@ -623,11 +662,11 @@ function buildMenuField(label) {
     return tr;
 }
 
-function doSave() {
+function doShare() {
 	var saveButton = getMenuTarget();
 
     var menuDiv = buildMenu();
-	menuDiv.appendChild(buildMenuHeaderLine("Save URL", 4));
+	menuDiv.appendChild(buildMenuHeaderLine("Share URL", 4));
 
 	var url = buildQueryUrl(buildUrlParams());
 
@@ -699,13 +738,18 @@ function showResources() {
     showMenuAt(menuDiv, e.clientX, e.clientY);
 }
 
-function addEscapeListener(element) {
+function addEscapeListener(element, enterAction=null) {
     element.onkeydown = () => {
         var e = window.event;
         switch (e.code) {
             case "Escape" :
                 // escape close the menu
                 clearLastMenu();
+                break;
+            case "Enter" :
+                if (enterAction) {
+                    enterAction();
+                }
                 break;
         }
     }
@@ -1246,6 +1290,151 @@ function doPngClick(e) {
 	    showMenu(menuDiv, link);
     }
 }
+
+function buildStorageListingHeader() {
+    var tr = document.createElement("tr");
+
+    var iconTd = buildMenuButtonIcon();
+    tr.appendChild(iconTd);
+
+    // todo: sort by column?
+
+    var nameDiv = document.createElement("td");
+    nameDiv.innerHTML = `Name`;
+    tr.appendChild(nameDiv);
+
+    var dateDiv = document.createElement("td");
+    dateDiv.innerHTML = `Date`;
+    tr.appendChild(dateDiv);
+
+    return tr;
+}
+
+function truncateName(name) {
+    return name.length > 30 ? (name.substring(0, 47) + "...") : name;
+}
+
+function buildStorageListingLine(entry) {
+    var tr = document.createElement("tr");
+
+    var name = entry.name;
+
+    var iconTd = buildMenuButtonIcon("icon-save", () => {
+        doPopupDialog("Local Storage", "Overwrite " + truncateName(name) + "?", false,
+            { "text": "Yes", "callback": () => { doStorageSave(name); } },
+            { "text": "No" }
+        );
+    });
+    tr.appendChild(iconTd);
+
+    // todo: sort by column?
+
+    var nameDiv = document.createElement("td");
+    nameDiv.className = "field";
+    nameDiv.innerHTML = `<a href="?${entry.item}">${truncateName(name)}</href>`;
+    tr.appendChild(nameDiv);
+
+    var dateDiv = document.createElement("td");
+    dateDiv.className = "field";
+    dateDiv.innerHTML = entry.date;
+    tr.appendChild(dateDiv);
+
+    var iconTd = buildMenuButtonIcon("icon-delete", () => {
+        doPopupDialog("Local Storage", "Delete " + truncateName(name) + "?", false,
+            { "text": "Yes", "callback": () => {
+                storage.removeItem(entry.name);
+                doStorageMenu();
+            } },
+            { "text": "No" }
+        );
+    });
+    tr.appendChild(iconTd);
+
+    return tr;
+}
+
+function doStorageMenu() {
+    clearMenus();
+
+    var menuDiv = buildMenu();
+    menuDiv.appendChild(buildMenuHeaderLine("Local Storage", 4));
+    menuDiv.appendChild(buildStorageListingHeader());
+
+    var listing = storage.getListing();
+    for (var l = 0; l < listing.length; l++) {
+        menuDiv.appendChild(buildStorageListingLine(listing[l]));
+    }
+
+    menuDiv.appendChild(buildMenuButton("Add", doStorageAdd, "icon-add"));
+
+    showMenuAt(menuDiv, 0, 64);
+}
+
+function doStorageAdd() {
+	var button = getMenuTarget();
+
+    var menuDiv = buildMenu();
+
+	menuDiv.appendChild(buildMenuHeaderLine("Save to Local Storage", 3));
+
+	var input = document.createElement("input");
+    input.id = "storage-save-name";
+    input.class = "field";
+    input.type = "text";
+    input.size = 30;
+    input.maxLength = 30;
+    addEscapeListener(input, doStorageAddSave);
+    menuDiv.appendChild(buildMenuInput("Name", input));
+
+    menuDiv.appendChild(buildMenuButton("Add", doStorageAddSave));
+
+    showMenu(menuDiv, button);
+
+    // focus and select the contents of the text field
+    input.focus();
+    input.select();
+}
+
+function doStorageAddSave() {
+	var button = getMenuTarget();
+    var e = e || window.event;
+
+    var name = document.getElementById("storage-save-name").value;
+    if (!name || name.length == 0) {
+        doPopupDialog("Save", "Enter a name", true,
+            { "text": "Okay" },
+        );
+        return;
+    }
+
+    if (storage.containsItem(name)) {
+        doPopupDialog("Save", "Name already exists, overwrite?",
+            true,
+            { "text": "Yes", "callback": () => { doStorageSave(name); } },
+            { "text": "No" }
+        );
+        return;
+    }
+
+    clearLastMenu();
+    doStorageSave(name);
+}
+
+function doStorageSave(name) {
+    var view = buildViewParam();
+    var layout = buildCompressedModelParam();
+    storage.addItem(name, `v=${view}&mz=${layout}`);
+    doStorageMenu();
+}
+
+function doStorageOverwrite() {
+    console.log("OVERWRITE");
+}
+
+function doStorageDelete() {
+    console.log("DLETEEE");
+}
+
 
 var errorRoomList = Array();
 var warnRoomList = Array();

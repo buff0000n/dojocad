@@ -305,6 +305,11 @@ li {
     text-decoration: none;
     font-size: 100%;
     border-radius: 1ex;
+    overflow-wrap: break-word;
+}
+
+.field a {
+    overflow-wrap: break-word;
 }
 
 input, textarea {
