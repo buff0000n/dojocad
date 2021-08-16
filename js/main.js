@@ -425,6 +425,16 @@ function setShowMapMarkers(showMapMarkers) {
 	settings.save();
 }
 
+function setAutosave(autosave) {
+    settings.autosave = autosave;
+
+    if (autosave) {
+        saveModelToUrl();
+    }
+
+	settings.save();
+}
+
 //==============================================================
 // model URL handling
 //==============================================================
@@ -445,16 +455,28 @@ function buildCompressedModelParam() {
 }
 
 function saveModelToUrl() {
+    if (settings.loading) {
+        return;
+    }
+
 	if (debugEnabled) {
 		modifyUrlQueryParam("m", buildModelParam());
 
 	} else {
-		modifyUrlQueryParam("mz", buildCompressedModelParam());
+	    var modelString = buildCompressedModelParam();
+		modifyUrlQueryParam("mz", modelString);
+		if (settings.autosave) {
+            var view = buildViewParam();
+            storage.autosaveItem(`v=${view}&mz=${modelString}`);
+		}
 	}
 }
 
-function loadModelFromUrl() {
-    var url = window.location.href;
+function loadModelFromHref() {
+    return loadModelFromUrl(window.location.href);
+}
+
+function loadModelFromUrl(url) {
 	var modelString = LZString.decompressFromEncodedURIComponent(getQueryParam(url, "mz"));
 	if (!modelString) {
 		// backwards compatible with the, uh, like maybe couple of dozen old URLs floating around.
@@ -470,11 +492,14 @@ function loadModelFromUrl() {
 
     // parse the model string, accounting for quotes but not removing them
 	var roomStrings = quotedSplit(modelString, "_", true);
+	// set a flag so we don't do things like autosaving while we're building the layout
+	settings.loading = true;
 	for (var rs = 0; rs < roomStrings.length; rs++) {
 		var room = roomFromString(roomStrings[rs]);
 	    addRoom(room);
 	    room.resetPositionAndConnectDoors();
 	}
+	settings.loading = false;
 	return true;
 }
 
@@ -494,8 +519,11 @@ function saveViewToUrl() {
 	modifyUrlQueryParam("v", buildViewParam());
 }
 
-function loadViewFromUrl() {
-    var url = window.location.href;
+function loadViewFromHref() {
+    return loadViewFromUrl(window.location.href);
+}
+
+function loadViewFromUrl(url) {
 	var viewString = getQueryParam(url, "v");
 	if (!viewString) {
 		return false;
@@ -679,8 +707,8 @@ function setModelDebug(debug) {
 function initModel() {
 	registerRoomRules(roomMetadata);
 
-    if (loadModelFromUrl()) {
-		if (!loadViewFromUrl()) {
+    if (loadModelFromHref()) {
+		if (!loadViewFromHref()) {
 			var room = roomList[0];
 			if (room) {
 		        centerViewOn(room.mv.x, room.mv.y, 5, room.floor);
@@ -688,6 +716,11 @@ function initModel() {
 		        centerViewOn(0, 0, 5, 0);
 			}
 		}
+
+    } else if (settings.autosave && storage.containsAutosaveItem()) {
+        var url = storage.getAutosaveItem();
+        loadModelFromUrl(url);
+        loadViewFromUrl(url);
 
     } else {
         // set the view first so "v=" appears at the beginning of the URL

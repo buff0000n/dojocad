@@ -1,6 +1,8 @@
 class Storage {
     constructor() {
         this.keyPrefix = "dojocad:save:";
+        this.autosaveName = "Autosave";
+        this.autosaveDelay = 2000;
     }
 
     // returns [{name, timestamp, date}]
@@ -21,6 +23,20 @@ class Storage {
         return listing;
     }
 
+    getItem(name) {
+        var key = this.keyPrefix + name;
+        var entry = window.localStorage.getItem(key);
+        if (entry) {
+            var json = JSON.parse(entry);
+            return json.item;
+        }
+        return null;
+    }
+
+    getAutosaveItem() {
+        return this.getItem(this.autosaveName);
+    }
+
     addItem(name, item) {
         var key = this.keyPrefix + name;
         var entry = {
@@ -29,7 +45,18 @@ class Storage {
         }
         var exists = window.localStorage.getItem(key) != null;
         window.localStorage.setItem(key, JSON.stringify(entry));
+
         return exists;
+    }
+
+    autosaveItem(item) {
+        if (this.autosaveTimeout) {
+    		clearTimeout(this.autosaveTimeout);
+        }
+
+    	this.autosaveTimeout = setTimeout(() => {
+            this.addItem(this.autosaveName, item);
+    	}, this.autosaveDelay);
     }
 
     removeItem(name, item) {
@@ -44,6 +71,10 @@ class Storage {
     containsItem(name) {
         var key = this.keyPrefix + name;
         return window.localStorage.getItem(key) != null;
+    }
+
+    containsAutosaveItem() {
+        return this.containsItem(this.autosaveName);
     }
 }
 

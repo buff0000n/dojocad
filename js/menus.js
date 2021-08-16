@@ -333,7 +333,8 @@ function doBurgerMenu() {
     menuDiv.appendChild(buildMenuButton("Share", doShare, "icon-link"));
     menuDiv.appendChild(buildMenuButton("Local Storage", doStorageMenu, "icon-save"));
     menuDiv.appendChild(buildMenuButton("PNG", doPngMenu, "icon-png"));
-    menuDiv.appendChild(buildLinkMenuButton("New", "index.html", "icon-new"));
+    // need to explicitly pass in the layout for a new dojo now that we can autoload from autosave
+    menuDiv.appendChild(buildLinkMenuButton("New", "index.html?v=2,0,0,0&mz=BYRgNADJ0UA", "icon-new"));
     menuDiv.appendChild(buildMenuButton("Settings", doSettingsMenu, "icon-settings"));
     if (debugEnabled) {
 	    menuDiv.appendChild(buildMenuButton("Collision Matrix", doCollisionMatrix));
@@ -1325,12 +1326,17 @@ function buildStorageListingLine(entry) {
 
     var name = entry.name;
 
-    var iconTd = buildMenuButtonIcon("icon-save", () => {
-        doPopupDialog("Local Storage", "Overwrite " + truncateName(name) + "?", false,
-            { "text": "Yes", "callback": () => { doStorageSave(name); } },
-            { "text": "No" }
-        );
-    });
+    if (name == storage.autosaveName) {
+        var iconTd = document.createElement("td");
+
+    } else {
+        var iconTd = buildMenuButtonIcon("icon-save", () => {
+            doPopupDialog("Local Storage", "Overwrite " + truncateName(name) + "?", false,
+                { "text": "Yes", "callback": () => { doStorageSave(name); } },
+                { "text": "No" }
+            );
+        });
+    }
     tr.appendChild(iconTd);
 
     // todo: sort by column?
@@ -1413,6 +1419,14 @@ function doStorageAddSave() {
         return;
     }
 
+    if (name == storage.autosaveName) {
+        doPopupDialog("Save", "Are you sure?  This will be overwritten if Autosave is enabled", true,
+            { "text": "Yes", "callback": () => { doStorageSave(name); } },
+            { "text": "No" }
+        );
+        return;
+    }
+
     if (storage.containsItem(name)) {
         doPopupDialog("Save", "Name already exists, overwrite?",
             true,
@@ -1466,6 +1480,8 @@ function doSettingsMenu() {
     addCheckbox("showAllFloors", "Show All Floors", settings.showAllFloors, (value) => { setShowAllFloors(value); });
 
     addCheckbox("showMapMarkers", "Show Map Markers", settings.showMapMarkers, (value) => { setShowMapMarkers(value); });
+
+    addCheckbox("autosave", "Autosave", settings.autosave, (value) => { setAutosave(value); });
 
     showMenu(menuDiv, button);
 //	pngScaleChanged();
