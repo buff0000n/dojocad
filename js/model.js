@@ -1041,7 +1041,7 @@ class Room {
 
     deselect() {
         this.selected = false;
-        if (!this.checkErrors()) {
+        if (!this.checkErrors() || (!this.isVisible() && !settings.showAllFloors)) {
 	        this.outline = this.removeDisplayElement(this.outline);
         }
         if (!this.checkCollided()) {
