@@ -743,7 +743,8 @@ function initModel() {
     // if there is no layout in the URL then check local storage for an autosve
     } else if (settings.autosave && storage.containsAutosaveItem()) {
         // load the autosave entry
-        var url = storage.getAutosaveItem();
+        // we need to prefix it with "?" so the URL parser will work
+        var url = "?" + storage.getAutosaveItem();
         loadModelFromUrl(url);
         loadViewFromUrl(url);
 
