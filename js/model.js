@@ -1571,7 +1571,8 @@ class Room {
 		for (var b = 0; b < this.bounds.length; b++) {
 			this.bounds[b].removeDisplay();
 		}
-        this.viewContainer = null;
+		// leave this set so we can add outlines and stuff when ShowAllFloors is unset
+//        this.viewContainer = null;
     }
 
     removeDisplayElement(element) {
