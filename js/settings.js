@@ -1,20 +1,29 @@
+// Wrapper class for persistent settings
+
 class Settings {
     constructor() {
+        // local storage key
         this.key = "dojocad:settings";
 
+        // default setting values
         this.showAllFloors = true;
         this.showMapMarkers = true;
         this.autosave = false;
         this.localStoreSort = "name";
         this.localStoreSortAsc = true;
 
+        // load from local storage
         this.load();
     }
 
     load() {
+        // load the local storage item
         var json = window.localStorage.getItem(this.key);
         if (json) {
+            // parse json
             var props = JSON.parse(json);
+
+            // check for each setting and override the default if present
             if (props.showAllFloors != null) {
                 this.showAllFloors = props.showAllFloors;
             }
@@ -34,6 +43,7 @@ class Settings {
     }
 
     save() {
+        // build something we can JSONify
         var props = {
             "showAllFloors": this.showAllFloors,
             "showMapMarkers": this.showMapMarkers,
@@ -41,6 +51,7 @@ class Settings {
             "localStoreSort": this.localStoreSort,
             "localStoreSortAsc": this.localStoreSortAsc
         }
+        // format as JSON and save to local storage
         window.localStorage.setItem(this.key, JSON.stringify(props));
     }
 }

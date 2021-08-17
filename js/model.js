@@ -956,6 +956,7 @@ class Room {
         // we don't want to show the outline when it's just a discontinued room, that's annoying
         var warnings = this.getSomeWarnings();
  		if (errors || warnings) {
+ 		    // check the showAllFloors setting if this room is not visible on the current floor
 			if (this.viewContainer && (this.isVisible() || settings.showAllFloors)) {
 				if (!this.outline) {
 			        this.outline = this.addDisplayImage("-line-blue.png", getZIndex(this, part_outline));
@@ -1457,6 +1458,7 @@ class Room {
                 // init the label, if necessary
                 this.updateLabelDisplay(false);
 	        }
+	        // check the showMapMarkers setting
 	        if (settings.showMapMarkers) {
 	            this.showMarkers();
 	        }
@@ -1467,6 +1469,7 @@ class Room {
 				this.bounds[b].addDisplay(viewContainer);
 			}
 
+        // check the showAllFloors setting if this room is not visible on the current floor
         } else if (settings.showAllFloors) {
 	        // just the other floor display
 	        this.otherFloorDisplay = this.addDisplayImage(this.getDisplayImageSuffix(), getZIndex(this, part_display));
@@ -2157,6 +2160,7 @@ function convertFloorToPngLink(targets, db, margin, scale, f) {
 			// see if the room has any markers
 			for (var m = 0; m < room.markers.length; m++) {
 				var marker = room.markers[m];
+				// check the ShowMapMarkers setting
 				if (marker.floor != f || !settings.showMapMarkers) {
 					continue;
 				}

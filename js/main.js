@@ -379,17 +379,23 @@ function hideDoorMarkers() {
 }
 
 function setShowAllFloors(showAllFloors) {
+    // set this before calling room.addDisplay(), otherwise nothing will happen
 	settings.showAllFloors = showAllFloors;
 
 	if (showAllFloors) {
+	    // find rooms that are not visible on the current floor
+	    // and add their displays
 	    for (var r = 0; r < roomList.length; r++) {
 	        var room = roomList[r];
 	        if (!room.isVisible()) {
                 room.addDisplay(getRoomContainer());
+                // don't need to call updateView()?
 	        }
 		}
 
 	} else {
+	    // find rooms that are not visible on the current floor
+	    // and remove their displays
 	    for (var r = 0; r < roomList.length; r++) {
 	        var room = roomList[r];
 	        if (!room.isVisible()) {
@@ -398,23 +404,29 @@ function setShowAllFloors(showAllFloors) {
 		}
 	}
 
+    // save setting at the end, if something goes wrong then it is not saved
 	settings.save();
 }
 
 function setShowMapMarkers(showMapMarkers) {
+    // set this before calling room.showMarkers(), otherwise nothing will happen
 	settings.showMapMarkers = showMapMarkers;
 
 	if (showMapMarkers) {
 	    for (var r = 0; r < roomList.length; r++) {
+	        // add markers for rooms visible on the current floor
 	        var room = roomList[r];
 	        if (room.isVisible()) {
                 room.showMarkers();
+                // need to updateView to get them placed correctly
                 room.updateView();
 	        }
 		}
 
 	} else {
 	    for (var r = 0; r < roomList.length; r++) {
+	        // hade markers for rooms visible on the current floor
+	        // other markers should already not be visible
 	        var room = roomList[r];
 	        if (room.isVisible()) {
                 room.hideMarkers();
@@ -422,16 +434,20 @@ function setShowMapMarkers(showMapMarkers) {
 		}
 	}
 
+    // save setting at the end, if something goes wrong then it is not saved
 	settings.save();
 }
 
 function setAutosave(autosave) {
+    // set the setting first
     settings.autosave = autosave;
 
+    // if autosave is being enabled, then save right now
     if (autosave) {
         saveModelToUrl();
     }
 
+    // save setting at the end, if something goes wrong then it is not saved
 	settings.save();
 }
 
@@ -455,6 +471,8 @@ function buildCompressedModelParam() {
 }
 
 function saveModelToUrl() {
+    // short circuit if we're currently loading the page, we don't need
+    // a hundre save events on page loag
     if (settings.loading) {
         return;
     }
@@ -465,8 +483,11 @@ function saveModelToUrl() {
 	} else {
 	    var modelString = buildCompressedModelParam();
 		modifyUrlQueryParam("mz", modelString);
+		// check for autosave
 		if (settings.autosave) {
+		    // the view is part of the autosave
             var view = buildViewParam();
+            // schedule the autosave
             storage.autosaveItem(`v=${view}&mz=${modelString}`);
 		}
 	}
@@ -499,6 +520,7 @@ function loadModelFromUrl(url) {
 	    addRoom(room);
 	    room.resetPositionAndConnectDoors();
 	}
+	// clear he loading flag
 	settings.loading = false;
 	return true;
 }
@@ -517,6 +539,7 @@ function buildViewParam() {
 
 function saveViewToUrl() {
 	modifyUrlQueryParam("v", buildViewParam());
+	// no autosave just for view changes
 }
 
 function loadViewFromHref() {
@@ -717,7 +740,9 @@ function initModel() {
 			}
 		}
 
+    // if there is no layout in the URL then check local storage for an autosve
     } else if (settings.autosave && storage.containsAutosaveItem()) {
+        // load the autosave entry
         var url = storage.getAutosaveItem();
         loadModelFromUrl(url);
         loadViewFromUrl(url);
