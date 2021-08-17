@@ -378,6 +378,83 @@ function hideDoorMarkers() {
 	}
 }
 
+function setShowAllFloors(showAllFloors) {
+    // set this before calling room.addDisplay(), otherwise nothing will happen
+	settings.showAllFloors = showAllFloors;
+
+	if (showAllFloors) {
+	    // find rooms that are not visible on the current floor
+	    // and add their displays
+	    for (var r = 0; r < roomList.length; r++) {
+	        var room = roomList[r];
+	        if (!room.isVisible()) {
+                room.addDisplay(getRoomContainer());
+                // don't need to call updateView()?
+	        }
+		}
+
+	} else {
+	    // find rooms that are not visible on the current floor
+	    // and remove their displays
+	    for (var r = 0; r < roomList.length; r++) {
+	        var room = roomList[r];
+	        if (!room.isVisible()) {
+                room.removeDisplay();
+	        }
+		}
+	}
+
+    // save setting at the end, if something goes wrong then it is not saved
+	settings.save();
+}
+
+function setShowMapMarkers(showMapMarkers) {
+    // set this before calling room.showMarkers(), otherwise nothing will happen
+	settings.showMapMarkers = showMapMarkers;
+
+	if (showMapMarkers) {
+	    for (var r = 0; r < roomList.length; r++) {
+	        // add markers for rooms visible on the current floor
+	        var room = roomList[r];
+	        if (room.isVisible()) {
+                room.showMarkers();
+                // need to updateView to get them placed correctly
+                room.updateView();
+	        }
+		}
+
+	} else {
+	    for (var r = 0; r < roomList.length; r++) {
+	        // hade markers for rooms visible on the current floor
+	        // other markers should already not be visible
+	        var room = roomList[r];
+	        if (room.isVisible()) {
+                room.hideMarkers();
+	        }
+		}
+	}
+
+    // save setting at the end, if something goes wrong then it is not saved
+	settings.save();
+}
+
+function setAutosave(autosave) {
+    // set the setting first
+    settings.autosave = autosave;
+
+    // if autosave is being enabled, then save right now
+    if (autosave) {
+        saveModelToUrl();
+    }
+
+    // save setting at the end, if something goes wrong then it is not saved
+	settings.save();
+}
+
+//==============================================================
+// model URL handling
+//==============================================================
+
 function buildModelParam() {
 	var value = "";
 	for (var r = 0; r < roomList.length; r++) {
@@ -389,17 +466,38 @@ function buildModelParam() {
 	return value;
 }
 
+function buildCompressedModelParam() {
+    return LZString.compressToEncodedURIComponent(buildModelParam())
+}
+
 function saveModelToUrl() {
+    // short circuit if we're currently loading the page, we don't need
+    // a hundre save events on page loag
+    if (settings.loading) {
+        return;
+    }
+
 	if (debugEnabled) {
 		modifyUrlQueryParam("m", buildModelParam());
 
 	} else {
-		modifyUrlQueryParam("mz", LZString.compressToEncodedURIComponent(buildModelParam()));
+	    var modelString = buildCompressedModelParam();
+		modifyUrlQueryParam("mz", modelString);
+		// check for autosave
+		if (settings.autosave) {
+		    // the view is part of the autosave
+            var view = buildViewParam();
+            // schedule the autosave
+            storage.autosaveItem(`v=${view}&mz=${modelString}`);
+		}
 	}
 }
 
-function loadModelFromUrl() {
-    var url = window.location.href;
+function loadModelFromHref() {
+    return loadModelFromUrl(window.location.href);
+}
+
+function loadModelFromUrl(url) {
 	var modelString = LZString.decompressFromEncodedURIComponent(getQueryParam(url, "mz"));
 	if (!modelString) {
 		// backwards compatible with the, uh, like maybe couple of dozen old URLs floating around.
@@ -415,13 +513,21 @@ function loadModelFromUrl() {
 
     // parse the model string, accounting for quotes but not removing them
 	var roomStrings = quotedSplit(modelString, "_", true);
+	// set a flag so we don't do things like autosaving while we're building the layout
+	settings.loading = true;
 	for (var rs = 0; rs < roomStrings.length; rs++) {
 		var room = roomFromString(roomStrings[rs]);
 	    addRoom(room);
 	    room.resetPositionAndConnectDoors();
 	}
+	// clear he loading flag
+	settings.loading = false;
 	return true;
 }
+
+//==============================================================
+// View handling
+//==============================================================
 
 function buildViewParam() {
 	var centerPX = viewPX - (window.innerWidth / 2);
@@ -433,10 +539,14 @@ function buildViewParam() {
 
 function saveViewToUrl() {
 	modifyUrlQueryParam("v", buildViewParam());
+	// no autosave just for view changes
 }
 
-function loadViewFromUrl() {
-    var url = window.location.href;
+function loadViewFromHref() {
+    return loadViewFromUrl(window.location.href);
+}
+
+function loadViewFromUrl(url) {
 	var viewString = getQueryParam(url, "v");
 	if (!viewString) {
 		return false;
@@ -620,8 +730,8 @@ function setModelDebug(debug) {
 function initModel() {
 	registerRoomRules(roomMetadata);
 
-    if (loadModelFromUrl()) {
-		if (!loadViewFromUrl()) {
+    if (loadModelFromHref()) {
+		if (!loadViewFromHref()) {
 			var room = roomList[0];
 			if (room) {
 		        centerViewOn(room.mv.x, room.mv.y, 5, room.floor);
@@ -629,6 +739,14 @@ function initModel() {
 		        centerViewOn(0, 0, 5, 0);
 			}
 		}
+
+    // if there is no layout in the URL then check local storage for an autosve
+    } else if (settings.autosave && storage.containsAutosaveItem()) {
+        // load the autosave entry
+        // we need to prefix it with "?" so the URL parser will work
+        var url = "?" + storage.getAutosaveItem();
+        loadModelFromUrl(url);
+        loadViewFromUrl(url);
 
     } else {
         // set the view first so "v=" appears at the beginning of the URL

@@ -139,9 +139,7 @@ function buildCloseMenuButton() {
     return buttonDiv;
 }
 
-function buildMenuButton(label, callback, icon = null, className = "menu-button") {
-    var tr = document.createElement("tr");
-
+function buildMenuButtonIcon(icon=null, callback=null) {
     var iconTd = document.createElement("td");
 	if (icon) {
         iconTd.className = "imgField";
@@ -149,14 +147,24 @@ function buildMenuButton(label, callback, icon = null, className = "menu-button"
         iconTd.onclick = callback;
         iconTd.menuLevel = getCurrentMenuLevel() + 1;
 	}
-    tr.appendChild(iconTd);
+	return iconTd;
+}
 
+function buildButton(label, callback, className = "menu-button") {
     var buttonDiv = document.createElement("td");
     buttonDiv.className = className;
     buttonDiv.innerHTML = label;
     buttonDiv.onclick = callback;
     buttonDiv.menuLevel = getCurrentMenuLevel() + 1;
-    tr.appendChild(buttonDiv);
+    return buttonDiv;
+}
+
+function buildMenuButton(label, callback, icon = null, className = "menu-button") {
+    var tr = document.createElement("tr");
+
+    tr.appendChild(buildMenuButtonIcon(icon, callback));
+
+    tr.appendChild(buildButton(label, callback, className));
 
     return tr;
 }
@@ -195,6 +203,39 @@ function buildErrorPopup(errors, warns, span = true) {
     buttonDiv.menuLevel = getCurrentMenuLevel() + 1;
     buttonDiv.onclick = doShowErrors;
     return buttonDiv;
+}
+
+// callbacks = [{text, callback}]
+function doPopupDialog(title, text, error, ...callbacks) {
+	var button = getMenuTarget();
+
+    var menuDiv = buildMenu(error ? "menu-table-error" : "menu-table");
+
+    // width of the menu table is the number of callback buttons
+    // + 1 for the left icon, and +1 for the right close button
+	menuDiv.appendChild(buildMenuHeaderLine(title, callbacks.length + 2, error ? "icon-error" : null));
+
+    var tr = document.createElement("tr");
+    var td = document.createElement("td");
+    // span the whole width of the menu table with the popup text
+    td.colSpan = callbacks.length + 2;
+    td.innerHTML = text;
+    td.className = "field";
+    tr.appendChild(td);
+    menuDiv.appendChild(tr);
+
+    var buttonsTr = document.createElement("tr");
+    buttonsTr.appendChild(document.createElement("td"));
+    for (var i = 0; i < callbacks.length; i++) {
+        buttonsTr.append(buildButton(
+            callbacks[i].text,
+            callbacks[i].callback ? callbacks[i].callback : clearLastMenu,
+            error ? "menu-button-error" : "menu-button"
+        ));
+    }
+    menuDiv.appendChild(buttonsTr);
+
+    showMenu(menuDiv, button);
 }
 
 function buildMenuDivider(colspan) {
@@ -292,9 +333,17 @@ function doBurgerMenu() {
 
 	menuDiv.appendChild(buildMenuHeaderLine("Menu", 3));
 
-    menuDiv.appendChild(buildMenuButton("Save", doSave, "icon-save"));
+    menuDiv.appendChild(buildMenuButton("Share", doShare, "icon-link"));
+
+    menuDiv.appendChild(buildMenuButton("Local Storage", doStorageMenu, "icon-save"));
+
     menuDiv.appendChild(buildMenuButton("PNG", doPngMenu, "icon-png"));
-    menuDiv.appendChild(buildLinkMenuButton("New", "index.html", "icon-new"));
+
+    // need to explicitly pass in the layout for a new dojo now that we can autoload from autosave
+    menuDiv.appendChild(buildLinkMenuButton("New", "index.html?v=2,0,0,0&mz=BYRgNADJ0UA", "icon-new"));
+
+    menuDiv.appendChild(buildMenuButton("Settings", doSettingsMenu, "icon-settings"));
+
     if (debugEnabled) {
 	    menuDiv.appendChild(buildMenuButton("Collision Matrix", doCollisionMatrix));
 	    menuDiv.appendChild(buildMenuButton("Color Picker", doGenerateColorPicker));
@@ -623,11 +672,11 @@ function buildMenuField(label) {
     return tr;
 }
 
-function doSave() {
+function doShare() {
 	var saveButton = getMenuTarget();
 
     var menuDiv = buildMenu();
-	menuDiv.appendChild(buildMenuHeaderLine("Save URL", 4));
+	menuDiv.appendChild(buildMenuHeaderLine("Share URL", 4));
 
 	var url = buildQueryUrl(buildUrlParams());
 
@@ -699,13 +748,19 @@ function showResources() {
     showMenuAt(menuDiv, e.clientX, e.clientY);
 }
 
-function addEscapeListener(element) {
+function addEscapeListener(element, enterAction=null) {
     element.onkeydown = () => {
         var e = window.event;
         switch (e.code) {
             case "Escape" :
                 // escape close the menu
                 clearLastMenu();
+                break;
+            case "Enter" :
+                // run the entrt action, if specified
+                if (enterAction) {
+                    enterAction();
+                }
                 break;
         }
     }
@@ -1120,13 +1175,20 @@ function doColorMenu() {
 function buildMenuInput(label, input, units = null) {
     var tr = document.createElement("tr");
 
-    var td1 = document.createElement("td");
-    td1.className = "inputLabel";
-    td1.innerHTML = label + ":";
-    tr.appendChild(td1);
+    // only add a label cell if present
+    if (label) {
+        var td1 = document.createElement("td");
+        td1.className = "inputLabel";
+        td1.innerHTML = label + ":";
+        tr.appendChild(td1);
+    }
 
     var td2 = document.createElement("td");
     td2.appendChild(input);
+    // if there is no label the the input spans both columns
+    if (!label) {
+        td2.colSpan = 2;
+    }
     tr.appendChild(td2);
 
     if (units) {
@@ -1246,6 +1308,276 @@ function doPngClick(e) {
 	    showMenu(menuDiv, link);
     }
 }
+
+function buildStorageListingHeader(menuDiv) {
+    var tr = document.createElement("tr");
+
+    var iconTd = buildMenuButtonIcon();
+    tr.appendChild(iconTd);
+
+    function buildHeaderColumn(name, enabled, asc, onchange) {
+        // build the header cell with the right content for sorting and a callback
+        var div = document.createElement("td");
+        div.innerHTML = name + (enabled ? asc ? "&nbsp;↑" : "&nbsp;↓" : "");
+        div.class = "menu-header";
+        div.onclick = onchange;
+        return div
+    }
+
+    // name column header
+    tr.appendChild(buildHeaderColumn("Name", storage.isSortByName(), storage.isSortAscending(), () => {
+        if (!storage.isSortByName()) {
+            storage.setSortByName();
+        } else {
+            storage.setSortAscending(!storage.isSortAscending());
+        }
+        rebuildStorageListing(menuDiv);
+    }));
+
+    // date column header
+    tr.appendChild(buildHeaderColumn("Date", storage.isSortByDate(), storage.isSortAscending(), () => {
+        if (!storage.isSortByDate()) {
+            storage.setSortByDate();
+        } else {
+            storage.setSortAscending(!storage.isSortAscending());
+        }
+        rebuildStorageListing(menuDiv);
+    }));
+
+    return tr;
+}
+
+function truncateName(name) {
+    // limit local storage names to 30 characters
+    return name.length > 30 ? (name.substring(0, 47) + "...") : name;
+}
+
+function buildStorageListingLine(entry, menuDiv) {
+    var tr = document.createElement("tr");
+
+    // we'll need the name a lot
+    var name = entry.name;
+
+    // only show the overwrite icon/button if it's not the autosave entry
+    if (name == storage.autosaveName) {
+        var iconTd = document.createElement("td");
+
+    } else {
+        // add an overwrite button with a confirmation popup
+        var iconTd = buildMenuButtonIcon("icon-save", () => {
+            doPopupDialog("Local Storage", "Overwrite " + truncateName(name) + "?", false,
+                // only go through with the save if they click Yes
+                { "text": "Yes", "callback": () => { doStorageSave(name); } },
+                { "text": "No" }
+            );
+        });
+    }
+    tr.appendChild(iconTd);
+
+    // the name column value is an actual link containing the room layout
+    var nameDiv = document.createElement("td");
+    nameDiv.className = "field";
+    nameDiv.innerHTML = `<a href="?${entry.item}">${truncateName(name)}</href>`;
+    tr.appendChild(nameDiv);
+
+    // the date column is formatted for the user's locale
+    var dateDiv = document.createElement("td");
+    dateDiv.className = "field";
+    dateDiv.innerHTML = entry.date;
+    tr.appendChild(dateDiv);
+
+    // add a delete button with a confirmation popup
+    var iconTd = buildMenuButtonIcon("icon-delete", () => {
+        doPopupDialog("Local Storage", "Delete " + truncateName(name) + "?", false,
+            // only go through with the delete if they click Yes
+            { "text": "Yes", "callback": () => {
+                storage.removeItem(entry.name);
+                // rebuild the listing in place
+                clearLastMenu();
+                rebuildStorageListing(menuDiv);
+            } },
+            { "text": "No" }
+        );
+    });
+    tr.appendChild(iconTd);
+
+    return tr;
+}
+
+function rebuildStorageListing(menuDiv) {
+    // leave the first and last rows, containing the menu bar and add button, and delete the rest
+    var children = menuDiv.children;
+    while (children.length > 2) {
+        children.item(1).remove();
+    }
+
+    // insert rows before the add button
+    var insertBefore = children.item(1);
+
+    // insert the header line
+    menuDiv.insertBefore(buildStorageListingHeader(menuDiv), insertBefore);
+
+    // insert a line for each storage listing
+    var listing = storage.getListing();
+    for (var l = 0; l < listing.length; l++) {
+        menuDiv.insertBefore(buildStorageListingLine(listing[l], menuDiv), insertBefore);
+    }
+}
+
+function doStorageMenu() {
+    // Display the local storage menu on its own instead of as a submenu
+    clearMenus();
+
+    var menuDiv = buildMenu();
+    // menu bar
+    menuDiv.appendChild(buildMenuHeaderLine("Local Storage", 4));
+    // add button
+    menuDiv.appendChild(buildMenuButton("Add", doStorageAdd, "icon-add"));
+
+    // add the actual storage listing
+    rebuildStorageListing(menuDiv);
+
+    // show the local storate menu underneath the top bar
+    showMenuAt(menuDiv, 0, 64);
+}
+
+function doStorageAdd() {
+	var button = getMenuTarget();
+
+    // build a short menu to enter the name
+    var menuDiv = buildMenu();
+
+	menuDiv.appendChild(buildMenuHeaderLine("Save to Local Storage", 3));
+
+	var input = document.createElement("input");
+    input.id = "storage-save-name";
+    input.class = "field";
+    input.type = "text";
+    // max of 30 chars
+    input.size = 30;
+    input.maxLength = 30;
+    // add keyboard listeners for escape to cancel and enter to save
+    addEscapeListener(input, doStorageAddSave);
+    menuDiv.appendChild(buildMenuInput("Name", input));
+
+    // explicit add button
+    menuDiv.appendChild(buildMenuButton("Add", doStorageAddSave));
+
+    showMenu(menuDiv, button);
+
+    // focus and select the contents of the text field
+    input.focus();
+    input.select();
+}
+
+function doStorageAddSave() {
+	var button = getMenuTarget();
+    var e = e || window.event;
+
+    // get the entered name
+    var name = document.getElementById("storage-save-name").value;
+    // check for blank
+    if (!name || name.length == 0) {
+        // only option is cancel
+        doPopupDialog("Save", "Enter a name", true,
+            { "text": "Okay" },
+        );
+        return;
+    }
+
+    // check for autosave
+    if (name == storage.autosaveName) {
+        doPopupDialog("Save", "Are you sure?  This will be overwritten if Autosave is enabled", true,
+            // we'll allow it
+            { "text": "Yes", "callback": () => { doStorageSave(name); } },
+            { "text": "No" }
+        );
+        return;
+    }
+
+    // check for existing name
+    if (storage.containsItem(name)) {
+        doPopupDialog("Save", "Name already exists, overwrite?", true,
+            // we'll allow it
+            { "text": "Yes", "callback": () => { doStorageSave(name); } },
+            { "text": "No" }
+        );
+        return;
+    }
+
+    // all checks passed, close the add menu and add the entry
+    clearLastMenu();
+    doStorageSave(name);
+}
+
+function doStorageSave(name) {
+    // we need to include the view parameter
+    var view = buildViewParam();
+    // get the layout parameter
+    var layout = buildCompressedModelParam();
+    // build a URL snippet and save that directly
+    storage.addItem(name, `v=${view}&mz=${layout}`);
+
+    // let's go ahead and rebuild the whole menu because we may need to change the sizing/placement
+    // also because I'm not quite sure how many menus deep we are
+//    clearLastMenu();
+//    rebuildStorageListing();
+    doStorageMenu();
+}
+
+
+function doSettingsMenu() {
+	var button = getMenuTarget();
+
+    var menuDiv = buildMenu();
+
+	menuDiv.appendChild(buildMenuHeaderLine("Settings", 4, "icon-settings"));
+
+    function addCheckbox(name, title, initialValue, callback) {
+        // container for the checkbox and label
+        var settingDiv = document.createElement("div");
+        // checkbox
+        var settingInput = document.createElement("input");
+        settingInput.id = "input-" + name;
+        settingInput.class = "field";
+        settingInput.type = "checkbox";
+        // set the initial value
+        if (initialValue) {
+            settingInput.checked = true;
+        }
+        // register callback
+        settingInput.onchange = () => {
+            callback(settingInput.checked);
+        };
+        settingDiv.appendChild(settingInput);
+
+        // label
+        var settingSpan = document.createElement("span");
+        settingSpan.innerHTML = "&nbsp;" + title;
+        settingSpan.className = "field-checkbox-label";
+        // register the same callback
+        settingSpan.onclick = () => {
+            // manually change the checkbox display value
+            settingInput.checked = !settingInput.checked;
+            // we have to run the callback ourselves, it won't happen automatically
+            settingInput.onchange();
+        };
+        settingDiv.appendChild(settingSpan);
+
+        menuDiv.appendChild(buildMenuInput(null, settingDiv));
+    }
+
+    // checkbox settings
+    addCheckbox("showAllFloors", "Show All Floors", settings.showAllFloors, (value) => { setShowAllFloors(value); });
+
+    addCheckbox("showMapMarkers", "Show Map Markers", settings.showMapMarkers, (value) => { setShowMapMarkers(value); });
+
+    addCheckbox("autosave", "Autosave", settings.autosave, (value) => { setAutosave(value); });
+
+    showMenu(menuDiv, button);
+}
+
+
 
 var errorRoomList = Array();
 var warnRoomList = Array();

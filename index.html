@@ -28,6 +28,8 @@
 <script type="text/javascript" language="javascript" src="js/events.js"></script>
 <script type="text/javascript" language="javascript" src="js/elevator.js"></script>
 <script type="text/javascript" language="javascript" src="js/menus.js"></script>
+<script type="text/javascript" language="javascript" src="js/storage.js"></script>
+<script type="text/javascript" language="javascript" src="js/settings.js"></script>
 <script type="text/javascript" language="javascript">
 
     /************************************************************
@@ -231,7 +233,7 @@
         <div class="helpContainer">
             <p style="text-align: center;">
                 <span class="title">DojoCAD</span><br/>
-                v2.2.1: 2021-08-13<br/>
+                v2.2.3: 2021-08-17<br/>
                 <a href="https://github.com/buff0000n/dojoarch">Source</a>&nbsp;
                 <a href="https://github.com/buff0000n/dojoarch/issues/2">Feedback</a>&nbsp;
                 <a href="https://github.com/buff0000n/dojocad/issues/new">Bugs</a><br/>
@@ -274,12 +276,12 @@
                     </a>
                 </li>
                 <li>
-                    <a href="?v=1,34,-60,1&mz=BYRgNADJ0Q+gTgUzAWgMwCZUBYAc01YBjZDfFPVcEYo6C88OJVTHRsQouqSqOYFigBOAGwxYwNNBCj+kYqXx8wNbtEpNJ2aGNULgAVhj64Ae3itwmzrAA2AFxzVx4QneQVxKWfvd1KH1dVewAjMGxXYJo7M1RDfFwoN1p6Xx8FFnQsIKpbFjZcjLUeVW8tABMKtOEsLSIAD3obOCJLSiT9GgqAV3ZVEDrbMwBDaAwAdh1wDFgAczswUWm5U1gHYBlVrQXUZbLkhVHUDGw67fzPNnSUgvO8ko0OczoQYRXDmmAAS3HTiR+Sx0GAg+GSkl+KH2ILBIWOUDQaFhszmAGcqGQwDCJBsMfhZPI4GjVJjsfx1ptBvjVuTiShOgSJER0T4IMDQTJ5uiGTSFMzVGysRzwVk2IFbsgxRxHlBOhkiYsfKTDOJaYsqViVRIzOENWhRMjYDq8ZwDeN5oqQBNxGSFLsrTbhZkrlg5RLOK6oMVUslBnlWp4NSBfGqTYytLiGBFYXBcZ0VETuclMbSk2A9KGNRm7eiHenVc6PQMctQEC7i3kuKUQNgdPKuaprQcJMS8xrU1Qm4zQz4m9nE6gGSmc4ORAXmJK6rWHmXWFO6yl1Mkm-WiE5NLzWuv8cOt-1u1jiE4o+3D2v+tnZkRwpR+8Qb-gMFqEUewJ0nwWuOEox-zef6VAv4vv+wZYNmajfqBJKwlwLIgPq+acvyvauAhgENnmQEjihmrjve0HRkh34JiE16jiYsHkSg-zoWRAH9OCjSduICbEE0OEhny7F5rk5JMThUZ8dxfqCaRkHTqJX5UBJnSMZBK6yVxb6EoW2SNuUthLkKzxsepQJMk0eZsEJemErpPHGXyuYrs+Z5ptROi0eEcqsUxUGiRBqgSSoV66gp8ieTWdaKa0pSnF6WihOA6DshwhBRawwLYBFtgJWgSUpTQaWxTO55eioIBAA">
+                    <a href="?v=2,-16,-78,1&mz=BYRgNADJ0Q+gTgUzAWgMwCZUBYAc01YBjZDfFPVcEYo6C88OJVTHRsQouqSqOYFigBOAGwxYwNNBCj+kYqXx8wNbtEpNJ2aGNULgAVhj6oYcwGdYAe3itwmzrAA2AFxzVx4Qs+QVxKLL6PnSUgV6qLgBGYNheETTO1qiG+LhQ3rT0QYEKLOhY4VROLGxFuWo8qgFaACa12cJYWkQAHvSOcER2ojrp+jS1AK7sqiDNTgDmzmC91RkKrsAycqaw06hzsgtw1gCGVADs+NvBCH5sOZmlzTWR6rwcu3Qgwjqn1OsWVGRgGBD4fiwJY-E6rIGTb7jfD-QGLZbQ+YSSGofqnIFEb6BCA6WEyL5gNHghSY1Q4v4A-H5Nhha7IGkcSrQfq5OAbQK-DCGcQQmaIrk8hTWGKItCiOEYGwxDn4MUS9YzQKHcR43mqZUUuHMC5YFl0zi6qAVLIZcbFOAghixLXA5b9FRs75o34Qp0iQVsvm-PSu9XiH15enNM3G6nBwqZB6qbA6VkEkAa9EKFEJrwu5NY1NItVK-0egkoZ02lGF90SG7R2OfMOV4pcKpZuNEdyaYldFsndPt0ZJyXNnvpvvuK0BvsxSgBrrjmHcgjEdz9AVzojSyhLqBD1Eb2dQLiZ37jeR9zOJsXQMeqX4qNSrrX3aX9eR7reoDA6DfEB9G6-Edq560SG0RzxIBf6NkEGJgRqVqQVQIY-iuVAxqMu6fkhsaPvewEvrBmFAjW4FOFGeJNu0WZzLBWZsJRGryF0ZHQdRJJQtBO5-MQbqvu+7GISyDq-mMhQISKyEwTxIrQZhN61qWgFVG+RpaFE4DoLilK5IQymsLi2CKU4WloDpek0AZamMvOHRwmo3y6YSCyJAAbrEpoTNJ-7rkREkqmxkrAMgcyqpEFgALabGZ+KktiOgBoQJaIpONjfLuaDysAABm55vhIwAAJaZe8kBAA">
                         Maximal clan dojo
                     </a>
                 </li>
                 <li>
-                    <a href="?v=3,-35,13,0&mz=BYRgNADJ1SAsA2AXAVgkkEIH0BOBTMAWgGYAmYuADmhLHmTQy2wGNCyajrpwQqqqdJhzswnMDyJ96iIcxzAKUKNPH0IKeSOzA6K4srAB2ONpbA4MerwHnRhIhJ5Q6-QUx2tW0HuFh2niwExOSUXOBumvZsjs5cFFFaQQ6GXH5gdGTZMWLxNuDZZLk+UDxGRTHAKNYVOSnYADYALpTg0gjqWfXCLI2OiPSdieI9Ck0+UiDDNpUNjQBGkp3T6oVjOgD2uJTGxKuR9IG9OI2bxCg0B5lHHiexaZI0I2Qoxrkc6c+zbx-iNDw3OIAJzoBpiJxfG5ZUG5VqqHhWQqw8GfcKSGwkEAkP6Qp4YuhYnENYAAS2sVigZBR9zJ1n04l+4Ph6JqkWxVXJBhqrg5qMe3BoNUJJGS9zyAKFmNFMWawGsnVcMv5eJ4nUJKEY4rRgrAK0ymr+El1TgK0X5+VINlMuONUkJJjMzN8CRuNoacusVrKd3GAHNGtBgfqAr6dAGgzMqRsWJslrA4FYsoz3s6faEbtQ4dATUCsw0QrrVA78-cQi4M+BS+NyzRgwVbjFCzx64d3EaodwbNWvHFJZRM2GWKwWSakeIweKWVIkxOYhGDF2qZOawMaAibmQVzpaznx1vbZ3hXOLf2iGyT+KAB4ui42bcsP0AZ1CFCkPMg85fYRNH4fODjXhExMLpDTTdFTXAd1xVKfEPyJGJNgAQyAzoakSPkp1vdVMmVLD0z2SIwJgvdvmjYoGgAE0onMQGBCg6go-D0RkdsGgXMB6wMBgSlvbi5HYl8W0VVCv3RLjRME-F60YsTdRk6A5hI9MGVeVNmN1IE1N4hEaBEkg8PGQDVHgKx9MMrwb10kCiK1f0X1IChdT2VxiPszI3xoFyDTsrYUITTorAYmlxm8W9KRBf82B2BArA6Bs2PuSiAFcINWB1tKo1LdXSzcmSS1K-Bwwp8vGFL8XirTSvDF8EyCxSYxwZsrkCzcQp3Nd9lamEot3eL93a4JCCKjFkSi580rQ2hMPcnKpt5Yl7gmkb4JmmqKtWVbFtCpYwlWQifNyJZHK6kCNV84d4yGM7DvBK74oO0ULtEY69s6c8YCOjzTo+5Qvtgd70M-O7aMBz7wVgotJKWwNVAkgKm0IEzgP4568GGrgJL4ASy06ogJLcHHQtHd8bii4z9mAj6VB0tLeHNGGc3rNRYAZ2apGZ-wNDFdyOfernMB59bkbigW2eF2QIoRhpkMUzBZkbAtOqgHCDKFob8RV6V1dEacIhuQWYkaAA3SQAYS45QqEkz9T4S2RCAA">
+                    <a href="?v=2,16,-73,2&mz=BYRgNADJ1SAsA2AXAVgkkEIH0DGBTMAJgA4wBaOM2MEEk1dTHA4sqi8LxRjLbYERiditCCl7MBAZmHkhUAOxxJ-YHGHhY9VS0Lz21MLLoM0fFrmgcttHeamsDYDvONiJD-k9IUb7okDdPEJff3BAomDcKygOBWIgrxxgFGEEyN0wbIBnbAAbABc-cHIQBFFZTOSC-URaCqEqpKZ+fKtXctEIlosCgCMXCq6hHqiagHsAJz9FTmH3U2D8iYoUMi7wE3tWvQowsibiFEVo0LJKQ9pj05rWA8XiAE50O-1fS-cql+jiqE+NBEfm82H52NdpCBpGd9oYXF8ob9oJ80ltETVgABLYRpKCQ6Eg5wor7STy7EKgjio4yk4KFYDCCp42mEh4VWSk5Agj4cBacmE8i6jDwCuHkExgZQwomuDmSlQ1elyWRxMzkgDm+WgTwWXB2fVwfxcFzlVCR-1l1zNNSmdSM4vc1vJtuNyIlToN5zBfitas9sNdlEdfscRs+QYir3JhusFw0VSjfRd4a6QYTwRdNgqEeIicc7zjFzS6e5YupRDz-HVOQo0iErlxkGC1eMQnDjcrOAmg1gcA0cyaKC50dirsb+PNrvZNLJBqNHDmWyH0VHnwyvSkABNN8iQE8hOvxtGw+E7CHvKOOCqbpPPhKiCdmzXxW2F9B+TUW3XXXM8cuapuACu3plNOVSPgBwGfF0coPrc5JAa6MHXHBwSIZ004RBBzp2g08LfJ22DJhh+HPIRmYXF0gJkRmhBZvCQKES2KYVOO6Ias+9FsQSHFIax77sX0LYkdx0SDN+XSLsY-7RoML7zJKXwyQaPZ4XMHLKY4qmgYpS7DiptajNmHZia2CnkGkCimbAxmiIRuDaamJl3KuHBQL2+lSJqyI6poPB3CeRbuPZrmUdAmCzl5Wr-L5ZTheItHelAYEsjhrrJRCqVzrGIgmAlNT5AAbi4NnXHq54pAAZnIGhQBWiUkTm9U2rhqbxrm0qCrltD+eSwCEO58J1cC5I5AAtsI16oZMz4gIoZC+VsZ7BBMNb-PAtnudEMxQCQdWiNU5ITAAhuF9RVDeAU5RZ1yEatZ22VZLnXQkUozQ9+yiG9I7Iq4r0Kkdjl9p9SgA0Ja09RoomftFYC+dDvEcPDEKCV5nELfxeKo1WNauLFtgRU+u7A3FsD5bx4b4-FkX8C663A4NG2JZTTKLL1SZ0Rcvk0EzkxA-276ad4gWKRpnnC79ZB8lloY5e1RAjRzFAIBo-jaBV2DeSrcO6stMPKxoi1lfqUj3XNGNlXraXa2rVvZaq749eLEBAA">
                         Thirteen floor clan dojo
                     </a>
                 </li>
@@ -370,8 +372,24 @@
                         <li><a href="#Connectedness">Connectedness</a></li>
                     </ul>
                 </li>
-                <li><a href="#SavingAndSharing">Saving And Sharing</a></li>
+                <li>
+                    <a href="#SavingAndSharing">Saving And Sharing</a>
+                    <ul>
+                        <li><a href="#Sharing">Sharing</a></li>
+                    </ul>
+                    <ul>
+                        <li><a href="#LocalStorage">Local Storage</a></li>
+                    </ul>
+                </li>
                 <li><a href="#ExportToPng">Exporting to PNG</a></li>
+                <li>
+                    <a href="#Settings">Settings</a>
+                    <ul>
+                        <li><a href="#ShowAllFloors">Show All Floors</a></li>
+                        <li><a href="#ShowMapMarkers">Show Map Markers</a></li>
+                        <li><a href="#Autosave">Autosave</a></li>
+                    </ul>
+                </li>
                 <li><a href="#UpdateNotes">Update Notes</a></li>
                 <li><a href="#ToDo">To Do</a></li>
                 <li><a href="#KnownIssues">Known Issues</a></li>
@@ -381,6 +399,9 @@
             <ul>
                 <li><strong>Shift-click</strong>: Add a room to the selection</li>
                 <li><strong>Shift-drag</strong>: Add an area of rooms to the selection</li>
+                <li><strong>Control-Shift-drag</strong>: Add an area of rooms across all floors to the selection</li>
+                <li><strong>Control-A</strong>: Select all rooms on the current floor</li>
+                <li><strong>Control-Shift-A</strong>: Select all rooms in the layout, across all floors</li>
                 <li><strong>Drag room-Shift</strong>: Disable door snapping while dragging rooms</li>
                 <li><strong>Drag room-Control/Command</strong>: Snap to the nearest 8m while dragging rooms</li>
                 <li><strong>R</strong>: Rotate the selected rooms (<i>works while dragging</i>)</li>
@@ -391,7 +412,7 @@
                 <li><strong>Control-V</strong>: Paste the previously copied or cut rooms</li>
                 <li><strong>Up arrow key</strong>: Move the view up a floor</li>
                 <li><strong>Down arrow key</strong>: Move the view down a floor</li>
-                <li><strong>Escape</strong>: Cancel adding/moving a room or rooms or cancel the open menu</li>
+                <li><strong>Escape</strong>: Cancel adding/moving a room or rooms, or cancel out of any open menu</li>
             </ul>
             <h1 id="Navigation">Navigation</h1>
             <p>
@@ -720,12 +741,12 @@
                 the brightness slider without touching hue, then the rooms will still be red and green and only their
                 brightness will be changed.
             </p>
-            <p>
+            <h3>
                 <strong>Q</strong>: Is this entirely too much attention paid to a color picker?
-            </p>
-            <p>
+            </h3>
+            <h3>
                 <strong>A</strong>: Not for Warframe
-            </p>
+            </h3>
 
             <h2 id="Labels">Labels</h2>
             <p>
@@ -957,24 +978,52 @@
                 <span class="docImgButton-clear"><img src="icons/icon-warn.png" srcset="icons2x/icon-warn.png 2x" title="Warning"/></span>
                 warnings.
             </p>
+
             <h1 id="SavingAndSharing">Saving And Sharing</h1>
             <p>
-                The current layout and view are continually saved to your browser's location bar.
+                The current layout and view are continually saved to your browser's location bar.  If you go forward or
+                back in your browser history, then reversing that should restore the layout and view you had
+                previously.
             </p>
-            <ul>
-                <li>To save your layout, bookmark the current page or copy the current URL from your browser's location
-                    bar and save it somewhere.</li>
-                <li>To load your layout, open your bookark or paste a previously saved URL into your browser's location
-                    bar.</li>
-                <li>If you go forward or back in your browser history, then reversing that should restore the layout and
-                    view you had previously.</li>
-            </ul>
+            <h2 id="Sharing">Sharing</h2>
             <p>
-                A longcut to copying the URL is also available by clicking
-                <span class="docImgButton"><img src="icons/icon-burger.png" srcset="icons2x/icon-burger.png 2x" title="Menu"/></span> then
-                <span class="docImgButton"><img src="icons/icon-save.png" srcset="icons2x/icon-save.png 2x" title="Save"/></span>,
-                then <strong class="docButton">Copy</strong>.
+                A copy of the browser location is also available by clicking
+                <span class="docImgButton"><img src="icons/icon-burger.png" srcset="icons2x/icon-burger.png 2x" title="Menu"/></span>, then
+                <span class="docImgButton"><img src="icons/icon-link.png" srcset="icons2x/icon-link.png 2x" title="Share"/></span>,
+                then <strong class="docButton">Copy</strong>.  This will place a link to the current layout in your
+                clipboard.  Anyone can use this link to recreate your dojo layout.
             </p>
+            <h2 id="LocalStorage">Local Storage</h2>
+            <p>
+                Click
+                <span class="docImgButton"><img src="icons/icon-burger.png" srcset="icons2x/icon-burger.png 2x" title="Menu"/></span>, then
+                <span class="docImgButton"><img src="icons/icon-save.png" srcset="icons2x/icon-save.png 2x" title="Local Storage"/></span> to
+                open Local Storage.
+            </p>
+            <p>
+                Use <strong class="docButton">Add</strong> to add the currentl layout as a new entry in Local Storage.
+                You will be asked to give the layout a name.
+            </p>
+            <p>
+                If there is an existing entry in Local Storage, then you can use
+                <span class="docImgButton"><img src="icons/icon-save.png" srcset="icons2x/icon-save.png 2x" title="Save"/></span>
+                to overwrite that entry with the current layout.
+            </p>
+            <p>
+                An existing entry can be removed with
+                <span class="docImgButton"><img src="icons/icon-delete.png" srcset="icons2x/icon-delete.png 2x" title="Delete"/></span>.
+            </p>
+            <p>
+                Click on the the <strong>Name</strong> and <strong>Date</strong> column headers to sort by that column.
+                Clicking again will reverse the direction of the sort.
+            </p>
+            <p>
+                <strong class="warn">Note: Local Storage is specific to your browser instance.</strong>  To share a layout
+                with other people, or with yourself on another browser, you will have to use
+                <span class="docImgButton"><img src="icons/icon-link.png" srcset="icons2x/icon-link.png 2x" title="Share"/></span>
+                to share a link.
+            </p>
+
             <h1 id="ExportToPng">Exporting to PNG</h1>
             <p>
                 Click <span class="docImgButton"><img src="icons/icon-burger.png" srcset="icons2x/icon-burger.png 2x" title="Menu"/></span>
@@ -1002,6 +1051,51 @@
             <p>
                 <strong class="warn">If you have a huge dojo and generate a huge image then it may take a little while
                     for the image links to appear.</strong>
+            </p>
+
+            <h1 id="Settings">Settings</h1>
+            <p>
+                Click
+                <span class="docImgButton"><img src="icons/icon-burger.png" srcset="icons2x/icon-burger.png 2x" title="Menu"/></span> then
+                <span class="docImgButton"><img src="icons/icon-settings.png" srcset="icons2x/icon-settings.png 2x" title="Settings"/></span> to
+                open Settings.
+            </p>
+            <p>
+                Settings are stored with your browser, so opening DojoCAD again should restore the same settings you
+                had before.
+            </p>
+            <h2 id="ShowAllFloors">Show all Floors</h2>
+            <p>
+                By default, while viewing one floor all the other floors will be shown grayed out in the backgorund.
+                If that gets too cluttered, or if it's lagging your browser, then that can be disabled with the
+                <strong>Show All Floors</strong> setting.
+            </p>
+            <p>
+                If you have <strong>Show All Floors</strong> disabled then you can still select rooms on
+                other floors using <strong>Ctrl-Shift-A</strong>, <strong>Ctrl-Shift-drag</strong>, and
+                the various methods for selecting rooms of the same type or color.  The other rooms will
+                only show up when selected.
+            </p>
+            <h2 id="ShowMapMarkers">Show Map Markers</h2>
+            <p>
+                By default, the map markers for certain rooms like labs and the Dry Dock are displayed.  Use the
+                <strong>Show Map Markers</strong> setting to turn that off.
+            </p>
+            <p>
+                Note that this setting also applies to images generated with the PNG function.
+            </p>
+            <h2 id="Autosave">Autosave</h2>
+            <p>
+                If the <strong>Autosave</strong> setting is enabled, then as you edit your layout it will be automatically
+                saved to <a href="#LocalStorage">Local Storage</a> under an special <strong>Autosave</strong> entry.
+            </p>
+            <p>
+                When you open DojoCAD with no layout in the link, it will automatically load anything
+                currently saved as an <strong>Autosave</strong>
+            </p>
+            <p>
+                If you have an Autosave but you accidentally load a DojoCAD link with a layout, your original autosave
+                will still be there in Local Storage until you actually make an edit.
             </p>
 
             <h1 id="UpdateNotes">Update Notes</h1>
@@ -1107,16 +1201,18 @@
                 <li>Fixed the Bash Lab prerequisite</li>
                 <li>Flip the label outline color to white when the brightness of a room's color is set low enough
                     (Thanks <strong>adrienne</strong>)</li>
+            </ul>
+            <h3 id="UpdateNotes2.2">v2.2: 2021-08-10</h3>
+            <ul>
                 <li>Added a spawn point marker and connectedness checking</li>
+                <li>Added local storage for saving layouts</li>
+                <li>Added settings menu with settings for showing other floors, showing map markers, and autosave</li>
             </ul>
 
             <h1 id="ToDo">To Do</h1>
             <ul>
                 <li>
                     Build order analysis
-                </li>
-                <li>
-                    Local storage saving/loading
                 </li>
                 <li>
                     More metadata
@@ -1177,6 +1273,10 @@
                 </li>
                 <li>
                     You can't click anywhere on the color slider to select a color, you have to drag the button.
+                </li>
+                <li>
+                    The Local Storage listing doesn't have a scrollbar, so you can add more entries than the screen can
+                    contain.
                 </li>
             </ul>
         </div>
