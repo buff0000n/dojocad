@@ -103,7 +103,7 @@ class EnergyRule extends RoomRule {
 
 	getNewRoomError(roomMetaData, num=1) {
 	    // does not apply metadata num override
-		if (this.energy + (roomMetaData.energy * num) < 0) {
+		if (roomMetaData.energy < 0 && this.energy + (roomMetaData.energy * num) < 0) {
 			return this.toString();
 		} else {
 			return null;

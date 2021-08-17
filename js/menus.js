@@ -472,23 +472,29 @@ function buildAddRoomButton(roomMetadata, rooms = null, errors = null) {
 
     // show required/provided energy
 	var tdenergy = document.createElement("td")
-	tdenergy.className = hasError(errors, "energy") ? "field-error" : "field";
-    tdenergy.innerHTML = `${roomMetadata.energy}<img src="icons/icon-energy.png" srcset="icons2x/icon-energy.png 2x" title="Energy"/>`;
+    if (roomMetadata.energy != 0) {
+        tdenergy.className = hasError(errors, "energy") ? "field-error" : "field";
+        tdenergy.innerHTML = `${roomMetadata.energy}<img src="icons/icon-energy.png" srcset="icons2x/icon-energy.png 2x" title="Energy"/>`;
+    }
     roomButtonDiv.appendChild(tdenergy);
 
     // show required/provided capacity
 	var tdcapacity = document.createElement("td")
-	tdcapacity.className = hasError(errors, "capacity") ? "field-error" : "field";
-    tdcapacity.innerHTML = `${roomMetadata.capacity}<img src="icons/icon-capacity.png" srcset="icons2x/icon-capacity.png 2x" title="Capacity"/>`;
+    if (roomMetadata.capacity != 0) {
+        tdcapacity.className = hasError(errors, "capacity") ? "field-error" : "field";
+        tdcapacity.innerHTML = `${roomMetadata.capacity}<img src="icons/icon-capacity.png" srcset="icons2x/icon-capacity.png 2x" title="Capacity"/>`;
+    }
     roomButtonDiv.appendChild(tdcapacity);
 
     // show required resources
 	var tdresources = document.createElement("td")
-	tdresources.className = "field clickable";
-    tdresources.innerHTML = `<img onclick="showResources()" src="icons/icon-resources.png" srcset="icons2x/icon-resources.png 2x" title="Resources"/>`;
-    var resourcesButton = tdresources.firstElementChild
-    resourcesButton.menuLevel = getCurrentMenuLevel() + 1;
-    resourcesButton.metadata = roomMetadata;
+	if (roomMetadata.resources.length > 0) {
+        tdresources.className = "field clickable";
+        tdresources.innerHTML = `<img onclick="showResources()" src="icons/icon-resources.png" srcset="icons2x/icon-resources.png 2x" title="Resources"/>`;
+        var resourcesButton = tdresources.firstElementChild
+        resourcesButton.menuLevel = getCurrentMenuLevel() + 1;
+        resourcesButton.metadata = roomMetadata;
+	}
     roomButtonDiv.appendChild(tdresources);
 
     // error/warning icon, if necessary
@@ -540,16 +546,14 @@ function doRoomMenu(e, rooms) {
             if (errors == null) {
                 errors = [];
             }
-            // that's weird way to append one array to another in place
-            errors.push.apply(errors, roomErrors);
+            addAllToListIfNotPresent(errors, roomErrors);
         }
         var roomWarnings = rooms[r].getAllWarnings();
         if (roomWarnings && roomWarnings.length > 0) {
             if (warnings == null) {
                 warnings = [];
             }
-            // that's weird way to append one array to another in place
-            warnings.push.apply(warnings, roomWarnings);
+            addAllToListIfNotPresent(warnings, roomWarnings);
         }
     }
 
