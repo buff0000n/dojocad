@@ -398,6 +398,11 @@ td.imgField {
     cursor: pointer;
 }
 
+.table-sort-header {
+    font-weight: bold;
+    cursor: pointer;
+}
+
 .clickable {
     cursor: pointer;
 }

@@ -956,7 +956,7 @@ class Room {
         // we don't want to show the outline when it's just a discontinued room, that's annoying
         var warnings = this.getSomeWarnings();
  		if (errors || warnings) {
-			if (this.viewContainer) {
+			if (this.viewContainer && (this.isVisible() || settings.showAllFloors)) {
 				if (!this.outline) {
 			        this.outline = this.addDisplayImage("-line-blue.png", getZIndex(this, part_outline));
 				}

@@ -1298,21 +1298,40 @@ function doPngClick(e) {
     }
 }
 
-function buildStorageListingHeader() {
+function buildStorageListingHeader(table) {
     var tr = document.createElement("tr");
+    tr.className = "table-sort-header";
 
     var iconTd = buildMenuButtonIcon();
     tr.appendChild(iconTd);
 
     // todo: sort by column?
 
-    var nameDiv = document.createElement("td");
-    nameDiv.innerHTML = `Name`;
-    tr.appendChild(nameDiv);
+    function buildHeaderColumn(name, enabled, asc, onchange) {
+        var div = document.createElement("td");
+        div.innerHTML = name + (enabled ? asc ? "&nbsp;↑" : "&nbsp;↓" : "");
+        div.class = "menu-header";
+        div.onclick = onchange;
+        return div
+    }
 
-    var dateDiv = document.createElement("td");
-    dateDiv.innerHTML = `Date`;
-    tr.appendChild(dateDiv);
+    tr.appendChild(buildHeaderColumn("Name", storage.isSortByName(), storage.isSortAscending(), () => {
+        if (!storage.isSortByName()) {
+            storage.setSortByName();
+        } else {
+            storage.setSortAscending(!storage.isSortAscending());
+        }
+        rebuildStorageListing(table);
+    }));
+
+    tr.appendChild(buildHeaderColumn("Date", storage.isSortByDate(), storage.isSortAscending(), () => {
+        if (!storage.isSortByDate()) {
+            storage.setSortByDate();
+        } else {
+            storage.setSortAscending(!storage.isSortAscending());
+        }
+        rebuildStorageListing(table);
+    }));
 
     return tr;
 }
@@ -1323,6 +1342,7 @@ function truncateName(name) {
 
 function buildStorageListingLine(entry) {
     var tr = document.createElement("tr");
+    tr.className = "table-entry";
 
     var name = entry.name;
 
@@ -1365,19 +1385,30 @@ function buildStorageListingLine(entry) {
     return tr;
 }
 
+function rebuildStorageListing(menuDiv) {
+    var children = menuDiv.children;
+    while (children.length > 2) {
+        children.item(1).remove();
+    }
+
+    var insertBefore = children.item(1);
+
+    menuDiv.insertBefore(buildStorageListingHeader(menuDiv), insertBefore);
+
+    var listing = storage.getListing();
+    for (var l = 0; l < listing.length; l++) {
+        menuDiv.insertBefore(buildStorageListingLine(listing[l]), insertBefore);
+    }
+}
+
 function doStorageMenu() {
     clearMenus();
 
     var menuDiv = buildMenu();
     menuDiv.appendChild(buildMenuHeaderLine("Local Storage", 4));
-    menuDiv.appendChild(buildStorageListingHeader());
-
-    var listing = storage.getListing();
-    for (var l = 0; l < listing.length; l++) {
-        menuDiv.appendChild(buildStorageListingLine(listing[l]));
-    }
-
     menuDiv.appendChild(buildMenuButton("Add", doStorageAdd, "icon-add"));
+
+    rebuildStorageListing(menuDiv);
 
     showMenuAt(menuDiv, 0, 64);
 }

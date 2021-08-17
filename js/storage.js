@@ -20,7 +20,46 @@ class Storage {
                 });
             }
         }
+
+        if (this.isSortByDate()) {
+            listing.sort((a, b) => {
+                return (a.timestamp - b.timestamp) * (this.isSortAscending() ? 1 : -1);
+            });
+
+        } else {
+            listing.sort((a, b) => {
+                return a.name.localeCompare(b.name) * (this.isSortAscending() ? 1 : -1);
+            });
+        }
+
         return listing;
+    }
+
+    isSortByDate() {
+        return settings.localStoreSort == "date";
+    }
+
+    isSortByName() {
+        return !this.isSortByDate();
+    }
+
+    isSortAscending() {
+        return settings.localStoreSortAsc;
+    }
+
+    setSortByName() {
+        settings.localStoreSort = "name";
+        settings.save();
+    }
+
+    setSortByDate() {
+        settings.localStoreSort = "date";
+        settings.save();
+    }
+
+    setSortAscending(asc) {
+        settings.localStoreSortAsc = asc;
+        settings.save();
     }
 
     getItem(name) {
