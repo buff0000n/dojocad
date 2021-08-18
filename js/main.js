@@ -438,6 +438,30 @@ function setShowMapMarkers(showMapMarkers) {
 	settings.save();
 }
 
+function setShowLabels(showLabels) {
+    // set this before calling room.updateLabelDisplay(), otherwise nothing will happen
+	settings.showLabels = showLabels;
+
+	if (showLabels) {
+	    for (var r = 0; r < roomList.length; r++) {
+	        var room = roomList[r];
+	        // add the label and update its positioning
+            room.updateLabelDisplay();
+            room.updateView();
+		}
+
+	} else {
+	    for (var r = 0; r < roomList.length; r++) {
+	        var room = roomList[r];
+	        // remove the label
+            room.updateLabelDisplay();
+		}
+	}
+
+    // save setting at the end, if something goes wrong then it is not saved
+	settings.save();
+}
+
 function setAutosave(autosave) {
     // set the setting first
     settings.autosave = autosave;

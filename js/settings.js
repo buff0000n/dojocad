@@ -8,6 +8,7 @@ class Settings {
         // default setting values
         this.showAllFloors = true;
         this.showMapMarkers = true;
+        this.showLabels = true;
         this.autosave = false;
         this.localStoreSort = "name";
         this.localStoreSortAsc = true;
@@ -30,6 +31,9 @@ class Settings {
             if (props.showMapMarkers != null) {
                 this.showMapMarkers = props.showMapMarkers;
             }
+            if (props.showLabels != null) {
+                this.showLabels = props.showLabels;
+            }
             if (props.autosave != null) {
                 this.autosave = props.autosave;
             }
@@ -47,6 +51,7 @@ class Settings {
         var props = {
             "showAllFloors": this.showAllFloors,
             "showMapMarkers": this.showMapMarkers,
+            "showLabels": this.showLabels,
             "autosave": this.autosave,
             "localStoreSort": this.localStoreSort,
             "localStoreSortAsc": this.localStoreSortAsc

@@ -1389,14 +1389,14 @@ class Room {
         }
     }
 
-    updateLabelDisplay(visible=true) {
-        if (this.label) {
+    updateLabelDisplay() {
+        if (this.label && settings.showLabels && (this.isVisible() || settings.showAllFloors)) {
             if (!this.labelDisplay) {
                 // we need a label for don't have one, create it
 	            this.labelDisplay = this.addDisplayLabel(getZIndex(this, part_label));
 	            // init the hue filter, if there is one
-			    this.labelDisplay.style.color = getDisplayLabelColor(this.hue, visible);
-                this.labelDisplay.style.textShadow = getDisplayLabelTextShadow(this.hue, this.isVisible());
+			    this.labelDisplay.style.color = getDisplayLabelColor(this.hue, this.isOnFloor());
+                this.labelDisplay.style.textShadow = getDisplayLabelTextShadow(this.hue, this.isOnFloor());
             }
             // update the label contents, replacing newlines with <br/>
             this.labelDisplay.innerHTML = this.label.replace(newlineRegex, "<br/>");
@@ -1449,14 +1449,14 @@ class Room {
 			this.display.style.filter = getDisplayImageFilter(this.hue, true);
 	        if (this.isOnFloor()) {
                 // init the label, if necessary
-                this.updateLabelDisplay(true);
+                this.updateLabelDisplay();
 
 	        } else {
 	            // additional other floor display
 		        this.otherFloorDisplay = this.addDisplayImage(this.getDisplayImageSuffix(), getZIndex(this, part_display_other), this.getImageBase(this.floor));
 			    this.otherFloorDisplay.style.filter = getDisplayImageFilter(this.hue, false);
                 // init the label, if necessary
-                this.updateLabelDisplay(false);
+                this.updateLabelDisplay();
 	        }
 	        // check the showMapMarkers setting
 	        if (settings.showMapMarkers) {
@@ -1475,7 +1475,7 @@ class Room {
 	        this.otherFloorDisplay = this.addDisplayImage(this.getDisplayImageSuffix(), getZIndex(this, part_display));
 		    this.otherFloorDisplay.style.filter = getDisplayImageFilter(this.hue, false);
             // init the label, if necessary
-            this.updateLabelDisplay(false);
+            this.updateLabelDisplay();
         }
 
 		this.checkCollided();
@@ -2092,7 +2092,7 @@ function convertFloorToPngLink(targets, db, margin, scale, f) {
 		// check if the room is visible on the given floor
 		if (room.isVisible(f)) {
 		    // check for a label
-            if (room.label && room.isOnFloor(f)) {
+            if (room.label && room.isOnFloor(f) && settings.showLabels) {
                 // start with the room's position
 				var v = new Vect(room.mv.x, room.mv.y)
 	                // scale by the scale, they are now pixel coords

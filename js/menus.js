@@ -619,8 +619,8 @@ function doRoomMenu(e, rooms) {
     // color option
     menuDiv.appendChild(buildMenuButton("Color", doColorMenu, "icon-color"));
 
-    if (room) {
-        // label option is only available when a single room is selected
+    if (room && settings.showLabels) {
+        // label option is only available when a single room is selected, and when labels are being show
         menuDiv.appendChild(buildMenuButton("Label", doLabelMenu, "icon-room-label"));
     }
 
@@ -1575,6 +1575,8 @@ function doSettingsMenu() {
     addCheckbox("showAllFloors", "Show All Floors", settings.showAllFloors, (value) => { setShowAllFloors(value); });
 
     addCheckbox("showMapMarkers", "Show Map Markers", settings.showMapMarkers, (value) => { setShowMapMarkers(value); });
+
+    addCheckbox("showLabels", "Show Labels", settings.showLabels, (value) => { setShowLabels(value); });
 
     addCheckbox("autosave", "Autosave", settings.autosave, (value) => { setAutosave(value); });
 
