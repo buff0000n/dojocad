@@ -183,8 +183,7 @@ class Door {
         this.collisions = Array();
 
         this.otherDoor = null;
-        this.incoming = false;
-        this.crossBranch = false;
+        this.outgoing = false;
 
         this.marker = null;
     }
@@ -256,7 +255,7 @@ class Door {
 		}
 	}
 
-	connect(otherDoor, crossBranch = true, incoming = false) {
+	connect(otherDoor) {
 		if (this.otherDoor == otherDoor) {
 			return;
 		}
@@ -266,9 +265,7 @@ class Door {
 		}
 
 		this.otherDoor = otherDoor;
-		this.crossBranch = crossBranch;
-		this.incoming = incoming;
-		this.otherDoor.connect(this, crossBranch, !incoming);
+		this.otherDoor.connect(this);
 
 		if (this.debugBorder) {
             this.debugBorder.remove();
@@ -298,14 +295,14 @@ class Door {
 		if (!this.otherDoor) {
 			return null;
 		}
-		var save = [this, this.otherDoor, this.crossBranch, this.incoming];
+		var save = [this, this.otherDoor];
 		this.disconnectFrom(this.otherDoor);
 		return save;
 	}
 
 	reconnect(save) {
 		if (save[0] == this) {
-			this.connect(save[1], save[2], save[3]);
+			this.connect(save[1]);
 		}
 	}
 
