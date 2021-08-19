@@ -333,16 +333,6 @@ function getCurrentSpawnRoom() {
     return roomList.find((r) => { return r.isSpawnPoint(); } );
 }
 
-function setSelectedRoomSpawn() {
-    if (selectedRooms.length == 1) {
-        var newSpawnRoom = selectedRooms[0];
-        clearMenus(0);
-        setSpawnPointRoom(newSpawnRoom, true);
-    	saveModelToUrl();
-    	treeUpdated();
-    }
-}
-
 function setSpawnPointRoom(newSpawnRoom, allowUndo=true) {
     // factored out so we can call this when loading a layout
     var currentSpawnRoom = getCurrentSpawnRoom();
@@ -357,10 +347,48 @@ function setSpawnPointRoom(newSpawnRoom, allowUndo=true) {
     }
 }
 
+function setSelectedRoomSpawn() {
+    if (selectedRooms.length == 1) {
+        var newSpawnRoom = selectedRooms[0];
+        clearMenus(0);
+        setSpawnPointRoom(newSpawnRoom, true);
+    	saveModelToUrl();
+    	treeUpdated();
+    }
+}
+
 function unsetSelectedRoomSpawn() {
     if (selectedRooms.length == 1) {
         clearMenus(0);
         setSpawnPointRoom(null, true);
+    	saveModelToUrl();
+    	treeUpdated();
+    }
+}
+
+function setRoomDestroyable(destroyableRoom, destroyable, allowUndo=true) {
+    destroyableRoom.setDestroyable(destroyable);
+
+    if (allowUndo) {
+        addUndoAction(new SetDestroyableAction(destroyableRoom, destroyable));
+    }
+}
+
+function setSelectedRoomDestroyable() {
+    if (selectedRooms.length == 1) {
+        var room = selectedRooms[0];
+        clearMenus(0);
+        setRoomDestroyable(room, true);
+    	saveModelToUrl();
+    	treeUpdated();
+    }
+}
+
+function unsetSelectedRoomDestroyable() {
+    if (selectedRooms.length == 1) {
+        var room = selectedRooms[0];
+        clearMenus(0);
+        setRoomDestroyable(room, false, true);
     	saveModelToUrl();
     	treeUpdated();
     }
@@ -478,6 +506,11 @@ function setAutosave(autosave) {
 function setLoopChecking(loopChecking) {
     // set the setting first
     settings.loopChecking = loopChecking;
+
+    for (var r = 0; r < roomList.length; r++) {
+        var room = roomList[r];
+        room.refreshMarkers();
+    }
 
     // just re-run tree traversal I don't care
     treeUpdated();

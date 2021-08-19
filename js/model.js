@@ -184,6 +184,7 @@ class Door {
 
         this.otherDoor = null;
         this.outgoing = false;
+        this.looping = false;
 
         this.marker = null;
     }
@@ -310,23 +311,37 @@ class Door {
         if (this.debugBorder && !this.otherDoor && this.floor == viewFloor) {
             viewContainer.appendChild(this.debugBorder);
         }
+        this.showArrowMarker();
     }
 
     showDoorMarker() {
-        if (this.floor == viewFloor && !this.otherDoor) {
-	        if (!this.marker) {
-	            this.marker = this.room.addDisplayImage(".png", getZIndex(this.room, part_doormarker), "marker-door", true);
-	        } else {
-		        this.room.viewContainer.appendChild(this.marker);
-	        }
-	        this.updateView();
-        }
+        this.showMarker(this.floor == viewFloor && !this.otherDoor ? "marker-door" : null);
     }
 
     hideDoorMarker() {
         if (this.marker) {
             this.marker.remove();
-            // this.marker = null;
+            this.marker = null;
+        }
+    }
+
+    showArrowMarker() {
+        this.showMarker(this.floor == viewFloor && settings.loopChecking ?
+            this.looping ? "marker-door-loop" : this.outgoing ? "marker-door-outgoing" : null
+            : null);
+    }
+
+    showMarker(base) {
+        if (!this.marker || this.marker.base != base) {
+            this.hideDoorMarker();
+
+            if (base) {
+                this.marker = this.room.addDisplayImage(".png", getZIndex(this.room, part_doormarker), base, true);
+            }
+        }
+
+        if (this.marker) {
+            this.updateView();
         }
     }
 
@@ -356,13 +371,14 @@ class Door {
 //==============================================================
 
 class Marker {
-	constructor(room, floor, metadata) {
+	constructor(room, floor, metadata, condition=null) {
 		this.room = room;
 		this.metadataFloor = floor;
 		if (metadata == null) {
 			throw "OOOOPS";
 		}
 		this.metadata = metadata;
+		this.condition = condition;
 		this.marker = null;
 	}
 
@@ -372,8 +388,12 @@ class Marker {
     }
 
     addDisplay(viewContainer) {
-        if (this.floor == viewFloor) {
-	        this.marker = this.room.addDisplayImage(".png", getZIndex(this.room, part_marker), this.metadata.image, true);
+        if (this.floor == viewFloor && (!this.condition || this.condition())) {
+            if (!this.marker) {
+    	        this.marker = this.room.addDisplayImage(".png", getZIndex(this.room, part_marker), this.metadata.image, true);
+            } else {
+                viewContainer.appendChild(this.marker);
+            }
         }
     }
 
@@ -403,6 +423,9 @@ var newlineRegex = new RegExp('\n', "g");
 function roomToString(room) {
     var s = room.metadata.id + "," + room.mv.x + "," + room.mv.y + "," + room.floor + "," + (room.rotation / 90)
     var flags = "";
+    if (room.isDestroyable()) {
+        flags = flags + "d";
+    }
     if (room.isSpawnPoint()) {
         flags = flags + "s";
     }
@@ -462,6 +485,9 @@ function roomFromString(string) {
                 // how did it take me this long to add a generic flags field?
                 if (s.length > 8) {
                     var flags = s[8];
+                    if (flags.includes("d")) {
+                        setRoomDestroyable(room, true, false);
+                    }
                     if (flags.includes("s")) {
                         // go through the global method to set the spawn point to make sure there's only one
                         setSpawnPointRoom(room, false);
@@ -490,6 +516,7 @@ class Room {
         this.dragging = false;
         this.placed = false;
         this.spawn = false;
+        this.destroyable = false;
 
         this.ignoreRooms = null;
 
@@ -558,6 +585,7 @@ class Room {
                     spawnMarker.updateView();
                 }
                 this.spawn = true;
+                this.setDestroyable(false);
             } else {
                 var index = this.markers.findIndex((marker) => marker.metadata == spawnMarkerMetadata);
                 if (index != -1) {
@@ -574,6 +602,56 @@ class Room {
 
     isSpawnPoint() {
         return this.spawn;
+    }
+
+    setDestroyable(destroyable) {
+        if (destroyable != this.destroyable) {
+            if (destroyable) {
+                // appears on floor 0 relative to the room's base floor
+                // this marker is conditional on whether loop checking is enabled
+                var destroyableMarker = new Marker(this, 0, destroyableMarkerMetadata, () => settings.loopChecking);
+                this.markers.push(destroyableMarker);
+                // this can be set before the room is actually displayed
+                if (this.viewContainer) {
+                    // have to update position first
+                    destroyableMarker.updatePosition();
+                    destroyableMarker.addDisplay(this.viewContainer);
+                    destroyableMarker.updateView();
+                }
+                this.destroyable = true;
+
+            } else {
+                var index = this.markers.findIndex((marker) => marker.metadata == destroyableMarkerMetadata);
+                if (index != -1) {
+                    var destroyableMarker = this.markers[index];
+                    this.markers.splice(index, 1);
+                    if (this.viewContainer) {
+                        destroyableMarker.removeDisplay(this.viewContainer);
+                    }
+                }
+                this.destroyable = false;
+            }
+        }
+    }
+
+    isDestroyable() {
+        return this.destroyable;
+    }
+
+    refreshMarkers() {
+        // super damn hack
+        for (var m = 0; m < this.markers.length; m++) {
+            var marker = this.markers[m];
+            if (marker.condition) {
+                if (marker.condition()) {
+                    marker.updatePosition();
+                    marker.addDisplay(this.viewContainer);
+                    marker.updateView();
+                } else if (marker.marker) {
+                    marker.marker.remove();
+                }
+            }
+        }
     }
 
 	addRuleError(rule) {
@@ -1501,6 +1579,8 @@ class Room {
         }
         // Ugh, have to build the <img> element the hard way
         var element = document.createElement("img");
+        // nice to track what kind of image it is
+        element.base = imageBase;
         if (!marker) {
 	        // Need to explicitly set the transform origin for off-center rooms
 	        element.style.transformOrigin = (-this.anchorMX * imgScale) + "px " + (-this.anchorMY * imgScale) + "px";

@@ -39,8 +39,16 @@ function actuallyUpdateTree() {
         if (ranATreeUpdate) {
             // if there is no spawn point but there was at some time then just clear all warnings
             for (var r = 0; r < roomList.length; r++) {
-                roomList[r].removeRuleWarning(disconnectedRule);
-                roomList[r].removeRuleWarning(loopedRule);
+                var room = roomList[r];
+                room.removeRuleWarning(disconnectedRule);
+                room.removeRuleWarning(loopedRule);
+                // clear the
+                for (var d = 0; d < room.doors.length; d++) {
+                    var door = room.doors[d];
+                    door.outgoing = false;
+                    door.looping = false;
+                    door.showArrowMarker();
+                }
             }
             removeAllWarning("Disconnected rooms");
             removeAllWarning("Loops present");
@@ -96,7 +104,7 @@ class TreeStructureCallback extends AbstractTreeTraversalCallback {
         for (var d = 0; d < incomingDoors.length; d++) {
             incomingDoors[d].otherDoor.outgoing = true;
         }
-        return true;
+        return !room.isDestroyable();
     }
 
     processLoop(room, incomingDoors) {
@@ -134,15 +142,7 @@ class TreeStructureCallback extends AbstractTreeTraversalCallback {
 
         for (var d = 0; d < room.doors.length; d++) {
             var door = room.doors[d];
-            if (door.outgoing) {
-                if (door.otherDoor.outgoing) {
-                    // add loop half-arrow
-                } else {
-                    // add normal arror
-                }
-            } else {
-                // remove arrow
-            }
+            door.showArrowMarker();
         }
     }
 

@@ -615,3 +615,4 @@ var roomMetadata =
 ]};
 
 var spawnMarkerMetadata = {"image": "marker-spawn", "x": 0, "y": 0};
+var destroyableMarkerMetadata = {"image": "marker-destroyable", "x": 0, "y": 0};

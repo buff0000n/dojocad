@@ -605,11 +605,20 @@ function doRoomMenu(e, rooms) {
         clearMenus();
     }, "icon-multiselect"));
 
-    if (room && room.metadata.spawn) {
-        if (room.spawn) {
+    if (room) {
+        if (room.isSpawnPoint()) {
             menuDiv.appendChild(buildMenuButton("Remove Spawn Point", unsetSelectedRoomSpawn, "icon-spawn-delete"));
+
+        } else if (room.isDestroyable()) {
+            menuDiv.appendChild(buildMenuButton("Unset Destroyable", unsetSelectedRoomDestroyable, "icon-unset-destroyable"));
+
         } else {
-            menuDiv.appendChild(buildMenuButton("Set Spawn Point", setSelectedRoomSpawn, "icon-spawn"));
+            if (room.metadata.spawn) {
+                menuDiv.appendChild(buildMenuButton("Set Spawn Point", setSelectedRoomSpawn, "icon-spawn"));
+            }
+            if (settings.loopChecking && getCurrentSpawnRoom()) {
+                menuDiv.appendChild(buildMenuButton("Set Destroyable", setSelectedRoomDestroyable, "icon-set-destroyable"));
+            }
         }
     }
 
