@@ -475,6 +475,17 @@ function setAutosave(autosave) {
 	settings.save();
 }
 
+function setLoopChecking(loopChecking) {
+    // set the setting first
+    settings.loopChecking = loopChecking;
+
+    // just re-run tree traversal I don't care
+    treeUpdated();
+
+    // save setting at the end, if something goes wrong then it is not saved
+	settings.save();
+}
+
 //==============================================================
 // model URL handling
 //==============================================================

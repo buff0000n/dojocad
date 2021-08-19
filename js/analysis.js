@@ -43,6 +43,7 @@ function actuallyUpdateTree() {
                 roomList[r].removeRuleWarning(loopedRule);
             }
             removeAllWarning("Disconnected rooms");
+            removeAllWarning("Loops present");
         }
         return;
     }
@@ -90,7 +91,7 @@ class TreeStructureCallback extends AbstractTreeTraversalCallback {
             return false;
         }
 
-        console.log(room.metadata.id + " #" + room.id + " is connected");
+//        console.log(room.metadata.id + " #" + room.id + " is connected");
         room.connected = true;
         for (var d = 0; d < incomingDoors.length; d++) {
             incomingDoors[d].otherDoor.outgoing = true;
@@ -99,7 +100,7 @@ class TreeStructureCallback extends AbstractTreeTraversalCallback {
     }
 
     processLoop(room, incomingDoors) {
-        console.log(room.metadata.id + " #" + room.id + " is looped");
+//        console.log(room.metadata.id + " #" + room.id + " is looped");
 
         room.looped = true;
         for (var d = 0; d < incomingDoors.length; d++) {
@@ -123,7 +124,7 @@ class TreeStructureCallback extends AbstractTreeTraversalCallback {
         }
 
         // loop check
-        if (room.looped) {
+        if (room.looped && settings.loopChecking) {
             room.addRuleWarning(loopedRule);
             this.loopedCount += 1;
 
@@ -157,7 +158,7 @@ class TreeStructureCallback extends AbstractTreeTraversalCallback {
         }
 
         // check the count
-        if (this.loopedCount > 0) {
+        if (this.loopedCount > 0 && settings.loopChecking) {
             // make sure there's a global warning displayed
             addAllWarning("Loops present");
 

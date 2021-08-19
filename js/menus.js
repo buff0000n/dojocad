@@ -1572,13 +1572,21 @@ function doSettingsMenu() {
     }
 
     // checkbox settings
+    addCheckbox("autosave", "Autosave", settings.autosave, (value) => { setAutosave(value); });
+
+    menuDiv.appendChild(buildMenuDivider(4));
+
+    addCheckbox("loopChecking", "Loop Checking", settings.loopChecking, (value) => { setLoopChecking(value); });
+
+    menuDiv.appendChild(buildMenuDivider(4));
+
     addCheckbox("showAllFloors", "Show All Floors", settings.showAllFloors, (value) => { setShowAllFloors(value); });
 
     addCheckbox("showMapMarkers", "Show Map Markers", settings.showMapMarkers, (value) => { setShowMapMarkers(value); });
 
     addCheckbox("showLabels", "Show Labels", settings.showLabels, (value) => { setShowLabels(value); });
 
-    addCheckbox("autosave", "Autosave", settings.autosave, (value) => { setAutosave(value); });
+
 
     showMenu(menuDiv, button);
 }

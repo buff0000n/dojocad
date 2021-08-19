@@ -10,6 +10,7 @@ class Settings {
         this.showMapMarkers = true;
         this.showLabels = true;
         this.autosave = false;
+        this.loopChecking = false;
         this.localStoreSort = "name";
         this.localStoreSortAsc = true;
 
@@ -37,6 +38,9 @@ class Settings {
             if (props.autosave != null) {
                 this.autosave = props.autosave;
             }
+            if (props.loopChecking != null) {
+                this.loopChecking = props.loopChecking;
+            }
             if (props.localStoreSort != null) {
                 this.localStoreSort = props.localStoreSort;
             }
@@ -53,6 +57,7 @@ class Settings {
             "showMapMarkers": this.showMapMarkers,
             "showLabels": this.showLabels,
             "autosave": this.autosave,
+            "loopChecking": this.loopChecking,
             "localStoreSort": this.localStoreSort,
             "localStoreSortAsc": this.localStoreSortAsc
         }
