@@ -762,11 +762,13 @@ class Room {
 		}
 	}
 
-	removeAllRuleErrors() {
+	removeAllRuleErrors(checkErrors=true) {
 		if (this.ruleErrors.length > 0) {
 			removeFloorError(this.floor, this);
-			this.checkErrors();
-			this.updateView();
+			if (checkErrors) {
+                this.checkErrors();
+                this.updateView();
+			}
 		}
 	}
 
@@ -807,7 +809,7 @@ class Room {
     }
 
 	dispose() {
-		this.removeAllRuleErrors();
+		this.removeAllRuleErrors(false);
 	}
 
     isVisible(whichFloor = null) {

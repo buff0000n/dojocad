@@ -105,7 +105,7 @@ function getRoomMetadata(id) {
     return rmd;
 }
 
-function removeRoom(room) {
+function removeRoom(room, updateTree=true) {
 	removeFromList(roomList, room);
 	removeFloorRoom(room);
 	room.disconnectAllDoors();
@@ -113,8 +113,10 @@ function removeRoom(room) {
 	room.removeDisplay();
 	room.dispose();
 	runRulesOnRoomRemoved(room);
-	saveModelToUrl();
-    treeUpdated();
+    if (updateTree) {
+        saveModelToUrl();
+        treeUpdated();
+    }
 }
 
 function addRoom(room, updateTree=true) {
@@ -201,12 +203,13 @@ function deleteSelectedRooms() {
 	    // deselect and remove each room;
         for (var r = 0; r < oldRooms.length; r++) {
             oldRooms[r].deselect();
-    	    removeRoom(oldRooms[r]);
+    	    removeRoom(oldRooms[r], false);
         }
 	    clearMenus(0);
 	    // add an undo action
 	    addUndoAction(new AddDeleteRoomsAction(oldRooms, false));
 	}
+    saveModelToUrl();
     treeUpdated();
 }
 
@@ -654,7 +657,7 @@ function loadModelFromUrl(url) {
 	settings.loading = true;
 	for (var rs = 0; rs < roomStrings.length; rs++) {
 		var room = roomFromString(roomStrings[rs]);
-	    addRoom(room);
+	    addRoom(room, false);
 	    room.resetPositionAndConnectDoors();
 	}
 	// clear he loading flag
