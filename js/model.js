@@ -483,20 +483,17 @@ class Door {
                    this.outgoing ? "marker-door-outgoing" :
                    null;
 
-        if (base) {
-            this.showMarker(base, (e) => { this.onclick(e); });
-
-        } else {
-            this.showMarker(null);
-        }
+        this.showMarker(base);
     }
 
-    showMarker(base, onEvent=null) {
+    showMarker(base) {
         if (!this.marker || this.marker.base != base) {
             this.hideDoorMarker();
 
             if (base) {
-                this.marker = this.room.addDisplayImage(".png", getZIndex(this.room, part_doormarker), base, true, onEvent);
+                this.marker = this.room.addDisplayImage(".png", getZIndex(this.room, part_doormarker), base, true);
+                // make sure the event handler will bring up the door menu when clicking on this image
+                this.marker.door = this;
             }
         }
 
@@ -1650,7 +1647,7 @@ class Room {
         }
     }
 
-    addDisplayImage(imageSuffix, zIndex, imageBase = null, marker = false, markerOnEvent = null) {
+    addDisplayImage(imageSuffix, zIndex, imageBase = null, marker = false) {
         if (!imageBase) {
             imageBase = this.getImageBase();
         }
@@ -1667,7 +1664,7 @@ class Room {
         }
         element.src = "img" + imgScale + "x/" + imageBase + imageSuffix;
 
-        return this.addDisplayImageElement(element, zIndex, marker, markerOnEvent);
+        return this.addDisplayImageElement(element, zIndex);
     }
 
     addDisplayLabel(zIndex) {
@@ -1680,29 +1677,15 @@ class Room {
         return this.addDisplayImageElement(element, zIndex);
     }
 
-    addDisplayImageElement(element, zIndex, marker, markerOnEvent) {
+    addDisplayImageElement(element, zIndex) {
         element.style.position = "absolute";
         element.style.zIndex = zIndex;
         element.roomId = this.id;
-        if (marker) {
-            if (markerOnEvent) {
-                // it's a marker with a function
-                element.onclick = markerOnEvent;
-
-            } else {
-                // ignore all pointer/touch events this marker and let them fall through
-                // some markers overlap other rooms and it's confusing
-                element.style.pointerEvents = "none";
-                element.style.touchEvents = "none";
-            }
-
-        } else {
-            // have to explicitly tell Chrome that none of these listeners are passive or it will cry
-            element.addEventListener("mousedown", mouseDown, { passive: false });
-            element.addEventListener("contextmenu", contextMenu, { passive: false });
-            element.addEventListener("touchstart", touchStart, { passive: false });
-            element.addEventListener("wheel", wheel, { passive: false });
-        }
+        // have to explicitly tell Chrome that none of these listeners are passive or it will cry
+        element.addEventListener("mousedown", mouseDown, { passive: false });
+        element.addEventListener("contextmenu", contextMenu, { passive: false });
+        element.addEventListener("touchstart", touchStart, { passive: false });
+        element.addEventListener("wheel", wheel, { passive: false });
         element.room = this;
         this.viewContainer.appendChild(element);
         return element;

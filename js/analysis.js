@@ -170,9 +170,9 @@ class TreeStructureCallback extends AbstractTreeTraversalCallback {
                 if (!door.outgoing && door.otherDoor.outgoing) {
                     addToListIfNotPresent(incomingRooms, door.otherDoor.room);
                 }
-
-                door.showArrowMarker();
             }
+            // always refresh the arror marker, in case we need to remove it
+            door.showArrowMarker();
         }
 
         if (incomingRooms.length > 1 && settings.structureChecking) {

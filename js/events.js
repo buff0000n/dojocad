@@ -520,6 +520,7 @@ function dropEvent(e) {
     } else if (isDraggingRoom()) {
         // save the clicked room, if any
         lastClickedRoom = (mouseDownTarget && mouseDownTarget.room) ? mouseDownTarget.room : null;
+        lastClickedDoor = (mouseDownTarget && mouseDownTarget.door) ? mouseDownTarget.door : null;
 	    mouseDownTarget = null;
 	    mouseDownTargetStartPX = 0;
 	    mouseDownTargetStartPY = 0;
@@ -560,18 +561,25 @@ function dropEvent(e) {
 
             // notify things that a room or rooms were moved
     		movedSelectedRoom();
-
 		} else {
 		    // room wasn't actually dragged anywhere, treat it as a click and
-		    // open the room menu
-			doRoomMenu(e, selectedRooms);
+		    // open either the room or door menus
+		    if (lastClickedDoor) {
+    	        doorClicked(e, lastClickedDoor);
+		    } else {
+    			doRoomMenu(e, selectedRooms);
+		    }
 		}
 
 	} else {
 		if (!dragged) {
     	    // no multiselect and no dragging.  treat it as a simple click and either
-    	    // select a single room or clear the selection
-			selectRoom(!mouseDownTarget ? null : mouseDownTarget.room, undoable = true, false);
+    	    // select a single room/door or clear the selection
+    	    if (mouseDownTarget && mouseDownTarget.door) {
+    	        doorClicked(e, mouseDownTarget.door);
+    	    } else {
+    			selectRoom(!mouseDownTarget ? null : mouseDownTarget.room, undoable = true, false);
+    	    }
 		}
 
         // clear click and dragging state

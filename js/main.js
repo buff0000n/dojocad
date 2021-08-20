@@ -397,12 +397,10 @@ function unsetSelectedRoomDestroyable() {
     }
 }
 
-function loopingDoorClicked(e, door) {
+function doorClicked(e, door) {
     if (!door.otherDoor) {
         // ignore
     }
-
-    e.preventDefault();
 
     if (door.room.isSelected() == door.otherDoor.room.isSelected()) {
         // no clear direction, open the menu
