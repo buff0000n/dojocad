@@ -547,6 +547,10 @@ function loadModelFromUrl(url) {
 	    addRoom(room, false);
 	    room.resetPositionAndConnectDoors();
 	}
+	// save back to the URL without autosaving, and update the tree
+    saveModelToUrl();
+    treeUpdated();
+
 	// clear he loading flag
 	settings.loading = false;
 	return true;
