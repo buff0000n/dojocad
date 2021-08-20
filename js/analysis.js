@@ -19,15 +19,30 @@ function treeUpdated() {
 
 // static rule we can add as a warning to disconected rooms
 class DisconnectedRule {
+    constructor() {
+        this.globalMessage = "Disconnected rooms";
+    }
     toString() { return "Disconnected room"; }
 }
 var disconnectedRule = new DisconnectedRule();
 
 // static rule we can add as a warning to rooms in a loop
 class LoopedRule {
+    constructor() {
+        this.globalMessage = "Loops present";
+    }
     toString() { return "Room in a loop"; }
 }
 var loopedRule = new LoopedRule();
+
+// static rule we can add as a warning to ambiguous rooms with incoming doors coming from more than one other room
+class AmbiguousRule {
+    constructor() {
+        this.globalMessage = "Ambiguous rooms present";
+    }
+    toString() { return "Ambiguous room"; }
+}
+var ambiguousRule = new AmbiguousRule();
 
 function actuallyUpdateTree() {
     // clear timeout reference
@@ -46,12 +61,14 @@ function actuallyUpdateTree() {
                 for (var d = 0; d < room.doors.length; d++) {
                     var door = room.doors[d];
                     door.outgoing = false;
+                    door.crossBranch= false;
                     door.looping = false;
                     door.showArrowMarker();
                 }
             }
-            removeAllWarning("Disconnected rooms");
-            removeAllWarning("Loops present");
+            removeAllWarning(disconnectedRule.globalMessage);
+            removeAllWarning(loopedRule.globalMessage);
+            removeAllWarning(ambiguousRule.globalMessage);
         }
         return;
     }
@@ -79,6 +96,8 @@ class TreeStructureCallback extends AbstractTreeTraversalCallback {
         this.disconnectedCount = 0;
         // keep a running tally of looped rooms for the final warning update
         this.loopedCount = 0;
+        // keep a running tally of ambiguous rooms for the final warning update
+        this.ambiguousCount = 0;
     }
 
     preProcess(room) {
@@ -87,7 +106,7 @@ class TreeStructureCallback extends AbstractTreeTraversalCallback {
         room.looped = false;
         for (var d = 0; d < room.doors.length; d++) {
             var door = room.doors[d];
-            door.outgoing = false;
+            door.outgoing = door.forceOutgoing;
             door.crossBranch = door.forceCrossBranch;
             door.looping = false;
         }
@@ -132,7 +151,7 @@ class TreeStructureCallback extends AbstractTreeTraversalCallback {
         }
 
         // loop check
-        if (room.looped && settings.loopChecking) {
+        if (room.looped && settings.structureChecking) {
             room.addRuleWarning(loopedRule);
             this.loopedCount += 1;
 
@@ -140,12 +159,28 @@ class TreeStructureCallback extends AbstractTreeTraversalCallback {
             room.removeRuleWarning(loopedRule);
         }
 
+        var incomingRooms = [];
+
         for (var d = 0; d < room.doors.length; d++) {
             var door = room.doors[d];
-            if (door.outgoing && door.otherDoor && door.otherDoor.outgoing) {
-                door.crossBranch = true;
+            if (door.otherDoor) {
+                if (!door.outgoing && !door.otherDoor.outgoing) {
+                    door.crossBranch = true;
+                }
+                if (!door.outgoing && door.otherDoor.outgoing) {
+                    addToListIfNotPresent(incomingRooms, door.otherDoor.room);
+                }
+
+                door.showArrowMarker();
             }
-            door.showArrowMarker();
+        }
+
+        if (incomingRooms.length > 1 && settings.structureChecking) {
+            room.addRuleWarning(ambiguousRule);
+            this.ambiguousCount += 1;
+
+        } else {
+            room.removeRuleWarning(ambiguousRule);
         }
     }
 
@@ -153,23 +188,48 @@ class TreeStructureCallback extends AbstractTreeTraversalCallback {
         // check the count
         if (this.disconnectedCount > 0) {
             // make sure there's a global warning displayed
-            addAllWarning("Disconnected rooms");
+            addAllWarning(disconnectedRule.globalMessage);
 
         } else {
             // remove the global warning if present
-            removeAllWarning("Disconnected rooms");
+            removeAllWarning(disconnectedRule.globalMessage);
         }
 
         // check the count
-        if (this.loopedCount > 0 && settings.loopChecking) {
+        if (this.loopedCount > 0 && settings.structureChecking) {
             // make sure there's a global warning displayed
-            addAllWarning("Loops present");
+            addAllWarning(loopedRule.globalMessage);
 
         } else {
             // remove the global warning if present
-            removeAllWarning("Loops present");
+            removeAllWarning(loopedRule.globalMessage);
+        }
+
+        // check the count
+        if (this.ambiguousCount > 0 && settings.structureChecking) {
+            // make sure there's a global warning displayed
+            addAllWarning(ambiguousRule.globalMessage);
+
+        } else {
+            // remove the global warning if present
+            removeAllWarning(ambiguousRule.globalMessage);
         }
     }
+}
+
+//////////////////////////////////////////////////////////////////////////
+// public utils
+//////////////////////////////////////////////////////////////////////////
+
+function getDoorsToRoom(room, toRoom) {
+    var nextDoors = [];
+    for (var d = 0; d < room.doors.length; d++) {
+        var door = room.doors[d];
+        if (door.otherDoor && door.otherDoor.room == toRoom) {
+            nextDoors.push(door);
+        }
+    }
+    return nextDoors;
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -324,17 +384,6 @@ class TreeTraversal {
         }
     }
 
-    getDoorsToRoom(room, toRoom) {
-        var nextDoors = [];
-        for (var d = 0; d < room.doors.length; d++) {
-            var door = room.doors[d];
-            if (door.otherDoor && door.otherDoor.room == toRoom) {
-                nextDoors.push(door);
-            }
-        }
-        return nextDoors;
-    }
-
     reverseDoors(doors) {
         if (doors == null) {
             console.log("oopsie");
@@ -412,7 +461,7 @@ class TreeTraversal {
                             } else if (door.otherDoor.outgoing) {
                                 // console.log("Skipping already incoming door to " + door.otherDoor.room.toShortString());
                                 continue;
-                            } else if (door.forceCrossBranch) {
+                            } else if (door.crossBranch) {
                                 // console.log("Skipping forced cross branch door to " + door.otherDoor.room.toShortString());
                                 continue;
                             // don't go backwards
@@ -426,7 +475,7 @@ class TreeTraversal {
                         for (var r = 0; r < nextRooms.length; r++) {
                             var nextRoom = nextRooms[r];
                             // get the connecting doors, there may be more than one
-                            var nextDoors = this.getDoorsToRoom(room, nextRoom);
+                            var nextDoors = getDoorsToRoom(room, nextRoom);
                             if (nextDoors.length == 0) {
                                 console.log("oopsie");
                             }
@@ -495,7 +544,7 @@ class TreeTraversal {
                 }
                 if (!found) {
                     // make it up
-                    currentEntry.loopQueue.unshift( [currentEntry.room, this.getDoorsToRoom(loopEntry.room, currentEntry.room)] );
+                    currentEntry.loopQueue.unshift( [currentEntry.room, getDoorsToRoom(loopEntry.room, currentEntry.room)] );
                 }
             }
             // go back and process the loop entries

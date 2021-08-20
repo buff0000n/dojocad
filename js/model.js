@@ -475,7 +475,7 @@ class Door {
 
     showArrowMarker() {
         // goddamn this got complicated
-        var base = this.otherDoor == null || this.floor != viewFloor || !settings.loopChecking ? null :
+        var base = this.otherDoor == null || this.floor != viewFloor || !settings.structureChecking ? null :
                    this.forceOutgoing ? "marker-door-force-outgoing" :
                    this.forceCrossBranch ? "marker-door-force-cross-branch" :
                    this.looping ? "marker-door-loop" :
@@ -687,7 +687,7 @@ class Room {
             if (destroyable) {
                 // appears on floor 0 relative to the room's base floor
                 // this marker is conditional on whether loop checking is enabled
-                var destroyableMarker = new Marker(this, 0, destroyableMarkerMetadata, () => settings.loopChecking);
+                var destroyableMarker = new Marker(this, 0, destroyableMarkerMetadata, () => settings.structureChecking);
                 this.markers.push(destroyableMarker);
                 // this can be set before the room is actually displayed
                 if (this.viewContainer) {
@@ -1941,6 +1941,7 @@ function cloneRooms(rooms, reposition=true) {
         newRoom.label = room.label;
         newRoom.labelScale = room.labelScale;
         newRoom.hue = room.hue;
+        // Do not clone spawn, destroyable, or door properties
         // add the new room
         newRooms.push(newRoom);
     }

@@ -616,7 +616,7 @@ function doRoomMenu(e, rooms) {
             if (room.metadata.spawn) {
                 menuDiv.appendChild(buildMenuButton("Set Spawn Point", setSelectedRoomSpawn, "icon-spawn"));
             }
-            if (settings.loopChecking && getCurrentSpawnRoom()) {
+            if (settings.structureChecking && getCurrentSpawnRoom()) {
                 menuDiv.appendChild(buildMenuButton("Set Destroyable", setSelectedRoomDestroyable, "icon-set-destroyable"));
             }
         }
@@ -1610,7 +1610,7 @@ function doSettingsMenu() {
 
     menuDiv.appendChild(buildMenuDivider(4));
 
-    addCheckbox("loopChecking", "Loop Checking", settings.loopChecking, (value) => { setLoopChecking(value); });
+    addCheckbox("structureChecking", "Structure Checking", settings.structureChecking, (value) => { setLoopChecking(value); });
 
     menuDiv.appendChild(buildMenuDivider(4));
 

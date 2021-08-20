@@ -415,16 +415,8 @@ function loopingDoorClicked(e, door) {
 
 function setDoorForceOutgoing(door, forceOutgoing,  allowUndo=true) {
     clearMenus(0);
-    var action = !allowUndo ? null : new ChangeDoorAction(door, door.otherDoor);
 
-    door.forceOutgoing = forceOutgoing;
-    door.otherDoor.forceOutgoing = false;
-    door.forceCrossBranch = false;
-    door.otherDoor.forceCrossBranch = false;
-
-    if (action && action.isAChange()) {
-        addUndoAction(action);
-    }
+    setDoorState(door, forceOutgoing, false, false, false, allowUndo);
 
     saveModelToUrl();
     treeUpdated();
@@ -436,17 +428,8 @@ function flipForceOutgoingDoor(door, allowUndo=true) {
 
 function setDoorForceCrossBranch(door, forceCrossBranch, allowUndo=true) {
     clearMenus(0);
-    var action = !allowUndo ? null : new ChangeDoorAction(door, door.otherDoor);
 
-    door.forceCrossBranch = forceCrossBranch;
-    door.otherDoor.forceCrossBranch = forceCrossBranch;
-    door.forceOutgoing = false;
-    door.otherDoor.forceOutgoing = false;
-
-
-    if (action && action.isAChange()) {
-        addUndoAction(action);
-    }
+    setDoorState(door, false, forceCrossBranch, false, forceCrossBranch, allowUndo);
 
     saveModelToUrl();
     treeUpdated();
@@ -454,20 +437,30 @@ function setDoorForceCrossBranch(door, forceCrossBranch, allowUndo=true) {
 
 function resetDoor(door, allowUndo=true) {
     clearMenus(0);
-    var action = !allowUndo ? null : new ChangeDoorAction(door, door.otherDoor);
 
-    door.forceOutgoing = false;
-    door.otherDoor.forceOutgoing = false;
-    door.forceCrossBranch = false;
-    door.otherDoor.forceCrossBranch = false;
+    setDoorState(door, false, false, false, false, allowUndo);
+
+    saveModelToUrl();
+    treeUpdated();
+}
+
+function setDoorState(door, forceOutgoing, forceCrossBranch, otherForceOutgoing, otherForceCrossBranch, allowUndo=true) {
+    var action = !allowUndo ? null : new ChangeDoorAction(door);
+
+    // need to make sure all the doors that go between the same two rooms have the same state
+    var doors = getDoorsToRoom(door.room, door.otherDoor.room);
+    for (var d = 0; d < doors.length; d++) {
+        var setDoor = doors[d];
+        setDoor.forceOutgoing = forceOutgoing;
+        setDoor.forceCrossBranch = forceCrossBranch;
+        setDoor.otherDoor.forceOutgoing = otherForceOutgoing;
+        setDoor.otherDoor.forceCrossBranch = otherForceCrossBranch;
+    }
 
 
     if (action && action.isAChange()) {
         addUndoAction(action);
     }
-
-    saveModelToUrl();
-    treeUpdated();
 }
 
 function showDoorMarkers() {
@@ -579,9 +572,9 @@ function setAutosave(autosave) {
 	settings.save();
 }
 
-function setLoopChecking(loopChecking) {
+function setLoopChecking(structureChecking) {
     // set the setting first
-    settings.loopChecking = loopChecking;
+    settings.structureChecking = structureChecking;
 
     for (var r = 0; r < roomList.length; r++) {
         var room = roomList[r];
