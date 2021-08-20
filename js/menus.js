@@ -642,6 +642,31 @@ function doRoomMenu(e, rooms) {
     showMenuAt(menuDiv, e.clientX, e.clientY);
 }
 
+
+function doDoorMenu(e, door) {
+    var e = e || window.event;
+
+    clearMenus();
+
+    var menuDiv = buildMenu();
+    menuDiv.appendChild(buildMenuHeaderLine(door.looping ? "Looping Door" : "Door", 3, door.looping ? "icon-warn" : null));
+
+    if (door.forceOutgoing || door.otherDoor.forceOutgoing) {
+        menuDiv.appendChild(buildMenuButton("Reverse", () => { flipForceOutgoingDoor(door)}, "icon-force-outgoing-flip"));
+    } else {
+        menuDiv.appendChild(buildMenuButton("Force Direction", () => { setDoorForceOutgoing(door, true)}, "icon-force-outgoing"));
+    }
+    if (!door.forceCrossBranch) {
+        menuDiv.appendChild(buildMenuButton("Force Cross Branch", () => { setDoorForceCrossBranch(door, true)}, "icon-force-cross-branch"));
+    }
+    if (door.forceOutgoing || door.otherDoor.forceOutgoing || door.forceCrossBranch) {
+        menuDiv.appendChild(buildMenuButton("Reset", () => { resetDoor(door)}, "icon-delete"));
+    }
+
+    showMenuAt(menuDiv, e.clientX, e.clientY);
+}
+
+
 function doShowErrors() {
 	var errButton = getMenuTarget();
 

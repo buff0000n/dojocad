@@ -67,6 +67,143 @@ function getDisplayLabelTextShadow(hue, visible=true) {
 }
 
 //==============================================================
+// data model serialization
+//==============================================================
+
+// needs to be a global regex so all occurrences are replaced
+var quoteRegex = new RegExp('"', "g");
+var newlineRegex = new RegExp('\n', "g");
+
+function getRoomDoorFlags(room) {
+    var hasFlags = false;
+    for (var d = 0; d < room.doors.length; d++) {
+        var door = room.doors[d];
+        if (door.forceOutgoing || door.forceCrossBranch) {
+            hasFlags = true;
+            break;
+        }
+    }
+    if (!hasFlags) {
+        return null;
+    }
+    var flags = "";
+    for (var d = 0; d < room.doors.length; d++) {
+        if (d > 0) flags += ":";
+        var door = room.doors[d];
+        if (door.forceOutgoing) {
+            flags += "o";
+        }
+        if (door.forceCrossBranch) {
+            flags += "c";
+        }
+    }
+    return flags;
+}
+
+function parseRoomDoorFlags(room, flagString) {
+    var doorflags = flagString.split(":");
+    for (var d = 0; d < room.doors.length && d < doorflags.length; d++) {
+        var flags = doorflags[d];
+        var door = room.doors[d];
+        if (flags.includes("o")) {
+            door.forceOutgoing = true;
+        }
+        if (flags.includes("c")) {
+            door.forceCrossBranch = true;
+        }
+    }
+}
+
+function roomToString(room) {
+    var s = room.metadata.id + "," + room.mv.x + "," + room.mv.y + "," + room.floor + "," + (room.rotation / 90)
+    var flags = "";
+    if (room.isDestroyable()) {
+        flags = flags + "d";
+    }
+    if (room.isSpawnPoint()) {
+        flags = flags + "s";
+    }
+    var doorFlags = getRoomDoorFlags(room);
+
+    // hue and label fields are optional
+    if (flags != "" || doorFlags != null || room.hue != null || room.label != null) {
+        // add the hue or blank if it's null
+        s = s + "," + (room.hue == null ? "" : (room.hue[0] + ":" + room.hue[1] + ":" + room.hue[2]));
+        // label is optional
+        if (flags != "" || doorFlags != null || room.label != null) {
+            // we just need to escape quotes, and then put it in quotes
+            s = s + ',' + (room.label ? ('"' + room.label.replace(quoteRegex, '\\"') + '"') : "");
+
+            if (flags != "" || doorFlags != null || room.labelScale != 1) {
+                s = s + ',' + (room.labelScale != 1 ? room.labelScale.toFixed(2) : "");
+
+                if (flags != ""|| doorFlags != null) {
+                    s = s + "," + flags;
+
+                    if (doorFlags != null) {
+                        s = s + "," + doorFlags;
+                    }
+                }
+            }
+        }
+    }
+    return s;
+}
+
+function roomFromString(string) {
+    // split by comma taking into account quotes, removing both commas and quotes
+    var s = quotedSplit(string, ",");
+    var room = new Room(getRoomMetadata(s[0]));
+    // room coordinates may be fractional because of old dojo rooms, floor and rotation are still ints
+    room.setPosition(parseFloat(s[1]), parseFloat(s[2]), parseInt(s[3]), parseInt(s[4]) * 90);
+    // look for optional hue
+    if (s.length > 5) {
+        // blank is null
+        if (s[5].length > 0) {
+            if (s[5].includes(":")) {
+                var h = s[5].split(":");
+                room.setHue([parseInt(h[0]), parseInt(h[1]), parseInt(h[2])]);
+            } else {
+                // backwards compatible with old format with just the hue
+                // try to match saturation and brightness as close as possible
+                room.setHue([parseInt(s[5]), 50, 100]);
+            }
+        }
+        // look for optional label
+        if (s.length > 6) {
+            if (s[6].length > 0) {
+                room.setLabel(s[6]);
+            }
+
+            // look for optional label size
+            if (s.length > 7) {
+                if (s[7].length > 0) {
+                    room.setLabelScale(parseFloat(s[7]));
+                }
+
+                // look for optional flag field
+                // how did it take me this long to add a generic flags field?
+                if (s.length > 8) {
+                    var flags = s[8];
+                    if (flags.includes("d")) {
+                        setRoomDestroyable(room, true, false);
+                    }
+                    if (flags.includes("s")) {
+                        // go through the global method to set the spawn point to make sure there's only one
+                        setSpawnPointRoom(room, false);
+                    }
+                    if (s.length > 9) {
+                        var doorFlags = s[9];
+                        parseRoomDoorFlags(room, doorFlags);
+                    }
+                }
+            }
+        }
+    }
+    return room;
+}
+
+//==============================================================
 // Bound object
 //==============================================================
 
@@ -183,7 +320,13 @@ class Door {
         this.collisions = Array();
 
         this.otherDoor = null;
+
         this.outgoing = false;
+        this.forceOutgoing = false;
+
+        this.crossBranch = false;
+        this.forceCrossBranch = false;
+
         this.looping = false;
 
         this.marker = null;
@@ -265,6 +408,11 @@ class Door {
 			this.disconnectFrom(prevOtherDoor);
 		}
 
+        // sanity check
+		if (this.forceOutgoing && otherDoor.forceOutgoing) {
+            otherDoor.forceOutgoing = false;
+		}
+
 		this.otherDoor = otherDoor;
 		this.otherDoor.connect(this);
 
@@ -326,23 +474,40 @@ class Door {
     }
 
     showArrowMarker() {
-        this.showMarker(this.floor == viewFloor && settings.loopChecking ?
-            this.looping ? "marker-door-loop" : this.outgoing ? "marker-door-outgoing" : null
-            : null);
+        // goddamn this got complicated
+        var base = this.otherDoor == null || this.floor != viewFloor || !settings.loopChecking ? null :
+                   this.forceOutgoing ? "marker-door-force-outgoing" :
+                   this.forceCrossBranch ? "marker-door-force-cross-branch" :
+                   this.looping ? "marker-door-loop" :
+                   this.crossBranch ? "marker-door-cross-branch" :
+                   this.outgoing ? "marker-door-outgoing" :
+                   null;
+
+        if (base) {
+            this.showMarker(base, (e) => { this.onclick(e); });
+
+        } else {
+            this.showMarker(null);
+        }
     }
 
-    showMarker(base) {
+    showMarker(base, onEvent=null) {
         if (!this.marker || this.marker.base != base) {
             this.hideDoorMarker();
 
             if (base) {
-                this.marker = this.room.addDisplayImage(".png", getZIndex(this.room, part_doormarker), base, true);
+                this.marker = this.room.addDisplayImage(".png", getZIndex(this.room, part_doormarker), base, true, onEvent);
             }
         }
 
         if (this.marker) {
             this.updateView();
         }
+    }
+
+    onclick(e) {
+        console.log("marker clickedd");
+        loopingDoorClicked(e, this);
     }
 
     updateView() {
@@ -413,98 +578,11 @@ class Marker {
 }
 
 //==============================================================
-// Room object utils
+// Room object
 //==============================================================
-
-// needs to be a global regex so all occurrences are replaced
-var quoteRegex = new RegExp('"', "g");
-var newlineRegex = new RegExp('\n', "g");
-
-function roomToString(room) {
-    var s = room.metadata.id + "," + room.mv.x + "," + room.mv.y + "," + room.floor + "," + (room.rotation / 90)
-    var flags = "";
-    if (room.isDestroyable()) {
-        flags = flags + "d";
-    }
-    if (room.isSpawnPoint()) {
-        flags = flags + "s";
-    }
-    // hue and label fields are optional
-    if (flags != "" || room.hue != null || room.label != null) {
-        // add the hue or blank if it's null
-        s = s + "," + (room.hue == null ? "" : (room.hue[0] + ":" + room.hue[1] + ":" + room.hue[2]));
-        // label is optional
-        if (flags != "" || room.label != null) {
-            // we just need to escape quotes, and then put it in quotes
-            s = s + ',' + (room.label ? ('"' + room.label.replace(quoteRegex, '\\"') + '"') : "");
-
-            if (flags != "" || room.labelScale != 1) {
-                s = s + ',' + (room.labelScale != 1 ? room.labelScale.toFixed(2) : "");
-
-                if (flags != "") {
-                    s = s + "," + flags;
-                }
-            }
-        }
-    }
-    return s;
-}
-
-function roomFromString(string) {
-    // split by comma taking into account quotes, removing both commas and quotes
-    var s = quotedSplit(string, ",");
-    var room = new Room(getRoomMetadata(s[0]));
-    // room coordinates may be fractional because of old dojo rooms, floor and rotation are still ints
-    room.setPosition(parseFloat(s[1]), parseFloat(s[2]), parseInt(s[3]), parseInt(s[4]) * 90);
-    // look for optional hue
-    if (s.length > 5) {
-        // blank is null
-        if (s[5].length > 0) {
-            if (s[5].includes(":")) {
-                var h = s[5].split(":");
-                room.setHue([parseInt(h[0]), parseInt(h[1]), parseInt(h[2])]);
-            } else {
-                // backwards compatible with old format with just the hue
-                // try to match saturation and brightness as close as possible
-                room.setHue([parseInt(s[5]), 50, 100]);
-            }
-        }
-        // look for optional label
-        if (s.length > 6) {
-            if (s[6].length > 0) {
-                room.setLabel(s[6]);
-            }
-
-            // look for optional label size
-            if (s.length > 7) {
-                if (s[7].length > 0) {
-                    room.setLabelScale(parseFloat(s[7]));
-                }
-
-                // look for optional flag field
-                // how did it take me this long to add a generic flags field?
-                if (s.length > 8) {
-                    var flags = s[8];
-                    if (flags.includes("d")) {
-                        setRoomDestroyable(room, true, false);
-                    }
-                    if (flags.includes("s")) {
-                        // go through the global method to set the spawn point to make sure there's only one
-                        setSpawnPointRoom(room, false);
-                    }
-                }
-            }
-        }
-    }
-    return room;
-}
 
 var roomIdCount = 0;
 var defaultLabelSize = 16;
-
-//==============================================================
-// Room object
-//==============================================================
 
 class Room {
     constructor(metadata) {
@@ -1570,7 +1648,7 @@ class Room {
         }
     }
 
-    addDisplayImage(imageSuffix, zIndex, imageBase = null, marker = false) {
+    addDisplayImage(imageSuffix, zIndex, imageBase = null, marker = false, markerOnEvent = null) {
         if (!imageBase) {
             imageBase = this.getImageBase();
         }
@@ -1587,7 +1665,7 @@ class Room {
         }
         element.src = "img" + imgScale + "x/" + imageBase + imageSuffix;
 
-        return this.addDisplayImageElement(element, zIndex);
+        return this.addDisplayImageElement(element, zIndex, marker, markerOnEvent);
     }
 
     addDisplayLabel(zIndex) {
@@ -1600,15 +1678,29 @@ class Room {
         return this.addDisplayImageElement(element, zIndex);
     }
 
-    addDisplayImageElement(element, zIndex) {
+    addDisplayImageElement(element, zIndex, marker, markerOnEvent) {
         element.style.position = "absolute";
         element.style.zIndex = zIndex;
         element.roomId = this.id;
-		// have to explicitly tell Chrome that none of these listeners are passive or it will cry
-        element.addEventListener("mousedown", mouseDown, { passive: false });
-        element.addEventListener("contextmenu", contextMenu, { passive: false });
-        element.addEventListener("touchstart", touchStart, { passive: false });
-        element.addEventListener("wheel", wheel, { passive: false });
+        if (marker) {
+            if (markerOnEvent) {
+                // it's a marker with a function
+                element.onclick = markerOnEvent;
+
+            } else {
+                // ignore all pointer/touch events this marker and let them fall through
+                // some markers overlap other rooms and it's confusing
+                element.style.pointerEvents = "none";
+                element.style.touchEvents = "none";
+            }
+
+        } else {
+            // have to explicitly tell Chrome that none of these listeners are passive or it will cry
+            element.addEventListener("mousedown", mouseDown, { passive: false });
+            element.addEventListener("contextmenu", contextMenu, { passive: false });
+            element.addEventListener("touchstart", touchStart, { passive: false });
+            element.addEventListener("wheel", wheel, { passive: false });
+        }
         element.room = this;
         this.viewContainer.appendChild(element);
         return element;
@@ -1782,6 +1874,10 @@ class Room {
 
     toString() {
         return this.metadata.id + ":" + this.id + ":(" + this.mv.x + ", " + this.mv.y + ", " + this.floor + ")";
+    }
+
+    toShortString() {
+        return this.metadata.id + ":" + this.id;
     }
 }
 

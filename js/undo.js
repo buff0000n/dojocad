@@ -529,3 +529,56 @@ class SetDestroyableAction extends Action {
 		    + (this.destroyable ? " to destroyable" : " to not destroyable");
 	}
 }
+
+// Just combine all the door state changes into one generic action
+class ChangeDoorAction extends Action {
+	constructor(door1, door2) {
+		super();
+		this.door1 = door1;
+		this.door2 = door2;
+		this.recordFrom();
+	}
+
+	recordFrom() {
+	    this.fromForceOutgoing1 = this.door1.forceOutgoing;
+	    this.fromForceCrossBranch1 = this.door1.forceCrossBranch;
+	    this.fromForceOutgoing2 = this.door2.forceOutgoing;
+	    this.fromForceCrossBranch2 = this.door2.forceCrossBranch;
+	}
+
+	recordTo() {
+	    this.toForceOutgoing1 = this.door1.forceOutgoing;
+	    this.toForceCrossBranch1 = this.door1.forceCrossBranch;
+	    this.toForceOutgoing2 = this.door2.forceOutgoing;
+	    this.toForceCrossBranch2 = this.door2.forceCrossBranch;
+	}
+
+	isAChange() {
+		this.recordTo();
+		return this.fromForceOutgoing1 != this.toForceOutgoing1 || this.fromForceCrossBranch1 != this.toForceCrossBranch1 ||
+		       this.fromForceOutgoing2 != this.toForceOutgoing2 || this.fromForceCrossBranch2 != this.toForceCrossBranch2;
+	}
+
+	undoAction() {
+        this.action(this.fromForceOutgoing1, this.fromForceCrossBranch1, this.fromForceOutgoing2, this.fromForceCrossBranch2);
+	}
+
+	redoAction() {
+        this.action(this.toForceOutgoing1, this.toForceCrossBranch1, this.toForceOutgoing2, this.toForceCrossBranch2);
+	}
+
+	action(toForceOutgoing1, toForceCrossBranch1, toForceOutgoing2, toForceCrossBranch2) {
+        this.door1.forceOutgoing = toForceOutgoing1;
+        this.door1.forceCrossBranch = toForceCrossBranch1;
+        this.door2.forceOutgoing = toForceOutgoing2;
+        this.door2.forceCrossBranch = toForceCrossBranch2;
+
+		saveModelToUrl();
+        treeUpdated();
+	}
+
+	toString() {
+	    // good luck
+		return "State change on door between " + describeRoomList([this.door1.room]) + " and " + describeRoomList([this.door2.room]);
+	}
+}

@@ -394,6 +394,82 @@ function unsetSelectedRoomDestroyable() {
     }
 }
 
+function loopingDoorClicked(e, door) {
+    if (!door.otherDoor) {
+        // ignore
+    }
+
+    e.preventDefault();
+
+    if (door.room.isSelected() == door.otherDoor.room.isSelected()) {
+        // no clear direction, open the menu
+        doDoorMenu(e, door);
+        return;
+    }
+
+    // don't need a menu
+    // pick the door on the selected room
+    door = door.room.isSelected() ? door : door.otherDoor;
+    setDoorForceOutgoing(door, !door.forceOutgoing);
+}
+
+function setDoorForceOutgoing(door, forceOutgoing,  allowUndo=true) {
+    clearMenus(0);
+    var action = !allowUndo ? null : new ChangeDoorAction(door, door.otherDoor);
+
+    door.forceOutgoing = forceOutgoing;
+    door.otherDoor.forceOutgoing = false;
+    door.forceCrossBranch = false;
+    door.otherDoor.forceCrossBranch = false;
+
+    if (action && action.isAChange()) {
+        addUndoAction(action);
+    }
+
+    saveModelToUrl();
+    treeUpdated();
+}
+
+function flipForceOutgoingDoor(door, allowUndo=true) {
+    setDoorForceOutgoing(door.otherDoor, true, allowUndo);
+}
+
+function setDoorForceCrossBranch(door, forceCrossBranch, allowUndo=true) {
+    clearMenus(0);
+    var action = !allowUndo ? null : new ChangeDoorAction(door, door.otherDoor);
+
+    door.forceCrossBranch = forceCrossBranch;
+    door.otherDoor.forceCrossBranch = forceCrossBranch;
+    door.forceOutgoing = false;
+    door.otherDoor.forceOutgoing = false;
+
+
+    if (action && action.isAChange()) {
+        addUndoAction(action);
+    }
+
+    saveModelToUrl();
+    treeUpdated();
+}
+
+function resetDoor(door, allowUndo=true) {
+    clearMenus(0);
+    var action = !allowUndo ? null : new ChangeDoorAction(door, door.otherDoor);
+
+    door.forceOutgoing = false;
+    door.otherDoor.forceOutgoing = false;
+    door.forceCrossBranch = false;
+    door.otherDoor.forceCrossBranch = false;
+
+
+    if (action && action.isAChange()) {
+        addUndoAction(action);
+    }
+
+    saveModelToUrl();
+    treeUpdated();
+}
+
 function showDoorMarkers() {
 	for (var r = 0; r < roomList.length; r++) {
 		roomList[r].showDoorMarkers();
