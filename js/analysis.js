@@ -106,7 +106,8 @@ class TreeStructureCallback extends AbstractTreeTraversalCallback {
         room.looped = false;
         for (var d = 0; d < room.doors.length; d++) {
             var door = room.doors[d];
-            door.outgoing = door.forceOutgoing;
+//            door.outgoing = door.forceOutgoing;
+            door.outgoing = false;
             door.crossBranch = door.forceCrossBranch;
             door.looping = false;
         }
@@ -125,7 +126,8 @@ class TreeStructureCallback extends AbstractTreeTraversalCallback {
         for (var d = 0; d < incomingDoors.length; d++) {
             incomingDoors[d].otherDoor.outgoing = true;
         }
-        return !room.isDestroyable();
+//        return !room.isDestroyable();
+        return true;
     }
 
     processLoop(room, incomingDoors) {
@@ -138,12 +140,17 @@ class TreeStructureCallback extends AbstractTreeTraversalCallback {
 
     postProcess(room) {
         // post-process on all rooms: check if any connected flags are not set
+
+        // skip label objects
+        if (room.metadata.num == 0) {
+            return;
+        }
+
         if (room.connected) {
             // remove any disconnected warnings
             room.removeRuleWarning(disconnectedRule);
 
-        // if the room isn't a label object then count it as disconneted
-        } else if (room.metadata.num != 0) {
+        } else {
             // if the room is not connected, add a warning
             room.addRuleWarning(disconnectedRule);
             // increment the count
@@ -233,7 +240,7 @@ function getDoorsToRoom(room, toRoom) {
 }
 
 //////////////////////////////////////////////////////////////////////////
-// relatively generic tree traversal function
+// depth-first generic tree traversal function
 //////////////////////////////////////////////////////////////////////////
 
 // track running traversals
@@ -455,10 +462,11 @@ class TreeTraversal {
                         // find connected doors, but not ones that are forced incoming,
                         // not ones that are forced cross branches, and not the doors we came in on
                         if (door.otherDoor) {
-                            if (door.otherDoor.forceOutgoing) {
-                                // console.log("Skipping forced incoming door to " + door.otherDoor.room.toShortString());
-                                continue;
-                            } else if (door.otherDoor.outgoing) {
+//                            if (door.otherDoor.forceOutgoing) {
+//                                // console.log("Skipping forced incoming door to " + door.otherDoor.room.toShortString());
+//                                continue;
+//                            }
+                            if (door.otherDoor.outgoing) {
                                 // console.log("Skipping already incoming door to " + door.otherDoor.room.toShortString());
                                 continue;
                             } else if (door.crossBranch) {

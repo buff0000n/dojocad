@@ -371,33 +371,33 @@ function unsetSelectedRoomSpawn() {
     }
 }
 
-function setRoomDestroyable(destroyableRoom, destroyable, allowUndo=true) {
-    destroyableRoom.setDestroyable(destroyable);
-
-    if (allowUndo) {
-        addUndoAction(new SetDestroyableAction(destroyableRoom, destroyable));
-    }
-}
-
-function setSelectedRoomDestroyable() {
-    if (selectedRooms.length == 1) {
-        var room = selectedRooms[0];
-        clearMenus(0);
-        setRoomDestroyable(room, true);
-    	saveModelToUrl();
-    	treeUpdated();
-    }
-}
-
-function unsetSelectedRoomDestroyable() {
-    if (selectedRooms.length == 1) {
-        var room = selectedRooms[0];
-        clearMenus(0);
-        setRoomDestroyable(room, false, true);
-    	saveModelToUrl();
-    	treeUpdated();
-    }
-}
+//function setRoomDestroyable(destroyableRoom, destroyable, allowUndo=true) {
+//    destroyableRoom.setDestroyable(destroyable);
+//
+//    if (allowUndo) {
+//        addUndoAction(new SetDestroyableAction(destroyableRoom, destroyable));
+//    }
+//}
+//
+//function setSelectedRoomDestroyable() {
+//    if (selectedRooms.length == 1) {
+//        var room = selectedRooms[0];
+//        clearMenus(0);
+//        setRoomDestroyable(room, true);
+//    	saveModelToUrl();
+//    	treeUpdated();
+//    }
+//}
+//
+//function unsetSelectedRoomDestroyable() {
+//    if (selectedRooms.length == 1) {
+//        var room = selectedRooms[0];
+//        clearMenus(0);
+//        setRoomDestroyable(room, false, true);
+//    	saveModelToUrl();
+//    	treeUpdated();
+//    }
+//}
 
 function doorClicked(e, door) {
     if (!door.otherDoor) {
@@ -419,23 +419,24 @@ function doorClicked(e, door) {
 
 }
 
-function setDoorForceOutgoing(door, forceOutgoing,  allowUndo=true) {
-    clearMenus(0);
+//function setDoorForceOutgoing(door, forceOutgoing,  allowUndo=true) {
+//    clearMenus(0);
+//
+//    setDoorState(door, forceOutgoing, false, allowUndo);
+//
+//    saveModelToUrl();
+//    treeUpdated();
+//}
 
-    setDoorState(door, forceOutgoing, false, allowUndo);
-
-    saveModelToUrl();
-    treeUpdated();
-}
-
-function flipForceOutgoingDoor(door, allowUndo=true) {
-    setDoorForceOutgoing(door.otherDoor, true, allowUndo);
-}
+//function flipForceOutgoingDoor(door, allowUndo=true) {
+//    setDoorForceOutgoing(door.otherDoor, true, allowUndo);
+//}
 
 function setDoorForceCrossBranch(door, forceCrossBranch, allowUndo=true) {
     clearMenus(0);
 
-    setDoorState(door, null, forceCrossBranch, allowUndo);
+//    setDoorState(door, null, forceCrossBranch, allowUndo);
+    setDoorState(door, forceCrossBranch, allowUndo);
 
     saveModelToUrl();
     treeUpdated();
@@ -444,20 +445,22 @@ function setDoorForceCrossBranch(door, forceCrossBranch, allowUndo=true) {
 function resetDoor(door, allowUndo=true) {
     clearMenus(0);
 
-    setDoorState(door, null, false, allowUndo);
+//    setDoorState(door, null, false, allowUndo);
+    setDoorState(door, false, allowUndo);
 
     saveModelToUrl();
     treeUpdated();
 }
 
-function setDoorState(door, forceOutgoing, forceCrossBranch, allowUndo=true) {
+//function setDoorState(door, forceOutgoing, forceCrossBranch, allowUndo=true) {
+function setDoorState(door, forceCrossBranch, allowUndo=true) {
     var action = !allowUndo ? null : new ChangeDoorAction(door);
 
     // need to make sure all the doors that go between the same two rooms have the same state
     var doors = getDoorsToRoom(door.room, door.otherDoor.room);
     for (var d = 0; d < doors.length; d++) {
         var setDoor = doors[d];
-        setDoor.setForceOutgoing(forceOutgoing);
+//        setDoor.setForceOutgoing(forceOutgoing);
         setDoor.setForceCrossBranch(forceCrossBranch);
     }
 

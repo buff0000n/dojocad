@@ -609,16 +609,16 @@ function doRoomMenu(e, rooms) {
         if (room.isSpawnPoint()) {
             menuDiv.appendChild(buildMenuButton("Remove Spawn Point", unsetSelectedRoomSpawn, "icon-spawn-delete"));
 
-        } else if (room.isDestroyable()) {
-            menuDiv.appendChild(buildMenuButton("Unset Destroyable", unsetSelectedRoomDestroyable, "icon-unset-destroyable"));
+//        } else if (room.isDestroyable()) {
+//            menuDiv.appendChild(buildMenuButton("Unset Destroyable", unsetSelectedRoomDestroyable, "icon-unset-destroyable"));
 
         } else {
             if (room.metadata.spawn) {
                 menuDiv.appendChild(buildMenuButton("Set Spawn Point", setSelectedRoomSpawn, "icon-spawn"));
             }
-            if (settings.structureChecking && getCurrentSpawnRoom()) {
-                menuDiv.appendChild(buildMenuButton("Set Destroyable", setSelectedRoomDestroyable, "icon-set-destroyable"));
-            }
+//            if (settings.structureChecking && getCurrentSpawnRoom()) {
+//                menuDiv.appendChild(buildMenuButton("Set Destroyable", setSelectedRoomDestroyable, "icon-set-destroyable"));
+//            }
         }
     }
 
@@ -651,16 +651,17 @@ function doDoorMenu(e, door) {
     var menuDiv = buildMenu();
     menuDiv.appendChild(buildMenuHeaderLine(door.looping ? "Looping Door" : "Door", 3, door.looping ? "icon-warn" : null));
 
-    if (door.forceOutgoing || door.otherDoor.forceOutgoing) {
-        menuDiv.appendChild(buildMenuButton("Reverse", () => { flipForceOutgoingDoor(door)}, "icon-force-outgoing-flip"));
-    } else {
-        menuDiv.appendChild(buildMenuButton("Force Direction", () => { setDoorForceOutgoing(door, true)}, "icon-force-outgoing"));
-    }
+//    if (door.forceOutgoing || door.otherDoor.forceOutgoing) {
+//        menuDiv.appendChild(buildMenuButton("Reverse", () => { flipForceOutgoingDoor(door)}, "icon-force-outgoing-flip"));
+//    } else {
+//        menuDiv.appendChild(buildMenuButton("Force Direction", () => { setDoorForceOutgoing(door, true)}, "icon-force-outgoing"));
+//    }
     if (!door.forceCrossBranch) {
-        menuDiv.appendChild(buildMenuButton("Force Cross Branch", () => { setDoorForceCrossBranch(door, true)}, "icon-force-cross-branch"));
+        menuDiv.appendChild(buildMenuButton("Cross Branch", () => { setDoorForceCrossBranch(door, true)}, "icon-force-cross-branch"));
     }
-    if (door.forceOutgoing || door.otherDoor.forceOutgoing || door.forceCrossBranch) {
-        menuDiv.appendChild(buildMenuButton("Reset", () => { resetDoor(door)}, "icon-delete"));
+//    if (door.forceOutgoing || door.otherDoor.forceOutgoing || door.forceCrossBranch) {
+    if (door.forceCrossBranch) {
+        menuDiv.appendChild(buildMenuButton("Reset", () => { resetDoor(door)}, "icon-force-cross-branch-reset"));
     }
 
     showMenuAt(menuDiv, e.clientX, e.clientY);

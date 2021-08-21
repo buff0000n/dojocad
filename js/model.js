@@ -78,7 +78,8 @@ function getRoomDoorFlags(room) {
     var hasFlags = false;
     for (var d = 0; d < room.doors.length; d++) {
         var door = room.doors[d];
-        if (door.forceOutgoing || door.forceCrossBranch) {
+//        if (door.forceOutgoing || door.forceCrossBranch) {
+        if (door.forceCrossBranch) {
             hasFlags = true;
             break;
         }
@@ -90,11 +91,11 @@ function getRoomDoorFlags(room) {
     for (var d = 0; d < room.doors.length; d++) {
         if (d > 0) flags += ":";
         var door = room.doors[d];
-        if (door.forceOutgoing) {
-            flags += "o";
-        }
+//        if (door.forceOutgoing) {
+//            flags += "o";
+//        }
         if (door.forceCrossBranch) {
-            flags += "c";
+            flags += "x";
         }
     }
     return flags;
@@ -105,10 +106,10 @@ function parseRoomDoorFlags(room, flagString) {
     for (var d = 0; d < room.doors.length && d < doorflags.length; d++) {
         var flags = doorflags[d];
         var door = room.doors[d];
-        if (flags.includes("o")) {
-            door.forceOutgoing = true;
-        }
-        if (flags.includes("c")) {
+//        if (flags.includes("o")) {
+//            door.forceOutgoing = true;
+//        }
+        if (flags.includes("x")) {
             door.forceCrossBranch = true;
         }
     }
@@ -117,9 +118,9 @@ function parseRoomDoorFlags(room, flagString) {
 function roomToString(room) {
     var s = room.metadata.id + "," + room.mv.x + "," + room.mv.y + "," + room.floor + "," + (room.rotation / 90)
     var flags = "";
-    if (room.isDestroyable()) {
-        flags = flags + "d";
-    }
+//    if (room.isDestroyable()) {
+//        flags = flags + "d";
+//    }
     if (room.isSpawnPoint()) {
         flags = flags + "s";
     }
@@ -185,9 +186,9 @@ function roomFromString(string) {
                 // how did it take me this long to add a generic flags field?
                 if (s.length > 8) {
                     var flags = s[8];
-                    if (flags.includes("d")) {
-                        setRoomDestroyable(room, true, false);
-                    }
+//                    if (flags.includes("d")) {
+//                        setRoomDestroyable(room, true, false);
+//                    }
                     if (flags.includes("s")) {
                         // go through the global method to set the spawn point to make sure there's only one
                         setSpawnPointRoom(room, false);
@@ -322,8 +323,8 @@ class Door {
         this.otherDoor = null;
 
         this.outgoing = false;
-        // ternary: null = not set, true = force outgoing, false = force incoming
-        this.forceOutgoing = null;
+//        // ternary: null = not set, true = force outgoing, false = force incoming
+//        this.forceOutgoing = null;
 
         this.crossBranch = false;
         this.forceCrossBranch = false;
@@ -364,14 +365,14 @@ class Door {
 		}
 	}
 
-	setForceOutgoing(forceOutgoing) {
-	    if (this.otherDoor) {
-	        this.forceOutgoing = forceOutgoing;
-	        this.otherDoor.forceOutgoing = forceOutgoing == null ? null : !forceOutgoing;
-	    } else if (forceOutgoing == null) {
-	        this.forceOutgoing = null;
-	    }
-	}
+//	setForceOutgoing(forceOutgoing) {
+//	    if (this.otherDoor) {
+//	        this.forceOutgoing = forceOutgoing;
+//	        this.otherDoor.forceOutgoing = forceOutgoing == null ? null : !forceOutgoing;
+//	    } else if (forceOutgoing == null) {
+//	        this.forceOutgoing = null;
+//	    }
+//	}
 
 	setForceCrossBranch(forceCrossBranch) {
 	    if (this.otherDoor) {
@@ -427,10 +428,10 @@ class Door {
 			this.disconnectFrom(prevOtherDoor);
 		}
 
-        // sanity checks, this should only matter when loading a layout
-		if (this.forceOutgoing != null) {
-            otherDoor.forceOutgoing = !this.forceOutgoing;
-		}
+//        // sanity checks, this should only matter when loading a layout
+//		if (this.forceOutgoing != null) {
+//            otherDoor.forceOutgoing = !this.forceOutgoing;
+//		}
 		if (this.forceCrossBranch) {
 		    otherDoor.forceCrossBranch = true;
 		}
@@ -454,7 +455,7 @@ class Door {
 		this.otherDoor = null;
 		otherDoor.disconnectFrom(this);
 
-        this.forceOutgoing = null;
+//        this.forceOutgoing = null;
         this.forceCrossBranch = false;
 		this.removeCollision(otherDoor);
 
@@ -468,7 +469,8 @@ class Door {
 		if (!this.otherDoor) {
 			return null;
 		}
-		var save = [this, this.otherDoor, this.forceOutgoing, this.forceCrossBranch];
+//		var save = [this, this.otherDoor, this.forceOutgoing, this.forceCrossBranch];
+		var save = [this, this.otherDoor, this.forceCrossBranch];
 		this.disconnectFrom(this.otherDoor);
 		return save;
 	}
@@ -476,8 +478,9 @@ class Door {
 	reconnect(save) {
 		if (save[0] == this) {
 			this.connect(save[1]);
-			this.setForceOutgoing(save[2]);
-			this.setForceCrossBranch(save[3]);
+//			this.setForceOutgoing(save[2]);
+//			this.setForceCrossBranch(save[3]);
+			this.setForceCrossBranch(save[2]);
 		}
 	}
 
@@ -499,7 +502,7 @@ class Door {
     showArrowMarker() {
         // goddamn this got complicated
         var base = this.otherDoor == null || this.floor != viewFloor || !settings.structureChecking ? null :
-                   this.forceOutgoing ? "marker-door-force-outgoing" :
+//                   this.forceOutgoing ? "marker-door-force-outgoing" :
                    this.forceCrossBranch ? "marker-door-force-cross-branch" :
                    this.looping ? "marker-door-loop" :
                    this.crossBranch ? "marker-door-cross-branch" :
@@ -617,7 +620,7 @@ class Room {
         this.dragging = false;
         this.placed = false;
         this.spawn = false;
-        this.destroyable = false;
+//        this.destroyable = false;
 
         this.ignoreRooms = null;
 
@@ -686,7 +689,7 @@ class Room {
                     spawnMarker.updateView();
                 }
                 this.spawn = true;
-                this.setDestroyable(false);
+//                this.setDestroyable(false);
             } else {
                 var index = this.markers.findIndex((marker) => marker.metadata == spawnMarkerMetadata);
                 if (index != -1) {
@@ -705,39 +708,39 @@ class Room {
         return this.spawn;
     }
 
-    setDestroyable(destroyable) {
-        if (destroyable != this.destroyable) {
-            if (destroyable) {
-                // appears on floor 0 relative to the room's base floor
-                // this marker is conditional on whether loop checking is enabled
-                var destroyableMarker = new Marker(this, 0, destroyableMarkerMetadata, () => settings.structureChecking);
-                this.markers.push(destroyableMarker);
-                // this can be set before the room is actually displayed
-                if (this.viewContainer) {
-                    // have to update position first
-                    destroyableMarker.updatePosition();
-                    destroyableMarker.addDisplay(this.viewContainer);
-                    destroyableMarker.updateView();
-                }
-                this.destroyable = true;
-
-            } else {
-                var index = this.markers.findIndex((marker) => marker.metadata == destroyableMarkerMetadata);
-                if (index != -1) {
-                    var destroyableMarker = this.markers[index];
-                    this.markers.splice(index, 1);
-                    if (this.viewContainer) {
-                        destroyableMarker.removeDisplay(this.viewContainer);
-                    }
-                }
-                this.destroyable = false;
-            }
-        }
-    }
-
-    isDestroyable() {
-        return this.destroyable;
-    }
+//    setDestroyable(destroyable) {
+//        if (destroyable != this.destroyable) {
+//            if (destroyable) {
+//                // appears on floor 0 relative to the room's base floor
+//                // this marker is conditional on whether loop checking is enabled
+//                var destroyableMarker = new Marker(this, 0, destroyableMarkerMetadata, () => settings.structureChecking);
+//                this.markers.push(destroyableMarker);
+//                // this can be set before the room is actually displayed
+//                if (this.viewContainer) {
+//                    // have to update position first
+//                    destroyableMarker.updatePosition();
+//                    destroyableMarker.addDisplay(this.viewContainer);
+//                    destroyableMarker.updateView();
+//                }
+//                this.destroyable = true;
+//
+//            } else {
+//                var index = this.markers.findIndex((marker) => marker.metadata == destroyableMarkerMetadata);
+//                if (index != -1) {
+//                    var destroyableMarker = this.markers[index];
+//                    this.markers.splice(index, 1);
+//                    if (this.viewContainer) {
+//                        destroyableMarker.removeDisplay(this.viewContainer);
+//                    }
+//                }
+//                this.destroyable = false;
+//            }
+//        }
+//    }
+//
+//    isDestroyable() {
+//        return this.destroyable;
+//    }
 
     refreshMarkers() {
         // super damn hack
@@ -1952,7 +1955,7 @@ function cloneRooms(rooms, reposition=true) {
         newRoom.label = room.label;
         newRoom.labelScale = room.labelScale;
         newRoom.hue = room.hue;
-        // Do not clone spawn, destroyable, or door properties
+        // Do not clone spawn or door properties
         // add the new room
         newRooms.push(newRoom);
     }
