@@ -322,7 +322,8 @@ class Door {
         this.otherDoor = null;
 
         this.outgoing = false;
-        this.forceOutgoing = false;
+        // ternary: null = not set, true = force outgoing, false = force incoming
+        this.forceOutgoing = null;
 
         this.crossBranch = false;
         this.forceCrossBranch = false;
@@ -361,6 +362,24 @@ class Door {
 			this.debugBorder.remove();
 			this.debugBorder = null;
 		}
+	}
+
+	setForceOutgoing(forceOutgoing) {
+	    if (this.otherDoor) {
+	        this.forceOutgoing = forceOutgoing;
+	        this.otherDoor.forceOutgoing = forceOutgoing == null ? null : !forceOutgoing;
+	    } else if (forceOutgoing == null) {
+	        this.forceOutgoing = null;
+	    }
+	}
+
+	setForceCrossBranch(forceCrossBranch) {
+	    if (this.otherDoor) {
+	        this.forceCrossBranch = forceCrossBranch;
+	        this.otherDoor.forceCrossBranch = forceCrossBranch;
+	    } else if (!forceCrossBranch) {
+	        this.forceCrossBranch = false;
+	    }
 	}
 
 	addCollision(otherDoor) {
@@ -408,9 +427,12 @@ class Door {
 			this.disconnectFrom(prevOtherDoor);
 		}
 
-        // sanity check
-		if (this.forceOutgoing && otherDoor.forceOutgoing) {
-            otherDoor.forceOutgoing = false;
+        // sanity checks, this should only matter when loading a layout
+		if (this.forceOutgoing != null) {
+            otherDoor.forceOutgoing = !this.forceOutgoing;
+		}
+		if (this.forceCrossBranch) {
+		    otherDoor.forceCrossBranch = true;
 		}
 
 		this.otherDoor = otherDoor;
@@ -432,6 +454,8 @@ class Door {
 		this.otherDoor = null;
 		otherDoor.disconnectFrom(this);
 
+        this.forceOutgoing = null;
+        this.forceCrossBranch = false;
 		this.removeCollision(otherDoor);
 
         if (this.debugBorder && this.room.isOnFloor()) {
@@ -444,7 +468,7 @@ class Door {
 		if (!this.otherDoor) {
 			return null;
 		}
-		var save = [this, this.otherDoor];
+		var save = [this, this.otherDoor, this.forceOutgoing, this.forceCrossBranch];
 		this.disconnectFrom(this.otherDoor);
 		return save;
 	}
@@ -452,6 +476,8 @@ class Door {
 	reconnect(save) {
 		if (save[0] == this) {
 			this.connect(save[1]);
+			this.setForceOutgoing(save[2]);
+			this.setForceCrossBranch(save[3]);
 		}
 	}
 
@@ -467,10 +493,7 @@ class Door {
     }
 
     hideDoorMarker() {
-        if (this.marker) {
-            this.marker.remove();
-            this.marker = null;
-        }
+        this.showArrowMarker();
     }
 
     showArrowMarker() {
@@ -488,7 +511,10 @@ class Door {
 
     showMarker(base) {
         if (!this.marker || this.marker.base != base) {
-            this.hideDoorMarker();
+            if (this.marker) {
+                this.marker.remove();
+                this.marker = null;
+            }
 
             if (base) {
                 this.marker = this.room.addDisplayImage(".png", getZIndex(this.room, part_doormarker), base, true);
@@ -2106,22 +2132,6 @@ class Position {
 
     toVect() {
         return new Vect(this.MX, this.MY);
-    }
-
-    equals(other) {
-		return this.MX == other.MX
-				&& this.MY == other.MY
-				&& this.Floor == other.Floor
-				&& this.R == other.R;
-    }
-}
-
-class RoomPosition extends Position {
-    constructor(room) {
-        super(room.mv.x,
-            room.mv.y,
-            room.floor,
-            room.rotation);
     }
 
     equals(other) {

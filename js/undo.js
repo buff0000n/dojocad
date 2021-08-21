@@ -201,18 +201,65 @@ function describeRoomList(rooms) {
     return rooms.length + " rooms";
 }
 
+class DoorState {
+    constructor(door) {
+        this.forceOutgoing = door.forceOutgoing;
+        this.forceCrossBranch = door.forceCrossBranch;
+    }
+
+    equals(other) {
+        return this.forceOutgoing == other.forceOutgoing &&
+               this.forceCrossBranch == other.forceCrossBranch;
+    }
+}
+
+class RoomDoorPosition extends Position {
+    constructor(room) {
+        super(room.mv.x,
+            room.mv.y,
+            room.floor,
+            room.rotation);
+        this.doorStates = [];
+        for (var d = 0; d < room.doors.length; d++) {
+            this.doorStates.push(new DoorState(room.doors[d]));
+        }
+    }
+
+    applyDoorStates(room) {
+        for (var d = 0; d < this.doorStates.length; d++) {
+            var doorState = this.doorStates[d];
+            var door = room.doors[d];
+            door.setForceOutgoing(doorState.forceOutgoing);
+            door.setForceCrossBranch(doorState.forceCrossBranch);
+        }
+    }
+
+    equals(other) {
+		if (!(this.MX == other.MX
+				&& this.MY == other.MY
+				&& this.Floor == other.Floor
+				&& this.R == other.R)) return false;
+        if (this.doorStates.length != other.doorStates.length) return false;
+        for (var d = 0; d < this.doorStates.length; d++) {
+            if (!this.doorStates[d].equals(other.doorStates[d])) return false;
+        }
+        return true;
+    }
+}
+
 class MoveRoomAction extends Action {
+    // todo: worry about door settings
 	constructor(rooms) {
 		super();
 		this.rooms = rooms;
 		this.recordFrom(this.rooms);
 	}
-	
+
 	recordFrom() {
 	    // record the starting positions for all rooms
 	    this.from = [];
 	    for (var r = 0; r < this.rooms.length; r++) {
-	        this.from.push(new RoomPosition(this.rooms[r]));
+	        this.from.push(new RoomDoorPosition(this.rooms[r]));
 	    }
 	    // calculate the center point of the starting room positions
 	    this.fromBounds = new DojoBounds(this.rooms);
@@ -222,7 +269,7 @@ class MoveRoomAction extends Action {
 	    // record the ending positions for all rooms
 	    this.to = [];
 	    for (var r = 0; r < this.rooms.length; r++) {
-	        this.to.push(new RoomPosition(this.rooms[r]));
+	        this.to.push(new RoomDoorPosition(this.rooms[r]));
 	    }
 	    // calculate the center point of the ending room positions
 	    this.toBounds = new DojoBounds(this.rooms);
@@ -261,7 +308,7 @@ class MoveRoomAction extends Action {
             if (from[r].Floor != to[r].Floor) {
                 addFloorRoom(room);
             }
-
+	        to[r].applyDoorStates(this.rooms[r]);
             room.updateView();
 	    }
 
@@ -273,6 +320,199 @@ class MoveRoomAction extends Action {
 
 	toString() {
 		return "Move " + describeRoomList(this.rooms);
+	}
+}
+
+class AddDeleteRoomsAction extends Action {
+	constructor(rooms, add) {
+		super();
+		this.rooms = rooms;
+		// remember the center position
+		this.fromBounds = new DojoBounds(rooms);
+		this.toBounds = this.fromBounds;
+		// remember all the room positions
+		this.records = [];
+		for (var r = 0; r < this.rooms.length; r++) {
+		    this.records.push(new RoomDoorPosition(this.rooms[r]));
+		}
+		this.add = add;
+	}
+
+	undoAction() {
+		this.doAction(false);
+	}
+
+	redoAction() {
+		this.doAction(true);
+	}
+
+	doAction(redo) {
+		// there's no logical XOR in Javascript?!
+		if (!this.add && redo) this.removeAction();
+		else if (!this.add && !redo) this.addAction();
+		else if (this.add && redo) this.addAction();
+		else if (this.add && !redo) this.removeAction();
+	}
+
+	addAction() {
+	    for (var r = 0; r < this.rooms.length; r++) {
+            addRoom(this.rooms[r]);
+            // hax to force it to think the floor has changed and setup its display
+            this.rooms[r].floor = 100;
+            this.rooms[r].setPositionAndConnectDoors(this.records[r].MX, this.records[r].MY, this.records[r].Floor, this.records[r].R);
+	        this.records[r].applyDoorStates(this.rooms[r]);
+            // select the rooms
+            this.rooms[r].updateView();
+	    }
+	    // use the selectRooms() function, not sure why I was doing this directly before
+        selectRooms(this.rooms, false, false);
+
+		saveModelToUrl();
+        treeUpdated();
+	}
+
+	removeAction() {
+	    for (var r = 0; r < this.rooms.length; r++) {
+            this.rooms[r].deselect();
+    	    removeRoom(this.rooms[r], false);
+    	    // clear selection
+            selectedRooms = [];
+	    }
+
+		saveModelToUrl();
+        treeUpdated();
+	}
+
+	toString() {
+		return (this.add ? "Add " : "Delete ") + describeRoomList(this.rooms);
+	}
+}
+
+class SelectionAction extends Action {
+	constructor(oldSelections, newSelections) {
+		super();
+		// remenber old selection and center
+		this.oldSelections = oldSelections;
+		this.fromBounds = this.oldSelections && this.oldSelections.length > 0 ?
+		    new DojoBounds(this.oldSelections) :
+		    null;
+		// remenber new selection and center
+		this.newSelections = newSelections;
+		this.toBounds = this.newSelections && this.newSelections.length > 0 ?
+		    new DojoBounds(this.newSelections) :
+		    null;
+	}
+
+	undoAction() {
+		selectRooms(this.oldSelections, false, false);
+	}
+
+	redoAction() {
+		selectRooms(this.newSelections, false, false);
+	}
+
+	toString() {
+		return (this.oldSelections ? ("Deselect " + describeRoomList(this.oldSelections)) : "") + ", " +
+    		(this.newSelections ? ("Select " + describeRoomList(this.newSelections)) : "");
+	}
+}
+
+class ChangeSpawnPointAction extends Action {
+	constructor(fromRoom, toRoom) {
+		super();
+		this.from = fromRoom;
+		this.to = toRoom;
+	}
+
+	undoAction() {
+        this.action(this.to, this.from);
+	}
+
+	redoAction() {
+        this.action(this.from, this.to);
+	}
+
+	action(from, to) {
+        setSpawnPointRoom(to, false);
+		saveModelToUrl();
+        treeUpdated();
+	}
+
+	toString() {
+		return "Change spawn point from "
+		    + describeRoomList(this.from ? [this.from] : null) + " to "
+		    + describeRoomList(this.to ? [this.to] : null);
+	}
+}
+
+class SetDestroyableAction extends Action {
+	constructor(room, destroyable) {
+		super();
+		this.room = room;
+		this.destroyable = destroyable;
+	}
+
+	undoAction() {
+        this.action(!this.destroyable);
+	}
+
+	redoAction() {
+        this.action(this.destroyable);
+	}
+
+	action(set) {
+        setRoomDestroyable(this.room, set, false);
+		saveModelToUrl();
+        treeUpdated();
+	}
+
+	toString() {
+		return "Set room " + describeRoomList([this.room])
+		    + (this.destroyable ? " to destroyable" : " to not destroyable");
+	}
+}
+
+// Just combine all the door state changes into one generic action
+class ChangeDoorAction extends Action {
+	constructor(door) {
+		super();
+		this.door = door;
+		this.recordFrom();
+	}
+
+	recordFrom() {
+	    this.fromForceOutgoing = this.door.forceOutgoing;
+	    this.fromForceCrossBranch = this.door.forceCrossBranch;
+	}
+
+	recordTo() {
+	    this.toForceOutgoing = this.door.forceOutgoing;
+	    this.toForceCrossBranch = this.door.forceCrossBranch;
+	}
+
+	isAChange() {
+		this.recordTo();
+		return this.fromForceOutgoing != this.toForceOutgoing || this.fromForceCrossBranch != this.toForceCrossBranch;
+	}
+
+	undoAction() {
+        this.action(this.fromForceOutgoing, this.fromForceCrossBranch);
+	}
+
+	redoAction() {
+        this.action(this.toForceOutgoing, this.toForceCrossBranch);
+	}
+
+	action(toForceOutgoing, toForceCrossBranch, toForceOutgoingOther, toForceCrossBranchOther) {
+	    setDoorState(this.door, toForceOutgoing, toForceCrossBranch);
+
+		saveModelToUrl();
+        treeUpdated();
+	}
+
+	toString() {
+	    // good luck
+		return "State change on door(s) between " + describeRoomList([this.door.room]) + " and " + describeRoomList([this.door.otherDoor.room]);
 	}
 }
 
@@ -382,199 +622,5 @@ class ChangeLabelAction extends Action {
 
 	toString() {
 		return "Change label on " + describeRoomList(this.rooms);
-	}
-}
-
-class AddDeleteRoomsAction extends Action {
-	constructor(rooms, add) {
-		super();
-		this.rooms = rooms;
-		// remember the center position
-		this.fromBounds = new DojoBounds(rooms);
-		this.toBounds = this.fromBounds;
-		// remember all the room positions
-		this.records = [];
-		for (var r = 0; r < this.rooms.length; r++) {
-		    this.records.push(new RoomPosition(this.rooms[r]));
-		}
-		this.add = add;
-	}
-
-	undoAction() {
-		this.doAction(false);
-	}
-
-	redoAction() {
-		this.doAction(true);
-	}
-
-	doAction(redo) {
-		// there's no logical XOR in Javascript?!
-		if (!this.add && redo) this.removeAction();
-		else if (!this.add && !redo) this.addAction();
-		else if (this.add && redo) this.addAction();
-		else if (this.add && !redo) this.removeAction();
-	}
-
-	addAction() {
-	    for (var r = 0; r < this.rooms.length; r++) {
-            addRoom(this.rooms[r]);
-            // hax to force it to think the floor has changed and setup its display
-            this.rooms[r].floor = 100;
-            this.rooms[r].setPositionAndConnectDoors(this.records[r].MX, this.records[r].MY, this.records[r].Floor, this.records[r].R);
-            // select the rooms
-            this.rooms[r].updateView();
-	    }
-	    // use the selectRooms() function, not sure why I was doing this directly before
-        selectRooms(this.rooms, false, false);
-
-		saveModelToUrl();
-        treeUpdated();
-	}
-
-	removeAction() {
-	    for (var r = 0; r < this.rooms.length; r++) {
-            this.rooms[r].deselect();
-    	    removeRoom(this.rooms[r]);
-    	    // clear selection
-            selectedRooms = [];
-	    }
-	}
-
-	toString() {
-		return (this.add ? "Add " : "Delete ") + describeRoomList(this.rooms);
-	}
-}
-
-class SelectionAction extends Action {
-	constructor(oldSelections, newSelections) {
-		super();
-		// remenber old selection and center
-		this.oldSelections = oldSelections;
-		this.fromBounds = this.oldSelections && this.oldSelections.length > 0 ?
-		    new DojoBounds(this.oldSelections) :
-		    null;
-		// remenber new selection and center
-		this.newSelections = newSelections;
-		this.toBounds = this.newSelections && this.newSelections.length > 0 ?
-		    new DojoBounds(this.newSelections) :
-		    null;
-	}
-
-	undoAction() {
-		selectRooms(this.oldSelections, false, false);
-	}
-
-	redoAction() {
-		selectRooms(this.newSelections, false, false);
-	}
-
-	toString() {
-		return (this.oldSelections ? ("Deselect " + describeRoomList(this.oldSelections)) : "") + ", " +
-    		(this.newSelections ? ("Select " + describeRoomList(this.newSelections)) : "");
-	}
-}
-
-class ChangeSpawnPointAction extends Action {
-	constructor(fromRoom, toRoom) {
-		super();
-		this.from = fromRoom;
-		this.to = toRoom;
-	}
-
-	undoAction() {
-        this.action(this.to, this.from);
-	}
-
-	redoAction() {
-        this.action(this.from, this.to);
-	}
-
-	action(from, to) {
-        setSpawnPointRoom(to, false);
-		saveModelToUrl();
-        treeUpdated();
-	}
-
-	toString() {
-		return "Change spawn point from "
-		    + describeRoomList(this.from ? [this.from] : null) + " to "
-		    + describeRoomList(this.to ? [this.to] : null);
-	}
-}
-
-class SetDestroyableAction extends Action {
-	constructor(room, destroyable) {
-		super();
-		this.room = room;
-		this.destroyable = destroyable;
-	}
-
-	undoAction() {
-        this.action(!this.destroyable);
-	}
-
-	redoAction() {
-        this.action(this.destroyable);
-	}
-
-	action(set) {
-        setRoomDestroyable(this.room, set, false);
-		saveModelToUrl();
-        treeUpdated();
-	}
-
-	toString() {
-		return "Set room " + describeRoomList([this.room])
-		    + (this.destroyable ? " to destroyable" : " to not destroyable");
-	}
-}
-
-// Just combine all the door state changes into one generic action
-class ChangeDoorAction extends Action {
-	constructor(door) {
-		super();
-		this.door = door;
-		this.recordFrom();
-	}
-
-	recordFrom() {
-	    this.fromForceOutgoing = this.door.forceOutgoing;
-	    this.fromForceCrossBranch = this.door.forceCrossBranch;
-	    this.fromForceOutgoingOther = this.door.otherDoor.forceOutgoing;
-	    this.fromForceCrossBranchOther = this.door.otherDoor.forceCrossBranch;
-	}
-
-	recordTo() {
-	    this.toForceOutgoing = this.door.forceOutgoing;
-	    this.toForceCrossBranch = this.door.forceCrossBranch;
-	    this.toForceOutgoingOther = this.door.otherDoor.forceOutgoing;
-	    this.toForceCrossBranchOther = this.door.otherDoor.forceCrossBranch;
-	}
-
-	isAChange() {
-		this.recordTo();
-		return this.fromForceOutgoing != this.toForceOutgoing || this.fromForceCrossBranch != this.toForceCrossBranch ||
-		       this.fromForceOutgoingOther != this.toForceOutgoingOther || this.fromForceCrossBranchOther != this.toForceCrossBranchOther;
-	}
-
-	undoAction() {
-        this.action(this.fromForceOutgoing, this.fromForceCrossBranch, this.fromForceOutgoingOther, this.fromForceCrossBranchOther);
-	}
-
-	redoAction() {
-        this.action(this.toForceOutgoing, this.toForceCrossBranch, this.toForceOutgoingOther, this.toForceCrossBranchOther);
-	}
-
-	action(toForceOutgoing, toForceCrossBranch, toForceOutgoingOther, toForceCrossBranchOther) {
-	    setDoorState(this.door, toForceOutgoing, toForceCrossBranch, toForceOutgoingOther, toForceCrossBranchOther);
-
-		saveModelToUrl();
-        treeUpdated();
-	}
-
-	toString() {
-	    // good luck
-		return "State change on door(s) between " + describeRoomList([this.door.room]) + " and " + describeRoomList([this.door.otherDoor.room]);
 	}
 }
