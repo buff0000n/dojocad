@@ -70,11 +70,11 @@ function startUndoCombo() {
     undoCombos.push([]);
 }
 
-function endUndoCombo() {
+function endUndoCombo(description=null) {
     var undoList = undoCombos.pop()
     var action = null;
     if (undoList.length >1) {
-        action = new CompositeAction(undoList);
+        action = new CompositeAction(undoList, description);
 
     } else if (undoList.length == 1) {
         action = undoList[0];
@@ -165,7 +165,7 @@ function doRedo() {
 }
 
 class CompositeAction extends Action {
-    constructor(actions) {
+    constructor(actions, description=null) {
         super();
         this.actions = actions;
     }
@@ -183,7 +183,7 @@ class CompositeAction extends Action {
 	}
 
 	toString() {
-		return this.actions.length + " action(s)";
+		return this.description ? this.description : this.actions.length + " action(s)";
 	}
 }
 

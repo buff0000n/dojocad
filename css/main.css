@@ -323,9 +323,22 @@ input:invalid {
     background: #801010;
 }
 
-.field, .imgField {
+.field, .imgField, .imgField-disabled {
     background-color: #202030;
     color: #FFFFFF;
+}
+
+.imgField-disabled > img.imgButton {
+    filter: saturate(0%) brightness(50%);
+    cursor: default;
+    pointer-events: none;
+    touch-events: none;
+}
+
+.imgField-disabled {
+    cursor: default;
+    pointer-events: none;
+    touch-events: none;
 }
 
 .field-error {
@@ -339,7 +352,7 @@ td.field {
     border: 0;
 }
 
-td.imgField {
+td.imgField, td.imgField-disabled {
     margin: 0;
     padding: 0ex, 0ex;
     border: 0;
@@ -376,7 +389,7 @@ td.imgField {
     color: #000000;
 }
 
-.menu-button, .menu-button-error, .menu-button-warn {
+.menu-button, .menu-button-disabled, .menu-button-error, .menu-button-warn, .menu-line{
     margin: 1ex 1ex 1ex 1ex;
     border: none;
     padding: 1ex;
@@ -384,7 +397,6 @@ td.imgField {
     text-decoration: none;
     font-size: 100%;
     border-radius: 1ex;
-    cursor: pointer;
 }
 
 .menu-button-clear {
@@ -411,16 +423,32 @@ td.imgField {
     background-color: #7070A0;
     color: #FFFFFF;
     user-select: none;
+    cursor: pointer;
+}
+
+.menu-button-disabled {
+    color: #808080;
+    user-select: none;
+    pointer-events: none;
+    touch-events: none;
+    cursor: default;
 }
 
 .menu-button-error {
     background-color: #802020;
     color: #FFFFFF;
+    cursor: pointer;
 }
 
 .menu-button-warn {
     background-color: #B0B020;
     color: #000000;
+    cursor: pointer;
+}
+
+/* hax */
+td .menu-button {
+    margin: 1ex 0ex;
 }
 
 .menu-divider {

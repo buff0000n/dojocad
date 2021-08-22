@@ -17,6 +17,80 @@ function treeUpdated() {
 	treeUpdateTimeout = setTimeout(actuallyUpdateTree, treeUpdateDelay);
 }
 
+class AnalysisResult {
+    constructor() {
+        this.spawn = false;
+        this.disconnected = false;
+        this.loops = false;
+        this.ambiguous = false;
+    }
+
+    setSpawn(spawn) {
+        if (!spawn && settings.structureChecking) {
+            // make sure there's a global warning displayed
+            addAllWarning(spawnPointMissingRule.globalMessage);
+
+        } else {
+            // remove the global warning if present
+            removeAllWarning(spawnPointMissingRule.globalMessage);
+        }
+        this.spawn = spawn;
+        if (spawn) {
+            this.setDisconnected(false);
+            this.setLoops(false);
+            this.setAmbiguous(false);
+        }
+    }
+
+    setDisconnected(disconnected) {
+        if (disconnected) {
+            // make sure there's a global warning displayed
+            addAllWarning(disconnectedRule.globalMessage);
+
+        } else {
+            // remove the global warning if present
+            removeAllWarning(disconnectedRule.globalMessage);
+        }
+        this.disconnected = disconnected;
+    }
+
+    setLoops(loops) {
+        if (loops && settings.structureChecking) {
+            // make sure there's a global warning displayed
+            addAllWarning(loopedRule.globalMessage);
+
+        } else {
+            // remove the global warning if present
+            removeAllWarning(loopedRule.globalMessage);
+        }
+        this.loops = loops;
+    }
+
+    setAmbiguous(ambiguous) {
+        // todo: pretty sure these can't happen now
+        if (ambiguous && settings.structureChecking) {
+            // make sure there's a global warning displayed
+            addAllWarning(ambiguousRule.globalMessage);
+
+        } else {
+            // remove the global warning if present
+            removeAllWarning(ambiguousRule.globalMessage);
+        }
+        this.ambiguous = ambiguous;
+    }
+
+}
+
+var analysisResult = new AnalysisResult();
+
+// static rule we can add as a warning to disconected rooms
+class SpawnPointMissingRule {
+    constructor() {
+        this.globalMessage = "Spawn Point Missing";
+    }
+}
+var spawnPointMissingRule = new SpawnPointMissingRule();
+
 // static rule we can add as a warning to disconected rooms
 class DisconnectedRule {
     constructor() {
@@ -36,6 +110,7 @@ class LoopedRule {
 var loopedRule = new LoopedRule();
 
 // static rule we can add as a warning to ambiguous rooms with incoming doors coming from more than one other room
+// todo: pretty sure these can't happen now
 class AmbiguousRule {
     constructor() {
         this.globalMessage = "Ambiguous rooms present";
@@ -66,10 +141,8 @@ function actuallyUpdateTree() {
                     door.showArrowMarker();
                 }
             }
-            removeAllWarning(disconnectedRule.globalMessage);
-            removeAllWarning(loopedRule.globalMessage);
-            removeAllWarning(ambiguousRule.globalMessage);
         }
+        analysisResult.setSpawn(false);
         return;
     }
 	ranATreeUpdate = true;
@@ -77,8 +150,28 @@ function actuallyUpdateTree() {
     // keep a running tally of disconnected rooms for the final warning update
     disconnectedCount = 0;
 
-    // start a tree traversal, depth-first, allow repeats
-    startTreeTraversal("connected", root, 25, new TreeStructureCallback());
+    // start a depth-first tree traversal
+    startTreeTraversal("connected", true, root, 25, new TreeStructureCallback());
+}
+
+function autoSetCrossBranches() {
+    // short circuit if there is no root and there has never been a root
+    var root = getCurrentSpawnRoom();
+    if (!root) {
+        return;
+    }
+
+    // start a breadth-first tree traversal
+    startTreeTraversal("autobranch", false, root, 25, new AutoCrossBranchCallback());
+}
+
+function runBranchSelection(room, toLeaf) {
+    if (!room) {
+        return;
+    }
+
+    // start a breadth-first tree traversal
+    startTreeTraversal("selectbranch", false, room, 25, new SelectBranchCallback(toLeaf));
 }
 
 class AbstractTreeTraversalCallback {
@@ -116,12 +209,6 @@ class TreeStructureCallback extends AbstractTreeTraversalCallback {
     }
 
     processConnection(room, incomingDoors) {
-        // skip rooms that don't count, like the label object
-        if (room.metadata.num == 0) {
-            // don't continue traversal through this room
-            return false;
-        }
-
         room.connected = true;
         for (var d = 0; d < incomingDoors.length; d++) {
             incomingDoors[d].otherDoor.outgoing = true;
@@ -182,6 +269,7 @@ class TreeStructureCallback extends AbstractTreeTraversalCallback {
             door.showArrowMarker();
         }
 
+        // todo: pretty sure these can't happen now
         if (incomingRooms.length > 1 && settings.structureChecking) {
             room.addRuleWarning(ambiguousRule);
             this.ambiguousCount += 1;
@@ -192,35 +280,77 @@ class TreeStructureCallback extends AbstractTreeTraversalCallback {
     }
 
     end() {
-        // check the count
-        if (this.disconnectedCount > 0) {
-            // make sure there's a global warning displayed
-            addAllWarning(disconnectedRule.globalMessage);
+        // make sure we know there's a spawn point
+        analysisResult.setSpawn(true);
 
-        } else {
-            // remove the global warning if present
-            removeAllWarning(disconnectedRule.globalMessage);
+        // check the disconnected count
+        analysisResult.setDisconnected(this.disconnectedCount > 0);
+
+        // check the loop count
+        analysisResult.setLoops(this.loopedCount > 0);
+
+        // check the ambiguous count
+        // todo: pretty sure these can't happen now
+        analysisResult.setAmbiguous(this.ambiguousCount > 0);
+    }
+}
+
+class AutoCrossBranchCallback extends AbstractTreeTraversalCallback {
+    constructor() {
+        super();
+        this.postProcess = null;
+
+        this.autoCrossBranchDoors = [];
+    }
+
+    preProcess(room) {
+        for (var d = 0; d < room.doors.length; d++) {
+            var door = room.doors[d];
+            door.crossBranch = door.forceCrossBranch;
         }
+    }
 
-        // check the count
-        if (this.loopedCount > 0 && settings.structureChecking) {
-            // make sure there's a global warning displayed
-            addAllWarning(loopedRule.globalMessage);
+    processConnection(room, incomingDoors) {
+        return true;
+    }
 
-        } else {
-            // remove the global warning if present
-            removeAllWarning(loopedRule.globalMessage);
+    processLoop(room, incomingDoors) {
+        for (var d = 0; d < incomingDoors.length; d++) {
+            this.autoCrossBranchDoors.push(incomingDoors[d]);
         }
+    }
 
-        // check the count
-        if (this.ambiguousCount > 0 && settings.structureChecking) {
-            // make sure there's a global warning displayed
-            addAllWarning(ambiguousRule.globalMessage);
-
-        } else {
-            // remove the global warning if present
-            removeAllWarning(ambiguousRule.globalMessage);
+    end() {
+        startUndoCombo();
+        for (var d = 0; d < this.autoCrossBranchDoors.length; d++) {
+            setDoorForceCrossBranch(this.autoCrossBranchDoors[d], true, true);
         }
+        endUndoCombo("Auto-fix structure");
+    }
+}
+
+class SelectBranchCallback extends AbstractTreeTraversalCallback {
+    constructor(toLeaf) {
+        super();
+        this.toLeaf = toLeaf;
+        this.postProcess = null;
+        this.preProcess = null;
+
+        this.selection = [];
+    }
+
+    processConnection(room, incomingDoors) {
+        if (incomingDoors && incomingDoors.length > 0 && this.toLeaf == incomingDoors[0].outgoing) {
+            return false;
+        }
+        this.selection.push(room);
+        return true;
+    }
+
+    processLoop(room, incomingDoors) { }
+
+    end() {
+        selectRooms(this.selection);
     }
 }
 
@@ -239,6 +369,17 @@ function getDoorsToRoom(room, toRoom) {
     return nextDoors;
 }
 
+function reverseDoors(doors) {
+    if (doors == null) {
+        console.log("oopsie");
+    }
+    var otherDoors = [];
+    for (var d = 0; d < doors.length; d++) {
+        otherDoors.push(doors[d].otherDoor);
+    }
+    return otherDoors;
+}
+
 //////////////////////////////////////////////////////////////////////////
 // depth-first generic tree traversal function
 //////////////////////////////////////////////////////////////////////////
@@ -246,12 +387,14 @@ function getDoorsToRoom(room, toRoom) {
 // track running traversals
 var treeTraversals = {};
 
-function startTreeTraversal(name, root, batchSize, callback) {
+function startTreeTraversal(name, depthFirst, root, batchSize, callback) {
     // cancel any existing tree traversal with the same name
     cancelTreeTraversal(name);
 
     // create a new traversal
-    var tt = new TreeTraversal(name, root, batchSize, callback);
+    var tt = depthFirst ?
+        new DepthFirstTreeTraversal(name, root, batchSize, callback) :
+        new BreadthFirstTreeTraversal(name, root, batchSize, callback);
     // register it
     treeTraversals[name] = tt;
     // start it
@@ -266,18 +409,8 @@ function cancelTreeTraversal(name) {
     }
 }
 
-class TreeTraversalEntry {
-    constructor(room, entryDoorList) {
-        this.room = room;
-        this.entryDoorList = entryDoorList;
-
-        this.exitDoorLists = null;
-        this.loopQueue = null;
-    }
-}
-
 // handler object for a tree traversal
-class TreeTraversal {
+class AbstractTreeTraversal {
     constructor(name, root, batchSize, callback) {
         // tracking name
         this.name = name;
@@ -391,26 +524,14 @@ class TreeTraversal {
         }
     }
 
-    reverseDoors(doors) {
-        if (doors == null) {
-            console.log("oopsie");
+    isTraversableRoom(room) {
+        // skip rooms that don't count, like the label object
+        if (room.metadata.num == 0) {
+            // don't continue traversal through this room
+            return false;
         }
-        var otherDoors = [];
-        for (var d = 0; d < doors.length; d++) {
-            otherDoors.push(doors[d].otherDoor);
-        }
-        return otherDoors;
+        return true;
     }
-
-//    printState() {
-//        var s = "Stack: ";
-//        var room = this.root;
-//        for (var i = 0; i < this.runList.length; i++) {
-//            if (i > 0) s = s + " <- ";
-//            s = s + this.runList[i].room.toShortString() + (this.runList[i].exitDoorLists ? ("[" + this.runList[i].exitDoorLists.length + "]") : "...");
-//        }
-//        console.log(s);
-//    }
 
     runTraversal() {
         // check
@@ -425,137 +546,8 @@ class TreeTraversal {
 
         // run callbacks until there are no more rooms to visit or we hit the batch size
         while (this.runList.length > 0 && this.count < this.batchSize) {
-            // get the current room
-            var currentEntry = this.runList[0];
-
-            if (currentEntry.loopQueue) {
-                var [loopRoom, loopDoors] = currentEntry.loopQueue.pop();
-                if (currentEntry.loopQueue.length == 0) {
-                    currentEntry.loopQueue = null;
-                }
-                // console.log("processing loop at " + loopRoom.toShortString());
-                // just call the callback and continue
-                this.callback.processLoop(loopRoom, loopDoors);
-                this.count += 1;
-                continue;
-            }
-
-            // this.printState();
-
-            // see if we've already processed this room
-            if (!currentEntry.exitDoorLists) {
-                // initialize
-                currentEntry.exitDoorLists = [];
-                // run the call back and see if the traversal should continue through this room
-                this.count += 1;
-                // make this easier
-                var room = currentEntry.room;
-                var doors = currentEntry.entryDoorList;
-                // set the marker
-                this.setMarker(room);
-                // run the callback and see if we should traverse the room
-                if (this.callback.processConnection(room, doors)) {
-                    // get the next rooms, excluding the incoming doors
-                    var nextRooms = [];
-                    for (var d = 0; d < room.doors.length; d++) {
-                        var door = room.doors[d];
-                        // find connected doors, but not ones that are forced incoming,
-                        // not ones that are forced cross branches, and not the doors we came in on
-                        if (door.otherDoor) {
-//                            if (door.otherDoor.forceOutgoing) {
-//                                // console.log("Skipping forced incoming door to " + door.otherDoor.room.toShortString());
-//                                continue;
-//                            }
-                            if (door.otherDoor.outgoing) {
-                                // console.log("Skipping already incoming door to " + door.otherDoor.room.toShortString());
-                                continue;
-                            } else if (door.crossBranch) {
-                                // console.log("Skipping forced cross branch door to " + door.otherDoor.room.toShortString());
-                                continue;
-                            // don't go backwards
-                            } else if (!doors.includes(door)) {
-                                addToListIfNotPresent(nextRooms, door.otherDoor.room);
-                            }
-                        }
-                    }
-
-                    if (nextRooms.length > 0) {
-                        for (var r = 0; r < nextRooms.length; r++) {
-                            var nextRoom = nextRooms[r];
-                            // get the connecting doors, there may be more than one
-                            var nextDoors = getDoorsToRoom(room, nextRoom);
-                            if (nextDoors.length == 0) {
-                                console.log("oopsie");
-                            }
-                            currentEntry.exitDoorLists.push(nextDoors);
-                        }
-                    }
-                }
-                continue;
-            }
-
-            // check if we've processed all outgoing exits
-            if (currentEntry.exitDoorLists.length == 0) {
-                // clear the marker
-                this.clearMarker(currentEntry.room);
-                // pop the entry off the stack
-                this.runList.shift();
-                // backtrack
-                continue;
-            }
-
-            // get the next exit
-            var exitDoors = currentEntry.exitDoorLists.shift();
-            // and the next room
-            var nextRoom = exitDoors[0].otherDoor.room;
-
-            if (!this.hasMarker(nextRoom)) {
-                this.runList.unshift(new TreeTraversalEntry(nextRoom, this.reverseDoors(exitDoors)));
-                continue;
-            }
-
-            // loop detected
-            // console.log("loop detected at " + nextRoom.toShortString());
-
-            // find the corresponding entry in the work stack, and fill up the loopQueue while we're at it
-            currentEntry.loopQueue = [];
-            var loopEntry = null;
-            for (var e = 1; e < this.runList.length; e++) {
-                // need to combine the entry door from one entry and the room from the previous entry
-                var loopQueueEntry = [ this.runList[e].room, this.reverseDoors(this.runList[e-1].entryDoorList) ];
-                currentEntry.loopQueue.push(loopQueueEntry);
-
-                // found the other end of the loop
-                if (this.runList[e].room == nextRoom) {
-                    loopEntry = this.runList[e];
-                    break;
-                }
-            }
-            if (loopEntry == null) {
-                console.log("UH OH");
-
-            } else {
-                // see if there's a corresponding exit door at the start of the loop that we don't need
-                // to process anymore, there may not be if the other side is forced outgoing.
-                var found = false;
-                for (var e = 0; e < loopEntry.exitDoorLists.length; e++) {
-                    var loopEntryExitDoors = loopEntry.exitDoorLists[e];
-                    // check if the door connects to the other end of the loop
-                    if (loopEntryExitDoors[0].otherDoor.room == currentEntry.room) {
-                        // remove it
-                        loopEntry.exitDoorLists.splice(e, 1);
-                        // insert an entry for this at the beginning of the loop queue
-                        currentEntry.loopQueue.unshift( [currentEntry.room, this.reverseDoors(loopEntryExitDoors)] );
-                        found = true;
-                        break;
-                    }
-                }
-                if (!found) {
-                    // make it up
-                    currentEntry.loopQueue.unshift( [currentEntry.room, getDoorsToRoom(loopEntry.room, currentEntry.room)] );
-                }
-            }
-            // go back and process the loop entries
+            this.count += 1;
+            this.traverseUnit();
         }
 
         // check if we're done
@@ -571,6 +563,10 @@ class TreeTraversal {
             // start post-processing directly with whatever batch amount we have left
             this.runPost();
         }
+    }
+
+    traverseUnit() {
+        throw "Not implemented";
     }
 
     runPost() {
@@ -630,5 +626,215 @@ class TreeTraversal {
 
         // clean up
         this.cancel();
+    }
+}
+
+class TreeTraversalEntry {
+    constructor(room, entryDoorList) {
+        this.room = room;
+        this.entryDoorList = entryDoorList;
+
+        this.exitDoorLists = null;
+        this.loopQueue = null;
+    }
+}
+
+class DepthFirstTreeTraversal extends AbstractTreeTraversal {
+    constructor(name, root, batchSize, callback) {
+        super(name, root, batchSize, callback);
+    }
+
+//    printState() {
+//        var s = "Stack: ";
+//        var room = this.root;
+//        for (var i = 0; i < this.runList.length; i++) {
+//            if (i > 0) s = s + " <- ";
+//            s = s + this.runList[i].room.toShortString() + (this.runList[i].exitDoorLists ? ("[" + this.runList[i].exitDoorLists.length + "]") : "...");
+//        }
+//        console.log(s);
+//    }
+
+    traverseUnit() {
+        // get the current room
+        var currentEntry = this.runList[0];
+
+        if (currentEntry.loopQueue) {
+            var [loopRoom, loopDoors] = currentEntry.loopQueue.pop();
+            if (currentEntry.loopQueue.length == 0) {
+                currentEntry.loopQueue = null;
+            }
+            // console.log("processing loop at " + loopRoom.toShortString());
+            // just call the callback and continue
+            this.callback.processLoop(loopRoom, loopDoors);
+            return;
+        }
+
+        // this.printState();
+
+        // see if we've already processed this room
+        if (!currentEntry.exitDoorLists) {
+            // initialize
+            currentEntry.exitDoorLists = [];
+            // run the call back and see if the traversal should continue through this room
+            // make this easier
+            var room = currentEntry.room;
+            var doors = currentEntry.entryDoorList;
+            // set the marker
+            this.setMarker(room);
+            // run the callback and see if we should traverse the room
+            if (this.isTraversableRoom(room) && this.callback.processConnection(room, doors)) {
+                // get the next rooms, excluding the incoming doors
+                var nextRooms = [];
+                for (var d = 0; d < room.doors.length; d++) {
+                    var door = room.doors[d];
+                    // find connected doors, but not ones that are forced incoming,
+                    // not ones that are forced cross branches, and not the doors we came in on
+                    if (door.otherDoor) {
+//                            if (door.otherDoor.forceOutgoing) {
+//                                // console.log("Skipping forced incoming door to " + door.otherDoor.room.toShortString());
+//                                continue;
+//                            }
+                        if (door.otherDoor.outgoing) {
+                            // console.log("Skipping already incoming door to " + door.otherDoor.room.toShortString());
+                            continue;
+                        } else if (door.crossBranch) {
+                            // console.log("Skipping forced cross branch door to " + door.otherDoor.room.toShortString());
+                            continue;
+                        // don't go backwards
+                        } else if (!doors.includes(door)) {
+                            addToListIfNotPresent(nextRooms, door.otherDoor.room);
+                        }
+                    }
+                }
+
+                if (nextRooms.length > 0) {
+                    for (var r = 0; r < nextRooms.length; r++) {
+                        var nextRoom = nextRooms[r];
+                        // get the connecting doors, there may be more than one
+                        var nextDoors = getDoorsToRoom(room, nextRoom);
+                        if (nextDoors.length == 0) {
+                            console.log("oopsie");
+                        }
+                        currentEntry.exitDoorLists.push(nextDoors);
+                    }
+                }
+            }
+            return;
+        }
+
+        // check if we've processed all outgoing exits
+        if (currentEntry.exitDoorLists.length == 0) {
+            // clear the marker
+            this.clearMarker(currentEntry.room);
+            // pop the entry off the stack
+            this.runList.shift();
+            // backtrack
+            return;
+        }
+
+        // get the next exit
+        var exitDoors = currentEntry.exitDoorLists.shift();
+        // and the next room
+        var nextRoom = exitDoors[0].otherDoor.room;
+
+        if (!this.hasMarker(nextRoom)) {
+            this.runList.unshift(new TreeTraversalEntry(nextRoom, reverseDoors(exitDoors)));
+            return;
+        }
+
+        // loop detected
+        // console.log("loop detected at " + nextRoom.toShortString());
+
+        // find the corresponding entry in the work stack, and fill up the loopQueue while we're at it
+        currentEntry.loopQueue = [];
+        var loopEntry = null;
+        for (var e = 1; e < this.runList.length; e++) {
+            // need to combine the entry door from one entry and the room from the previous entry
+            var loopQueueEntry = [ this.runList[e].room, reverseDoors(this.runList[e-1].entryDoorList) ];
+            currentEntry.loopQueue.push(loopQueueEntry);
+
+            // found the other end of the loop
+            if (this.runList[e].room == nextRoom) {
+                loopEntry = this.runList[e];
+                break;
+            }
+        }
+        if (loopEntry == null) {
+            console.log("UH OH");
+
+        } else {
+            // see if there's a corresponding exit door at the start of the loop that we don't need
+            // to process anymore, there may not be if the other side is forced outgoing.
+            var found = false;
+            for (var e = 0; e < loopEntry.exitDoorLists.length; e++) {
+                var loopEntryExitDoors = loopEntry.exitDoorLists[e];
+                // check if the door connects to the other end of the loop
+                if (loopEntryExitDoors[0].otherDoor.room == currentEntry.room) {
+                    // remove it
+                    loopEntry.exitDoorLists.splice(e, 1);
+                    // insert an entry for this at the beginning of the loop queue
+                    currentEntry.loopQueue.unshift( [currentEntry.room, reverseDoors(loopEntryExitDoors)] );
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                // make it up
+                currentEntry.loopQueue.unshift( [currentEntry.room, getDoorsToRoom(loopEntry.room, currentEntry.room)] );
+            }
+        }
+    }
+}
+
+class BreadthFirstTreeTraversal extends AbstractTreeTraversal {
+    constructor(name, root, batchSize, callback) {
+        super(name, root, batchSize, callback);
+    }
+
+    traverseUnit() {
+        // pop the current room off the queue
+        var currentEntry = this.runList.shift();
+
+        if (this.hasMarker(currentEntry.room)) {
+            this.callback.processLoop(currentEntry.room, currentEntry.entryDoorList);
+            return;
+        }
+
+        // make this easier
+        var room = currentEntry.room;
+        var doors = currentEntry.entryDoorList;
+        // set the marker
+        this.setMarker(room);
+
+        // run the callback and see if we should traverse the room
+        if (this.isTraversableRoom(room) && this.callback.processConnection(room, doors)) {
+            // get the next rooms, excluding the incoming doors
+            var nextRooms = [];
+            for (var d = 0; d < room.doors.length; d++) {
+                var door = room.doors[d];
+                // find connected doors, but not the doors we came in on
+                if (door.otherDoor) {
+                     if (door.crossBranch) {
+                        // console.log("Skipping forced cross branch door to " + door.otherDoor.room.toShortString());
+                        continue;
+                    } else if (!doors.includes(door)) {
+                        addToListIfNotPresent(nextRooms, door.otherDoor.room);
+                    }
+                }
+            }
+
+            if (nextRooms.length > 0) {
+                for (var r = 0; r < nextRooms.length; r++) {
+                    var nextRoom = nextRooms[r];
+                    // get the connecting doors, there may be more than one
+                    var nextDoors = getDoorsToRoom(room, nextRoom);
+                    if (nextDoors.length == 0) {
+                        console.log("oopsie");
+                    }
+                    this.runList.push()
+                    this.runList.push(new TreeTraversalEntry(nextRoom, reverseDoors(nextDoors)));
+                }
+            }
+        }
     }
 }

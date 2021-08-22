@@ -288,6 +288,13 @@ function pasteCopiedRooms() {
     }
 }
 
+function selectAllRoomsOfSelectedTypes() {
+    if (selectedRooms.length > 0) {
+        selectAllRoomsOfType(selectedRooms);
+        clearMenus();
+    }
+}
+
 function setSelectedRoomsLabels(label, action) {
     if (selectedRooms.length == 1) {
         clearMenus(0);
@@ -369,6 +376,52 @@ function unsetSelectedRoomSpawn() {
     	saveModelToUrl();
     	treeUpdated();
     }
+}
+
+function selectBranch() {
+    if (selectedRooms.length == 1) {
+        clearMenus(0);
+        runBranchSelection(selectedRooms[0], true);
+    }
+}
+
+function selectRoot() {
+    if (selectedRooms.length == 1) {
+        clearMenus(0);
+        runBranchSelection(selectedRooms[0], false);
+    }
+}
+
+function selectSpawnRoom() {
+    clearMenus(0);
+    var room = getCurrentSpawnRoom();
+    if (room) {
+        selectRoom(room, true, false);
+        centerViewOnIfNotVisible(room.mv.x, room.mv.y, room.floor);
+    }
+}
+
+function doAutoSetCrossBranches() {
+    clearMenus(0);
+    autoSetCrossBranches();
+}
+
+function doResetAllStructure() {
+    clearMenus(0);
+    startUndoCombo();
+	for (var r = 0; r < roomList.length; r++) {
+		var doors = roomList[r].doors;
+        for (var d = 0; d < doors.length; d++) {
+            var door = doors[d];
+            if (door.forceCrossBranch) {
+                setDoorState(door, false, true);
+            }
+        }
+	}
+	endUndoCombo("Reset structure");
+
+    saveModelToUrl();
+    treeUpdated();
 }
 
 //function setRoomDestroyable(destroyableRoom, destroyable, allowUndo=true) {
@@ -463,7 +516,6 @@ function setDoorState(door, forceCrossBranch, allowUndo=true) {
 //        setDoor.setForceOutgoing(forceOutgoing);
         setDoor.setForceCrossBranch(forceCrossBranch);
     }
-
 
     if (action && action.isAChange()) {
         addUndoAction(action);
@@ -579,7 +631,7 @@ function setAutosave(autosave) {
 	settings.save();
 }
 
-function setLoopChecking(structureChecking) {
+function setStructureChecking(structureChecking) {
     // set the setting first
     settings.structureChecking = structureChecking;
 
