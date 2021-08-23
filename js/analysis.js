@@ -132,14 +132,18 @@ function actuallyUpdateTree() {
                 var room = roomList[r];
                 room.removeRuleWarning(disconnectedRule);
                 room.removeRuleWarning(loopedRule);
-                // clear the
+                // clear the room flags
+                room.connected = false;
+                room.looped = false;
+                // clear the door flags
                 for (var d = 0; d < room.doors.length; d++) {
                     var door = room.doors[d];
                     door.outgoing = false;
-                    door.crossBranch= false;
+                    door.crossBranch = false;
                     door.looping = false;
-                    door.showArrowMarker();
                 }
+                // remove the lines and arrors
+                room.showTree();
             }
         }
         analysisResult.setSpawn(false);
@@ -253,30 +257,32 @@ class TreeStructureCallback extends AbstractTreeTraversalCallback {
             room.removeRuleWarning(loopedRule);
         }
 
-        var incomingRooms = [];
-
-        for (var d = 0; d < room.doors.length; d++) {
-            var door = room.doors[d];
-            if (door.otherDoor) {
-                if (!door.outgoing && !door.otherDoor.outgoing) {
-                    door.crossBranch = true;
-                }
-                if (!door.outgoing && door.otherDoor.outgoing) {
-                    addToListIfNotPresent(incomingRooms, door.otherDoor.room);
+        if (room.connected && !room.looped) {
+            var incomingRooms = [];
+            for (var d = 0; d < room.doors.length; d++) {
+                var door = room.doors[d];
+                if (door.otherDoor) {
+                    if (!door.outgoing && !door.otherDoor.outgoing) {
+                        door.crossBranch = true;
+                    }
+                    if (!door.outgoing && door.otherDoor.outgoing) {
+                        addToListIfNotPresent(incomingRooms, door.otherDoor.room);
+                    }
                 }
             }
-            // always refresh the arror marker, in case we need to remove it
-            door.showArrowMarker();
+
+            // todo: pretty sure these can't happen now
+            if (incomingRooms.length > 1 && settings.structureChecking) {
+                room.addRuleWarning(ambiguousRule);
+                this.ambiguousCount += 1;
+
+            } else {
+                room.removeRuleWarning(ambiguousRule);
+            }
         }
 
-        // todo: pretty sure these can't happen now
-        if (incomingRooms.length > 1 && settings.structureChecking) {
-            room.addRuleWarning(ambiguousRule);
-            this.ambiguousCount += 1;
-
-        } else {
-            room.removeRuleWarning(ambiguousRule);
-        }
+        // always refresh the tree display, in case we need to remove it
+        room.showTree();
     }
 
     end() {

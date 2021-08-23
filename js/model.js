@@ -513,13 +513,13 @@ class Door {
     }
 
     showMarker(base) {
-        if (!this.marker || this.marker.base != base) {
+        if (!this.marker || this.marker.base != base || !settings.showMapMarkers) {
             if (this.marker) {
                 this.marker.remove();
                 this.marker = null;
             }
 
-            if (base) {
+            if (base && settings.showMapMarkers) {
                 this.marker = this.room.addDisplayImage(".png", getZIndex(this.room, part_doormarker), base, true);
                 // make sure the event handler will bring up the door menu when clicking on this image
                 this.marker.door = this;
@@ -581,7 +581,12 @@ class Marker {
     addDisplay(viewContainer) {
         if (this.floor == viewFloor && (!this.condition || this.condition())) {
             if (!this.marker) {
-    	        this.marker = this.room.addDisplayImage(".png", getZIndex(this.room, part_marker), this.metadata.image, true);
+    	        this.marker = this.room.addDisplayImage(".png", getZIndex(this.room, part_marker) + (this.metadata.z != null ? this.metadata.z : 0), this.metadata.image, true);
+    	        if (this.metadata.tree) {
+    	            // hax for tree markers, ignore all clicks because some of them will extend beyond the bounds of their door
+    	            this.marker.style.pointerEvents = "none";
+    	            this.marker.style.touchEvents = "none";
+    	        }
             } else {
                 viewContainer.appendChild(this.marker);
             }
@@ -590,7 +595,7 @@ class Marker {
 
     updateView() {
         if (this.marker) {
-            var transform2 = this.room.getMarkerImageTransform(this.mv.x, this.mv.y, viewPX, viewPY, viewScale);
+            var transform2 = this.room.getMarkerImageTransform(this.mv.x, this.mv.y, this.metadata, viewPX, viewPY, viewScale);
 			this.room.updateViewElement(this.marker, transform2);
         }
     }
@@ -625,6 +630,8 @@ class Room {
         this.ignoreRooms = null;
 
         this.metadata = metadata;
+        this.treemetadata = metadata.treetype ? treeMetadata[metadata.treetype] : null;
+        this.treeMarkerMetadata = null;
         this.id = "room" + (roomIdCount++);
 
         this.bounds = Array();
@@ -665,6 +672,8 @@ class Room {
         this.labelScale = 1.0;
 
         this.selected = false;
+        this.connected = false;
+        this.looped = false;
 
         this.hue = null;
         // pull default label from metadata, if present
@@ -1613,6 +1622,68 @@ class Room {
         }
     }
 
+    // TREE SHIT
+    showTree() {
+        // refresh door markers
+		for (var d = 0; d < this.doors.length; d++) {
+			this.doors[d].showArrowMarker();
+        }
+
+        if (this.treemetadata) {
+            if (!settings.structureChecking || !this.connected || this.looped) {
+                this.removeTreeMarkers();
+
+            } else {
+                var keepMarkers = [];
+                var doorKey = "";
+                for (var d = 0; d < this.doors.length; d++) {
+                    var door = this.doors[d];
+                    doorKey += door.otherDoor && !door.crossBranch ? "1" : "0";
+                }
+                if (this.treemetadata.convertKey) {
+                    var doorKeys = this.treemetadata.convertKey(doorKey);
+                } else {
+                    var doorKeys = [doorKey];
+                }
+                for (var i = 0; i < doorKeys.length; i++) {
+                    var treeMarkerMetadata = this.treemetadata[doorKeys[i]];
+                    if (treeMarkerMetadata) {
+                        // don't delete this marker below
+                        keepMarkers.push(treeMarkerMetadata);
+                        if (this.markers.findIndex((marker) => marker.metadata == treeMarkerMetadata) != -1) {
+                            // we already have this marker
+                            continue;
+                        }
+                        var treeMarker = new Marker(this, treeMarkerMetadata.floor ? treeMarkerMetadata.floor : 0, treeMarkerMetadata);
+                        this.markers.push(treeMarker);
+                        // this can be set before the room is actually displayed
+                        if (this.viewContainer) {
+                            // have to update position first
+                            treeMarker.updatePosition();
+                            treeMarker.addDisplay(this.viewContainer);
+                            treeMarker.updateView();
+                        }
+                    }
+                }
+            }
+            // remove any other markers
+            this.removeTreeMarkers(keepMarkers);
+        }
+    }
+
+    removeTreeMarkers(except=null) {
+        for (var m = 0; m < this.markers.length; m++) {
+            var marker = this.markers[m];
+            if (marker.metadata.tree && (!except || !except.includes(marker.metadata))) {
+                if (this.viewContainer) {
+                    marker.removeDisplay(this.viewContainer);
+                }
+                this.markers.splice(m, 1);
+                m -= 1;
+            }
+        }
+    }
+
     getDisplayImageSuffix() {
         // we need to use a different display image depending in whether
         // it's in color or not
@@ -1668,11 +1739,17 @@ class Room {
         for (var m = 0; m < this.markers.length; m++) {
             this.markers[m].addDisplay(this.viewContainer);
         }
+        for (var d = 0; d < this.doors.length; d++) {
+            this.doors[d].showArrowMarker();
+        }
     }
 
     hideMarkers() {
         for (var m = 0; m < this.markers.length; m++) {
             this.markers[m].removeDisplay();
+        }
+        for (var d = 0; d < this.doors.length; d++) {
+            this.doors[d].showArrowMarker();
         }
     }
 
@@ -1851,7 +1928,7 @@ class Room {
 		return "translate(" + roomViewCenterPX + "px, " + roomViewCenterPY + "px) translate(-50%, -50%) scale(" + scale + ", " + scale + ")";
 	}
 
-	getMarkerImageTransform(mx, my, viewPX, viewPY, viewScale) {
+	getMarkerImageTransform(mx, my, metadata, viewPX, viewPY, viewScale) {
         // transform the marker center coords to pixel coords
 		var roomViewCenterPX = ((mx + this.mdragOffset.x) * viewScale) + viewPX;
 		var roomViewCenterPY = ((my + this.mdragOffset.y) * viewScale) + viewPY;
@@ -1860,7 +1937,20 @@ class Room {
 		var scale = viewScale / imgScale;
 
 		// translate by the pixel coords, and then back by 50% to center the image
-		return "translate(" + roomViewCenterPX + "px, " + roomViewCenterPY + "px) translate(-50%, -50%) scale(" + scale + ", " + scale + ")";
+		var transform = "translate(" + roomViewCenterPX + "px, " + roomViewCenterPY + "px) translate(-50%, -50%)";
+
+		if (metadata.rot != null) {
+    		var rotation = (this.rotation + this.mdragOffsetRotation + metadata.rot) % 360;
+    		transform += " rotate(" + rotation + "deg)";
+		}
+		if (metadata.fx || metadata.fy) {
+            // apply scale and flip
+            transform += "scale(" + (metadata.fx ? scale*-1 : scale) + ", " + (metadata.fy ? scale*-1 : scale) + ")";
+		} else {
+            // apply scale
+            transform += "scale(" + scale + ", " + scale + ")";
+		}
+		return transform;
 	}
 
 	getDoorMarkerImageTransform(mx, my, rotation, viewPX, viewPY, viewScale) {

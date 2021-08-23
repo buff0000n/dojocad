@@ -17,6 +17,7 @@ var roomMetadata =
 		{"resource": "Ferrite", "costs": [350, 1050, 3500, 10500, 35000]},
 		{"resource": "Nano Spores", "costs": [1200, 3600, 12000, 36000, 120000]},
 		{"resource": "Forma", "costs": [1, 1, 1, 1, 5]}],
+    "treetype": "32-4",
 	"blockedFromAboveBy": [
 	    ]},
 {"id": "cs", "image": "straight-hallway", "name": "Straight Hallway", "category": "Connectors", "prereq": null, "capacity": -1, "energy": -1, "maxnum": null, "floor": 0, "ceil": 8,
@@ -31,6 +32,7 @@ var roomMetadata =
 		{"resource": "Ferrite", "costs": [350, 1050, 3500, 10500, 35000]},
 		{"resource": "Nano Spores", "costs": [1200, 3600, 12000, 36000, 120000]},
 		{"resource": "Forma", "costs": [1, 1, 1, 1, 5]}],
+    "treetype": "16-2",
 	"blockedFromAboveBy": [
 	    ]},
 {"id": "cx", "image": "extended-straight-hallway", "name": "Extended Straight Hallway", "category": "Connectors", "prereq": null, "capacity": -2, "energy": -2, "maxnum": null, "floor": 0, "ceil": 8,
@@ -45,6 +47,7 @@ var roomMetadata =
 		{"resource": "Ferrite", "costs": [350, 1050, 3500, 10500, 35000]},
 		{"resource": "Nano Spores", "costs": [1200, 3600, 12000, 36000, 120000]},
 		{"resource": "Forma", "costs": [1, 1, 1, 1, 5]}],
+    "treetype": "32-2",
 	"blockedFromAboveBy": [
 	    ]},
 {"id": "ct", "image": "t-shaped-connector", "name": "T-shaped Connector", "category": "Connectors", "prereq": null, "capacity": -5, "energy": -2, "maxnum": null, "floor": 0, "ceil": 8,
@@ -61,6 +64,7 @@ var roomMetadata =
 		{"resource": "Ferrite", "costs": [350, 1050, 3500, 10500, 35000]},
 		{"resource": "Nano Spores", "costs": [1200, 3600, 12000, 36000, 120000]},
 		{"resource": "Forma", "costs": [1, 1, 1, 1, 5]}],
+    "treetype": "32-3",
 	"blockedFromAboveBy": [
 	    ]},
 {"id": "cb", "image": "elbow-connector", "name": "Elbow Connector", "category": "Connectors", "prereq": null, "capacity": -1, "energy": -1, "maxnum": null, "floor": 0, "ceil": 8,
@@ -76,6 +80,7 @@ var roomMetadata =
 		{"resource": "Ferrite", "costs": [350, 1050, 3500, 10500, 35000]},
 		{"resource": "Nano Spores", "costs": [1200, 3600, 12000, 36000, 120000]},
 		{"resource": "Forma", "costs": [1, 1, 1, 1, 5]}],
+    "treetype": "32-2e",
 	"blockedFromAboveBy": [
 	    ]},
 {"id": "ce", "image": "elevator-bottom", "name": "Elevator", "category": "Connectors", "prereq": null, "capacity": -2, "energy": -2, "maxnum": null, "floor": -24, "ceil": 16, "multifloor": true,
@@ -93,6 +98,7 @@ var roomMetadata =
 		{"resource": "Ferrite", "costs": [350, 1050, 3500, 10500, 35000]},
 		{"resource": "Nano Spores", "costs": [1200, 3600, 12000, 36000, 120000]},
 		{"resource": "Forma", "costs": [1, 1, 1, 1, 5]}],
+    "treetype": "el-2",
 	"blockedFromAboveBy": [
 	    ]},
 
@@ -104,6 +110,7 @@ var roomMetadata =
 		{"x": 0, "y": 32, "floor": 0, "outx": 0, "outy": 1},
 		{"x": 0, "y": -32, "floor": 0, "outx": 0, "outy": -1}],
 	"resources": [],
+    "treetype": "64-2",
 	"blockedFromAboveBy": [
 	    ]},
 {"id": "h2", "image": "clan-great-hall", "name": "Clan Great Hall", "category": "Halls", "prereq": null, "capacity": 200, "energy": -2, "maxnum": 1, "spawn": true, "floor": -12, "ceil": 24,
@@ -118,6 +125,7 @@ var roomMetadata =
 		{"resource": "Ferrite", "costs": [600, 1800, 6000, 18000, 60000]},
 		{"resource": "Nano Spores", "costs": [300, 900, 3000, 9000, 30000]},
 		{"resource": "Forma", "costs": [1, 1, 3, 8, 25]}],
+    "treetype": "64-2",
 	"blockedFromAboveBy": [
 	    ]},
 {"id": "h3", "image": "clan-greater-hall", "name": "Clan Greater Hall", "category": "Halls", "prereq": null, "capacity": 200, "energy": -2, "maxnum": 1, "spawn": true, "floor": -12, "ceil": 24,
@@ -133,6 +141,7 @@ var roomMetadata =
 		{"resource": "Ferrite", "costs": [600, 1800, 6000, 18000, 60000]},
 		{"resource": "Nano Spores", "costs": [300, 900, 3000, 9000, 30000]},
 		{"resource": "Forma", "costs": [1, 1, 3, 8, 25]}],
+    "treetype": "64-2",
 	"blockedFromAboveBy": [
 	    ]},
 {"id": "h4", "image": "clan-grand-hall", "name": "Clan Grand Hall", "category": "Halls", "prereq": null, "capacity": 200, "energy": -2, "maxnum": 1, "spawn": true, "floor": -12, "ceil": 30,
@@ -151,6 +160,7 @@ var roomMetadata =
 		{"resource": "Ferrite", "costs": [600, 1800, 6000, 18000, 60000]},
 		{"resource": "Nano Spores", "costs": [300, 900, 3000, 9000, 30000]},
 		{"resource": "Forma", "costs": [1, 1, 3, 8, 25]}],
+    "treetype": "h-6",
 	"blockedFromAboveBy": [
 	    ]},
 {"id": "h5", "image": "clan-grandest-hall", "name": "Clan Grandest Hall", "category": "Halls", "prereq": null, "capacity": 200, "energy": -2, "maxnum": 1, "spawn": true, "floor": -12, "ceil": 30,
@@ -169,6 +179,7 @@ var roomMetadata =
 		{"resource": "Ferrite", "costs": [600, 1800, 6000, 18000, 60000]},
 		{"resource": "Nano Spores", "costs": [300, 900, 3000, 9000, 30000]},
 		{"resource": "Forma", "costs": [1, 1, 3, 8, 25]}],
+    "treetype": "h-6",
 	"blockedFromAboveBy": [
 	    ]},
 {"id": "hi", "image": "inspiration-hall", "name": "Inspiration Hall", "category": "Halls", "prereq": null, "capacity": 100, "energy": -1, "maxnum": 3, "spawn": true, "floor": -12, "ceil": 44,
@@ -190,6 +201,7 @@ var roomMetadata =
 		{"resource": "Ferrite", "costs": [600, 1800, 6000, 18000, 60000]},
 		{"resource": "Rubedo", "costs": [300, 900, 3000, 9000, 30000]},
 		{"resource": "Forma", "costs": [1, 1, 3, 8, 25]}],
+    "treetype": "h-6",
 	"blockedFromAboveBy": [
 		"ce","ob","oc","re"]},
 {"id": "he", "image": "entrati-hall", "name": "Entrati Audience Chamber", "category": "Halls", "spawn": true, "prereq": null, "capacity": 200, "energy": -2, "maxnum": null, "floor": -12, "ceil": 36,
@@ -208,6 +220,7 @@ var roomMetadata =
 		{"resource": "Circuits", "costs": [200, 600, 2000, 6000, 20000]},
 		{"resource": "Salvage", "costs": [500, 1500, 5000, 15000, 50000]},
 		{"resource": "Forma", "costs": [1, 1, 1, 3, 10]}], "unverified": true,
+    "treetype": "h-6",
 	"blockedFromAboveBy": [
 		"ob"]},
 {"id": "hf", "image": "infested-hall", "name": "Infested Chamber", "category": "Halls", "spawn": true, "prereq": null, "capacity": 200, "energy": -5, "maxnum": null, "floor": -12, "ceil": 36,
@@ -226,6 +239,7 @@ var roomMetadata =
 		{"resource": "Circuits", "costs": [200, 600, 2000, 6000, 20000]},
 		{"resource": "Salvage", "costs": [500, 1500, 5000, 15000, 50000]},
 		{"resource": "Forma", "costs": [1, 1, 1, 3, 10]}], "unverified": true,
+    "treetype": "h-6",
 	"blockedFromAboveBy": [
 		"ob"]},
 {"id": "sm", "image": "starlight-market", "name": "Starlight Market", "category": "Halls", "spawn": true, "prereq": null, "capacity": 200, "energy": -5, "maxnum": null, "floor": -12, "ceil": 36,
@@ -244,6 +258,7 @@ var roomMetadata =
 		{"resource": "Circuits", "costs": [200, 600, 2000, 6000, 20000]},
 		{"resource": "Salvage", "costs": [500, 1500, 5000, 15000, 50000]},
 		{"resource": "Forma", "costs": [1, 1, 1, 3, 10]}], "unverified": true,
+    "treetype": "h-6",
 	"blockedFromAboveBy": [
 		"ob"]},
 
@@ -258,6 +273,7 @@ var roomMetadata =
 		{"resource": "Circuits", "costs": [350, 1050, 3500, 10500, 35000]},
 		{"resource": "Polymer Bundle", "costs": [350, 1050, 3500, 10500, 35000]},
 		{"resource": "Forma", "costs": [1, 1, 2, 5, 15]}],
+    "treetype": "32-1",
 	"blockedFromAboveBy": [
 	    ]},
 {"id": "lt", "image": "tenno-lab2", "name": "Tenno Lab", "category": "Labs", "prereq": "or", "capacity": -2, "energy": -5, "maxnum": null, "floor": 0, "ceil": 8,
@@ -273,6 +289,7 @@ var roomMetadata =
 		{"resource": "Circuits", "costs": [350, 1050, 3500, 10500, 35000]},
 		{"resource": "Polymer Bundle", "costs": [350, 1050, 3500, 10500, 35000]},
 		{"resource": "Forma", "costs": [1, 1, 2, 5, 15]}],
+    "treetype": "16-1",
 	"blockedFromAboveBy": [
 	    ]},
 {"id": "le", "image": "energy-lab", "name": "Energy Lab", "category": "Labs", "prereq": "or", "capacity": -2, "energy": -5, "maxnum": null, "floor": 0, "ceil": 16,
@@ -288,6 +305,7 @@ var roomMetadata =
 		{"resource": "Circuits", "costs": [350, 1050, 3500, 10500, 35000]},
 		{"resource": "Polymer Bundle", "costs": [350, 1050, 3500, 10500, 35000]},
 		{"resource": "Forma", "costs": [1, 1, 2, 5, 15]}],
+    "treetype": "32-1",
 	"blockedFromAboveBy": [
 	    ]},
 {"id": "lc", "image": "chem-lab", "name": "Chem Lab", "category": "Labs", "prereq": "or", "capacity": -2, "energy": -5, "maxnum": null, "floor": -12, "ceil": 16,
@@ -303,6 +321,7 @@ var roomMetadata =
 		{"resource": "Circuits", "costs": [350, 1050, 3500, 10500, 35000]},
 		{"resource": "Polymer Bundle", "costs": [350, 1050, 3500, 10500, 35000]},
 		{"resource": "Forma", "costs": [1, 1, 2, 5, 15]}],
+    "treetype": "32-1",
 	"blockedFromAboveBy": [
 	    ]},
 {"id": "lb", "image": "bio-lab", "name": "Bio Lab", "category": "Labs", "prereq": "or", "capacity": -2, "energy": -5, "maxnum": null, "floor": 0, "ceil": 12,
@@ -318,6 +337,7 @@ var roomMetadata =
 		{"resource": "Circuits", "costs": [350, 1050, 3500, 10500, 35000]},
 		{"resource": "Polymer Bundle", "costs": [350, 1050, 3500, 10500, 35000]},
 		{"resource": "Forma", "costs": [1, 1, 2, 5, 15]}],
+    "treetype": "32-1",
 	"blockedFromAboveBy": [
 	    ]},
 {"id": "lo", "image": "orokin-lab", "name": "Orokin Lab", "category": "Labs", "prereq": "or", "capacity": -2, "energy": -5, "maxnum": null, "floor": -16, "ceil": 28,
@@ -333,6 +353,7 @@ var roomMetadata =
 		{"resource": "Circuits", "costs": [350, 1050, 3500, 10500, 35000]},
 		{"resource": "Polymer Bundle", "costs": [350, 1050, 3500, 10500, 35000]},
 		{"resource": "Forma", "costs": [1, 1, 2, 5, 20]}],
+    "treetype": "64-1",
 	"blockedFromAboveBy": [
 	    ]},
 {"id": "lv", "image": "ventkid-lab", "name": "Ventkids' Bash Lab", "category": "Labs", "prereq": "or", "capacity": -2, "energy": -5, "maxnum": null, "floor": 0, "ceil": 8,
@@ -348,6 +369,7 @@ var roomMetadata =
 		{"resource": "Circuits", "costs": [250, 750, 2500, 7500, 25000]},
 		{"resource": "Thermal Sludge", "costs": [100, 300, 1000, 3000, 10000]},
 		{"resource": "Forma", "costs": [1, 1, 2, 5, 15]}],
+    "treetype": "16-1",
 	"blockedFromAboveBy": [
 	    ]},
 
@@ -377,6 +399,7 @@ var roomMetadata =
 		{"resource": "Circuits", "costs": [850, 2550, 8500, 25500, 85000]},
 		{"resource": "Tellurium", "costs": [15, 45, 150, 450, 1500]},
 		{"resource": "Forma", "costs": [1, 1, 2, 5, 15]}],
+    "treetype": "dd",
 	"blockedFromAboveBy": [
 	    ]},
 {"id": "cr", "image": "crimson-branch", "name": "Crimson Branch", "category": "Interactive", "prereq": null, "capacity": -2, "energy": -4, "maxnum": null, "floor": 0, "ceil": 12,
@@ -391,6 +414,7 @@ var roomMetadata =
 		{"resource": "Alloy Plate", "costs": [8500, 25500, 85000, 255000, 850000]},
 		{"resource": "Orokin Cell", "costs": [25, 75, 250, 750, 2500]},
 		{"resource": "Forma", "costs": [1, 1, 1, 3, 10]}],
+    "treetype": "32-1",
 	"blockedFromAboveBy": [
 	    ]},
 {"id": "du", "image": "dueling-room", "name": "Dueling Room", "category": "Interactive", "prereq": null, "capacity": -10, "energy": -10, "maxnum": null, "floor": 0, "ceil": 20,
@@ -406,6 +430,7 @@ var roomMetadata =
 		{"resource": "Ferrite", "costs": [350, 1050, 3500, 10500, 35000]},
 		{"resource": "Nano Spores", "costs": [1200, 3600, 12000, 36000, 120000]},
 		{"resource": "Forma", "costs": [1, 1, 1, 3, 10]}],
+    "treetype": "32-1",
 	"blockedFromAboveBy": [
 	    ]},
 {"id": "oc", "image": "obstacle-course", "name": "Obstacle Course", "category": "Interactive", "prereq": null, "capacity": -10, "energy": -10, "maxnum": null, "floor": -24, "ceil": 24,
@@ -422,6 +447,7 @@ var roomMetadata =
 		{"resource": "Ferrite", "costs": [400, 1200, 4000, 12000, 40000]},
 		{"resource": "Rubedo", "costs": [1200, 3600, 12000, 36000, 120000]},
 		{"resource": "Forma", "costs": [1, 1, 2, 5, 15]}],
+    "treetype": "oc-1",
 	"blockedFromAboveBy": [
 	    ]},
 {"id": "oa", "image": "obstacle-course-architect", "name": "Obstacle Course Architect", "category": "Interactive", "prereq": null, "capacity": 0, "energy": -2, "maxnum": 5, "floor": 0, "ceil": 48,
@@ -438,6 +464,7 @@ var roomMetadata =
 		{"resource": "Ferrite", "costs": [600, 1800, 6000, 18000, 60000]},
 		{"resource": "Nano Spores", "costs": [300, 900, 3000, 9000, 30000]},
 		{"resource": "Forma", "costs": [1, 1, 2, 5, 15]}], "unverified": true,
+    "treetype": "os-1",
 	"blockedFromAboveBy": [
 		"ob","oc","re","ce"]}, //"b4"?
 
@@ -453,6 +480,7 @@ var roomMetadata =
 		{"resource": "Circuits", "costs": [200, 600, 2000, 6000, 20000]},
 		{"resource": "Salvage", "costs": [500, 1500, 5000, 15000, 50000]},
 		{"resource": "Forma", "costs": [1, 1, 2, 5, 15]}], "unverified": true,
+    "treetype": "ob-1",
 	"blockedFromAboveBy": [
 		"lc","ce","ob","oc","lo","re"]}, //"b4"?
 {"id": "gs", "image": "small-garden", "name": "Small Garden", "category": "Misc", "prereq": null, "capacity": -10, "energy": -6, "maxnum": null, "floor": 0, "ceil": 20,
@@ -469,6 +497,7 @@ var roomMetadata =
 		{"resource": "Ferrite", "costs": [550, 1650, 5500, 16500, 55000]},
 		{"resource": "Nano Spores", "costs": [2000, 6000, 20000, 60000, 200000]},
 		{"resource": "Forma", "costs": [1, 1, 1, 2, 8]}],
+    "treetype": "32-4",
 	"blockedFromAboveBy": [
 	    ]},
 {"id": "gl", "image": "large-garden", "name": "Large Garden", "category": "Misc", "prereq": null, "capacity": -15, "energy": -8, "maxnum": null, "floor": 0, "ceil": 20,
@@ -487,6 +516,7 @@ var roomMetadata =
 		{"resource": "Polymer Bundle", "costs": [750, 2250, 7500, 22500, 75000]},
 		{"resource": "Nano Spores", "costs": [2500, 7500, 25000, 75000, 250000]},
 		{"resource": "Forma", "costs": [1, 1, 1, 3, 10]}], "unverified": true,
+    "treetype": "64-4",
 	"blockedFromAboveBy": [
 	    ]},
 {"id": "th", "image": "temple-of-honor", "name": "Temple Of Honor", "category": "Misc", "prereq": null, "capacity": -2, "energy": -5, "maxnum": null, "floor": 0, "ceil": 20,
@@ -505,6 +535,7 @@ var roomMetadata =
 		{"resource": "Circuits", "costs": [200, 600, 2000, 6000, 20000]},
 		{"resource": "Alloy Plate", "costs": [150, 450, 1500, 4500, 15000]},
 		{"resource": "Forma", "costs": [1, 1, 1, 3, 10]}], "unverified": true,
+    "treetype": "64-4",
 	"blockedFromAboveBy": [
 	    ]},
 {"id": "os", "image": "open-space", "name": "Open Space", "category": "Misc", "prereq": null, "capacity": -2, "energy": -5, "maxnum": null, "floor": -60, "ceil": 78,
@@ -525,6 +556,7 @@ var roomMetadata =
 		{"resource": "Circuits", "costs": [200, 600, 2000, 6000, 20000]},
 		{"resource": "Salvage", "costs": [500, 1500, 5000, 15000, 50000]},
 		{"resource": "Forma", "costs": [1, 1, 1, 3, 10]}], "unverified": true,
+    "treetype": "os-1",
 	"blockedFromAboveBy": [
 	    ]},
 
@@ -539,6 +571,7 @@ var roomMetadata =
 		{"resource": "Circuits", "costs": [350, 1050, 3500, 10500, 35000]},
 		{"resource": "Alloy Plate", "costs": [150, 450, 1500, 4500, 15000]},
 		{"resource": "Forma", "costs": [1, 1, 1, 1, 5]}],
+    "treetype": "32-1",
 	"blockedFromAboveBy": [
 		"ob"]},
 {"id": "b1", "image": "barracks", "name": "Barracks", "category": "Utility", "prereq": null, "capacity": -1, "energy": -1, "maxnum": 4, "floor": -8, "ceil": 12,
@@ -552,6 +585,7 @@ var roomMetadata =
 		{"resource": "Ferrite", "costs": [600, 1800, 6000, 60000, 60000]},
 		{"resource": "Rubedo", "costs": [300, 900, 3000, 30000, 30000]},
 		{"resource": "Forma", "costs": [1, 1, 3, 25, 25]}], "unverified": true,
+    "treetype": "32-1",
 	"blockedFromAboveBy": [
 	    ]},
 {"id": "la", "image": "label", "name": "Label", "category": "Utility", "prereq": null, "capacity": 0, "energy": 0, "maxnum": null, "floor": 0, "ceil": 0, "num": 0, "defaultLabel": "Label",
@@ -572,6 +606,7 @@ var roomMetadata =
 		{"x": 0, "y": 32.25, "floor": 0, "outx": 0, "outy": 1},
 		{"x": 0, "y": -32.25, "floor": 0, "outx": 0, "outy": -1}],
 	"resources": [], "unverified": true,
+    "treetype": "64-2",
 	"blockedFromAboveBy": [
 	    ]},
 {"id": "oh2", "image": "old-great-hall", "name": "(Old) Clan Great Hall", "category": "Discontinued", "discontinued": true, "spawn": true, "prereq": null, "capacity": 0, "energy": 0, "maxnum": null, "floor": -8, "ceil": 24,
@@ -581,6 +616,7 @@ var roomMetadata =
 		{"x": 0, "y": 32, "floor": 0, "outx": 0, "outy": 1},
 		{"x": 0, "y": -32, "floor": 0, "outx": 0, "outy": -1}],
 	"resources": [], "unverified": true,
+    "treetype": "64-2",
 	"blockedFromAboveBy": [
 	    ]},
 {"id": "occ", "image": "old-cross-connector", "name": "(Old) Cross Connector", "category": "Discontinued", "discontinued": true, "prereq": null, "capacity": 0, "energy": 0, "maxnum": null, "floor": -8, "ceil": 24,
@@ -592,6 +628,7 @@ var roomMetadata =
 		{"x": 0, "y": -18.25, "floor": 0, "outx": 0, "outy": -1},
 		{"x": -18.25, "y": 0, "floor": 0, "outx": -1, "outy": 0}],
 	"resources": [], "unverified": true,
+    "treetype": "32-4",
 	"blockedFromAboveBy": [
 	    ]},
 {"id": "oct", "image": "old-t-connector", "name": "(Old) T-shaped Connector", "category": "Discontinued", "discontinued": true, "prereq": null, "capacity": 0, "energy": 0, "maxnum": null, "floor": -8, "ceil": 24,
@@ -602,6 +639,7 @@ var roomMetadata =
 		{"x": 18.25, "y": 0, "floor": 0, "outx": 1, "outy": 0},
 		{"x": 0, "y": -18.25, "floor": 0, "outx": 0, "outy": -1}],
 	"resources": [], "unverified": true,
+    "treetype": "32-3",
 	"blockedFromAboveBy": [
 	    ]},
 {"id": "ore", "image": "old-reactor", "name": "(Old) Reactor", "category": "Discontinued", "discontinued": true, "prereq": null, "capacity": 0, "energy": 25, "maxnum": null, "floor": -8, "ceil": 24,
@@ -610,9 +648,164 @@ var roomMetadata =
 	"doors": [
 		{"x": 0, "y": 15, "floor": 0, "outx": 0, "outy": 1}],
 	"resources": [], "unverified": true,
+    "treetype": "32-1",
 	"blockedFromAboveBy": [
 	    ]},
 ]};
 
-var spawnMarkerMetadata = {"image": "marker-spawn", "x": 0, "y": 0};
-var destroyableMarkerMetadata = {"image": "marker-destroyable", "x": 0, "y": 0};
+// metadata for structural tree display
+// each image key is the bitmask of connected doors, going counterclockwise
+var treeMetadata = {
+    "16-1": {
+        "1" : {"tree": true, "image": "tree-16-1", "x": 0, "y": 0, "rot": 0, "fx": 0, "fy": 0 },
+    },
+    "16-2": {
+        "10" : {"tree": true, "image": "tree-16-1", "x": 0, "y": 0, "rot": 0, "fx": 0, "fy": 0 },
+        "01" : {"tree": true, "image": "tree-16-1", "x": 0, "y": 0, "rot": 180, "fx": 0, "fy": 0 },
+        "11" : {"tree": true, "image": "tree-16-2", "x": 0, "y": 0, "rot": 0, "fx": 0, "fy": 0 },
+    },
+    "32-1": {
+        "1" : {"tree": true, "image": "tree-32-1", "x": 0, "y": 0, "rot": 0, "fx": 0, "fy": 0 },
+    },
+    "32-2": {
+        "10" : {"tree": true, "image": "tree-32-1", "x": 0, "y": 0, "rot": 0, "fx": 0, "fy": 0 },
+        "01" : {"tree": true, "image": "tree-32-1", "x": 0, "y": 0, "rot": 180, "fx": 0, "fy": 0 },
+        "11" : {"tree": true, "image": "tree-32-2a", "x": 0, "y": 0, "rot": 0, "fx": 0, "fy": 0 },
+    },
+    "32-2e": {
+        "10" : {"tree": true, "image": "tree-32-1", "x": 0, "y": 0, "rot": 0, "fx": 0, "fy": 0 },
+        "01" : {"tree": true, "image": "tree-32-1", "x": 0, "y": 0, "rot": 270, "fx": 0, "fy": 0 },
+        "11" : {"tree": true, "image": "tree-32-2b", "x": 0, "y": 0, "rot": 0, "fx": 0, "fy": 0 },
+    },
+    "32-3": {
+        "100" : {"tree": true, "image": "tree-32-1", "x": 0, "y": 0, "rot": 0, "fx": 0, "fy": 0 },
+        "010" : {"tree": true, "image": "tree-32-1", "x": 0, "y": 0, "rot": 270, "fx": 0, "fy": 0 },
+        "001" : {"tree": true, "image": "tree-32-1", "x": 0, "y": 0, "rot": 180, "fx": 0, "fy": 0 },
+        "101" : {"tree": true, "image": "tree-32-2a", "x": 0, "y": 0, "rot": 0, "fx": 0, "fy": 0 },
+        "110" : {"tree": true, "image": "tree-32-2b", "x": 0, "y": 0, "rot": 0, "fx": 0, "fy": 0 },
+        "011" : {"tree": true, "image": "tree-32-2b", "x": 0, "y": 0, "rot": 270, "fx": 0, "fy": 0 },
+        "111" : {"tree": true, "image": "tree-32-3", "x": 0, "y": 0, "rot": 0, "fx": 0, "fy": 0 },
+    },
+    "32-4": {
+        "1000" : {"tree": true, "image": "tree-32-1", "x": 0, "y": 0, "rot": 0, "fx": 0, "fy": 0 },
+        "0100" : {"tree": true, "image": "tree-32-1", "x": 0, "y": 0, "rot": 270, "fx": 0, "fy": 0 },
+        "0010" : {"tree": true, "image": "tree-32-1", "x": 0, "y": 0, "rot": 180, "fx": 0, "fy": 0 },
+        "0001" : {"tree": true, "image": "tree-32-1", "x": 0, "y": 0, "rot": 90, "fx": 0, "fy": 0 },
+        "1010" : {"tree": true, "image": "tree-32-2a", "x": 0, "y": 0, "rot": 0, "fx": 0, "fy": 0 },
+        "0101" : {"tree": true, "image": "tree-32-2a", "x": 0, "y": 0, "rot": 90, "fx": 0, "fy": 0 },
+        "1100" : {"tree": true, "image": "tree-32-2b", "x": 0, "y": 0, "rot": 0, "fx": 0, "fy": 0 },
+        "0110" : {"tree": true, "image": "tree-32-2b", "x": 0, "y": 0, "rot": 270, "fx": 0, "fy": 0 },
+        "0011" : {"tree": true, "image": "tree-32-2b", "x": 0, "y": 0, "rot": 180, "fx": 0, "fy": 0 },
+        "1001" : {"tree": true, "image": "tree-32-2b", "x": 0, "y": 0, "rot": 90, "fx": 0, "fy": 0 },
+        "1110" : {"tree": true, "image": "tree-32-3", "x": 0, "y": 0, "rot": 0, "fx": 0, "fy": 0 },
+        "0111" : {"tree": true, "image": "tree-32-3", "x": 0, "y": 0, "rot": 270, "fx": 0, "fy": 0 },
+        "1011" : {"tree": true, "image": "tree-32-3", "x": 0, "y": 0, "rot": 180, "fx": 0, "fy": 0 },
+        "1101" : {"tree": true, "image": "tree-32-3", "x": 0, "y": 0, "rot": 90, "fx": 0, "fy": 0 },
+        "1111" : {"tree": true, "image": "tree-32-4", "x": 0, "y": 0, "rot": 0, "fx": 0, "fy": 0 },
+    },
+    "64-1": {
+        "1" : {"tree": true, "image": "tree-64-1", "x": 0, "y": 0, "rot": 0, "fx": 0, "fy": 0 },
+    },
+    "64-2": {
+        "10" : {"tree": true, "image": "tree-64-1", "x": 0, "y": 0, "rot": 0, "fx": 0, "fy": 0 },
+        "01" : {"tree": true, "image": "tree-64-1", "x": 0, "y": 0, "rot": 180, "fx": 0, "fy": 0 },
+        "11" : {"tree": true, "image": "tree-64-2a", "x": 0, "y": 0, "rot": 0, "fx": 0, "fy": 0 },
+    },
+    "64-4": {
+        "1000" : {"tree": true, "image": "tree-64-1", "x": 0, "y": 0, "rot": 0, "fx": 0, "fy": 0 },
+        "0100" : {"tree": true, "image": "tree-64-1", "x": 0, "y": 0, "rot": 270, "fx": 0, "fy": 0 },
+        "0010" : {"tree": true, "image": "tree-64-1", "x": 0, "y": 0, "rot": 180, "fx": 0, "fy": 0 },
+        "0001" : {"tree": true, "image": "tree-64-1", "x": 0, "y": 0, "rot": 90, "fx": 0, "fy": 0 },
+        "1010" : {"tree": true, "image": "tree-64-2a", "x": 0, "y": 0, "rot": 0, "fx": 0, "fy": 0 },
+        "0101" : {"tree": true, "image": "tree-64-2a", "x": 0, "y": 0, "rot": 270, "fx": 0, "fy": 0 },
+        "1100" : {"tree": true, "image": "tree-64-2b", "x": 0, "y": 0, "rot": 0, "fx": 0, "fy": 0 },
+        "0110" : {"tree": true, "image": "tree-64-2b", "x": 0, "y": 0, "rot": 270, "fx": 0, "fy": 0 },
+        "0011" : {"tree": true, "image": "tree-64-2b", "x": 0, "y": 0, "rot": 180, "fx": 0, "fy": 0 },
+        "1001" : {"tree": true, "image": "tree-64-2b", "x": 0, "y": 0, "rot": 90, "fx": 0, "fy": 0 },
+        "1110" : {"tree": true, "image": "tree-64-3", "x": 0, "y": 0, "rot": 0, "fx": 0, "fy": 0 },
+        "0111" : {"tree": true, "image": "tree-64-3", "x": 0, "y": 0, "rot": 270, "fx": 0, "fy": 0 },
+        "1011" : {"tree": true, "image": "tree-64-3", "x": 0, "y": 0, "rot": 180, "fx": 0, "fy": 0 },
+        "1101" : {"tree": true, "image": "tree-64-3", "x": 0, "y": 0, "rot": 90, "fx": 0, "fy": 0 },
+        "1111" : {"tree": true, "image": "tree-64-4", "x": 0, "y": 0, "rot": 0, "fx": 0, "fy": 0 },
+    },
+    "h-6": {
+        // pfft this was the *simpler* option
+        // bottom half of a 6-door hall
+        "a-0000" : {"tree": true, "image": "tree-h-0", "x": 0, "y": 16, "rot": 0, "fx": 0, "fy": 0 },
+        "a-1000" : {"tree": true, "image": "tree-h-2a", "x": 0, "y": 16, "rot": 0, "fx": 0, "fy": 0 },
+        "a-0100" : {"tree": true, "image": "tree-h-2b", "x": 0, "y": 16, "rot": 0, "fx": 0, "fy": 0 },
+        "a-0010" : {"tree": true, "image": "tree-h-0", "x": 0, "y": 16, "rot": 0, "fx": 0, "fy": 0 },
+        "a-0001" : {"tree": true, "image": "tree-h-2b", "x": 0, "y": 16, "rot": 0, "fx": 1, "fy": 0 },
+        "a-1010" : {"tree": true, "image": "tree-h-2a", "x": 0, "y": 16, "rot": 0, "fx": 0, "fy": 0 },
+        "a-0101" : {"tree": true, "image": "tree-h-3b", "x": 0, "y": 16, "rot": 0, "fx": 0, "fy": 0 },
+        "a-1100" : {"tree": true, "image": "tree-h-3a", "x": 0, "y": 16, "rot": 0, "fx": 0, "fy": 0 },
+        "a-0110" : {"tree": true, "image": "tree-h-2b", "x": 0, "y": 16, "rot": 0, "fx": 0, "fy": 0 },
+        "a-0011" : {"tree": true, "image": "tree-h-2b", "x": 0, "y": 16, "rot": 0, "fx": 1, "fy": 0 },
+        "a-1001" : {"tree": true, "image": "tree-h-3a", "x": 0, "y": 16, "rot": 0, "fx": 1, "fy": 0 },
+        "a-1110" : {"tree": true, "image": "tree-h-3a", "x": 0, "y": 16, "rot": 0, "fx": 0, "fy": 0 },
+        "a-0111" : {"tree": true, "image": "tree-h-3b", "x": 0, "y": 16, "rot": 0, "fx": 0, "fy": 0 },
+        "a-1011" : {"tree": true, "image": "tree-h-3a", "x": 0, "y": 16, "rot": 0, "fx": 1, "fy": 0 },
+        "a-1101" : {"tree": true, "image": "tree-h-4", "x": 0, "y": 16, "rot": 0, "fx": 0, "fy": 0 },
+        "a-1111" : {"tree": true, "image": "tree-h-4", "x": 0, "y": 16, "rot": 0, "fx": 0, "fy": 0 },
+        // top half of a 6-door hall, rotated 180
+        "b-0000" : {"tree": true, "image": "tree-h-0", "x": 0, "y": -16, "rot": 180, "fx": 0, "fy": 0 },
+        "b-1000" : {"tree": true, "image": "tree-h-2a", "x": 0, "y": -16, "rot": 180, "fx": 0, "fy": 0 },
+        "b-0100" : {"tree": true, "image": "tree-h-2b", "x": 0, "y": -16, "rot": 180, "fx": 0, "fy": 0 },
+        "b-0010" : {"tree": true, "image": "tree-h-0", "x": 0, "y": -16, "rot": 180, "fx": 0, "fy": 0 },
+        "b-0001" : {"tree": true, "image": "tree-h-2b", "x": 0, "y": -16, "rot": 180, "fx": 1, "fy": 0 },
+        "b-1010" : {"tree": true, "image": "tree-h-2a", "x": 0, "y": -16, "rot": 180, "fx": 0, "fy": 0 },
+        "b-0101" : {"tree": true, "image": "tree-h-3b", "x": 0, "y": -16, "rot": 180, "fx": 0, "fy": 0 },
+        "b-1100" : {"tree": true, "image": "tree-h-3a", "x": 0, "y": -16, "rot": 180, "fx": 0, "fy": 0 },
+        "b-0110" : {"tree": true, "image": "tree-h-2b", "x": 0, "y": -16, "rot": 180, "fx": 0, "fy": 0 },
+        "b-0011" : {"tree": true, "image": "tree-h-2b", "x": 0, "y": -16, "rot": 180, "fx": 1, "fy": 0 },
+        "b-1001" : {"tree": true, "image": "tree-h-3a", "x": 0, "y": -16, "rot": 180, "fx": 1, "fy": 0 },
+        "b-1110" : {"tree": true, "image": "tree-h-3a", "x": 0, "y": -16, "rot": 180, "fx": 0, "fy": 0 },
+        "b-0111" : {"tree": true, "image": "tree-h-3b", "x": 0, "y": -16, "rot": 180, "fx": 0, "fy": 0 },
+        "b-1011" : {"tree": true, "image": "tree-h-3a", "x": 0, "y": -16, "rot": 180, "fx": 1, "fy": 0 },
+        "b-1101" : {"tree": true, "image": "tree-h-4", "x": 0, "y": -16, "rot": 180, "fx": 0, "fy": 0 },
+        "b-1111" : {"tree": true, "image": "tree-h-4", "x": 0, "y": -16, "rot": 180, "fx": 0, "fy": 0 },
+        // split a 6-door key into two 4-door keys
+        "convertKey": function(key) {
+            // the extra door is the connection between the two halves
+            return [
+                "a-" + key[0] + key[1] + (key.substring(2,5) == "000" ? "0" : "1") + key[5],
+                "b-" + key[3] + key[4] + ((key.substring(5) + key.substring(0,2)) == "000" ? "0" : "1") + key[2]
+            ];
+        }
+    },
+    // of course dry dock is its own thing
+    "dd": {
+        "100" : {"tree": true, "image": "tree-dd-1a", "x": 0, "y": 0, "rot": 0, "fx": 0, "fy": 0 },
+        "010" : {"tree": true, "image": "tree-dd-1b", "x": 0, "y": 0, "rot": 0, "fx": 0, "fy": 0 },
+        "001" : {"tree": true, "image": "tree-dd-1b", "x": 0, "y": 0, "rot": 0, "fx": 1, "fy": 0 },
+        "110" : {"tree": true, "image": "tree-dd-2a", "x": 0, "y": 0, "rot": 0, "fx": 0, "fy": 0 },
+        "011" : {"tree": true, "image": "tree-dd-2b", "x": 0, "y": 0, "rot": 0, "fx": 0, "fy": 0 },
+        "101" : {"tree": true, "image": "tree-dd-2a", "x": 0, "y": 0, "rot": 0, "fx": 1, "fy": 0 },
+        "111" : {"tree": true, "image": "tree-dd-3", "x": 0, "y": 0, "rot": 0, "fx": 0, "fy": 0 },
+    },
+    // 1-offs
+    "oc-1": {
+        "1" : {"tree": true, "image": "tree-oc-1", "x": 0, "y": 0, "rot": 0, "fx": 0, "fy": 0 },
+    },
+    "ob-1": {
+        "1" : {"tree": true, "image": "tree-ob-1", "x": 0, "y": 0, "rot": 0, "fx": 0, "fy": 0 },
+    },
+    "os-1": {
+        "1" : {"tree": true, "image": "tree-os-1", "x": 0, "y": 0, "rot": 0, "fx": 0, "fy": 0 },
+    },
+    "el-2": {
+        "a-10" : {"tree": true, "image": "tree-el-1", "x": 0, "y": 0, "rot": 0, "fx": 0, "fy": 0, "floor": 0 },
+        "b-10" : {"tree": true, "image": "tree-el-0", "x": 0, "y": 0, "rot": 0, "fx": 0, "fy": 0, "floor": 1 },
+        "a-01" : {"tree": true, "image": "tree-el-0", "x": 0, "y": 0, "rot": 0, "fx": 0, "fy": 0, "floor": 0 },
+        "b-01" : {"tree": true, "image": "tree-el-1", "x": 0, "y": 0, "rot": 0, "fx": 0, "fy": 0, "floor": 1 },
+        "a-11" : {"tree": true, "image": "tree-el-1", "x": 0, "y": 0, "rot": 0, "fx": 0, "fy": 0, "floor": 0 },
+        "b-11" : {"tree": true, "image": "tree-el-1", "x": 0, "y": 0, "rot": 0, "fx": 0, "fy": 0, "floor": 1 },
+        "convertKey": function(key) {
+            // need separate markers for each floor
+            return ["a-" + key, "b-" + key];
+        }
+    },
+};
+
+// spark point marker, just put it in the center of the room
+var spawnMarkerMetadata = {"image": "marker-spawn", "x": 0, "y": 0, "z": 1};
