@@ -252,7 +252,7 @@ function doAddRooms(e, rooms) {
 
 function duplicateSelectedRooms(e) {
     // sanity check
-	if (!dragged) {
+	if (!dragged && selectedRooms.length > 0) {
 	    // clone the rooms
 		var rooms = cloneRooms(selectedRooms);
 	    clearMenus(0);

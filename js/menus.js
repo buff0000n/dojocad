@@ -631,9 +631,10 @@ function doRoomMenu(e, rooms) {
         selectDiv.appendChild(configureButton(
             document.createElement("span"), "Select All", selectAllRoomsOfSelectedTypes, buttonClass));
         selectDiv.appendChild(configureButton(
-            document.createElement("span"), "Branch", selectBranch, buttonClass));
+            document.createElement("span"), `<img class="imgButton" src="icons/icon-select-branch.png" srcset="icons2x/icon-select-branch.png 2x"/>&nbsp;Branch`,
+            selectBranch, buttonClass));
         selectDiv.appendChild(configureButton(
-            document.createElement("span"), "Root", selectRoot, buttonClass, buttonSpan));
+            document.createElement("span"), `<img class="imgButton" src="icons/icon-select-root.png" srcset="icons2x/icon-select-root.png 2x"/>&nbsp;Root`, selectRoot, buttonClass, buttonSpan));
 
         selectDiv.colSpan = 4;
 
