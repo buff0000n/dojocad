@@ -60,7 +60,7 @@ class Settings {
             "showAllFloors": this.showAllFloors,
             "showMapMarkers": this.showMapMarkers,
             "showLabels": this.showLabels,
-            "showRooms": this.showRooms,
+            "dimRooms": this.dimRooms,
             "autosave": this.autosave,
             "structureChecking": this.structureChecking,
             "localStoreSort": this.localStoreSort,
