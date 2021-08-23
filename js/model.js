@@ -32,6 +32,8 @@ function getZIndex(room, part) {
 }
 
 function getDisplayImageFilter(hue, visible=true) {
+    // dim rooms setting
+    if (settings.dimRooms) visible = false;
     // CSS filter value for the display image, if necessary
     return hue == null ? (visible ? "" : "brightness(25%") : (
         " hue-rotate(" + (hue[0] - 120) + "deg)" +
@@ -1638,7 +1640,7 @@ class Room {
                 var doorKey = "";
                 for (var d = 0; d < this.doors.length; d++) {
                     var door = this.doors[d];
-                    doorKey += door.otherDoor && !door.crossBranch ? "1" : "0";
+                    doorKey += (door.otherDoor && !door.crossBranch && isTraversableRoom(door.otherDoor.room)) ? "1" : "0";
                 }
                 if (this.treemetadata.convertKey) {
                     var doorKeys = this.treemetadata.convertKey(doorKey);

@@ -261,7 +261,8 @@ class TreeStructureCallback extends AbstractTreeTraversalCallback {
             var incomingRooms = [];
             for (var d = 0; d < room.doors.length; d++) {
                 var door = room.doors[d];
-                if (door.otherDoor) {
+                // needs to be connected to a traversable room
+                if (door.otherDoor && isTraversableRoom(door.otherDoor.room)) {
                     if (!door.outgoing && !door.otherDoor.outgoing) {
                         door.crossBranch = true;
                     }
@@ -384,6 +385,15 @@ function reverseDoors(doors) {
         otherDoors.push(doors[d].otherDoor);
     }
     return otherDoors;
+}
+
+function isTraversableRoom(room) {
+    // skip rooms that don't count, like the label object
+    if (room.metadata.num == 0) {
+        // don't continue traversal through this room
+        return false;
+    }
+    return true;
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -528,15 +538,6 @@ class AbstractTreeTraversal {
             // clean up if there are no more traversals running on the room
             room.traversalMarker = null;
         }
-    }
-
-    isTraversableRoom(room) {
-        // skip rooms that don't count, like the label object
-        if (room.metadata.num == 0) {
-            // don't continue traversal through this room
-            return false;
-        }
-        return true;
     }
 
     runTraversal() {
@@ -688,7 +689,7 @@ class DepthFirstTreeTraversal extends AbstractTreeTraversal {
             // set the marker
             this.setMarker(room);
             // run the callback and see if we should traverse the room
-            if (this.isTraversableRoom(room) && this.callback.processConnection(room, doors)) {
+            if (isTraversableRoom(room) && this.callback.processConnection(room, doors)) {
                 // get the next rooms, excluding the incoming doors
                 var nextRooms = [];
                 for (var d = 0; d < room.doors.length; d++) {
@@ -813,7 +814,7 @@ class BreadthFirstTreeTraversal extends AbstractTreeTraversal {
         this.setMarker(room);
 
         // run the callback and see if we should traverse the room
-        if (this.isTraversableRoom(room) && this.callback.processConnection(room, doors)) {
+        if (isTraversableRoom(room) && this.callback.processConnection(room, doors)) {
             // get the next rooms, excluding the incoming doors
             var nextRooms = [];
             for (var d = 0; d < room.doors.length; d++) {

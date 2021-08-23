@@ -1653,6 +1653,8 @@ function doSettingsMenu() {
 
     menuDiv.appendChild(buildCheckbox("showLabels", "Show Labels", settings.showLabels, (value) => { setShowLabels(value); }));
 
+    menuDiv.appendChild(buildCheckbox("dimRooms", "Dim Rooms", settings.dimRooms, (value) => { setDimRooms(value); }));
+
     menuDiv.appendChild(buildMenuDivider(4));
 
     menuDiv.appendChild(buildCheckbox("autosave", "Autosave", settings.autosave, (value) => { setAutosave(value); }));

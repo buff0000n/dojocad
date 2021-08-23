@@ -618,6 +618,19 @@ function setShowLabels(showLabels) {
 	settings.save();
 }
 
+function setDimRooms(dimRooms) {
+    // set this before calling room.updateLabelDisplay(), otherwise nothing will happen
+	settings.dimRooms = dimRooms;
+
+    for (var r = 0; r < roomList.length; r++) {
+        // there's already a function just for changing the room color
+        roomList[r].resetColorDisplay();
+    }
+
+    // save setting at the end, if something goes wrong then it is not saved
+	settings.save();
+}
+
 function setAutosave(autosave) {
     // set the setting first
     settings.autosave = autosave;

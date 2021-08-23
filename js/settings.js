@@ -9,6 +9,7 @@ class Settings {
         this.showAllFloors = true;
         this.showMapMarkers = true;
         this.showLabels = true;
+        this.dimRooms = false;
         this.autosave = false;
         this.structureChecking = false;
         this.localStoreSort = "name";
@@ -35,6 +36,9 @@ class Settings {
             if (props.showLabels != null) {
                 this.showLabels = props.showLabels;
             }
+            if (props.dimRooms != null) {
+                this.dimRooms = props.dimRooms;
+            }
             if (props.autosave != null) {
                 this.autosave = props.autosave;
             }
@@ -56,6 +60,7 @@ class Settings {
             "showAllFloors": this.showAllFloors,
             "showMapMarkers": this.showMapMarkers,
             "showLabels": this.showLabels,
+            "showRooms": this.showRooms,
             "autosave": this.autosave,
             "structureChecking": this.structureChecking,
             "localStoreSort": this.localStoreSort,
