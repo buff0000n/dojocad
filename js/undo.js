@@ -203,12 +203,10 @@ function describeRoomList(rooms) {
 
 class DoorState {
     constructor(door) {
-//        this.forceOutgoing = door.forceOutgoing;
         this.forceCrossBranch = door.forceCrossBranch;
     }
 
     equals(other) {
-//        return this.forceOutgoing == other.forceOutgoing &&
           return this.forceCrossBranch == other.forceCrossBranch;
     }
 }
@@ -229,7 +227,6 @@ class RoomDoorPosition extends Position {
         for (var d = 0; d < this.doorStates.length; d++) {
             var doorState = this.doorStates[d];
             var door = room.doors[d];
-//            door.setForceOutgoing(doorState.forceOutgoing);
             door.setForceCrossBranch(doorState.forceCrossBranch);
         }
     }
@@ -445,33 +442,6 @@ class ChangeSpawnPointAction extends Action {
 	}
 }
 
-class SetDestroyableAction extends Action {
-	constructor(room, destroyable) {
-		super();
-		this.room = room;
-		this.destroyable = destroyable;
-	}
-
-	undoAction() {
-        this.action(!this.destroyable);
-	}
-
-	redoAction() {
-        this.action(this.destroyable);
-	}
-
-	action(set) {
-        setRoomDestroyable(this.room, set, false);
-		saveModelToUrl();
-        treeUpdated();
-	}
-
-	toString() {
-		return "Set room " + describeRoomList([this.room])
-		    + (this.destroyable ? " to destroyable" : " to not destroyable");
-	}
-}
-
 // Just combine all the door state changes into one generic action
 class ChangeDoorAction extends Action {
 	constructor(door) {
@@ -481,34 +451,27 @@ class ChangeDoorAction extends Action {
 	}
 
 	recordFrom() {
-//	    this.fromForceOutgoing = this.door.forceOutgoing;
 	    this.fromForceCrossBranch = this.door.forceCrossBranch;
 	}
 
 	recordTo() {
-//	    this.toForceOutgoing = this.door.forceOutgoing;
 	    this.toForceCrossBranch = this.door.forceCrossBranch;
 	}
 
 	isAChange() {
 		this.recordTo();
-//		return this.fromForceOutgoing != this.toForceOutgoing || this.fromForceCrossBranch != this.toForceCrossBranch;
 		return this.fromForceCrossBranch != this.toForceCrossBranch;
 	}
 
 	undoAction() {
-//        this.action(this.fromForceOutgoing, this.fromForceCrossBranch);
         this.action(this.fromForceCrossBranch);
 	}
 
 	redoAction() {
-//        this.action(this.toForceOutgoing, this.toForceCrossBranch);
         this.action(this.toForceCrossBranch);
 	}
 
-//	action(toForceOutgoing, toForceCrossBranch) {
 	action(toForceCrossBranch) {
-//	    setDoorState(this.door, toForceOutgoing, toForceCrossBranch, false);
 	    setDoorState(this.door, toForceCrossBranch, false);
 
 		saveModelToUrl();

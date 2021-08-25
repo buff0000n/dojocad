@@ -625,16 +625,22 @@ function doRoomMenu(e, rooms) {
     // cut option
     menuDiv.appendChild(buildMenuButton("Cut", cutSelectedRooms, "icon-cut", buttonClass, buttonSpan));
 
-
+    // if a single room is selected, structure mode is enabled, and there aren't any loop warnings
+    // then there are multiple select options
     if (room && settings.structureChecking && analysisResult.spawn && !analysisResult.loops) {
+        // put them on the same line because this menu is getting too big
         var selectDiv = document.createElement("td");
+        // select all
         selectDiv.appendChild(configureButton(
             document.createElement("span"), "Select All", selectAllRoomsOfSelectedTypes, buttonClass));
+            // select branch
         selectDiv.appendChild(configureButton(
             document.createElement("span"), `<img class="imgButton" src="icons/icon-select-branch.png" srcset="icons2x/icon-select-branch.png 2x"/>&nbsp;Branch`,
             selectBranch, buttonClass));
+        // select root
         selectDiv.appendChild(configureButton(
-            document.createElement("span"), `<img class="imgButton" src="icons/icon-select-root.png" srcset="icons2x/icon-select-root.png 2x"/>&nbsp;Root`, selectRoot, buttonClass, buttonSpan));
+            document.createElement("span"), `<img class="imgButton" src="icons/icon-select-root.png" srcset="icons2x/icon-select-root.png 2x"/>&nbsp;Root`,
+            selectRoot, buttonClass, buttonSpan));
 
         selectDiv.colSpan = 4;
 
@@ -649,16 +655,10 @@ function doRoomMenu(e, rooms) {
         if (room.isSpawnPoint()) {
             menuDiv.appendChild(buildMenuButton("Remove Spawn Point", unsetSelectedRoomSpawn, "icon-spawn-delete", buttonClass, buttonSpan));
 
-//        } else if (room.isDestroyable()) {
-//            menuDiv.appendChild(buildMenuButton("Unset Destroyable", unsetSelectedRoomDestroyable, "icon-unset-destroyable"));
-
         } else {
             if (room.metadata.spawn) {
                 menuDiv.appendChild(buildMenuButton("Set Spawn Point", setSelectedRoomSpawn, "icon-spawn", buttonClass, buttonSpan));
             }
-//            if (settings.structureChecking && getCurrentSpawnRoom()) {
-//                menuDiv.appendChild(buildMenuButton("Set Destroyable", setSelectedRoomDestroyable, "icon-set-destroyable"));
-//            }
         }
     }
 
@@ -689,17 +689,12 @@ function doDoorMenu(e, door) {
     clearMenus();
 
     var menuDiv = buildMenu();
-    menuDiv.appendChild(buildMenuHeaderLine(door.looping ? "Looping Door" : "Door", 3, door.looping ? "icon-warn" : null));
+    menuDiv.appendChild(buildMenuHeaderLine(door.looping ? "Looping Door" : door.crossBranch ? "Cross Branch Door" : "Door",
+        3, door.looping ? "icon-warn" : door.crossBranch ? "icon-force-cross-branch" : null));
 
-//    if (door.forceOutgoing || door.otherDoor.forceOutgoing) {
-//        menuDiv.appendChild(buildMenuButton("Reverse", () => { flipForceOutgoingDoor(door)}, "icon-force-outgoing-flip"));
-//    } else {
-//        menuDiv.appendChild(buildMenuButton("Force Direction", () => { setDoorForceOutgoing(door, true)}, "icon-force-outgoing"));
-//    }
     if (!door.forceCrossBranch) {
         menuDiv.appendChild(buildMenuButton("Cross Branch", () => { setDoorForceCrossBranch(door, true)}, "icon-force-cross-branch"));
     }
-//    if (door.forceOutgoing || door.otherDoor.forceOutgoing || door.forceCrossBranch) {
     if (door.forceCrossBranch) {
         menuDiv.appendChild(buildMenuButton("Reset", () => { resetDoor(door)}, "icon-force-cross-branch-reset"));
     }

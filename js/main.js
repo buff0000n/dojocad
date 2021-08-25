@@ -424,71 +424,16 @@ function doResetAllStructure() {
     treeUpdated();
 }
 
-//function setRoomDestroyable(destroyableRoom, destroyable, allowUndo=true) {
-//    destroyableRoom.setDestroyable(destroyable);
-//
-//    if (allowUndo) {
-//        addUndoAction(new SetDestroyableAction(destroyableRoom, destroyable));
-//    }
-//}
-//
-//function setSelectedRoomDestroyable() {
-//    if (selectedRooms.length == 1) {
-//        var room = selectedRooms[0];
-//        clearMenus(0);
-//        setRoomDestroyable(room, true);
-//    	saveModelToUrl();
-//    	treeUpdated();
-//    }
-//}
-//
-//function unsetSelectedRoomDestroyable() {
-//    if (selectedRooms.length == 1) {
-//        var room = selectedRooms[0];
-//        clearMenus(0);
-//        setRoomDestroyable(room, false, true);
-//    	saveModelToUrl();
-//    	treeUpdated();
-//    }
-//}
-
 function doorClicked(e, door) {
     if (!door.otherDoor) {
         // ignore
     }
-
-    // I can't make this shortcut work non-annoyingly
-//    // shortcut, selecting the room on one side of a door and ctrl-clicking the door automatically set that
-//    // side of the door to force outgoing
-//    if (e.ctrlKey && door.room.isSelected() != door.otherDoor.room.isSelected()) {
-//        // pick the door on the selected room
-//        door = door.room.isSelected() ? door : door.otherDoor;
-//        // auto-set force outgoing
-//        setDoorForceOutgoing(door, !door.forceOutgoing);
-//    }
-
-    // no clear direction, open the menu
     doDoorMenu(e, door);
-
 }
-
-//function setDoorForceOutgoing(door, forceOutgoing,  allowUndo=true) {
-//    clearMenus(0);
-//
-//    setDoorState(door, forceOutgoing, false, allowUndo);
-//
-//    saveModelToUrl();
-//    treeUpdated();
-//}
-
-//function flipForceOutgoingDoor(door, allowUndo=true) {
-//    setDoorForceOutgoing(door.otherDoor, true, allowUndo);
-//}
 
 function setDoorForceCrossBranch(door, forceCrossBranch, allowUndo=true) {
     clearMenus(0);
 
-//    setDoorState(door, null, forceCrossBranch, allowUndo);
     setDoorState(door, forceCrossBranch, allowUndo);
 
     saveModelToUrl();
@@ -498,14 +443,12 @@ function setDoorForceCrossBranch(door, forceCrossBranch, allowUndo=true) {
 function resetDoor(door, allowUndo=true) {
     clearMenus(0);
 
-//    setDoorState(door, null, false, allowUndo);
     setDoorState(door, false, allowUndo);
 
     saveModelToUrl();
     treeUpdated();
 }
 
-//function setDoorState(door, forceOutgoing, forceCrossBranch, allowUndo=true) {
 function setDoorState(door, forceCrossBranch, allowUndo=true) {
     var action = !allowUndo ? null : new ChangeDoorAction(door);
 
@@ -513,7 +456,6 @@ function setDoorState(door, forceCrossBranch, allowUndo=true) {
     var doors = getDoorsToRoom(door.room, door.otherDoor.room);
     for (var d = 0; d < doors.length; d++) {
         var setDoor = doors[d];
-//        setDoor.setForceOutgoing(forceOutgoing);
         setDoor.setForceCrossBranch(forceCrossBranch);
     }
 

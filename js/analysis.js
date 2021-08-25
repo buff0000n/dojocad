@@ -203,7 +203,6 @@ class TreeStructureCallback extends AbstractTreeTraversalCallback {
         room.looped = false;
         for (var d = 0; d < room.doors.length; d++) {
             var door = room.doors[d];
-//            door.outgoing = door.forceOutgoing;
             door.outgoing = false;
             door.crossBranch = door.forceCrossBranch;
             door.looping = false;
@@ -217,7 +216,6 @@ class TreeStructureCallback extends AbstractTreeTraversalCallback {
         for (var d = 0; d < incomingDoors.length; d++) {
             incomingDoors[d].otherDoor.outgoing = true;
         }
-//        return !room.isDestroyable();
         return true;
     }
 
@@ -697,10 +695,6 @@ class DepthFirstTreeTraversal extends AbstractTreeTraversal {
                     // find connected doors, but not ones that are forced incoming,
                     // not ones that are forced cross branches, and not the doors we came in on
                     if (door.otherDoor) {
-//                            if (door.otherDoor.forceOutgoing) {
-//                                // console.log("Skipping forced incoming door to " + door.otherDoor.room.toShortString());
-//                                continue;
-//                            }
                         if (door.otherDoor.outgoing) {
                             // console.log("Skipping already incoming door to " + door.otherDoor.room.toShortString());
                             continue;
