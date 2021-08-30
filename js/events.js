@@ -520,6 +520,7 @@ function dropEvent(e) {
     } else if (isDraggingRoom()) {
         // save the clicked room, if any
         lastClickedRoom = (mouseDownTarget && mouseDownTarget.room) ? mouseDownTarget.room : null;
+        // we also need the last clicked door, if any
         lastClickedDoor = (mouseDownTarget && mouseDownTarget.door) ? mouseDownTarget.door : null;
 	    mouseDownTarget = null;
 	    mouseDownTargetStartPX = 0;

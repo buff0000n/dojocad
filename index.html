@@ -367,12 +367,6 @@
                     </ul>
                 </li>
                 <li>
-                    <a href="#SpawnPoint">Spawn Point</a>
-                    <ul>
-                        <li><a href="#Connectedness">Connectedness</a></li>
-                    </ul>
-                </li>
-                <li>
                     <a href="#SavingAndSharing">Saving And Sharing</a>
                     <ul>
                         <li><a href="#Sharing">Sharing</a></li>
@@ -383,10 +377,59 @@
                 </li>
                 <li><a href="#ExportToPng">Exporting to PNG</a></li>
                 <li>
+                    <a href="#Structure">Structure Mode</a>
+                    <ul>
+                        <li>
+                            <a href="#StructureBasic">Basic mode</a>
+                            <ul>
+                                <li><a href="#SpawnPoint">Spawn Point</a></li>
+                                <li><a href="#Connectedness">Connectedness</a></li>
+                            </ul>
+                        </li>
+                        <li>
+                            <a href="#StructureAdvanced">Advanced</a>
+                            <ul>
+                                <li>
+                                    <a href="#TreeView">Your Dojo is a Tree</a>
+                                    <ul>
+                                        <li><a href="#TreeDisplay">Tree Structure Display</a></li>
+                                        <li><a href="#SelectBranch">Select Branch</a></li>
+                                        <li><a href="#SelectRoot">Select Root</a></li>
+                                        <li><a href="#MovingTheSpawnPoint">Moving The Spawn Point</a></li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <a href="#Loops">Loops</a>
+                                    <ul>
+                                        <li><a href="#LoopDetection">Loop Detection</a></li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <a href="#CrossBranchDoors">Cross Branch Doors</a>
+                                    <ul>
+                                        <li><a href="#HowCrossBranchDoors">How to find</a></li>
+                                        <li><a href="#MarkingCrossBranchDoors">Marking</a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+                        <li>
+                            <a href="#StructureMenu">Structure Menu</a>
+                            <ul>
+                                <li><a href="#ShowSpanPoint">Find Spawn Point</a></li>
+                                <li><a href="#AutoFixStructure">Auto-Fix Structure</a></li>
+                                <li><a href="#ResetAllStructure">Reset All Structure</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+                <li>
                     <a href="#Settings">Settings</a>
                     <ul>
                         <li><a href="#ShowAllFloors">Show All Floors</a></li>
                         <li><a href="#ShowMapMarkers">Show Map Markers</a></li>
+                        <li><a href="#ShowLabels">Show Labels</a></li>
+                        <li><a href="#DimRooms">Dim Rooms</a></li>
                         <li><a href="#Autosave">Autosave</a></li>
                     </ul>
                 </li>
@@ -951,34 +994,6 @@
                 overestimate; you're going to build at least some of your dojo before building any Barracks.</span>
             </p>
 
-            <h1 id="SpawnPoint">Spawn Point</h1>
-            <p>
-                On rooms that support being a spawn point, click on the room menu and select
-                <span class="docImgButton"><img src="icons/icon-spawn.png" srcset="icons2x/icon-spawn.png 2x" title="Spawn Point"/></span>
-                <strong>Set Spawn Point</strong> to designate that room as the spawn point.  If another room is already
-                designaged as the spawn point then the spawn point will be moved.
-            </p>
-            <p>
-                The designated spawn point room will have a
-                <span class="docImgButton-clear"><img src="icons/icon-spawn.png" srcset="icons2x/icon-spawn.png 2x" title="Spawn Point"/></span>
-                marker on it.
-            </p>
-            <p>
-                To remove the spawn point from your layout, click on the spawn point room menu and select
-                <span class="docImgButton"><img src="icons/icon-spawn-delete.png" srcset="icons2x/icon-spawn-delete.png 2x" title="Spawn Point Delete"/></span>
-                <strong>Remove Spawn Point</strong>.  After this your layout will not have a spawn point.
-            </p>
-            <h2 id="Connectedness">Connectedness</h2>
-            <p>
-                When a spawn point is designated the dojo will be checked to make sure every room is connected to the
-                spawn point room, either directly or indirectly through other rooms.
-            </p>
-            <p>
-                Rooms that are not connected to the spawn point room will be highlighted in yellow and show up as
-                <span class="docImgButton-clear"><img src="icons/icon-warn.png" srcset="icons2x/icon-warn.png 2x" title="Warning"/></span>
-                warnings.
-            </p>
-
             <h1 id="SavingAndSharing">Saving And Sharing</h1>
             <p>
                 The current layout and view are continually saved to your browser's location bar.  If you go forward or
@@ -1053,6 +1068,289 @@
                     for the image links to appear.</strong>
             </p>
 
+            <h1 id="Structure">Structure Mode</h1>
+
+            <h2 id="StructureBasic">Basic Mode</h2>
+            <p>
+                Basic structure checking is enabled by default.  All you need to do is add a spawn point.
+            </p>
+
+            <h3 id="SpawnPoint">Spawn Point</h3>
+            <p>
+                On rooms that support being a spawn point, click on the room menu and select
+                <span class="docImgButton"><img src="icons/icon-spawn.png" srcset="icons2x/icon-spawn.png 2x" title="Spawn Point"/></span>
+                <strong>Set Spawn Point</strong> to designate that room as the spawn point.  If another room is already
+                designaged as the spawn point then the spawn point will be moved.
+            </p>
+            <p>
+                The designated spawn point room will have a
+                <span class="docImgButton-clear"><img src="icons/icon-spawn.png" srcset="icons2x/icon-spawn.png 2x" title="Spawn Point"/></span>
+                marker on it.
+            </p>
+            <p>
+                To remove the spawn point from your layout, click on the spawn point room menu and select
+                <span class="docImgButton"><img src="icons/icon-spawn-delete.png" srcset="icons2x/icon-spawn-delete.png 2x" title="Spawn Point Delete"/></span>
+                <strong>Remove Spawn Point</strong>.  After this your layout will not have a spawn point.
+            </p>
+            <h3 id="Connectedness">Connectedness</h3>
+            <p>
+                When a spawn point is designated the dojo will be checked to make sure every room is connected to the
+                spawn point room, either directly or indirectly through other rooms.
+            </p>
+            <p>
+                Rooms that are not connected to the spawn point room will be highlighted in yellow and show up as
+                <span class="docImgButton-clear"><img src="icons/icon-warn.png" srcset="icons2x/icon-warn.png 2x" title="Warning"/></span>
+                warnings.
+            </p>
+            <h2 id="StructureAdvanced">Advanced Mode</h2>
+            <p>
+                Enable <strong>Advanced Structure Mode</strong> by clicking
+                <span class="docImgButton"><img src="icons/icon-burger.png" srcset="icons2x/icon-burger.png 2x" title="Menu"/></span>, then
+                <span class="docImgButton"><img src="icons/icon-structure.png" srcset="icons2x/icon-structure.png 2x" title="Structure"/></span>,
+                then checking the <strong>Enabled</strong> checkbox.
+            </p>
+            <p>
+                <strong class="warn">A <a href="#SpawnPoint">spawn point</a> is required for Advanced Structure Mode.</strong>
+            </p>
+            <p>
+                When Advanced Structure Mode is enabled your dojo layout will be overlayed with green lines.
+                This shows the internal structure of your dojo as it would exist inside the game.
+            </p>
+            <h3 id="TreeView">Your Dojo is a Tree</h3>
+            <p>
+                Whenever you add a room do your dojo, you start with a door.  The door you use to create a new room
+                creates a parent-child relationship between the rooms on either side.  The room built first is the
+                parent, the room bult second is the child.  <strong class="warn">This build order is mostly set in
+                stone.</strong>  It's there until  those room are destroyed.
+            </p>
+            <p>
+                Each room can only have one parent room, but a room can have multiple child rooms.  If you start from
+                any room, then the build order of its child rooms, and their child rooms, and their child rooms, etc.,
+                branch out like a tree.  Computer science has a technical term for this kind of structure.  It's called
+                a "tree".  Computer Science is not good at naming things.
+            </p>
+            <p>
+                The root of this tree is your Spawn Point.  The branch that starts at your Spawn Point contains all
+                other branches inside it.
+            </p>
+            <p>
+                When Advanced Structure Mode is enabled, DojoCAD will try to build the tree structure from your layout,
+                starting with the spawn point.  It will be able to do so automatically, <strong class="warn">unless
+                your layout contains <a href="#Loops">loops</a>.</strong>
+            </p>
+
+            <h4 id="TreeDisplay">Tree Structure Display</h4>
+            <p>
+                The tree structure is shown in Advanced Structure Mode as green arrows over the doors, pointing from
+                parent room to child room.  These arrows are joined by lines through the center of each room.  Each
+                room's center is highlighted with a larger green square.
+            </p>
+
+            <h4 id="SelectBranch">Select Branch</h4>
+            <p>
+                When Advanced Structure Mode is enabled and your layout has a valid tree structure the room menu  will
+                have a few more options for selecting rooms.
+            </p>
+            <p>
+                Select a single room and use <span class="docImgButton"><img src="icons/icon-select-branch.png" srcset="icons2x/icon-select-branch.png 2x" title="Branch"/></span>
+                <strong>Branch</strong> to select all the child rooms branching out from that room.
+            </p>
+            <p>
+                <strong class="info">In-game, the branch under a room represents all the rooms that must be destroyed
+                    before that room can be destroyed, assuming your spawn point stays the same.</strong>
+            </p>
+            <h4 id="SelectRoot">Select Root</h4>
+            <p>
+                Select a single room and use
+                <span class="docImgButton"><img src="icons/icon-select-root.png" srcset="icons2x/icon-select-root.png 2x" title="Root"/></span>
+                <strong>Root</strong> to select the path of parent rooms from that room leading back to the Spawn Point.
+            </p>
+            <p>
+                <strong class="info">In-game, the root path leading leading back to the spawn point represents all the
+                    rooms that must be built before that room can be built, assuming your spawn point stays the same.</strong>
+            </p>
+
+            <h4 id="MovingTheSpawnPoint">Moving the Spawn Point</h4>
+            <p>
+                If the layout has a valid tree structure, then the spawn point can be moved anywhere and it will still
+                be a valid tree.
+            </p>
+            <p>
+                If the spawn point is moved from one side of a room to the other along the tree, then the branch
+                structure for that room changes. Its previous parent becomes one of its child branches, and one of
+                it's previous child rooms becomes its parent.  This is sometimes helpful in destroying a room while
+                preserving one of its previous child rooms, but it practice it's is pretty hard to avoid destroying
+                tons of other rooms.
+            </p>
+
+            <h3 id="Loops">Loops</h3>
+            <p>
+                <strong class="info">The defining characteristic of a tree is that branches don't connect again
+                after branching out.</strong>  With valid a tree there is no way to return a room you already
+                visited without retracing your steps.  You must ultimately end up at the end of a branch.
+            </p>
+            <p>
+                Obviously, you <i>can</i> build a dojo with a loop in it.  So what's going on?
+            </p>
+            <p>
+                You'll notice that no other map in the game has loops in it.  Explore the map on any in-game mission and
+                you'll only find dead ends.  There are no large-scale loops involving multiple rooms.  It seems only
+                dojos can have those.
+            </p>
+            <p>
+                I'm pretty sure that under the covers, it's still the same basic engine driving both mission maps and
+                dojos.  Both use tree structures to define the layout in terms of branches.  However, dojos have a
+                special kind of door that can cross between two branches.  I'm calling this a <strong>Cross Branch
+                Door</strong> because I'm not good at naming things, either.
+            </p>
+
+            <h4 id="LoopDetection">Loop Detection</h4>
+            <p>
+                When Advanced Structure Mode is enabled, any loops detected will be shown in two ways.  The rooms
+                involved in the loop wll be as highlighted as warnings in yellow.  And the doors involved in the loop
+                will have bi-directional yellow arrows on them.
+            </p>
+            <p>
+                Note that if you have a complicated layout then it's possible to have a some rooms involved in more
+                than one loop.
+            </p>
+            <p>
+                <strong class="warn">Most of the Advanced Structure Mode features, like selecting branches and root
+                paths, are not available until the loops have been resolved.</strong>
+            </p>
+
+            <h3 id="CrossBranchDoors">Cross Branch Doors</h3>
+            <p>
+                Click on the arrow above any door to bring up a small menu.  Use
+                <span class="docImgButton"><img src="icons/icon-force-cross-branch.png" srcset="icons2x/icon-force-cross-branch.png 2x" title="Force Cross Branch"/></span>
+                to force that door to be a Cross Branch Door.
+            </p>
+            <p>
+                <strong class="info">Cross Branch Doors are allowed to be connected, but they are not counted when
+                determining the tree structure of the layout.</strong>
+            </p>
+            <p>
+                Click on a Cross Branch Door and use
+                <span class="docImgButton"><img src="icons/icon-force-cross-branch-reset.png" srcset="icons2x/icon-force-cross-branch-reset.png 2x" title=Reset/></span>
+                to reset the Cross Branch Door setting.
+            </p>
+            <p>
+                <strong class="warn">Note that breaking a door connection by moving or deleting a room will also clear
+                any Cross Branch setting that may have been on that door.</strong>
+            </p>
+
+            <h4 id="HowCrossBranchDoors">How to find cross branch doors</h4>
+            <p>
+                If you're using DojoCAD to model an existing dojo then the Cross Branch Doors are already in place
+                in your dojo.  You just have to go into the game and find where they are.  This can be tedious, but
+                it's not difficult.
+            </p>
+            <p>
+                When you try to destroy a room, one of two things happens:
+            </p>
+            <ol>
+                <li>
+                    You get a prompt asking if you really want to queue the room for destruction.  This means the room
+                    you're in is at the end of a branch and has no child rooms.
+                </li>
+                <li>
+                    You get a message about child components, and the option to show them in the minimap.  This will
+                    highlight child rooms with blue markers on the in-game map.
+                </li>
+            </ol>
+            <p>
+                <strong class="warn">Note that you don't actually have to go through with destroying the room.</strong>
+                Just getting far enough to see one of those two prompts is good enough.
+            </p>
+            <p>
+                Figuring out Cross Branch doors from these two results is a bit of a puzzle, but there's a simple rule:
+            </p>
+            <p>
+                <strong class="info">If you find a door that is never highlighted when trying to destroy the rooms on
+                both sides, then that is a Cross Branch door.</strong>
+            </p>
+            <p>
+                Putting this into practice:
+            </p>
+            <ol>
+                <li>
+                    Pick a room in your dojo that has a looping warning in DojoCAD, and try to destroy it.  <strong>Not
+                    your Spawn Room.</strong>
+                </li>
+                <li>
+                    If you get the prompt to queue it for destruction immediately, then pick any door along the loop and
+                    go to step 4.
+                </li>
+                <li>
+                    If you get the child room prompt, then tell it to show child rooms.
+                </li>
+                <li>
+                    Follow the loop through doors with blue icons on them until you reach a room where the icon is on a
+                    console, or until you reach a room where the next door in the loop doesn't have the icon on it.
+                </li>
+                <li>
+                    Go through that door and try to destroy that room.
+                </li>
+                <li>
+                    If you get the prompt to queue it for destruction immediately, then go to step 8.
+                </li>
+                <li>
+                    If you get the child room prompt, then tell it to show child rooms.  The door you just went through
+                    should <i>not</i> have the blue icon on it.
+                </li>
+                <li>
+                    In DojoCAD, mark that door you just went through as a Cross Branch Door.
+                </li>
+                <li>
+                    Repeat until DojoCAD doesn't show any more loops.
+                </li>
+            </ol>
+            <p>
+                <strong class="warn">Steps 5, 6, and 7 aren't strucly necessary, but it's good to check yourself.</strong>
+            </p>
+            <p>
+                Once you have the tree structure from your in-game dojo mapped in DojoCAD, you can start using the
+                <strong>Select Branch</strong> and <strong>Select Root</strong> along with spawn point manipulation
+                to figure out the best way to destroy rooms in your dojo.
+            </p>
+
+            <h2 id="StructureMenu">Structure Menu</h2>
+            <p>
+                There are more options available under the
+                <span class="docImgButton"><img src="icons/icon-structure.png" srcset="icons2x/icon-structure.png 2x" title="Structure"/></span>
+                <strong>Structure</strong> menu after enabling it.
+            </p>
+
+            <h3 id="ShowSpanPoint">Find Spawn Point</h3>
+            <p>
+                If you have a big dojo or otherwise can't find the spawn point, use
+                <span class="docImgButton"><img src="icons/icon-spawn.png" srcset="icons2x/icon-spawn.png 2x" title="Find Spawn Point"/></span>
+                <strong>Find Spawn Point</strong> to automatically show your spawn point and select it.
+            </p>
+
+            <h3 id="AutoFixStructure">Auto-Fix Structure</h3>
+            <p>
+                If you're designing a layout from scratch and don't want to deal with resolving loops manually, then use
+                <span class="docImgButton"><img src="icons/icon-structure-fix.png" srcset="icons2x/icon-structure-fix.png 2x" title="Auto-fix Structure"/></span>
+                <strong>Auto-Fix Structure</strong> to automatically set any Cross Branch Doors necessary to resolve
+                loops and make the structure at valid tree.
+            </p>
+            <p>
+                <strong>Auto-Fix Structure</strong> will try to create the shortest branches possible, according to
+                your current Spawn Point.  Shorter branches means the dojo can be completed faster and torn down faster.
+            </p>
+            <p>
+                If there are already some Cross Branch Doors set then they will be left alone.
+            </p>
+
+            <h3 id="ResetAllStructure">Reset All Structure</h3>
+            <p>
+                To reset all the Cross Branch doors in the layout, use
+                <span class="docImgButton"><img src="icons/icon-force-cross-branch-reset.png" srcset="icons2x/icon-force-cross-branch-reset.png 2x" title=Reset/></span>
+                <strong>Reset All Structure</strong>.  If there were any loops before then they will have to be
+                resolved again.
+            </p>
+
             <h1 id="Settings">Settings</h1>
             <p>
                 Click
@@ -1083,6 +1381,23 @@
             </p>
             <p>
                 Note that this setting also applies to images generated with the PNG function.
+            </p>
+            <h2 id="ShowLabels">Show Labels</h2>
+            <p>
+                Sometimes labels can clutter things up when you're editing.  Use the <strong>Show Labels</strong>
+                setting to turn off labels without removing them.
+            </p>
+            <p>
+                Note that this setting also applies to images generated with the PNG function.  You also cannot edit
+                labels unless <strong>Show Labels</strong> is enabled.
+            </p>
+            <h2 id="DimRooms">Dim Rooms</h2>
+            <p>
+                Sometimes bright room colors can make reading labels or looking at Advanced Structure Mode more
+                difficult.  Use the <strong>Dim Rooms</strong> setting to make the actual rooms darker.
+            </p>
+            <p>
+                I have to be honest.  This setting is only here to make Advanced Structure Mode look cool.
             </p>
             <h2 id="Autosave">Autosave</h2>
             <p>
@@ -1209,11 +1524,23 @@
                 <li>Added settings menu with settings for showing other floors, showing map markers, and autosave</li>
                 <li>Added setting for showing labels</li>
             </ul>
+            <h3 id="UpdateNotes2.9">v2.9: 2021-08-24</h3>
+            <ul>
+                <li>Structure mode: tree display, loop checking, loop resolving, basic branch analysis</li>
+            </ul>
 
             <h1 id="ToDo">To Do</h1>
             <ul>
                 <li>
+                    Option to set Cross Branch Doors automatically as new rooms are added.
+                </li>
+                <li>
                     Build order analysis
+                    <ul>
+                        <li>Optimal steps for building a layout from scratch</li>
+                        <li>Optimal steps for tearing down a layout</li>
+                        <li>Optimal steps for changing from one layout to another</li>
+                    </ul>
                 </li>
                 <li>
                     More metadata
@@ -1278,6 +1605,10 @@
                 <li>
                     The Local Storage listing doesn't have a scrollbar, so you can add more entries than the screen can
                     contain.
+                </li>
+                <li>
+                    There's some rare bug with connecting rooms where it doesn't register that it's connected, but I
+                    haven't been able to track it down.
                 </li>
             </ul>
         </div>

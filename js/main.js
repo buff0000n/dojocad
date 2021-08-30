@@ -289,6 +289,7 @@ function pasteCopiedRooms() {
 }
 
 function selectAllRoomsOfSelectedTypes() {
+    // wrapper to call selectAllRoomsOfType with the current selection
     if (selectedRooms.length > 0) {
         selectAllRoomsOfType(selectedRooms);
         clearMenus();
@@ -360,9 +361,11 @@ function setSpawnPointRoom(newSpawnRoom, allowUndo=true) {
 }
 
 function setSelectedRoomSpawn() {
+    // only applicable with a single room selected
     if (selectedRooms.length == 1) {
         var newSpawnRoom = selectedRooms[0];
         clearMenus(0);
+        // set the spawn point
         setSpawnPointRoom(newSpawnRoom, true);
     	saveModelToUrl();
     	treeUpdated();
@@ -379,6 +382,7 @@ function unsetSelectedRoomSpawn() {
 }
 
 function selectBranch() {
+    // only applicable with a single room selected
     if (selectedRooms.length == 1) {
         clearMenus(0);
         runBranchSelection(selectedRooms[0], true);
@@ -386,6 +390,7 @@ function selectBranch() {
 }
 
 function selectRoot() {
+    // only applicable with a single room selected
     if (selectedRooms.length == 1) {
         clearMenus(0);
         runBranchSelection(selectedRooms[0], false);
@@ -394,30 +399,38 @@ function selectRoot() {
 
 function selectSpawnRoom() {
     clearMenus(0);
+    // get the current spawn room
     var room = getCurrentSpawnRoom();
     if (room) {
+        // if there is a spawn room, set the selection to it
         selectRoom(room, true, false);
+        // make sure it's in view
         centerViewOnIfNotVisible(room.mv.x, room.mv.y, room.floor);
     }
 }
 
 function doAutoSetCrossBranches() {
     clearMenus(0);
+    // run the cross branch analysis
     autoSetCrossBranches();
 }
 
 function doResetAllStructure() {
     clearMenus(0);
+    // start a combination undo operation
     startUndoCombo();
+    // unset every cross branch door
 	for (var r = 0; r < roomList.length; r++) {
 		var doors = roomList[r].doors;
         for (var d = 0; d < doors.length; d++) {
             var door = doors[d];
             if (door.forceCrossBranch) {
+                // use the function
                 setDoorState(door, false, true);
             }
         }
 	}
+	// finishe the combo operation, we'll be able to undo all of this with a single operation
 	endUndoCombo("Reset structure");
 
     saveModelToUrl();
@@ -425,15 +438,18 @@ function doResetAllStructure() {
 }
 
 function doorClicked(e, door) {
+    // sanity check if it's a connected door
     if (!door.otherDoor) {
         // ignore
     }
+    // run the door menu
     doDoorMenu(e, door);
 }
 
 function setDoorForceCrossBranch(door, forceCrossBranch, allowUndo=true) {
     clearMenus(0);
 
+    // set the door state
     setDoorState(door, forceCrossBranch, allowUndo);
 
     saveModelToUrl();
@@ -443,6 +459,7 @@ function setDoorForceCrossBranch(door, forceCrossBranch, allowUndo=true) {
 function resetDoor(door, allowUndo=true) {
     clearMenus(0);
 
+    // set the door state
     setDoorState(door, false, allowUndo);
 
     saveModelToUrl();
@@ -450,6 +467,7 @@ function resetDoor(door, allowUndo=true) {
 }
 
 function setDoorState(door, forceCrossBranch, allowUndo=true) {
+    // start an action to record the before state
     var action = !allowUndo ? null : new ChangeDoorAction(door);
 
     // need to make sure all the doors that go between the same two rooms have the same state
@@ -459,6 +477,7 @@ function setDoorState(door, forceCrossBranch, allowUndo=true) {
         setDoor.setForceCrossBranch(forceCrossBranch);
     }
 
+    // add undo action if necessary
     if (action && action.isAChange()) {
         addUndoAction(action);
     }

@@ -201,8 +201,10 @@ function describeRoomList(rooms) {
     return rooms.length + " rooms";
 }
 
+// holder for door flagas
 class DoorState {
     constructor(door) {
+        // just the one flag, I guess.  Doors started out more complicated.
         this.forceCrossBranch = door.forceCrossBranch;
     }
 
@@ -211,12 +213,14 @@ class DoorState {
     }
 }
 
+// holder for full room state, including doors
 class RoomDoorPosition extends Position {
     constructor(room) {
         super(room.mv.x,
             room.mv.y,
             room.floor,
             room.rotation);
+        // save door state
         this.doorStates = [];
         for (var d = 0; d < room.doors.length; d++) {
             this.doorStates.push(new DoorState(room.doors[d]));
@@ -224,6 +228,7 @@ class RoomDoorPosition extends Position {
     }
 
     applyDoorStates(room) {
+        // apply the door state to the room
         for (var d = 0; d < this.doorStates.length; d++) {
             var doorState = this.doorStates[d];
             var door = room.doors[d];
@@ -232,10 +237,9 @@ class RoomDoorPosition extends Position {
     }
 
     equals(other) {
-		if (!(this.MX == other.MX
-				&& this.MY == other.MY
-				&& this.Floor == other.Floor
-				&& this.R == other.R)) return false;
+        // super check
+		if (!super.equals(other)) return false;
+		// check door state
         if (this.doorStates.length != other.doorStates.length) return false;
         for (var d = 0; d < this.doorStates.length; d++) {
             if (!this.doorStates[d].equals(other.doorStates[d])) return false;
@@ -245,7 +249,6 @@ class RoomDoorPosition extends Position {
 }
 
 class MoveRoomAction extends Action {
-    // todo: worry about door settings
 	constructor(rooms) {
 		super();
 		this.rooms = rooms;
@@ -305,6 +308,7 @@ class MoveRoomAction extends Action {
             if (from[r].Floor != to[r].Floor) {
                 addFloorRoom(room);
             }
+            // apply door state
 	        to[r].applyDoorStates(this.rooms[r]);
             room.updateView();
 	    }
@@ -357,6 +361,7 @@ class AddDeleteRoomsAction extends Action {
             // hax to force it to think the floor has changed and setup its display
             this.rooms[r].floor = 100;
             this.rooms[r].setPositionAndConnectDoors(this.records[r].MX, this.records[r].MY, this.records[r].Floor, this.records[r].R);
+            // apply door state
 	        this.records[r].applyDoorStates(this.rooms[r]);
             // select the rooms
             this.rooms[r].updateView();
@@ -371,6 +376,7 @@ class AddDeleteRoomsAction extends Action {
 	removeAction() {
 	    for (var r = 0; r < this.rooms.length; r++) {
             this.rooms[r].deselect();
+            // call without creating an undo action
     	    removeRoom(this.rooms[r], false);
     	    // clear selection
             selectedRooms = [];

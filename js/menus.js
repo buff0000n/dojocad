@@ -692,9 +692,11 @@ function doDoorMenu(e, door) {
     menuDiv.appendChild(buildMenuHeaderLine(door.looping ? "Looping Door" : door.crossBranch ? "Cross Branch Door" : "Door",
         3, door.looping ? "icon-warn" : door.crossBranch ? "icon-force-cross-branch" : null));
 
+    // show the cross branch option if it's not already a cross branch
     if (!door.forceCrossBranch) {
         menuDiv.appendChild(buildMenuButton("Cross Branch", () => { setDoorForceCrossBranch(door, true)}, "icon-force-cross-branch"));
     }
+    // show the reset option if it's already a cross branch
     if (door.forceCrossBranch) {
         menuDiv.appendChild(buildMenuButton("Reset", () => { resetDoor(door)}, "icon-force-cross-branch-reset"));
     }
@@ -1663,8 +1665,12 @@ function doStructureMenu() {
 
     var menuDiv = buildMenu();
 
+    // function for enabling/disable parts of teh menu
+    // these are the element class names to map when disabling
     var disableMapping = new Map([["imgField", "imgField-disabled"], ["menu-button", "menu-button-disabled"]]);
+    // when enabling the mapping is reversed
     var enableMapping = new Map([["imgField-disabled", "imgField"], ["menu-button-disabled", "menu-button"]]);
+    // function applies the appropriate class name mapping to all child elemnts in the menu
     function refreshEnabled() {
         if (settings.structureChecking && analysisResult.spawn) {
             replaceClassNames(menuDiv, enableMapping);
@@ -1676,6 +1682,8 @@ function doStructureMenu() {
 
 	menuDiv.appendChild(buildMenuHeaderLine("Structure", 4, "icon-structure"));
 
+    // the checkbox is not affected by the enable/disable function because
+    // it has different class names
     menuDiv.appendChild(buildCheckbox("structureChecking", "Enabled", settings.structureChecking, (value) => {
         setStructureChecking(value);
         refreshEnabled();
@@ -1683,17 +1691,22 @@ function doStructureMenu() {
 
     menuDiv.appendChild(buildMenuDivider(4));
 
+    // show a warning if the spawn point is not present
     if (!analysisResult.spawn) {
         menuDiv.appendChild(buildMenuInfo("Spawn Point Missing", "icon-warn"));
 
     } else {
+        // fins spawn point option
         menuDiv.appendChild(buildMenuButton("Find Spawn Point", selectSpawnRoom, "icon-spawn"));
     }
 
+    // auto-fix option
     menuDiv.appendChild(buildMenuButton("Auto-fix Structure", doAutoSetCrossBranches, "icon-structure-fix"));
 
+    // reset all function
     menuDiv.appendChild(buildMenuButton("Reset All Structure", doResetAllStructure, "icon-force-cross-branch-reset"));
 
+    // set the initial enabled/disabed state of the menu
     refreshEnabled();
 
     showMenu(menuDiv, button);

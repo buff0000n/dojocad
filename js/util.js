@@ -196,16 +196,20 @@ function arrayEquals(a, b) {
         a.length == b.length && a.every((val, index) => val == b[index]);
 }
 
+// find child elements with classNames maching the keys of nameMapping and changing
+// those classNames to the values
 function replaceClassNames(root, nameMapping) {
     // why the hell is is (value, key)?
     nameMapping.forEach((to, from) => {
         if (root.classList.contains(from)) {
+            // remove old className and add new one
             root.classList.remove(from);
             root.classList.add(to);
         }
     });
     var children = root.children;
     for (var i = 0; i < root.children.length; i++) {
+        // recursive
         replaceClassNames(root.children.item(i), nameMapping);
     }
 }

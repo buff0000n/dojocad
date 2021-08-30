@@ -176,6 +176,9 @@ strong {
 .warn, .warn * {
     color: D06040;
 }
+.info, .info * {
+    color: 40D060;
+}
 a, a i {
     color: #8080FF
 }
