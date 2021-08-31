@@ -159,9 +159,16 @@ function rotateSelectedRoom() {
 	        center = new DojoBounds(selectedRooms).centerPosition().toVect();
 	    }
 
+        // simulate the drag process so we can rotate the selection as a unit without losing internal door settings
         for (var r = 0; r < selectedRooms.length; r++) {
+            // start a drag process with the given selection
+            selectedRooms[r].ignoreRooms = selectedRooms;
+            selectedRooms[r].setDragOffset(0, 0, 0, false);
             // rotate each room around the center
             selectedRooms[r].rotateAround(center);
+            // stop the drag process and commit the move
+            selectedRooms[r].dropDragOffset();
+            selectedRooms[r].ignoreRooms = null;
             // todo: why do I need this here?
             selectedRooms[r].updateView();
         }
