@@ -150,34 +150,43 @@ function rotateSelectedRoom() {
 	        // rotation center
 	        center = mouseDownTarget.room.mv;
 
-	    } else if (getCurrentMenuLevel > 0 && lastClickedRoom) {
-	        // for the rotate menu option, use the center of the room that was actually clicked as the rotation center
-	        center = lastClickedRoom.mv;
+            // simple case, already dragging
+            for (var r = 0; r < selectedRooms.length; r++) {
+                // rotate each room around the center
+                selectedRooms[r].rotateAround(center);
+                // todo: why do I need this here?
+                selectedRooms[r].updateView();
+            }
 
 	    } else {
-	        // find the center of bounds, snapped to the nearest 1m
-	        center = new DojoBounds(selectedRooms).centerPosition().toVect();
-	    }
+    	    if (getCurrentMenuLevel > 0 && lastClickedRoom) {
+                // for the rotate menu option, use the center of the room that was actually clicked as the rotation center
+                center = lastClickedRoom.mv;
 
-        // simulate the drag process so we can rotate the selection as a unit without losing internal door settings
-        for (var r = 0; r < selectedRooms.length; r++) {
-            // start a drag process with the given selection
-            selectedRooms[r].ignoreRooms = selectedRooms;
-            selectedRooms[r].setDragOffset(0, 0, 0, false);
-            selectedRooms[r].disconnectAllDoors();
-        }
-        // all rooms must be in the dragging state with doors disconneted before we actually rotate
-        for (var r = 0; r < selectedRooms.length; r++) {
-            // rotate each room around the center
-            selectedRooms[r].rotateAround(center);
-            // stop the drag process and commit the move
-            selectedRooms[r].dropDragOffset();
-            selectedRooms[r].ignoreRooms = null;
-            // todo: why do I need this here?
-            selectedRooms[r].updateView();
-        }
-	}
+            } else {
+                // find the center of bounds, snapped to the nearest 1m
+                center = new DojoBounds(selectedRooms).centerPosition().toVect();
+            }
 
+            // simulate the drag process so we can rotate the selection as a unit without losing internal door settings
+            for (var r = 0; r < selectedRooms.length; r++) {
+                // start a drag process with the given selection
+                selectedRooms[r].ignoreRooms = selectedRooms;
+                selectedRooms[r].setDragOffset(0, 0, 0, false);
+                selectedRooms[r].disconnectAllDoors();
+            }
+            // all rooms must be in the dragging state with doors disconnected before we actually rotate
+            for (var r = 0; r < selectedRooms.length; r++) {
+                // rotate each room around the center
+                selectedRooms[r].rotateAround(center);
+                // stop the drag process and commit the move
+                selectedRooms[r].dropDragOffset();
+                selectedRooms[r].ignoreRooms = null;
+                // todo: why do I need this here?
+                selectedRooms[r].updateView();
+            }
+        }
+    }
     // if we're not dragging then force the new undo action to store the new
     // room positions by making it check if this qualifies as a move
 	if (!isDraggingRoom() && action.isAMove()) {
