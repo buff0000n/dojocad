@@ -300,14 +300,26 @@ class MoveRoomAction extends Action {
 	action(from, to) {
 	    for (var r = 0; r < this.rooms.length; r++) {
 	        var room = this.rooms[r];
+	        // treat this like a drag with a group of rooms
+	        room.ignoreRooms = this.rooms;
+	        // remove floor warnings
             if (from[r].Floor != to[r].Floor) {
                 removeFloorRoom(room);
             }
+            // disconnect external doors
             room.disconnectAllDoors();
+        }
+        // all rooms must be disconected before trying to re-connect outer doors
+	    for (var r = 0; r < this.rooms.length; r++) {
+	        var room = this.rooms[r];
+	        // move the room
             room.setPositionAndConnectDoors(to[r].MX, to[r].MY, to[r].Floor, to[r].R);
+            // add floor warnings
             if (from[r].Floor != to[r].Floor) {
                 addFloorRoom(room);
             }
+            // stop drag
+	        room.ignoreRooms = null;
             // apply door state
 	        to[r].applyDoorStates(this.rooms[r]);
             room.updateView();

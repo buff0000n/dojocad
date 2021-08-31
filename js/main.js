@@ -164,6 +164,10 @@ function rotateSelectedRoom() {
             // start a drag process with the given selection
             selectedRooms[r].ignoreRooms = selectedRooms;
             selectedRooms[r].setDragOffset(0, 0, 0, false);
+            selectedRooms[r].disconnectAllDoors();
+        }
+        // all rooms must be in the dragging state with doors disconneted before we actually rotate
+        for (var r = 0; r < selectedRooms.length; r++) {
             // rotate each room around the center
             selectedRooms[r].rotateAround(center);
             // stop the drag process and commit the move
