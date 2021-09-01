@@ -32,6 +32,8 @@ function getZIndex(room, part) {
 }
 
 function getDisplayImageFilter(hue, visible=true) {
+    // dim rooms setting
+    if (settings.dimRooms) visible = false;
     // CSS filter value for the display image, if necessary
     return hue == null ? (visible ? "" : "brightness(25%") : (
         " hue-rotate(" + (hue[0] - 120) + "deg)" +
@@ -64,6 +66,131 @@ function getDisplayLabelTextShadow(hue, visible=true) {
     var color = getDisplayLabelTextShadowColor(hue, visible);
     // build the drop shadow CSS
     return "-1px -1px 0 " + color + ", 1px -1px 0 " + color + ", -1px 1px 0 " + color + ", 1px 1px 0 " + color;
+}
+
+//==============================================================
+// data model serialization
+//==============================================================
+
+// needs to be a global regex so all occurrences are replaced
+var quoteRegex = new RegExp('"', "g");
+var newlineRegex = new RegExp('\n', "g");
+
+function getRoomDoorFlags(room) {
+    var hasFlags = false;
+    for (var d = 0; d < room.doors.length; d++) {
+        var door = room.doors[d];
+        if (door.forceCrossBranch) {
+            hasFlags = true;
+            break;
+        }
+    }
+    if (!hasFlags) {
+        return null;
+    }
+    var flags = "";
+    for (var d = 0; d < room.doors.length; d++) {
+        if (d > 0) flags += ":";
+        var door = room.doors[d];
+        if (door.forceCrossBranch) {
+            flags += "x";
+        }
+    }
+    return flags;
+}
+
+function parseRoomDoorFlags(room, flagString) {
+    var doorflags = flagString.split(":");
+    for (var d = 0; d < room.doors.length && d < doorflags.length; d++) {
+        var flags = doorflags[d];
+        var door = room.doors[d];
+        if (flags.includes("x")) {
+            door.forceCrossBranch = true;
+        }
+    }
+}
+
+function roomToString(room) {
+    var s = room.metadata.id + "," + room.mv.x + "," + room.mv.y + "," + room.floor + "," + (room.rotation / 90)
+    var flags = "";
+    if (room.isSpawnPoint()) {
+        flags = flags + "s";
+    }
+    var doorFlags = getRoomDoorFlags(room);
+
+    // hue and label fields are optional
+    if (flags != "" || doorFlags != null || room.hue != null || room.label != null) {
+        // add the hue or blank if it's null
+        s = s + "," + (room.hue == null ? "" : (room.hue[0] + ":" + room.hue[1] + ":" + room.hue[2]));
+        // label is optional
+        if (flags != "" || doorFlags != null || room.label != null) {
+            // we just need to escape quotes, and then put it in quotes
+            s = s + ',' + (room.label ? ('"' + room.label.replace(quoteRegex, '\\"') + '"') : "");
+
+            if (flags != "" || doorFlags != null || room.labelScale != 1) {
+                s = s + ',' + (room.labelScale != 1 ? room.labelScale.toFixed(2) : "");
+
+                if (flags != ""|| doorFlags != null) {
+                    s = s + "," + flags;
+
+                    if (doorFlags != null) {
+                        s = s + "," + doorFlags;
+                    }
+                }
+            }
+        }
+    }
+    return s;
+}
+
+function roomFromString(string) {
+    // split by comma taking into account quotes, removing both commas and quotes
+    var s = quotedSplit(string, ",");
+    var room = new Room(getRoomMetadata(s[0]));
+    // room coordinates may be fractional because of old dojo rooms, floor and rotation are still ints
+    room.setPosition(parseFloat(s[1]), parseFloat(s[2]), parseInt(s[3]), parseInt(s[4]) * 90);
+    // look for optional hue
+    if (s.length > 5) {
+        // blank is null
+        if (s[5].length > 0) {
+            if (s[5].includes(":")) {
+                var h = s[5].split(":");
+                room.setHue([parseInt(h[0]), parseInt(h[1]), parseInt(h[2])]);
+            } else {
+                // backwards compatible with old format with just the hue
+                // try to match saturation and brightness as close as possible
+                room.setHue([parseInt(s[5]), 50, 100]);
+            }
+        }
+        // look for optional label
+        if (s.length > 6) {
+            if (s[6].length > 0) {
+                room.setLabel(s[6]);
+            }
+
+            // look for optional label size
+            if (s.length > 7) {
+                if (s[7].length > 0) {
+                    room.setLabelScale(parseFloat(s[7]));
+                }
+
+                // look for optional flag field
+                // how did it take me this long to add a generic flags field?
+                if (s.length > 8) {
+                    var flags = s[8];
+                    if (flags.includes("s")) {
+                        // go through the global method to set the spawn point to make sure there's only one
+                        setSpawnPointRoom(room, false);
+                    }
+                    if (s.length > 9) {
+                        var doorFlags = s[9];
+                        parseRoomDoorFlags(room, doorFlags);
+                    }
+                }
+            }
+        }
+    }
+    return room;
 }
 
 //==============================================================
@@ -183,8 +310,17 @@ class Door {
         this.collisions = Array();
 
         this.otherDoor = null;
-        this.incoming = false;
+
+        // outgoing flag for tree direction
+        this.outgoing = false;
+
+        // cocluated cross branch flag, pretty sure this isn't visible in the UI anymore
         this.crossBranch = false;
+        // whether the door si forced to be cross branch
+        this.forceCrossBranch = false;
+
+        // looping flag
+        this.looping = false;
 
         this.marker = null;
     }
@@ -218,6 +354,19 @@ class Door {
 			this.debugBorder.remove();
 			this.debugBorder = null;
 		}
+	}
+
+	setForceCrossBranch(forceCrossBranch) {
+	    // sanity check to make sure the door si connected
+	    if (this.otherDoor) {
+	        // make sure the flag matches on both sides of the door
+	        this.forceCrossBranch = forceCrossBranch;
+	        this.otherDoor.forceCrossBranch = forceCrossBranch;
+
+	    } else if (!forceCrossBranch) {
+	        // no other diir, just set this door's state
+	        this.forceCrossBranch = false;
+	    }
 	}
 
 	addCollision(otherDoor) {
@@ -256,7 +405,7 @@ class Door {
 		}
 	}
 
-	connect(otherDoor, crossBranch = true, incoming = false) {
+	connect(otherDoor) {
 		if (this.otherDoor == otherDoor) {
 			return;
 		}
@@ -265,10 +414,13 @@ class Door {
 			this.disconnectFrom(prevOtherDoor);
 		}
 
+        // sanity checks, this should only matter when loading a layout
+		if (this.forceCrossBranch) {
+		    otherDoor.forceCrossBranch = true;
+		}
+
 		this.otherDoor = otherDoor;
-		this.crossBranch = crossBranch;
-		this.incoming = incoming;
-		this.otherDoor.connect(this, crossBranch, !incoming);
+		this.otherDoor.connect(this);
 
 		if (this.debugBorder) {
             this.debugBorder.remove();
@@ -286,6 +438,8 @@ class Door {
 		this.otherDoor = null;
 		otherDoor.disconnectFrom(this);
 
+        // reset state
+        this.forceCrossBranch = false;
 		this.removeCollision(otherDoor);
 
         if (this.debugBorder && this.room.isOnFloor()) {
@@ -298,14 +452,16 @@ class Door {
 		if (!this.otherDoor) {
 			return null;
 		}
-		var save = [this, this.otherDoor, this.crossBranch, this.incoming];
+		var save = [this, this.otherDoor, this.forceCrossBranch];
 		this.disconnectFrom(this.otherDoor);
 		return save;
 	}
 
 	reconnect(save) {
 		if (save[0] == this) {
-			this.connect(save[1], save[2], save[3]);
+			this.connect(save[1]);
+			// restore state
+			this.setForceCrossBranch(save[2]);
 		}
 	}
 
@@ -313,23 +469,63 @@ class Door {
         if (this.debugBorder && !this.otherDoor && this.floor == viewFloor) {
             viewContainer.appendChild(this.debugBorder);
         }
+        // show tree arrows if neessary
+        this.showArrowMarker();
     }
 
     showDoorMarker() {
+        // only mess with the marker if it's an unconnected door on the current floor
         if (this.floor == viewFloor && !this.otherDoor) {
-	        if (!this.marker) {
-	            this.marker = this.room.addDisplayImage(".png", getZIndex(this.room, part_doormarker), "marker-door", true);
-	        } else {
-		        this.room.viewContainer.appendChild(this.marker);
-	        }
-	        this.updateView();
+            this.showMarker("marker-door");
         }
     }
 
     hideDoorMarker() {
+        // revert to the tree arrows or nothing
+        this.showArrowMarker();
+    }
+
+    showArrowMarker() {
+        // goddamn this got complicated
+        var base =
+                   // no markers if the door is not visible or advanced structure mode is not enabled
+                   this.otherDoor == null || this.floor != viewFloor || !settings.structureChecking ? null :
+                   // cross branch takes precedence
+                   this.forceCrossBranch ? "marker-door-force-cross-branch" :
+                   // looping is the next more important
+                   this.looping ? "marker-door-loop" :
+                   // regular cross branch, pretty sure this doesn't happen anymore
+                   this.crossBranch ? "marker-door-cross-branch" :
+                   // regular outgoing
+                   this.outgoing ? "marker-door-outgoing" :
+                   // no flags, this room is probably disconnected
+                   null;
+
+        // show or clear the marker
+        this.showMarker(base);
+    }
+
+    showMarker(base) {
+        // check if we need to change marker state
+        if (!this.marker || this.marker.base != base || !settings.showMapMarkers) {
+            // clear the current marker if present
+            if (this.marker) {
+                this.marker.remove();
+                this.marker = null;
+            }
+
+            // show a new marker iff show Markers is enabled
+            if (base && settings.showMapMarkers) {
+                // build and add marker element
+                this.marker = this.room.addDisplayImage(".png", getZIndex(this.room, part_doormarker), base, true);
+                // make sure the event handler will bring up the door menu when clicking on this image
+                this.marker.door = this;
+            }
+        }
+
+        // update the view if necessary
         if (this.marker) {
-            this.marker.remove();
-            // this.marker = null;
+            this.updateView();
         }
     }
 
@@ -359,13 +555,11 @@ class Door {
 //==============================================================
 
 class Marker {
-	constructor(room, floor, metadata) {
+	constructor(room, floor, metadata, condition=null) {
 		this.room = room;
 		this.metadataFloor = floor;
-		if (metadata == null) {
-			throw "OOOOPS";
-		}
 		this.metadata = metadata;
+		this.condition = condition;
 		this.marker = null;
 	}
 
@@ -375,14 +569,26 @@ class Marker {
     }
 
     addDisplay(viewContainer) {
-        if (this.floor == viewFloor) {
-	        this.marker = this.room.addDisplayImage(".png", getZIndex(this.room, part_marker), this.metadata.image, true);
+        // check to see if the marker is visible and the condition, if any, is true
+        if (this.floor == viewFloor && (!this.condition || this.condition())) {
+            if (!this.marker) {
+                // create the marker if necessary
+    	        this.marker = this.room.addDisplayImage(".png", getZIndex(this.room, part_marker) + (this.metadata.z != null ? this.metadata.z : 0), this.metadata.image, true);
+    	        if (this.metadata.tree) {
+    	            // hax for tree markers, ignore all clicks because some of them will extend beyond the bounds of their door
+    	            this.marker.style.pointerEvents = "none";
+    	            this.marker.style.touchEvents = "none";
+    	        }
+            } else {
+                // re-add the marker
+                viewContainer.appendChild(this.marker);
+            }
         }
     }
 
     updateView() {
         if (this.marker) {
-            var transform2 = this.room.getMarkerImageTransform(this.mv.x, this.mv.y, viewPX, viewPY, viewScale);
+            var transform2 = this.room.getMarkerImageTransform(this.mv.x, this.mv.y, this.metadata, viewPX, viewPY, viewScale);
 			this.room.updateViewElement(this.marker, transform2);
         }
     }
@@ -396,92 +602,11 @@ class Marker {
 }
 
 //==============================================================
-// Room object utils
+// Room object
 //==============================================================
-
-// needs to be a global regex so all occurrences are replaced
-var quoteRegex = new RegExp('"', "g");
-var newlineRegex = new RegExp('\n', "g");
-
-function roomToString(room) {
-    var s = room.metadata.id + "," + room.mv.x + "," + room.mv.y + "," + room.floor + "," + (room.rotation / 90)
-    var flags = "";
-    if (room.isSpawnPoint()) {
-        flags = flags + "s";
-    }
-    // hue and label fields are optional
-    if (flags != "" || room.hue != null || room.label != null) {
-        // add the hue or blank if it's null
-        s = s + "," + (room.hue == null ? "" : (room.hue[0] + ":" + room.hue[1] + ":" + room.hue[2]));
-        // label is optional
-        if (flags != "" || room.label != null) {
-            // we just need to escape quotes, and then put it in quotes
-            s = s + ',' + (room.label ? ('"' + room.label.replace(quoteRegex, '\\"') + '"') : "");
-
-            if (flags != "" || room.labelScale != 1) {
-                s = s + ',' + (room.labelScale != 1 ? room.labelScale.toFixed(2) : "");
-
-                if (flags != "") {
-                    s = s + "," + flags;
-                }
-            }
-        }
-    }
-    return s;
-}
-
-function roomFromString(string) {
-    // split by comma taking into account quotes, removing both commas and quotes
-    var s = quotedSplit(string, ",");
-    var room = new Room(getRoomMetadata(s[0]));
-    // room coordinates may be fractional because of old dojo rooms, floor and rotation are still ints
-    room.setPosition(parseFloat(s[1]), parseFloat(s[2]), parseInt(s[3]), parseInt(s[4]) * 90);
-    // look for optional hue
-    if (s.length > 5) {
-        // blank is null
-        if (s[5].length > 0) {
-            if (s[5].includes(":")) {
-                var h = s[5].split(":");
-                room.setHue([parseInt(h[0]), parseInt(h[1]), parseInt(h[2])]);
-            } else {
-                // backwards compatible with old format with just the hue
-                // try to match saturation and brightness as close as possible
-                room.setHue([parseInt(s[5]), 50, 100]);
-            }
-        }
-        // look for optional label
-        if (s.length > 6) {
-            if (s[6].length > 0) {
-                room.setLabel(s[6]);
-            }
-
-            // look for optional label size
-            if (s.length > 7) {
-                if (s[7].length > 0) {
-                    room.setLabelScale(parseFloat(s[7]));
-                }
-
-                // look for optional flag field
-                // how did it take me this long to add a generic flags field?
-                if (s.length > 8) {
-                    var flags = s[8];
-                    if (flags.includes("s")) {
-                        // go through the global method to set the spawn point to make sure there's only one
-                        setSpawnPointRoom(room, false);
-                    }
-                }
-            }
-        }
-    }
-    return room;
-}
 
 var roomIdCount = 0;
 var defaultLabelSize = 16;
-
-//==============================================================
-// Room object
-//==============================================================
 
 class Room {
     constructor(metadata) {
@@ -497,6 +622,9 @@ class Room {
         this.ignoreRooms = null;
 
         this.metadata = metadata;
+        // tree metadata
+        this.treemetadata = metadata.treetype ? treeMetadata[metadata.treetype] : null;
+        this.treeMarkerMetadata = null;
         this.id = "room" + (roomIdCount++);
 
         this.bounds = Array();
@@ -537,6 +665,8 @@ class Room {
         this.labelScale = 1.0;
 
         this.selected = false;
+        this.connected = false;
+        this.looped = false;
 
         this.hue = null;
         // pull default label from metadata, if present
@@ -577,6 +707,22 @@ class Room {
 
     isSpawnPoint() {
         return this.spawn;
+    }
+
+    refreshMarkers() {
+        // super damn hack
+        for (var m = 0; m < this.markers.length; m++) {
+            var marker = this.markers[m];
+            if (marker.condition) {
+                if (marker.condition()) {
+                    marker.updatePosition();
+                    marker.addDisplay(this.viewContainer);
+                    marker.updateView();
+                } else if (marker.marker) {
+                    marker.marker.remove();
+                }
+            }
+        }
     }
 
 	addRuleError(rule) {
@@ -1434,6 +1580,89 @@ class Room {
         }
     }
 
+    // TREE STUFF
+    showTree() {
+        // refresh door markers
+		for (var d = 0; d < this.doors.length; d++) {
+			this.doors[d].showArrowMarker();
+        }
+
+        // check tree metadata, every room has this now
+        if (this.treemetadata) {
+            // remove markers if adcanced mode is turned off, or if this room
+            // is disconnected or looped
+            if (!settings.structureChecking || !this.connected || this.looped) {
+                this.removeTreeMarkers();
+
+            } else {
+                // make a list of markers to display, this will be compared
+                // against the current set of markers and only the differences
+                // changed so we don't have flickering everywhere
+                var keepMarkers = [];
+                // build a door key, go down the door list and add a "1" for every
+                // connected door and a "0" for disconnected doors.
+                var doorKey = "";
+                for (var d = 0; d < this.doors.length; d++) {
+                    var door = this.doors[d];
+                    // filter out doors that are connected to non-traversible rooms like labels
+                    doorKey += (door.otherDoor && !door.crossBranch && isTraversableRoom(door.otherDoor.room)) ? "1" : "0";
+                }
+                // check if the metadata has a door eky conversion function
+                if (this.treemetadata.convertKey) {
+                    // call thevfunction
+                    var doorKeys = this.treemetadata.convertKey(doorKey);
+                } else {
+                    // otherwise, we just have the one door key
+                    var doorKeys = [doorKey];
+                }
+                // loop over the door keys
+                for (var i = 0; i < doorKeys.length; i++) {
+                    // get the relevent tree metadata, there should be one of these
+                    // for every door configuration
+                    var treeMarkerMetadata = this.treemetadata[doorKeys[i]];
+                    if (treeMarkerMetadata) {
+                        // don't delete this marker in removeTreeMarkers() below
+                        keepMarkers.push(treeMarkerMetadata);
+                        // check if the marker is already present
+                        if (this.markers.findIndex((marker) => marker.metadata == treeMarkerMetadata) != -1) {
+                            // we already have this marker
+                            continue;
+                        }
+                        // build a new marker, with optional floor info
+                        var treeMarker = new Marker(this, treeMarkerMetadata.floor ? treeMarkerMetadata.floor : 0, treeMarkerMetadata);
+                        // add the marker
+                        this.markers.push(treeMarker);
+                        // this can be set before the room is actually displayed
+                        if (this.viewContainer) {
+                            // have to update position first
+                            treeMarker.updatePosition();
+                            treeMarker.addDisplay(this.viewContainer);
+                            treeMarker.updateView();
+                        }
+                    }
+                }
+            }
+            // remove any other markers
+            this.removeTreeMarkers(keepMarkers);
+        }
+    }
+
+    removeTreeMarkers(except=null) {
+        // remove any markers with the tree flag and whose metadata does not appear
+        // in the given list
+        for (var m = 0; m < this.markers.length; m++) {
+            var marker = this.markers[m];
+            if (marker.metadata.tree && (!except || !except.includes(marker.metadata))) {
+                if (this.viewContainer) {
+                    marker.removeDisplay(this.viewContainer);
+                }
+                // remove this entry and reset the index
+                this.markers.splice(m, 1);
+                m -= 1;
+            }
+        }
+    }
+
     getDisplayImageSuffix() {
         // we need to use a different display image depending in whether
         // it's in color or not
@@ -1486,14 +1715,24 @@ class Room {
     }
 
     showMarkers() {
+        // room markers
         for (var m = 0; m < this.markers.length; m++) {
             this.markers[m].addDisplay(this.viewContainer);
+        }
+        // door markers
+        for (var d = 0; d < this.doors.length; d++) {
+            this.doors[d].showArrowMarker();
         }
     }
 
     hideMarkers() {
+        // room markers
         for (var m = 0; m < this.markers.length; m++) {
             this.markers[m].removeDisplay();
+        }
+        // door markers
+        for (var d = 0; d < this.doors.length; d++) {
+            this.doors[d].showArrowMarker();
         }
     }
 
@@ -1506,6 +1745,8 @@ class Room {
         }
         // Ugh, have to build the <img> element the hard way
         var element = document.createElement("img");
+        // nice to track what kind of image it is
+        element.base = imageBase;
         if (!marker) {
 	        // Need to explicitly set the transform origin for off-center rooms
 	        element.style.transformOrigin = (-this.anchorMX * imgScale) + "px " + (-this.anchorMY * imgScale) + "px";
@@ -1529,7 +1770,7 @@ class Room {
         element.style.position = "absolute";
         element.style.zIndex = zIndex;
         element.roomId = this.id;
-		// have to explicitly tell Chrome that none of these listeners are passive or it will cry
+        // have to explicitly tell Chrome that none of these listeners are passive or it will cry
         element.addEventListener("mousedown", mouseDown, { passive: false });
         element.addEventListener("contextmenu", contextMenu, { passive: false });
         element.addEventListener("touchstart", touchStart, { passive: false });
@@ -1670,7 +1911,7 @@ class Room {
 		return "translate(" + roomViewCenterPX + "px, " + roomViewCenterPY + "px) translate(-50%, -50%) scale(" + scale + ", " + scale + ")";
 	}
 
-	getMarkerImageTransform(mx, my, viewPX, viewPY, viewScale) {
+	getMarkerImageTransform(mx, my, metadata, viewPX, viewPY, viewScale) {
         // transform the marker center coords to pixel coords
 		var roomViewCenterPX = ((mx + this.mdragOffset.x) * viewScale) + viewPX;
 		var roomViewCenterPY = ((my + this.mdragOffset.y) * viewScale) + viewPY;
@@ -1679,7 +1920,24 @@ class Room {
 		var scale = viewScale / imgScale;
 
 		// translate by the pixel coords, and then back by 50% to center the image
-		return "translate(" + roomViewCenterPX + "px, " + roomViewCenterPY + "px) translate(-50%, -50%) scale(" + scale + ", " + scale + ")";
+		var transform = "translate(" + roomViewCenterPX + "px, " + roomViewCenterPY + "px) translate(-50%, -50%)";
+
+        // check for optional rotation
+		if (metadata.rot != null) {
+		    // combine all relevant rotations
+    		var rotation = (this.rotation + this.mdragOffsetRotation + metadata.rot) % 360;
+            // add the transform
+    		transform += " rotate(" + rotation + "deg)";
+		}
+		// check for flip
+		if (metadata.fx || metadata.fy) {
+            // apply scale and flip
+            transform += "scale(" + (metadata.fx ? scale*-1 : scale) + ", " + (metadata.fy ? scale*-1 : scale) + ")";
+		} else {
+            // just apply scale
+            transform += "scale(" + scale + ", " + scale + ")";
+		}
+		return transform;
 	}
 
 	getDoorMarkerImageTransform(mx, my, rotation, viewPX, viewPY, viewScale) {
@@ -1707,6 +1965,10 @@ class Room {
 
     toString() {
         return this.metadata.id + ":" + this.id + ":(" + this.mv.x + ", " + this.mv.y + ", " + this.floor + ")";
+    }
+
+    toShortString() {
+        return this.metadata.id + ":" + this.id;
     }
 }
 
@@ -1770,6 +2032,7 @@ function cloneRooms(rooms, reposition=true) {
         newRoom.label = room.label;
         newRoom.labelScale = room.labelScale;
         newRoom.hue = room.hue;
+        // Do not clone spawn or door properties
         // add the new room
         newRooms.push(newRoom);
     }
@@ -1949,22 +2212,6 @@ class Position {
 
     toVect() {
         return new Vect(this.MX, this.MY);
-    }
-
-    equals(other) {
-		return this.MX == other.MX
-				&& this.MY == other.MY
-				&& this.Floor == other.Floor
-				&& this.R == other.R;
-    }
-}
-
-class RoomPosition extends Position {
-    constructor(room) {
-        super(room.mv.x,
-            room.mv.y,
-            room.floor,
-            room.rotation);
     }
 
     equals(other) {

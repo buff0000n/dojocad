@@ -9,7 +9,9 @@ class Settings {
         this.showAllFloors = true;
         this.showMapMarkers = true;
         this.showLabels = true;
+        this.dimRooms = false;
         this.autosave = false;
+        this.structureChecking = false;
         this.localStoreSort = "name";
         this.localStoreSortAsc = true;
 
@@ -34,8 +36,14 @@ class Settings {
             if (props.showLabels != null) {
                 this.showLabels = props.showLabels;
             }
+            if (props.dimRooms != null) {
+                this.dimRooms = props.dimRooms;
+            }
             if (props.autosave != null) {
                 this.autosave = props.autosave;
+            }
+            if (props.structureChecking != null) {
+                this.structureChecking = props.structureChecking;
             }
             if (props.localStoreSort != null) {
                 this.localStoreSort = props.localStoreSort;
@@ -52,7 +60,9 @@ class Settings {
             "showAllFloors": this.showAllFloors,
             "showMapMarkers": this.showMapMarkers,
             "showLabels": this.showLabels,
+            "dimRooms": this.dimRooms,
             "autosave": this.autosave,
+            "structureChecking": this.structureChecking,
             "localStoreSort": this.localStoreSort,
             "localStoreSortAsc": this.localStoreSortAsc
         }

@@ -54,6 +54,11 @@ function clearMenus(leave = 0) {
             }
         	saveModelToUrl();
         }
+
+        // check if the menu had a close callback associated with it
+        if (menu.closeCallback) {
+            menu.closeCallback();
+        }
     }
     // might as well clear all popups
 	clearErrors();
@@ -143,15 +148,20 @@ function buildMenuButtonIcon(icon=null, callback=null) {
     var iconTd = document.createElement("td");
 	if (icon) {
         iconTd.className = "imgField";
-		iconTd.innerHTML = `<img class="imgButton" src="icons/${icon}.png" srcset="icons2x/${icon}.png 2x"/>`;
+		iconTd.innerHTML = `<img class="${callback ? "imgButton" : ""}" " src="icons/${icon}.png" srcset="icons2x/${icon}.png 2x"/>`;
         iconTd.onclick = callback;
         iconTd.menuLevel = getCurrentMenuLevel() + 1;
 	}
 	return iconTd;
 }
 
-function buildButton(label, callback, className = "menu-button") {
-    var buttonDiv = document.createElement("td");
+function buildButton(label, callback, className = "menu-button", span=1) {
+    var buttonDiv = configureButton(document.createElement("td"), label, callback, className);
+    if (span > 1) buttonDiv.colSpan = "" + span;
+    return buttonDiv;
+}
+
+function configureButton(buttonDiv, label, callback, className) {
     buttonDiv.className = className;
     buttonDiv.innerHTML = label;
     buttonDiv.onclick = callback;
@@ -159,14 +169,25 @@ function buildButton(label, callback, className = "menu-button") {
     return buttonDiv;
 }
 
-function buildMenuButton(label, callback, icon = null, className = "menu-button") {
+function buildMenuRow(icon = null, element, callback) {
     var tr = document.createElement("tr");
 
     tr.appendChild(buildMenuButtonIcon(icon, callback));
 
-    tr.appendChild(buildButton(label, callback, className));
+    tr.appendChild(element);
 
     return tr;
+}
+
+function buildMenuButton(label, callback, icon = null, className = "menu-button", span=1) {
+    return buildMenuRow(icon, buildButton(label, callback, className, span), callback);
+}
+
+function buildMenuInfo(label, icon = null, className = "menu-line") {
+    var labelDiv = document.createElement("td");
+    labelDiv.className = className;
+    labelDiv.innerHTML = label;
+    return buildMenuRow(icon, labelDiv);
 }
 
 function buildLinkMenuButton(label, link, icon = null, error = false) {
@@ -333,14 +354,16 @@ function doBurgerMenu() {
 
 	menuDiv.appendChild(buildMenuHeaderLine("Menu", 3));
 
-    menuDiv.appendChild(buildMenuButton("Share", doShare, "icon-link"));
+    // need to explicitly pass in the layout for a new dojo now that we can autoload from autosave
+    menuDiv.appendChild(buildLinkMenuButton("New", "index.html?v=2,0,0,0&mz=BYRgNADJ0UA", "icon-new"));
 
     menuDiv.appendChild(buildMenuButton("Local Storage", doStorageMenu, "icon-save"));
 
+    menuDiv.appendChild(buildMenuButton("Share", doShare, "icon-link"));
+
     menuDiv.appendChild(buildMenuButton("PNG", doPngMenu, "icon-png"));
 
-    // need to explicitly pass in the layout for a new dojo now that we can autoload from autosave
-    menuDiv.appendChild(buildLinkMenuButton("New", "index.html?v=2,0,0,0&mz=BYRgNADJ0UA", "icon-new"));
+    menuDiv.appendChild(buildMenuButton("Structure", doStructureMenu, "icon-structure"));
 
     menuDiv.appendChild(buildMenuButton("Settings", doSettingsMenu, "icon-settings"));
 
@@ -582,34 +605,60 @@ function doRoomMenu(e, rooms) {
     tr.appendChild(buildCloseMenuButton());
 
     menuDiv.appendChild(tr);
+    
+    var buttonSpan = 2;
+    var buttonClass = "menu-button";
 
-    menuDiv.appendChild(buildMenuButton("Rotate", rotateSelectedRoom, "icon-rotate-cw"));
+    menuDiv.appendChild(buildMenuButton("Rotate", rotateSelectedRoom, "icon-rotate-cw", buttonClass, buttonSpan));
 
     if (room && room.multifloor) {
         // change floor options is only available when a single room is selected
-        menuDiv.appendChild(buildMenuButton("Change Floor", rotateFloorSelectedRoom, "icon-change-floor"));
+        menuDiv.appendChild(buildMenuButton("Change Floor", rotateFloorSelectedRoom, "icon-change-floor", buttonClass, buttonSpan));
     }
 
     // duplicate option
     menuDiv.appendChild(buildAddRoomButton(room ? room.metadata : null, rooms));
 
     // copy option
-    menuDiv.appendChild(buildMenuButton("Copy", copySelectedRooms, "icon-copy"));
+    menuDiv.appendChild(buildMenuButton("Copy", copySelectedRooms, "icon-copy", buttonClass, buttonSpan));
 
     // cut option
-    menuDiv.appendChild(buildMenuButton("Cut", cutSelectedRooms, "icon-cut"));
+    menuDiv.appendChild(buildMenuButton("Cut", cutSelectedRooms, "icon-cut", buttonClass, buttonSpan));
 
-    // select all option
-    menuDiv.appendChild(buildMenuButton("Select All", () => {
-        selectAllRoomsOfType(rooms);
-        clearMenus();
-    }, "icon-multiselect"));
+    // if a single room is selected, structure mode is enabled, and there aren't any loop warnings
+    // then there are multiple select options
+    if (room && settings.structureChecking && analysisResult.spawn && !analysisResult.loops) {
+        // put them on the same line because this menu is getting too big
+        var selectDiv = document.createElement("td");
+        // select all
+        selectDiv.appendChild(configureButton(
+            document.createElement("span"), "Select All", selectAllRoomsOfSelectedTypes, buttonClass));
+            // select branch
+        selectDiv.appendChild(configureButton(
+            document.createElement("span"), `<img class="imgButton" src="icons/icon-select-branch.png" srcset="icons2x/icon-select-branch.png 2x"/>&nbsp;Branch`,
+            selectBranch, buttonClass));
+        // select root
+        selectDiv.appendChild(configureButton(
+            document.createElement("span"), `<img class="imgButton" src="icons/icon-select-root.png" srcset="icons2x/icon-select-root.png 2x"/>&nbsp;Root`,
+            selectRoot, buttonClass, buttonSpan));
 
-    if (room && room.metadata.spawn) {
-        if (room.spawn) {
-            menuDiv.appendChild(buildMenuButton("Remove Spawn Point", unsetSelectedRoomSpawn, "icon-spawn-delete"));
+        selectDiv.colSpan = 4;
+
+        menuDiv.appendChild(buildMenuRow("icon-multiselect", selectDiv, selectAllRoomsOfSelectedTypes));
+
+    } else {
+        // basic select all option
+        menuDiv.appendChild(buildMenuButton("Select All", selectAllRoomsOfSelectedTypes, "icon-multiselect", buttonClass, buttonSpan));
+    }
+
+    if (room) {
+        if (room.isSpawnPoint()) {
+            menuDiv.appendChild(buildMenuButton("Remove Spawn Point", unsetSelectedRoomSpawn, "icon-spawn-delete", buttonClass, buttonSpan));
+
         } else {
-            menuDiv.appendChild(buildMenuButton("Set Spawn Point", setSelectedRoomSpawn, "icon-spawn"));
+            if (room.metadata.spawn) {
+                menuDiv.appendChild(buildMenuButton("Set Spawn Point", setSelectedRoomSpawn, "icon-spawn", buttonClass, buttonSpan));
+            }
         }
     }
 
@@ -617,21 +666,44 @@ function doRoomMenu(e, rooms) {
     menuDiv.appendChild(buildMenuDivider(6));
 
     // color option
-    menuDiv.appendChild(buildMenuButton("Color", doColorMenu, "icon-color"));
+    menuDiv.appendChild(buildMenuButton("Color", doColorMenu, "icon-color", buttonClass, buttonSpan));
 
     if (room && settings.showLabels) {
         // label option is only available when a single room is selected, and when labels are being show
-        menuDiv.appendChild(buildMenuButton("Label", doLabelMenu, "icon-room-label"));
+        menuDiv.appendChild(buildMenuButton("Label", doLabelMenu, "icon-room-label", buttonClass, buttonSpan));
     }
 
     // divider
     menuDiv.appendChild(buildMenuDivider(6));
 
     // delete option
-    menuDiv.appendChild(buildMenuButton("Delete", deleteSelectedRooms, "icon-delete"));
+    menuDiv.appendChild(buildMenuButton("Delete", deleteSelectedRooms, "icon-delete", buttonClass, buttonSpan));
 
     showMenuAt(menuDiv, e.clientX, e.clientY);
 }
+
+
+function doDoorMenu(e, door) {
+    var e = e || window.event;
+
+    clearMenus();
+
+    var menuDiv = buildMenu();
+    menuDiv.appendChild(buildMenuHeaderLine(door.looping ? "Looping Door" : door.crossBranch ? "Cross Branch Door" : "Door",
+        3, door.looping ? "icon-warn" : door.crossBranch ? "icon-force-cross-branch" : null));
+
+    // show the cross branch option if it's not already a cross branch
+    if (!door.forceCrossBranch) {
+        menuDiv.appendChild(buildMenuButton("Cross Branch", () => { setDoorForceCrossBranch(door, true)}, "icon-force-cross-branch"));
+    }
+    // show the reset option if it's already a cross branch
+    if (door.forceCrossBranch) {
+        menuDiv.appendChild(buildMenuButton("Reset", () => { resetDoor(door)}, "icon-force-cross-branch-reset"));
+    }
+
+    showMenuAt(menuDiv, e.clientX, e.clientY);
+}
+
 
 function doShowErrors() {
 	var errButton = getMenuTarget();
@@ -680,7 +752,7 @@ function doShare() {
 	var saveButton = getMenuTarget();
 
     var menuDiv = buildMenu();
-	menuDiv.appendChild(buildMenuHeaderLine("Share URL", 4));
+	menuDiv.appendChild(buildMenuHeaderLine("Share URL", 4, "icon-link"));
 
 	var url = buildQueryUrl(buildUrlParams());
 
@@ -1227,7 +1299,7 @@ function doPngMenu() {
 
     var menuDiv = buildMenu();
 
-	menuDiv.appendChild(buildMenuHeaderLine("PNG", 4));
+	menuDiv.appendChild(buildMenuHeaderLine("PNG", 4, "icon-png"));
 
     var db = getDojoBounds();
 
@@ -1530,14 +1602,7 @@ function doStorageSave(name) {
 }
 
 
-function doSettingsMenu() {
-	var button = getMenuTarget();
-
-    var menuDiv = buildMenu();
-
-	menuDiv.appendChild(buildMenuHeaderLine("Settings", 4, "icon-settings"));
-
-    function addCheckbox(name, title, initialValue, callback) {
+    function buildCheckbox(name, title, initialValue, callback) {
         // container for the checkbox and label
         var settingDiv = document.createElement("div");
         // checkbox
@@ -1568,22 +1633,88 @@ function doSettingsMenu() {
         };
         settingDiv.appendChild(settingSpan);
 
-        menuDiv.appendChild(buildMenuInput(null, settingDiv));
+        return buildMenuInput(null, settingDiv);
     }
 
+function doSettingsMenu() {
+	var button = getMenuTarget();
+
+    var menuDiv = buildMenu();
+
+	menuDiv.appendChild(buildMenuHeaderLine("Settings", 4, "icon-settings"));
+
     // checkbox settings
-    addCheckbox("showAllFloors", "Show All Floors", settings.showAllFloors, (value) => { setShowAllFloors(value); });
 
-    addCheckbox("showMapMarkers", "Show Map Markers", settings.showMapMarkers, (value) => { setShowMapMarkers(value); });
+    menuDiv.appendChild(buildCheckbox("showAllFloors", "Show All Floors", settings.showAllFloors, (value) => { setShowAllFloors(value); }));
 
-    addCheckbox("showLabels", "Show Labels", settings.showLabels, (value) => { setShowLabels(value); });
+    menuDiv.appendChild(buildCheckbox("showMapMarkers", "Show Map Markers", settings.showMapMarkers, (value) => { setShowMapMarkers(value); }));
 
-    addCheckbox("autosave", "Autosave", settings.autosave, (value) => { setAutosave(value); });
+    menuDiv.appendChild(buildCheckbox("showLabels", "Show Labels", settings.showLabels, (value) => { setShowLabels(value); }));
+
+    menuDiv.appendChild(buildCheckbox("dimRooms", "Dim Rooms", settings.dimRooms, (value) => { setDimRooms(value); }));
+
+    menuDiv.appendChild(buildMenuDivider(4));
+
+    menuDiv.appendChild(buildCheckbox("autosave", "Autosave", settings.autosave, (value) => { setAutosave(value); }));
 
     showMenu(menuDiv, button);
 }
 
+function doStructureMenu() {
+	var button = getMenuTarget();
 
+    var menuDiv = buildMenu();
+
+    // function for enabling/disable parts of teh menu
+    // these are the element class names to map when disabling
+    var disableMapping = new Map([["imgField", "imgField-disabled"], ["menu-button", "menu-button-disabled"]]);
+    // when enabling the mapping is reversed
+    var enableMapping = new Map([["imgField-disabled", "imgField"], ["menu-button-disabled", "menu-button"]]);
+    // function applies the appropriate class name mapping to all child elemnts in the menu
+    function refreshEnabled() {
+        if (settings.structureChecking && analysisResult.spawn) {
+            replaceClassNames(menuDiv, enableMapping);
+
+        } else {
+            replaceClassNames(menuDiv, disableMapping);
+        }
+    }
+
+	menuDiv.appendChild(buildMenuHeaderLine("Structure", 4, "icon-structure"));
+
+    // the checkbox is not affected by the enable/disable function because
+    // it has different class names
+    menuDiv.appendChild(buildCheckbox("structureChecking", "Enabled", settings.structureChecking, (value) => {
+        setStructureChecking(value);
+        refreshEnabled();
+    }));
+
+    menuDiv.appendChild(buildMenuDivider(4));
+
+    // show a warning if the spawn point is not present
+    if (!analysisResult.spawn) {
+        menuDiv.appendChild(buildMenuInfo("Spawn Point Missing", "icon-warn"));
+
+    } else {
+        // fins spawn point option
+        menuDiv.appendChild(buildMenuButton("Find Spawn Point", selectSpawnRoom, "icon-spawn"));
+    }
+
+    // auto-fix option
+    menuDiv.appendChild(buildMenuButton("Auto-fix Structure", doAutoSetCrossBranches, "icon-structure-fix"));
+
+    // reset all function
+    menuDiv.appendChild(buildMenuButton("Reset All Structure", doResetAllStructure, "icon-force-cross-branch-reset"));
+
+    // set the initial enabled/disabed state of the menu
+    refreshEnabled();
+
+    showMenu(menuDiv, button);
+}
+
+//////////////////////////////////////////////////////////////////////////
+// error/warning menus
+//////////////////////////////////////////////////////////////////////////
 
 var errorRoomList = Array();
 var warnRoomList = Array();

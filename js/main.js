@@ -150,23 +150,43 @@ function rotateSelectedRoom() {
 	        // rotation center
 	        center = mouseDownTarget.room.mv;
 
-	    } else if (getCurrentMenuLevel > 0 && lastClickedRoom) {
-	        // for the rotate menu option, use the center of the room that was actually clicked as the rotation center
-	        center = lastClickedRoom.mv;
+            // simple case, already dragging
+            for (var r = 0; r < selectedRooms.length; r++) {
+                // rotate each room around the center
+                selectedRooms[r].rotateAround(center);
+                // todo: why do I need this here?
+                selectedRooms[r].updateView();
+            }
 
 	    } else {
-	        // find the center of bounds, snapped to the nearest 1m
-	        center = new DojoBounds(selectedRooms).centerPosition().toVect();
-	    }
+    	    if (getCurrentMenuLevel > 0 && lastClickedRoom) {
+                // for the rotate menu option, use the center of the room that was actually clicked as the rotation center
+                center = lastClickedRoom.mv;
 
-        for (var r = 0; r < selectedRooms.length; r++) {
-            // rotate each room around the center
-            selectedRooms[r].rotateAround(center);
-            // todo: why do I need this here?
-            selectedRooms[r].updateView();
+            } else {
+                // find the center of bounds, snapped to the nearest 1m
+                center = new DojoBounds(selectedRooms).centerPosition().toVect();
+            }
+
+            // simulate the drag process so we can rotate the selection as a unit without losing internal door settings
+            for (var r = 0; r < selectedRooms.length; r++) {
+                // start a drag process with the given selection
+                selectedRooms[r].ignoreRooms = selectedRooms;
+                selectedRooms[r].setDragOffset(0, 0, 0, false);
+                selectedRooms[r].disconnectAllDoors();
+            }
+            // all rooms must be in the dragging state with doors disconnected before we actually rotate
+            for (var r = 0; r < selectedRooms.length; r++) {
+                // rotate each room around the center
+                selectedRooms[r].rotateAround(center);
+                // stop the drag process and commit the move
+                selectedRooms[r].dropDragOffset();
+                selectedRooms[r].ignoreRooms = null;
+                // todo: why do I need this here?
+                selectedRooms[r].updateView();
+            }
         }
-	}
-
+    }
     // if we're not dragging then force the new undo action to store the new
     // room positions by making it check if this qualifies as a move
 	if (!isDraggingRoom() && action.isAMove()) {
@@ -200,6 +220,8 @@ function deleteSelectedRooms() {
 	    // deleting a room that's selected
 		var oldRooms = selectedRooms;
 	    selectedRooms = [];
+	    // create the action before disconnecting doors
+	    var action = new AddDeleteRoomsAction(oldRooms, false);
 	    // deselect and remove each room;
         for (var r = 0; r < oldRooms.length; r++) {
             oldRooms[r].deselect();
@@ -207,7 +229,7 @@ function deleteSelectedRooms() {
         }
 	    clearMenus(0);
 	    // add an undo action
-	    addUndoAction(new AddDeleteRoomsAction(oldRooms, false));
+	    addUndoAction(action);
 	}
     saveModelToUrl();
     treeUpdated();
@@ -250,7 +272,7 @@ function doAddRooms(e, rooms) {
 
 function duplicateSelectedRooms(e) {
     // sanity check
-	if (!dragged) {
+	if (!dragged && selectedRooms.length > 0) {
 	    // clone the rooms
 		var rooms = cloneRooms(selectedRooms);
 	    clearMenus(0);
@@ -283,6 +305,14 @@ function pasteCopiedRooms() {
         // create a copy of the rooms in the clipboard, not bothering to normalize
         // positions, and start the add process.
         doAddRooms(lastMTEvent, cloneRooms(copiedRooms, false));
+    }
+}
+
+function selectAllRoomsOfSelectedTypes() {
+    // wrapper to call selectAllRoomsOfType with the current selection
+    if (selectedRooms.length > 0) {
+        selectAllRoomsOfType(selectedRooms);
+        clearMenus();
     }
 }
 
@@ -336,16 +366,6 @@ function getCurrentSpawnRoom() {
     return roomList.find((r) => { return r.isSpawnPoint(); } );
 }
 
-function setSelectedRoomSpawn() {
-    if (selectedRooms.length == 1) {
-        var newSpawnRoom = selectedRooms[0];
-        clearMenus(0);
-        setSpawnPointRoom(newSpawnRoom, true);
-    	saveModelToUrl();
-    	treeUpdated();
-    }
-}
-
 function setSpawnPointRoom(newSpawnRoom, allowUndo=true) {
     // factored out so we can call this when loading a layout
     var currentSpawnRoom = getCurrentSpawnRoom();
@@ -360,12 +380,126 @@ function setSpawnPointRoom(newSpawnRoom, allowUndo=true) {
     }
 }
 
+function setSelectedRoomSpawn() {
+    // only applicable with a single room selected
+    if (selectedRooms.length == 1) {
+        var newSpawnRoom = selectedRooms[0];
+        clearMenus(0);
+        // set the spawn point
+        setSpawnPointRoom(newSpawnRoom, true);
+    	saveModelToUrl();
+    	treeUpdated();
+    }
+}
+
 function unsetSelectedRoomSpawn() {
     if (selectedRooms.length == 1) {
         clearMenus(0);
         setSpawnPointRoom(null, true);
     	saveModelToUrl();
     	treeUpdated();
+    }
+}
+
+function selectBranch() {
+    // only applicable with a single room selected
+    if (selectedRooms.length == 1) {
+        clearMenus(0);
+        runBranchSelection(selectedRooms[0], true);
+    }
+}
+
+function selectRoot() {
+    // only applicable with a single room selected
+    if (selectedRooms.length == 1) {
+        clearMenus(0);
+        runBranchSelection(selectedRooms[0], false);
+    }
+}
+
+function selectSpawnRoom() {
+    clearMenus(0);
+    // get the current spawn room
+    var room = getCurrentSpawnRoom();
+    if (room) {
+        // if there is a spawn room, set the selection to it
+        selectRoom(room, true, false);
+        // make sure it's in view
+        centerViewOnIfNotVisible(room.mv.x, room.mv.y, room.floor);
+    }
+}
+
+function doAutoSetCrossBranches() {
+    clearMenus(0);
+    // run the cross branch analysis
+    autoSetCrossBranches();
+}
+
+function doResetAllStructure() {
+    clearMenus(0);
+    // start a combination undo operation
+    startUndoCombo();
+    // unset every cross branch door
+	for (var r = 0; r < roomList.length; r++) {
+		var doors = roomList[r].doors;
+        for (var d = 0; d < doors.length; d++) {
+            var door = doors[d];
+            if (door.forceCrossBranch) {
+                // use the function
+                setDoorState(door, false, true);
+            }
+        }
+	}
+	// finishe the combo operation, we'll be able to undo all of this with a single operation
+	endUndoCombo("Reset structure");
+
+    saveModelToUrl();
+    treeUpdated();
+}
+
+function doorClicked(e, door) {
+    // sanity check if it's a connected door
+    if (!door.otherDoor) {
+        // ignore
+    }
+    // run the door menu
+    doDoorMenu(e, door);
+}
+
+function setDoorForceCrossBranch(door, forceCrossBranch, allowUndo=true) {
+    clearMenus(0);
+
+    // set the door state
+    setDoorState(door, forceCrossBranch, allowUndo);
+
+    saveModelToUrl();
+    treeUpdated();
+}
+
+function resetDoor(door, allowUndo=true) {
+    clearMenus(0);
+
+    // set the door state
+    setDoorState(door, false, allowUndo);
+
+    saveModelToUrl();
+    treeUpdated();
+}
+
+function setDoorState(door, forceCrossBranch, allowUndo=true) {
+    // start an action to record the before state
+    var action = !allowUndo ? null : new ChangeDoorAction(door);
+
+    // need to make sure all the doors that go between the same two rooms have the same state
+    var doors = getDoorsToRoom(door.room, door.otherDoor.room);
+    for (var d = 0; d < doors.length; d++) {
+        var setDoor = doors[d];
+        setDoor.setForceCrossBranch(forceCrossBranch);
+    }
+
+    // add undo action if necessary
+    if (action && action.isAChange()) {
+        addUndoAction(action);
     }
 }
 
@@ -465,6 +599,19 @@ function setShowLabels(showLabels) {
 	settings.save();
 }
 
+function setDimRooms(dimRooms) {
+    // set this before calling room.updateLabelDisplay(), otherwise nothing will happen
+	settings.dimRooms = dimRooms;
+
+    for (var r = 0; r < roomList.length; r++) {
+        // there's already a function just for changing the room color
+        roomList[r].resetColorDisplay();
+    }
+
+    // save setting at the end, if something goes wrong then it is not saved
+	settings.save();
+}
+
 function setAutosave(autosave) {
     // set the setting first
     settings.autosave = autosave;
@@ -473,6 +620,22 @@ function setAutosave(autosave) {
     if (autosave) {
         saveModelToUrl();
     }
+
+    // save setting at the end, if something goes wrong then it is not saved
+	settings.save();
+}
+
+function setStructureChecking(structureChecking) {
+    // set the setting first
+    settings.structureChecking = structureChecking;
+
+    for (var r = 0; r < roomList.length; r++) {
+        var room = roomList[r];
+        room.refreshMarkers();
+    }
+
+    // just re-run tree traversal I don't care
+    treeUpdated();
 
     // save setting at the end, if something goes wrong then it is not saved
 	settings.save();

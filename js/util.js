@@ -131,6 +131,17 @@ function removeMatchesFromList(list, fun) {
 }
 
 // returns true if the list was changed
+function removeFirstMatchFromList(list, fun) {
+	for (var i = list.length - 1; i >= 0; i--) {
+		if (fun(list[i])) {
+			list.splice(i, 1);
+			return true;
+		}
+	}
+	return false;
+}
+
+// returns true if the list was changed
 function addToListIfNotPresent(list, item) {
 	var index = list.indexOf(item);
 	if (index == -1) {
@@ -183,6 +194,24 @@ function arrayEquals(a, b) {
     return a == null ? b == null :
         b == null ? false :
         a.length == b.length && a.every((val, index) => val == b[index]);
+}
+
+// find child elements with classNames maching the keys of nameMapping and changing
+// those classNames to the values
+function replaceClassNames(root, nameMapping) {
+    // why the hell is is (value, key)?
+    nameMapping.forEach((to, from) => {
+        if (root.classList.contains(from)) {
+            // remove old className and add new one
+            root.classList.remove(from);
+            root.classList.add(to);
+        }
+    });
+    var children = root.children;
+    for (var i = 0; i < root.children.length; i++) {
+        // recursive
+        replaceClassNames(root.children.item(i), nameMapping);
+    }
 }
 
 //////////////////////////////////////////////////////////////////////////
