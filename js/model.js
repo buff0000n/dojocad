@@ -1437,8 +1437,8 @@ class Room {
     }
 
     dropDragOffset() {
-        // check if we actually dragged anywhere
-        if (this.mdragOffset.x != 0 || this.mdragOffset.y!= 0 || this.mdragOffsetRotation != 0) {
+        // check if either this is a new room or if we actually dragged anywhere
+        if (!this.placed || this.mdragOffset.x != 0 || this.mdragOffset.y!= 0 || this.mdragOffsetRotation != 0) {
             // calculate the new position
             var nmv = this.mv.add(this.mdragOffset);
 			var nr = (this.rotation + this.mdragOffsetRotation) % 360;
