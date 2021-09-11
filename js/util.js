@@ -290,6 +290,12 @@ class Vect {
         return this;
     }
 
+    scaleSeparate(xs, ys) {
+        this.x *= xs;
+        this.y *= ys;
+        return this;
+    }
+
     round(rx, ry = rx) {
         return new Vect(
             rx * (Math.round(this.x / rx)),
