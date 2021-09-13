@@ -10,9 +10,9 @@ var part_display_other = 2;
 var part_display       = 3;
 var part_outline       = 4;
 var part_marker        = 5;
-var part_doormarker    = 6;
-var part_label         = 7;
-var part_debug         = 8;
+var part_doormarker    = 7;
+var part_label         = 8;
+var part_debug         = 9;
 
 // One function for handling all the z-index values for room images
 function getZIndex(room, part) {
@@ -2325,6 +2325,34 @@ var loadedImages = 0;
 var loadedImageData = null;
 var labelData = null;
 
+function buildImageData(image, anchor, mv, rotation, scale, layer, roomViewCenterPX, roomViewCenterPY, hue=null) {
+    // start by putting the anchor into a vect in world coords
+    var av = anchor.rotate(rotation)
+        // add to the position
+        .add(mv)
+        // scale by the scale, they are now pixel coords
+        .scale(scale)
+        // add to the center point
+        .addTo(roomViewCenterPX, roomViewCenterPY);
+
+    // calculate basis vectors starting from the transformed anchor point
+    // use the anchor point as a hack to determine if the basis should be flipped across the x and/or y axis
+    var vx = new Vect((anchor.x < 0 ? 1 : -1) * scale / imgScale, 0).rotate(rotation);
+    var vy = new Vect(0, (anchor.y < 0 ? 1 : -1) * scale / imgScale).rotate(rotation);
+
+    return {
+        "image": image,
+        "xx": vx.x,
+        "xy": vx.y,
+        "yx": vy.x,
+        "yy": vy.y,
+        "tx": av.x,
+        "ty": av.y,
+        "hue": hue,
+        "layer": layer
+    };
+}
+
 function convertFloorToPngLink(targets, db, margin, scale, f) {
 	// calculate the point in the image that represents (0, 0) in meter-space
     var roomViewCenterPX = margin + (-db.x1 * scale);
@@ -2335,6 +2363,7 @@ function convertFloorToPngLink(targets, db, margin, scale, f) {
 	loadedImages = 0;
 	loadedImageData = Array();
 	labelData = Array();
+
 
 	for (var r = 0; r < roomList.length; r++) {
 		var room = roomList[r];
@@ -2374,81 +2403,106 @@ function convertFloorToPngLink(targets, db, margin, scale, f) {
             img.onload = function() {
 	            var index = this.index;
                 var room = this.room;
-				// start by putting the anchor into a vect
-				var av = new Vect(room.anchorMX, room.anchorMY);
-				// rotate the anchor point by the room's rotation
-	            av = av.rotate(room.rotation)
-	                // add to the room's position
-	                .add(room.mv)
-	                // scale by the scale, they are now pixel coords
-	                .scale(scale)
-	                // add to the center point
-	                .addTo(roomViewCenterPX, roomViewCenterPY);
-
-				// calculate basis vectors starting from the transformed anchor point
-	            var vx = new Vect(scale / imgScale, 0).rotate(room.rotation);
-	            var vy = new Vect(0, scale / imgScale).rotate(room.rotation);
 
 				// notify
-//				imageLoaded(targets, db, margin, scale, f, 1);
-				imageLoaded(targets, db, margin, scale, f, index, {
-				    "image": this,
-				    "xx": vx.x,
-				    "xy": vx.y,
-				    "yx": vy.x,
-				    "yy": vy.y,
-				    "tx": av.x,
-				    "ty": av.y,
-				    "hue": room.hue,
-				    // if the room isn't actually on this floor, make sure the image is drawn underneath everything else
-				    "bottom": !room.isOnFloor(f)
-				});
+				imageLoaded(targets, db, margin, scale, f, index, buildImageData(
+                    this,
+                    // anchor point in world coords
+                    new Vect(room.anchorMX, room.anchorMY),
+                    // translation
+                    room.mv,
+                    // rotation
+                    room.rotation,
+                    // scale
+                    scale,
+                    // layer
+                    !room.isOnFloor(f) ? 0 : 1,
+                    roomViewCenterPX, roomViewCenterPY,
+                    room.hue
+                ));
             }
             img.src = "img" + imgScale + "x/" + room.getImageBase(f) + room.getDisplayImageSuffix();
 			localDrawnImages++;
 
-			// see if the room has any markers
-			for (var m = 0; m < room.markers.length; m++) {
-				var marker = room.markers[m];
-				// check the ShowMapMarkers setting
-				if (marker.floor != f || !settings.showMapMarkers) {
-					continue;
-				}
-				// build an image link because that's what context.drawImage wants
-                var img2 = new Image();
-                // we have store parameters in the img object itself
-                img2.index = localDrawnImages;
-                img2.marker = marker;
-	            // omg is this really the only reliable way to draw an image on a canvas?!
-                img2.onload = function() {
-	                var index = this.index;
-                    var marker = this.marker;
-					// the marker is a little simpler because we don't have to rotate it
-					// start with the marker coords
-					// it's also more complicated because we need its dimensions, which we don't have until it's loaded
-					var av2 = marker.mv.copy()
-		                // scale by the scale, they are now pixel coords
-		                .scale(scale)
-		                // add to the center point
-		                .addTo(roomViewCenterPX, roomViewCenterPY)
-		                // center the image
-		                .addTo(-this.width * (scale / imgScale) / 2, -this.height * (scale / imgScale) / 2);
+            // check the ShowMapMarkers setting
+            if (settings.showMapMarkers) {
+                // see if the room has any markers
+                for (var m = 0; m < room.markers.length; m++) {
+                    var marker = room.markers[m];
+                    // check the floor
+                    if (marker.floor != f) {
+                        continue;
+                    }
+                    // build an image link because that's what context.drawImage wants
+                    var img2 = new Image();
+                    // we have store parameters in the img object itself
+                    img2.index = localDrawnImages;
+                    img2.marker = marker;
+                    // omg is this really the only reliable way to draw an image on a canvas?!
+                    img2.onload = function() {
+                        var index = this.index;
+                        var marker = this.marker;
 
-					// notify
-					imageLoaded(targets, db, margin, scale, f, index, {
-    					"image": this,
-    					"xx": scale / imgScale,
-    					"xy": 0,
-    					"yx": 0,
-    					"yy": scale / imgScale,
-    					"tx": av2.x,
-    					"ty": av2.y,
-				        "bottom": false
-					});
-				}
-	            img2.src = "img" + imgScale + "x/" + marker.metadata.image + ".png";
-				localDrawnImages++;
-			}
+                        // notify
+                        imageLoaded(targets, db, margin, scale, f, index, buildImageData(
+                            this,
+                            // anchor point in world coords
+                            new Vect(
+                                (this.width / (2*imgScale)) * (marker.metadata.fx ? 1 : -1),
+                                (this.height / (2*imgScale)) * (marker.metadata.fy ? 1 : -1)
+                            ),
+                            // translation
+                            marker.mv,
+                            // rotation
+                            marker.metadata.rot == null ? 0 : (marker.room.rotation + marker.metadata.rot) % 360,
+                            // scale
+                            scale,
+                            // layer
+                            2 + (marker.metadata.z ? marker.metadata.z : 0),
+                            roomViewCenterPX, roomViewCenterPY
+                        ));
+                    }
+                    img2.src = "img" + imgScale + "x/" + marker.metadata.image + ".png";
+                    localDrawnImages++;
+                }
+                for (var d = 0; d < room.doors.length; d++) {
+                    if (room.doors[d].marker) {
+                        var door = room.doors[d];
+                        // check the floor
+                        if (door.floor != f) {
+                            continue;
+                        }
+                        // build an image link because that's what context.drawImage wants
+                        var img2 = new Image();
+                        // we have store parameters in the img object itself
+                        img2.index = localDrawnImages;
+                        img2.door = door;
+                        // omg is this really the only reliable way to draw an image on a canvas?!
+                        img2.onload = function() {
+                            var index = this.index;
+                            var door = this.door;
+
+                            // notify
+                            imageLoaded(targets, db, margin, scale, f, index, buildImageData(
+                                this,
+                                // anchor point in world coords
+                                new Vect(-this.width / (2*imgScale), -this.height / (2*imgScale)),
+                                // translation
+                                door.mv,
+                                // rotation
+                                door.rotation,
+                                // scale
+                                scale,
+                                // layer
+                                4,
+                                roomViewCenterPX, roomViewCenterPY
+                            ));
+                        }
+                        img2.src = "img" + imgScale + "x/" + door.marker.base + ".png";
+                        localDrawnImages++;
+                    }
+                }
+            }
 		}
 	}
 
@@ -2489,10 +2543,10 @@ function imageLoaded(targets, db, margin, scale, f, index, imageData) {
     context.fillStyle = "#000000";
     context.fillRect(0, 0, canvas.width, canvas.height);
 
-    function drawImages(bottom) {
+    function drawImages(layer) {
         for (var i = 0; i < loadedImageData.length; i++) {
             var a = loadedImageData[i];
-            if (a.bottom != bottom) {
+            if (a.layer != layer) {
                 continue;
             }
             // set the transform with the two basis vectors and the translate vector
@@ -2514,10 +2568,16 @@ function imageLoaded(targets, db, margin, scale, f, index, imageData) {
         }
     }
 
-    // draw the bottom images first
-    drawImages(true);
-    // then the rest
-    drawImages(false);
+    var minLayer = 1000;
+    var maxLayer = 0;
+    for (var i = 0; i < loadedImageData.length; i++) {
+        if (loadedImageData[i].layer > maxLayer) maxLayer = loadedImageData[i].layer;
+        if (loadedImageData[i].layer < minLayer) minLayer = loadedImageData[i].layer;
+    }
+
+    for (var l = minLayer; l <= maxLayer; l++) {
+        drawImages(l);
+    }
 
     for (var i = 0; i < labelData.length; i++) {
         var a = labelData[i];
