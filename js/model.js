@@ -2336,8 +2336,9 @@ function buildImageData(image, anchor, mv, rotation, scale, layer, roomViewCente
         .addTo(roomViewCenterPX, roomViewCenterPY);
 
     // calculate basis vectors starting from the transformed anchor point
-    var vx = new Vect(scale / imgScale, 0).rotate(rotation);
-    var vy = new Vect(0, scale / imgScale).rotate(rotation);
+    // use the anchor point as a hack to determine if the basis should be flipped across the x and/or y axis
+    var vx = new Vect((anchor.x < 0 ? 1 : -1) * scale / imgScale, 0).rotate(rotation);
+    var vy = new Vect(0, (anchor.y < 0 ? 1 : -1) * scale / imgScale).rotate(rotation);
 
     return {
         "image": image,
@@ -2457,7 +2458,7 @@ function convertFloorToPngLink(targets, db, margin, scale, f) {
                             // scale
                             scale,
                             // layer
-                            2 + (marker.metadata.layer ? marker.metadata.layer : 0),
+                            2 + (marker.metadata.z ? marker.metadata.z : 0),
                             roomViewCenterPX, roomViewCenterPY
                         ));
                     }
