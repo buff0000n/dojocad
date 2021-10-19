@@ -358,7 +358,7 @@ var roomMetadata =
 	    ]},
 {"id": "lv", "image": "ventkid-lab", "name": "Ventkids' Bash Lab", "category": "Labs", "prereq": "or", "capacity": -2, "energy": -5, "maxnum": null, "floor": 0, "ceil": 8,
 	"bounds": [
-		{"x1": -8, "y1": -16, "x2": 8, "y2": 8, "floor": 0, "ceil": 8}],
+		{"x1": -10, "y1": -16, "x2": 10, "y2": 8, "floor": 0, "ceil": 8}],
 	"doors": [
 		{"x": 0, "y": 8, "floor": 0, "outx": 0, "outy": 1}],
 	"floor_images": [
