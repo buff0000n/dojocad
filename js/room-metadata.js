@@ -85,7 +85,7 @@ var roomMetadata =
 	    ]},
 {"id": "ce", "image": "elevator-bottom", "name": "Elevator", "category": "Connectors", "prereq": null, "capacity": -2, "energy": -2, "maxnum": null, "floor": -24, "ceil": 16, "multifloor": true,
 	"bounds": [
-		{"x1": -8, "y1": -12, "x2": 8, "y2": 12, "floor": -24, "ceil": 80}],
+		{"x1": -8, "y1": -11, "x2": 8, "y2": 12, "floor": -24, "ceil": 80}],
 	"doors": [
 		{"x": 0, "y": 12, "floor": 0, "outx": 0, "outy": 1},
 		{"x": 0, "y": 12, "floor": 1, "outx": 0, "outy": 1}],
@@ -358,7 +358,7 @@ var roomMetadata =
 	    ]},
 {"id": "lv", "image": "ventkid-lab", "name": "Ventkids' Bash Lab", "category": "Labs", "prereq": "or", "capacity": -2, "energy": -5, "maxnum": null, "floor": 0, "ceil": 8,
 	"bounds": [
-		{"x1": -10, "y1": -16, "x2": 10, "y2": 8, "floor": 0, "ceil": 8}],
+		{"x1": -9, "y1": -16, "x2": 9, "y2": 8, "floor": 0, "ceil": 8}],
 	"doors": [
 		{"x": 0, "y": 8, "floor": 0, "outx": 0, "outy": 1}],
 	"floor_images": [
