@@ -172,6 +172,7 @@ class MaxNumRule extends RoomRule {
 				addToListIfNotPresent(this.list, room);
 			} else {
 				removeFromList(this.list, room);
+				room.removeRuleError(this);
 			}
 			var newLength = this.list.length;
 			if (prevLength <= this.maxnum && newLength > this.maxnum) {
@@ -181,9 +182,8 @@ class MaxNumRule extends RoomRule {
 			} else if (prevLength > this.maxnum && newLength <= this.maxnum) {
 				for (var r = 0; r < this.list.length; r++) {
 					this.list[r].removeRuleError(this);
-					room.removeRuleError(this);
 				}
-			} else if (newLength > this.maxnum) {
+			} else if (prevLength <= newLength && newLength > this.maxnum) {
 				room.addRuleError(this);
 			}
 		}
