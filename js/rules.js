@@ -5,6 +5,9 @@ class RoomRule {
 	roomRemoved(room) {
 	}
 
+	clearRoom(room) {
+	}
+
 	getNewRoomError(roomMetaData, num=1) {
 		return null;
 	}
@@ -178,6 +181,7 @@ class MaxNumRule extends RoomRule {
 			} else if (prevLength > this.maxnum && newLength <= this.maxnum) {
 				for (var r = 0; r < this.list.length; r++) {
 					this.list[r].removeRuleError(this);
+					room.removeRuleError(this);
 				}
 			} else if (newLength > this.maxnum) {
 				room.addRuleError(this);
@@ -245,6 +249,12 @@ class PrereqRule extends RoomRule {
 					this.room_list[r].removeRuleError(this);
 				}
 			}
+		}
+	}
+
+	clearRoom(room) {
+		if (room.metadata.id == this.room_id) {
+            room.removeRuleError(this);
 		}
 	}
 
@@ -491,52 +501,74 @@ function registerRoomRules(roomMetaDataList) {
 			roomRules.push(new PrereqRule(roomMetadata, getRoomMetadata(roomMetadata.prereq)));
 		}
 	}
-	
-	for (var i = 0; i < roomRules.length; i++) {
-		var error = roomRules[i].getNewDojoError();
-		if (error) {
-			addAllError(error);
-		}
-	}
 
-	for (var i = 0; i < roomRules.length; i++) {
-		var warn = roomRules[i].getNewDojoWarning();
-		if (warn) {
-			addAllWarn(warn);
-		}
-	}
+    runNewDojoRules();
+}
+
+function runNewDojoRules() {
+    if (settings.rulesEnabled) {
+        for (var i = 0; i < roomRules.length; i++) {
+            var error = roomRules[i].getNewDojoError();
+            if (error) {
+                addAllError(error);
+            }
+        }
+
+        for (var i = 0; i < roomRules.length; i++) {
+            var warn = roomRules[i].getNewDojoWarning();
+            if (warn) {
+                addAllWarn(warn);
+            }
+        }
+    }
 }
 
 function runRulesOnRoomAdded(room) {
-	for (var i = 0; i < roomRules.length; i++) {
-		roomRules[i].roomAdded(room);
-	}
+    if (settings.rulesEnabled) {
+        for (var i = 0; i < roomRules.length; i++) {
+            roomRules[i].roomAdded(room);
+        }
+    }
 }
 
 function runRulesOnRoomRemoved(room) {
-	for (var i = 0; i < roomRules.length; i++) {
-		roomRules[i].roomRemoved(room);
-	}
+    if (settings.rulesEnabled) {
+        for (var i = 0; i < roomRules.length; i++) {
+            roomRules[i].roomRemoved(room);
+        }
+    }
+}
+
+function clearRulesOnRoom(room) {
+    if (settings.rulesEnabled) {
+        for (var i = 0; i < roomRules.length; i++) {
+            roomRules[i].clearRoom(room);
+        }
+    }
 }
 
 function getNewRoomErrors(roomMetaData, num=1) {
 	var errors = Array();
-	for (var i = 0; i < roomRules.length; i++) {
-		var error = roomRules[i].getNewRoomError(roomMetaData, num);
-		if (error) {
-			errors.push(error);
-		}
-	}
+    if (settings.rulesEnabled) {
+        for (var i = 0; i < roomRules.length; i++) {
+            var error = roomRules[i].getNewRoomError(roomMetaData, num);
+            if (error) {
+                errors.push(error);
+            }
+        }
+    }
 	return errors.length > 0 ? errors : null;
 }
 
 function getNewRoomWarnings(roomMetaData) {
 	var warnings = Array();
-	for (var i = 0; i < roomRules.length; i++) {
-		var warning = roomRules[i].getNewRoomWarning(roomMetaData, num=1);
-		if (warning) {
-			warnings.push(warning);
-		}
-	}
+    if (settings.rulesEnabled) {
+        for (var i = 0; i < roomRules.length; i++) {
+            var warning = roomRules[i].getNewRoomWarning(roomMetaData, num=1);
+            if (warning) {
+                warnings.push(warning);
+            }
+        }
+    }
 	return warnings.length > 0 ? warnings : null;
 }

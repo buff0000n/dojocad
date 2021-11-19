@@ -1653,6 +1653,8 @@ function doSettingsMenu() {
 
     menuDiv.appendChild(buildCheckbox("dimRooms", "Dim Rooms", settings.dimRooms, (value) => { setDimRooms(value); }));
 
+    menuDiv.appendChild(buildCheckbox("rulesEnabled", "Enable Rules", settings.rulesEnabled, (value) => { setRulesEnabled(value); }));
+
     menuDiv.appendChild(buildMenuDivider(4));
 
     menuDiv.appendChild(buildCheckbox("autosave", "Autosave", settings.autosave, (value) => { setAutosave(value); }));
@@ -1763,6 +1765,24 @@ function removeAllError(error, warn = false) {
 	if (removeFromList(errorList, error) && errorList.length == 0) {
 		updateErrorIcon(element);
 	}
+}
+
+function clearAllErrorsOrWarnings(list, warn=false) {
+    if (list) {
+        list = list.slice();
+        for (var i = 0; i < list.length; i++) {
+            // just remove the string warnings, collision warnings are bounds objects
+            if (typeof list[i] == "string") {
+                removeAllError(list[i], warn);
+            }
+        }
+    }
+}
+
+function clearNonCollisionWarnings() {
+    var button = document.getElementById("allErrorsButton");
+    clearAllErrorsOrWarnings(button.errorList, false);
+    clearAllErrorsOrWarnings(button.warnList, true);
 }
 
 function updateErrorIcon(element) {

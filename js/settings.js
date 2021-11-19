@@ -14,6 +14,7 @@ class Settings {
         this.structureChecking = false;
         this.localStoreSort = "name";
         this.localStoreSortAsc = true;
+        this.rulesEnabled = true;
 
         // load from local storage
         this.load();
@@ -51,6 +52,9 @@ class Settings {
             if (props.localStoreSortAsc != null) {
                 this.localStoreSortAsc = props.localStoreSortAsc;
             }
+            if (props.rulesEnabled != null) {
+                this.rulesEnabled = props.rulesEnabled;
+            }
         }
     }
 
@@ -64,7 +68,8 @@ class Settings {
             "autosave": this.autosave,
             "structureChecking": this.structureChecking,
             "localStoreSort": this.localStoreSort,
-            "localStoreSortAsc": this.localStoreSortAsc
+            "localStoreSortAsc": this.localStoreSortAsc,
+            "rulesEnabled": this.rulesEnabled
         }
         // format as JSON and save to local storage
         window.localStorage.setItem(this.key, JSON.stringify(props));

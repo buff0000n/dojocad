@@ -4,8 +4,8 @@ var roomMetadata =
 
 {"id": "cc", "image": "cross-connector", "name": "Cross Connector", "category": "Connectors", "prereq": null, "capacity": -10, "energy": -3, "maxnum": null, "floor": 0, "ceil": 8,
 	"bounds": [
-		{"x1": -16, "y1": -8, "x2": 16, "y2": 8, "floor": 0, "ceil": 8},
-		{"x1": -8, "y1": -16, "x2": 8, "y2": 16, "floor": 0, "ceil": 8}],
+		{"x1": -16, "y1": -7, "x2": 16, "y2": 7, "floor": 0, "ceil": 8},
+		{"x1": -7, "y1": -16, "x2": 7, "y2": 16, "floor": 0, "ceil": 8}],
 	"doors": [
 		{"x": 0, "y": 16, "floor": 0, "outx": 0, "outy": 1},
 		{"x": 16, "y": 0, "floor": 0, "outx": 1, "outy": 0},
@@ -22,7 +22,7 @@ var roomMetadata =
 	    ]},
 {"id": "cs", "image": "straight-hallway", "name": "Straight Hallway", "category": "Connectors", "prereq": null, "capacity": -1, "energy": -1, "maxnum": null, "floor": 0, "ceil": 8,
 	"bounds": [
-		{"x1": -8, "y1": -8, "x2": 8, "y2": 8, "floor": 0, "ceil": 8}],
+		{"x1": -7, "y1": -8, "x2": 7, "y2": 8, "floor": 0, "ceil": 8}],
 	"doors": [
 		{"x": 0, "y": 8, "floor": 0, "outx": 0, "outy": 1},
 		{"x": 0, "y": -8, "floor": 0, "outx": 0, "outy": -1}],
@@ -37,7 +37,7 @@ var roomMetadata =
 	    ]},
 {"id": "cx", "image": "extended-straight-hallway", "name": "Extended Straight Hallway", "category": "Connectors", "prereq": null, "capacity": -2, "energy": -2, "maxnum": null, "floor": 0, "ceil": 8,
 	"bounds": [
-		{"x1": -8, "y1": -16, "x2": 8, "y2": 16, "floor": 0, "ceil": 8}],
+		{"x1": -7, "y1": -16, "x2": 7, "y2": 16, "floor": 0, "ceil": 8}],
 	"doors": [
 		{"x": 0, "y": 16, "floor": 0, "outx": 0, "outy": 1},
 		{"x": 0, "y": -16, "floor": 0, "outx": 0, "outy": -1}],
@@ -52,8 +52,8 @@ var roomMetadata =
 	    ]},
 {"id": "ct", "image": "t-shaped-connector", "name": "T-shaped Connector", "category": "Connectors", "prereq": null, "capacity": -5, "energy": -2, "maxnum": null, "floor": 0, "ceil": 8,
 	"bounds": [
-		{"x1": -8, "y1": -16, "x2": 8, "y2": 16, "floor": 0, "ceil": 8},
-		{"x1": -8, "y1": -8, "x2": 16, "y2": 8, "floor": 0, "ceil": 8}],
+		{"x1": -7, "y1": -16, "x2": 7, "y2": 16, "floor": 0, "ceil": 8},
+		{"x1": -7, "y1": -7, "x2": 16, "y2": 7, "floor": 0, "ceil": 8}],
 	"doors": [
 		{"x": 0, "y": 16, "floor": 0, "outx": 0, "outy": 1},
 		{"x": 16, "y": 0, "floor": 0, "outx": 1, "outy": 0},
@@ -69,8 +69,8 @@ var roomMetadata =
 	    ]},
 {"id": "cb", "image": "elbow-connector", "name": "Elbow Connector", "category": "Connectors", "prereq": null, "capacity": -1, "energy": -1, "maxnum": null, "floor": 0, "ceil": 8,
 	"bounds": [
-		{"x1": -4, "y1": -4, "x2": 16, "y2": 8, "floor": 0, "ceil": 8},
-		{"x1": -4, "y1": -4, "x2": 8, "y2": 16, "floor": 0, "ceil": 8}],
+		{"x1": -4, "y1": -4, "x2": 16, "y2": 7, "floor": 0, "ceil": 8},
+		{"x1": -4, "y1": -4, "x2": 7, "y2": 16, "floor": 0, "ceil": 8}],
 	"doors": [
 		{"x": 0, "y": 16, "floor": 0, "outx": 0, "outy": 1},
 		{"x": 16, "y": 0, "floor": 0, "outx": 1, "outy": 0}],
@@ -85,7 +85,7 @@ var roomMetadata =
 	    ]},
 {"id": "ce", "image": "elevator-bottom", "name": "Elevator", "category": "Connectors", "prereq": null, "capacity": -2, "energy": -2, "maxnum": null, "floor": -24, "ceil": 16, "multifloor": true,
 	"bounds": [
-		{"x1": -8, "y1": -11, "x2": 8, "y2": 12, "floor": -24, "ceil": 80}],
+		{"x1": -7, "y1": -11, "x2": 7, "y2": 12, "floor": -24, "ceil": 80}],
 	"doors": [
 		{"x": 0, "y": 12, "floor": 0, "outx": 0, "outy": 1},
 		{"x": 0, "y": 12, "floor": 1, "outx": 0, "outy": 1}],
@@ -115,7 +115,7 @@ var roomMetadata =
 	    ]},
 {"id": "h2", "image": "clan-great-hall", "name": "Clan Great Hall", "category": "Halls", "prereq": null, "capacity": 200, "energy": -2, "maxnum": 1, "spawn": true, "floor": -12, "ceil": 24,
 	"bounds": [
-		{"x1": -18, "y1": -32, "x2": 18, "y2": 32, "floor": -12, "ceil": 24}],
+		{"x1": -17, "y1": -32, "x2": 17, "y2": 32, "floor": -12, "ceil": 24}],
 	"doors": [
 		{"x": 0, "y": 32, "floor": 0, "outx": 0, "outy": 1},
 		{"x": 0, "y": -32, "floor": 0, "outx": 0, "outy": -1}],
@@ -358,7 +358,7 @@ var roomMetadata =
 	    ]},
 {"id": "lv", "image": "ventkid-lab", "name": "Ventkids' Bash Lab", "category": "Labs", "prereq": "or", "capacity": -2, "energy": -5, "maxnum": null, "floor": 0, "ceil": 8,
 	"bounds": [
-		{"x1": -9, "y1": -10, "x2": 9, "y2": 8, "floor": 0, "ceil": 8}],
+		{"x1": -8, "y1": -10, "x2": 8, "y2": 8, "floor": 0, "ceil": 8}],
 	"doors": [
 		{"x": 0, "y": 8, "floor": 0, "outx": 0, "outy": 1}],
 	"floor_images": [
@@ -470,7 +470,7 @@ var roomMetadata =
 
 {"id": "ob", "image": "observatory", "name": "Observatory", "category": "Misc", "prereq": null, "capacity": -2, "energy": -5, "maxnum": null, "floor": -32, "ceil": 52,
 	"bounds": [
-		{"x1": -50, "y1": -72, "x2": 50, "y2": 72, "floor": -32, "ceil": 52},
+		{"x1": -50, "y1": -72, "x2": 50, "y2": 73, "floor": -32, "ceil": 52},
 		{"x1": -6, "y1": 72, "x2": 6, "y2": 80, "floor": -32, "ceil": 52}],
 	"doors": [
 		{"x": 0, "y": 80, "floor": 0, "outx": 0, "outy": 1}],

@@ -612,6 +612,39 @@ function setDimRooms(dimRooms) {
 	settings.save();
 }
 
+function setRulesEnabled(rulesEnabled) {
+    // check
+    if (rulesEnabled == settings.rulesEnabled) {
+        return;
+    }
+
+    if (rulesEnabled) {
+        // enable rules before running them
+    	settings.rulesEnabled = true;
+    	// start with initial errors/warnings
+    	runNewDojoRules();
+    	// pretend we're adding the rooms again
+        for (var r = 0; r < roomList.length; r++) {
+            runRulesOnRoomAdded(roomList[r]);
+        }
+
+    } else {
+        for (var r = 0; r < roomList.length; r++) {
+            // pretend the room was removed to remove rule errors/warnings
+            runRulesOnRoomRemoved(roomList[r]);
+            // some rules add errors when a room is removed, and by some rules I mean the prerequisite rule
+            clearRulesOnRoom(roomList[r]);
+        }
+        // clear out all global warnings that aren't collisions
+        clearNonCollisionWarnings();
+        // disable rules after running them
+    	settings.rulesEnabled = false;
+    }
+
+    // save setting at the end, if something goes wrong then it is not saved
+	settings.save();
+}
+
 function setAutosave(autosave) {
     // set the setting first
     settings.autosave = autosave;
