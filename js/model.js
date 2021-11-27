@@ -110,7 +110,7 @@ function parseRoomDoorFlags(room, flagString) {
     }
 }
 
-function roomToString(room) {
+function roomToString(room, urlencode=false) {
     var s = room.metadata.id + "," + room.mv.x + "," + room.mv.y + "," + room.floor + "," + (room.rotation / 90)
     var flags = "";
     if (room.isSpawnPoint()) {
@@ -125,7 +125,7 @@ function roomToString(room) {
         // label is optional
         if (flags != "" || doorFlags != null || room.label != null) {
             // we just need to escape quotes, and then put it in quotes
-            s = s + ',' + (room.label ? ('"' + room.label.replace(quoteRegex, '\\"') + '"') : "");
+            s = s + ',' + (room.label ? ('"' + (urlencode ? encodeURIComponent(room.label) : room.label).replace(quoteRegex, '\\"') + '"') : "");
 
             if (flags != "" || doorFlags != null || room.labelScale != 1) {
                 s = s + ',' + (room.labelScale != 1 ? room.labelScale.toFixed(2) : "");

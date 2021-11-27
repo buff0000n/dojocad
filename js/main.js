@@ -678,19 +678,19 @@ function setStructureChecking(structureChecking) {
 // model URL handling
 //==============================================================
 
-function buildModelParam() {
+function buildModelParam(urlencode=false) {
 	var value = "";
 	for (var r = 0; r < roomList.length; r++) {
 		if (value.length > 0) {
 			value += "_";
 		}
-		value += roomToString(roomList[r]);
+		value += roomToString(roomList[r], urlencode);
 	}
 	return value;
 }
 
 function buildCompressedModelParam() {
-    return LZString.compressToEncodedURIComponent(buildModelParam())
+    return LZString.compressToEncodedURIComponent(buildModelParam(false))
 }
 
 function saveModelToUrl() {
@@ -701,7 +701,7 @@ function saveModelToUrl() {
     }
 
 	if (debugEnabled) {
-		modifyUrlQueryParam("m", buildModelParam());
+		modifyUrlQueryParam("m", buildModelParam(true));
 
 	} else {
 	    var modelString = buildCompressedModelParam();

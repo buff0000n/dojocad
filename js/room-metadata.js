@@ -376,7 +376,7 @@ var roomMetadata =
 {"id": "dd", "image": "dry-dock", "name": "Dry Dock", "category": "Interactive", "prereq": null, "capacity": -20, "energy": -6, "maxnum": 1, "floor": -80, "ceil": 200,
 	"bounds": [
 		{"x1": -128, "y1":  -128, "x2": 128, "y2":  128, "floor": -72, "ceil": 200},
-		{"x1": -128, "y1": -1272, "x2": 128, "y2":  -32, "floor": -200, "ceil": 200, "invis": "true"}],
+		{"x1": -128, "y1": -1272, "x2": 128, "y2":  -95, "floor": -200, "ceil": 200, "invis": "true"}],
 	"doors": [
 		{"x": 0, "y": 128, "floor": 0, "outx": 0, "outy": 1},
 		{"x": 128, "y": 0, "floor": 0, "outx": 1, "outy": 0},
