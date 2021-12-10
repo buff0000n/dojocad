@@ -642,6 +642,16 @@ var roomMetadata =
     "treetype": "32-3",
 	"blockedFromAboveBy": [
 	    ]},
+{"id": "osh", "image": "old-straight-hallway", "name": "(Old) Straight Hallway", "category": "Discontinued", "discontinued": true, "prereq": null, "capacity": 0, "energy": 0, "maxnum": null, "floor": -8, "ceil": 24,
+	"bounds": [
+		{"x1": -6, "y1": -6.25, "x2": 6, "y2": 6.25, "floor": -8, "ceil": 24}],
+	"doors": [
+		{"x": 0, "y": 6.25, "floor": 0, "outx": 0, "outy": 1},
+		{"x": 0, "y": -6.25, "floor": 0, "outx": 0, "outy": -1}],
+	"resources": [], "unverified": true,
+    "treetype": "16-2",
+	"blockedFromAboveBy": [
+	    ]},
 {"id": "ore", "image": "old-reactor", "name": "(Old) Reactor", "category": "Discontinued", "discontinued": true, "prereq": null, "capacity": 0, "energy": 25, "maxnum": null, "floor": -8, "ceil": 24,
 	"bounds": [
 		{"x1": -10, "y1": -15, "x2": 10, "y2": 15, "floor": -8, "ceil": 24}],
