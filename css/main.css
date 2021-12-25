@@ -163,6 +163,10 @@ html::-webkit-scrollbar, body::-webkit-scrollbar {
     overflow-anchor: none;
 }
 
+#roomContainer {
+    position: absolute;
+}
+
 /************************************************************
  * help section formatting
  ************************************************************/
@@ -623,6 +627,19 @@ td .menu-button {
 
 #errorBar *, #debugBar * {
     color: #FFFFFF;
+}
+
+.debug-origin {
+    position: absolute;
+    border-style: solid;
+    border-width: 1px;
+    z-index: 20000;
+    pointer-events: none;
+    border-color: #FF00FF;
+    width: 30px;
+    height: 30px;
+    left: -16px;
+    top: -16px;
 }
 
 .debugBounds, .debugOverlapBounds, .debugDoorBounds, .debugOverlapDoorBounds {

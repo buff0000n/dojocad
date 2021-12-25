@@ -282,10 +282,10 @@ class Bound {
 
     updateView() {
         if (this.debugBorder) {
-			this.debugBorder.style.left = (this.x1 * viewScale) + viewPX;
-			this.debugBorder.style.top = (this.y1 * viewScale) + viewPY;
-			this.debugBorder.style.width = (this.x2 - this.x1) * viewScale;
-			this.debugBorder.style.height = (this.y2 - this.y1) * viewScale;
+			this.debugBorder.style.left = this.x1;
+			this.debugBorder.style.top = this.y1;
+			this.debugBorder.style.width = this.x2 - this.x1 - 2;
+			this.debugBorder.style.height = this.y2 - this.y1 - 2;
         }
     }
 
@@ -531,10 +531,10 @@ class Door {
 
     updateView() {
         if (this.debugBorder) {
-			this.debugBorder.style.left = (this.x1 * viewScale) + viewPX;
-			this.debugBorder.style.top = (this.y1 * viewScale) + viewPY;
-			this.debugBorder.style.width = (this.x2 - this.x1) * viewScale;
-			this.debugBorder.style.height = (this.y2 - this.y1) * viewScale;
+			this.debugBorder.style.left = this.x1;
+			this.debugBorder.style.top = this.y1;
+			this.debugBorder.style.width = this.x2 - this.x1 - 2;
+			this.debugBorder.style.height = this.y2 - this.y1 - 2;
         }
         if (this.marker) {
             var transform2 = this.room.getDoorMarkerImageTransform(this.mv.x, this.mv.y, this.rotation, viewPX, viewPY, viewScale);
@@ -988,6 +988,13 @@ class Room {
 				}
 			}
 		}
+
+        // update debug bounds views, if present
+        // need to do this here because we're no longer updating each room's
+        // view when moving around
+        for (var d = 0; d < this.doors.length; d++) {
+            this.doors[d].updateView();
+        }
     }
 
     doorConnected(door) {
@@ -1880,8 +1887,8 @@ class Room {
 
 	getImageTransform(viewPX, viewPY, viewScale) {
         // transform the anchor coords to pixel coords
-		var roomViewCenterPX = ((this.mv.x + this.mdragOffset.x) * viewScale) + viewPX;
-		var roomViewCenterPY = ((this.mv.y + this.mdragOffset.y) * viewScale) + viewPY;
+		var roomViewCenterPX = this.mv.x + this.mdragOffset.x;
+		var roomViewCenterPY = this.mv.y + this.mdragOffset.y;
 		var roomRotation = (this.rotation + this.mdragOffsetRotation) % 360;
 		// we have to add the anchor points scaled by the image scale rather than the view scale in order for the
 		// css transform to put the room in the right place.  so much trial and error to get this rght...
@@ -1889,7 +1896,7 @@ class Room {
         var roomViewPY = roomViewCenterPY + (this.anchorMY * imgScale);
 
 		// final scaling of the image
-		var scale = viewScale / imgScale;
+		var scale = 1 / imgScale;
 
 	    // https://www.w3schools.com/cssref/css3_pr_transform.asp
 	    // translate() need to be before rotate() and scale()
@@ -1898,11 +1905,11 @@ class Room {
 
 	getLabelTransform(viewPX, viewPY, viewScale) {
         // transform the center coords to pixel coords
-		var roomViewCenterPX = ((this.mv.x + this.mdragOffset.x) * viewScale) + viewPX;
-		var roomViewCenterPY = ((this.mv.y + this.mdragOffset.y) * viewScale) + viewPY;
+		var roomViewCenterPX = this.mv.x + this.mdragOffset.x;
+		var roomViewCenterPY = this.mv.y + this.mdragOffset.y;
 
 //		// raw scaling
-		var scale = viewScale * this.labelScale;
+		var scale = this.labelScale;
 
         // no rotation, labels are always right-side-up
 
@@ -1913,11 +1920,11 @@ class Room {
 
 	getMarkerImageTransform(mx, my, metadata, viewPX, viewPY, viewScale) {
         // transform the marker center coords to pixel coords
-		var roomViewCenterPX = ((mx + this.mdragOffset.x) * viewScale) + viewPX;
-		var roomViewCenterPY = ((my + this.mdragOffset.y) * viewScale) + viewPY;
+		var roomViewCenterPX = mx + this.mdragOffset.x;
+		var roomViewCenterPY = my + this.mdragOffset.y;
 
 		// final scaling of the image
-		var scale = viewScale / imgScale;
+		var scale =  1/ imgScale;
 
 		// translate by the pixel coords, and then back by 50% to center the image
 		var transform = "translate(" + roomViewCenterPX + "px, " + roomViewCenterPY + "px) translate(-50%, -50%)";
@@ -1942,11 +1949,11 @@ class Room {
 
 	getDoorMarkerImageTransform(mx, my, rotation, viewPX, viewPY, viewScale) {
         // doors' coordinates already include the room's offset
-		var roomViewCenterPX = (mx * viewScale) + viewPX;
-		var roomViewCenterPY = (my * viewScale) + viewPY;
+		var roomViewCenterPX = mx;
+		var roomViewCenterPY = my;
 
 		// final scaling of the image
-		var scale = viewScale / imgScale;
+		var scale = 1 / imgScale;
 
 		// translate by the pixel coords, and then back by 50% to center the image
 		if (rotation) {

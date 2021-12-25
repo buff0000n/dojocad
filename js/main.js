@@ -19,7 +19,7 @@ var bg_grid_width = 160;
 
 // max and min zoom levels
 var maxViewScale = 60;
-var minViewScale = 0.625;
+var minViewScale = 0.5;
 // roughly how many pixels does a mousewheel have to scroll to translate to a 2x zoom in or 0.5x zoom out
 var wheel2xZoomScale = 200;
 // square of the distance the mouse/touch has to be dragged before drag kicking in
@@ -76,19 +76,38 @@ function setViewP(newViewPX, newViewPY, newViewScale, newViewFloor = null) {
 	        // We just need to update door bounding boxes when the zoom changes
 	        room.updateDoorPositions();
 	    }
-        room.updateView();
     }
 
+    // change one transform on the room container element, this will move all rooms simultaneously
+    getRoomContainer().style.transform = getContainerTransform(viewPX, viewPY, viewScale);
+
 	saveViewToUrl();
+}
+
+function getContainerTransform(viewPX, viewPY, viewScale) {
+    // https://www.w3schools.com/cssref/css3_pr_transform.asp
+    // translate() need to be before scale()
+    return "translate(" + (viewPX) + "px, " + (viewPY) + "px) scale(" + viewScale + ", " + viewScale + ") ";
 }
 
 function redraw() {
 	// force an update to all positions and views
 	setViewP(viewPX, viewPY, viewScale);
+
+	// need to force redraw on rooms separately, because setViewP() doesn't do that anymore
+    for (var r = 0; r < roomList.length; r++) {
+        var room = roomList[r];
+        room.updateDoorPositions();
+        room.updateView();
+    }
 }
 
 function getRoomContainer() {
 	return document.getElementById("roomContainer");
+}
+
+function getRoomNoTransformContainer() {
+	return document.getElementById("roomNoTransformContainer");
 }
 
 //==============================================================
@@ -760,7 +779,7 @@ function buildViewParam() {
 	var centerPX = viewPX - (window.innerWidth / 2);
 	var centerPY = viewPY - (window.innerHeight / 2);
 
-	var value = Math.ceil(viewScale) + "," + Math.round(centerPX) + "," + Math.round(centerPY) + "," + viewFloor;
+	var value = viewScale.toFixed(1) + "," + Math.round(centerPX) + "," + Math.round(centerPY) + "," + viewFloor;
 	return value;
 }
 
@@ -779,7 +798,7 @@ function loadViewFromUrl(url) {
 		return false;
 	}
 	var s = viewString.split(",");
-	var scale = parseInt(s[0]);
+	var scale = parseFloat(s[0]);
 	var centerPX = parseInt(s[1]);
 	var centerPY = parseInt(s[2]);
 	var floor = s.length > 3 ? parseInt(s[3]) : 0;
