@@ -477,8 +477,53 @@ class ResourceCounter extends RoomRule {
 	}
 }
 
+class XPCounter extends RoomRule {
+	constructor() {
+		super();
+		this.room_counts = new Map();
+		this.currentXpRooms = 0;
+		this.totalXpRooms = 0;
+		this.totalXp = 0;
+	}
+
+	checkMetadata(roomMetadata) {
+	    if (roomMetadata.xp) {
+	        this.totalXpRooms += 1;
+	        this.totalXp += roomMetadata.xp;
+	    }
+	}
+
+	roomAdded(room) {
+		this.roomChanged(room, true);
+	}
+
+	roomRemoved(room) {
+		this.roomChanged(room, false);
+	}
+
+	roomChanged(room, added) {
+		if (room.metadata.xp) {
+    	    var md = room.metadata;
+		    var currentCount = md.id in this.room_counts ? this.room_counts[md.id] : 0;
+		    currentCount = added ? currentCount + 1 : currentCount - 1;
+            this.room_counts[md.id] = currentCount;
+            var newXpRooms = this.currentXpRooms;
+            if (added && currentCount == 1) {
+                newXpRooms += 1;
+            } else if (!added && currentCount == 0) {
+                newXpRooms -= 1;
+            }
+            if (newXpRooms != this.currentXpRooms) {
+                this.currentXpRooms = newXpRooms;
+                updateStat("xpCountStat", this.currentXpRooms + "/" + this.totalXpRooms, null, this);
+            }
+		}
+	}
+}
+
 var roomCounter = new RoomCounter();
 var resourceCounter = new ResourceCounter();
+var xpCounter = new XPCounter();
 
 var roomRules = Array();
 
@@ -490,6 +535,7 @@ function registerRoomRules(roomMetaDataList) {
 	roomRules.push(new DiscontinuedRule());
 	roomRules.push(roomCounter);
 	roomRules.push(resourceCounter);
+	roomRules.push(xpCounter);
 
 	for (var i = 0; i < roomMetaDataList.rooms.length; i++) {
 		var roomMetadata = roomMetaDataList.rooms[i];
@@ -500,6 +546,8 @@ function registerRoomRules(roomMetaDataList) {
 		if (roomMetadata.prereq) {
 			roomRules.push(new PrereqRule(roomMetadata, getRoomMetadata(roomMetadata.prereq)));
 		}
+
+		xpCounter.checkMetadata(roomMetadata);
 	}
 
     runNewDojoRules();
