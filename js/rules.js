@@ -56,7 +56,7 @@ class RoomCountRule extends RoomRule {
 	    } else {
     		this.numRooms++;
 	    }
-		updateStat("numRoomsStat", this.numRooms, this.numRooms > this.maxRooms, this);
+		updateStat("numRoomsStat", formatNumber(this.numRooms), this.numRooms > this.maxRooms, this);
 	}
 
 	roomRemoved(room) {
@@ -68,7 +68,7 @@ class RoomCountRule extends RoomRule {
     		this.numRooms--;
 	    }
 
-		updateStat("numRoomsStat", this.numRooms, this.numRooms > this.maxRooms, this);
+		updateStat("numRoomsStat", formatNumber(this.numRooms), this.numRooms > this.maxRooms, this);
 	}
 
 	getNewRoomError(roomMetaData, num=1) {
@@ -96,12 +96,12 @@ class EnergyRule extends RoomRule {
 
 	roomAdded(room) {
 		this.energy += room.metadata.energy;
-		updateStat("energyStat", this.energy, this.energy < 0, this);
+		updateStat("energyStat", formatNumber(this.energy), this.energy < 0, this);
 	}
 
 	roomRemoved(room) {
 		this.energy -= room.metadata.energy;
-		updateStat("energyStat", this.energy, this.energy < 0, this);
+		updateStat("energyStat", formatNumber(this.energy), this.energy < 0, this);
 	}
 
 	getNewRoomError(roomMetaData, num=1) {
@@ -126,12 +126,12 @@ class CapacityRule extends RoomRule {
 
 	roomAdded(room) {
 		this.capacity += room.metadata.capacity;
-		updateStat("capacityStat", this.capacity, this.capacity < 0, this);
+		updateStat("capacityStat", formatNumber(this.capacity), this.capacity < 0, this);
 	}
 
 	roomRemoved(room) {
 		this.capacity -= room.metadata.capacity;
-		updateStat("capacityStat", this.capacity, this.capacity < 0, this);
+		updateStat("capacityStat", formatNumber(this.capacity), this.capacity < 0, this);
 	}
 
 	getNewRoomError(roomMetaData, num=1) {
