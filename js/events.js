@@ -1140,7 +1140,7 @@ function showMultiselectBox() {
         // update initial box position
         updateMultiselectBox(lastMTEvent);
         // add to the usual container
-        getRoomContainer().appendChild(multiselectBox);
+        getRoomNoTransformContainer().appendChild(multiselectBox);
     }
 }
 
@@ -1359,7 +1359,7 @@ function enableAutoScrollDebug(enabled) {
 	        autoScrollDebugElement.className = "debugDoorBounds";
 			autoScrollDebugElement.style.position = "absolute";
 			updateAutoScrollDebug();
-			getRoomContainer().appendChild(autoScrollDebugElement);
+			getRoomNoTransformContainer().appendChild(autoScrollDebugElement);
 		}
 	} else if (autoScrollDebugElement) {
 		autoScrollDebugElement.remove();
@@ -1372,4 +1372,21 @@ function updateAutoScrollDebug() {
 	autoScrollDebugElement.style.top = autoScrollSize;
 	autoScrollDebugElement.style.width = windowWidth - (autoScrollSize * 2);
 	autoScrollDebugElement.style.height = windowHeight - (autoScrollSize * 2);
+}
+
+
+var originDebugElement = null;
+
+function enableOriginDebug(enabled) {
+	if (enabled) {
+		if (!originDebugElement) {
+	        originDebugElement = document.createElement("div");
+	        originDebugElement.className = "debug-origin";
+			updateAutoScrollDebug();
+			getRoomContainer().appendChild(originDebugElement);
+		}
+	} else if (originDebugElement) {
+		originDebugElement.remove();
+		originDebugElement = null;
+	}
 }

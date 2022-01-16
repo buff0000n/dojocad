@@ -251,6 +251,41 @@ function quotedSplit(string, splitChar, keepQuotes=false) {
 }
 
 //////////////////////////////////////////////////////////////////////////
+// formatting
+//////////////////////////////////////////////////////////////////////////
+
+function formatNumber(num) {
+    if (Math.abs(num) < 1000) {
+        return num;
+    }
+    // get the number of digits
+    var digits = Math.ceil(Math.log10(num));
+    // highest multiple of 3 that's strictly less than digits
+    // max out with trillions
+    var refDigits = Math.min(digits - ((digits - 1) % 3) - 1, 12);
+
+    var num2 = 0;
+    if ((digits - refDigits) == 1) {
+        // special case for 1 shown digit: show tenths as well
+        num2 = Math.round(num / Math.pow(10, digits - 2)) / 10;
+
+    } else {
+        // show digits past the reference
+        num2 = Math.round(num / Math.pow(10, refDigits));
+    }
+
+    var suffix = "X";
+    switch (refDigits) {
+        case 3: suffix = "K"; break;
+        case 6: suffix = "M"; break;
+        case 9: suffix = "B"; break;
+        case 12: suffix = "T"; break;
+    }
+
+    return num2 + suffix;
+}
+
+//////////////////////////////////////////////////////////////////////////
 // vector class
 //////////////////////////////////////////////////////////////////////////
 
