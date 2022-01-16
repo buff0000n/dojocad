@@ -455,6 +455,9 @@ function buildAddRoomButton(roomMetadata, rooms = null, errors = null) {
     } else {
         var count = roomCounter.getRoomCount(roomMetadata);
         var menuTitle = roomMetadata.name + (count > 0 ? (" (" + count + ")") : "");
+        if (count == 0 && roomMetadata.xp) {
+            menuTitle += ` <img src="icons/icon-xp.png" srcset="icons2x/icon-xp.png 2x" title="Rooms providing Clan XP"/>`;
+        }
     }
 
     // for the new room + option and the duplicate single room option, use the
