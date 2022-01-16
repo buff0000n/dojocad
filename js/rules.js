@@ -480,13 +480,18 @@ class ResourceCounter extends RoomRule {
 class XPCounter extends RoomRule {
 	constructor() {
 		super();
+		// count of each XP room
 		this.room_counts = new Map();
+		// xp rooms with at least one copy present
 		this.currentXpRooms = 0;
+		// total xp rooms
 		this.totalXpRooms = 0;
+		// shrug
 		this.totalXp = 0;
 	}
 
 	checkMetadata(roomMetadata) {
+	    // figure out how many xp rooms there are from metadata
 	    if (roomMetadata.xp) {
 	        this.totalXpRooms += 1;
 	        this.totalXp += roomMetadata.xp;
@@ -504,16 +509,23 @@ class XPCounter extends RoomRule {
 	roomChanged(room, added) {
 		if (room.metadata.xp) {
     	    var md = room.metadata;
+    	    // pull the current count for the room
 		    var currentCount = md.id in this.room_counts ? this.room_counts[md.id] : 0;
+		    // change the count
 		    currentCount = added ? currentCount + 1 : currentCount - 1;
+		    // update the count
             this.room_counts[md.id] = currentCount;
+            // check for a change in xp room state
             var newXpRooms = this.currentXpRooms;
             if (added && currentCount == 1) {
+                // new room added
                 newXpRooms += 1;
             } else if (!added && currentCount == 0) {
+                // last copy of that room removed
                 newXpRooms -= 1;
             }
             if (newXpRooms != this.currentXpRooms) {
+                // update the stat
                 this.currentXpRooms = newXpRooms;
                 updateStat("xpCountStat", this.currentXpRooms + "/" + this.totalXpRooms, null, this);
             }
