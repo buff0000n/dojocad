@@ -262,7 +262,7 @@ var roomMetadata =
 	"blockedFromAboveBy": [
 		"ob"]},
 
-{"id": "or", "image": "oracle2", "name": "Oracle", "category": "Labs", "prereq": null, "capacity": -2, "energy": -5, "maxnum": null, "floor": -8, "ceil": 12,
+{"id": "or", "image": "oracle2", "name": "Oracle", "category": "Labs", "prereq": null, "capacity": -2, "energy": -5, "maxnum": null, "floor": -8, "ceil": 12, "xp": 10000,
 	"bounds": [
 		{"x1": -14, "y1": -15, "x2": 14, "y2": 15, "floor": -8, "ceil": 12}],
 	"doors": [
@@ -276,7 +276,7 @@ var roomMetadata =
     "treetype": "32-1",
 	"blockedFromAboveBy": [
 	    ]},
-{"id": "lt", "image": "tenno-lab2", "name": "Tenno Lab", "category": "Labs", "prereq": "or", "capacity": -2, "energy": -5, "maxnum": null, "floor": 0, "ceil": 8,
+{"id": "lt", "image": "tenno-lab2", "name": "Tenno Lab", "category": "Labs", "prereq": "or", "capacity": -2, "energy": -5, "maxnum": null, "floor": 0, "ceil": 8, "xp": 10000,
 	"bounds": [
 		{"x1": -10, "y1": -11, "x2": 10, "y2": 9, "floor": 0, "ceil": 8}],
 	"doors": [
@@ -292,7 +292,7 @@ var roomMetadata =
     "treetype": "16-1",
 	"blockedFromAboveBy": [
 	    ]},
-{"id": "le", "image": "energy-lab", "name": "Energy Lab", "category": "Labs", "prereq": "or", "capacity": -2, "energy": -5, "maxnum": null, "floor": 0, "ceil": 16,
+{"id": "le", "image": "energy-lab", "name": "Energy Lab", "category": "Labs", "prereq": "or", "capacity": -2, "energy": -5, "maxnum": null, "floor": 0, "ceil": 16, "xp": 10000,
 	"bounds": [
 		{"x1": -14, "y1": -14, "x2": 14, "y2": 14, "floor": 0, "ceil": 16}],
 	"doors": [
@@ -308,7 +308,7 @@ var roomMetadata =
     "treetype": "32-1",
 	"blockedFromAboveBy": [
 	    ]},
-{"id": "lc", "image": "chem-lab", "name": "Chem Lab", "category": "Labs", "prereq": "or", "capacity": -2, "energy": -5, "maxnum": null, "floor": -12, "ceil": 16,
+{"id": "lc", "image": "chem-lab", "name": "Chem Lab", "category": "Labs", "prereq": "or", "capacity": -2, "energy": -5, "maxnum": null, "floor": -12, "ceil": 16, "xp": 10000,
 	"bounds": [
 		{"x1": -15, "y1": -15, "x2": 15, "y2": 16, "floor": -14, "ceil": 16}],
 	"doors": [
@@ -324,7 +324,7 @@ var roomMetadata =
     "treetype": "32-1",
 	"blockedFromAboveBy": [
 	    ]},
-{"id": "lb", "image": "bio-lab", "name": "Bio Lab", "category": "Labs", "prereq": "or", "capacity": -2, "energy": -5, "maxnum": null, "floor": 0, "ceil": 12,
+{"id": "lb", "image": "bio-lab", "name": "Bio Lab", "category": "Labs", "prereq": "or", "capacity": -2, "energy": -5, "maxnum": null, "floor": 0, "ceil": 12, "xp": 10000,
 	"bounds": [
 		{"x1": -14, "y1": -14, "x2": 14, "y2": 14, "floor": 0, "ceil": 12}],
 	"doors": [
@@ -340,7 +340,7 @@ var roomMetadata =
     "treetype": "32-1",
 	"blockedFromAboveBy": [
 	    ]},
-{"id": "lo", "image": "orokin-lab", "name": "Orokin Lab", "category": "Labs", "prereq": "or", "capacity": -2, "energy": -5, "maxnum": null, "floor": -16, "ceil": 28,
+{"id": "lo", "image": "orokin-lab", "name": "Orokin Lab", "category": "Labs", "prereq": "or", "capacity": -2, "energy": -5, "maxnum": null, "floor": -16, "ceil": 28, "xp": 10000,
 	"bounds": [
 		{"x1": -16, "y1": -28, "x2": 16, "y2": 26, "floor": -16, "ceil": 28}],
 	"doors": [
@@ -356,7 +356,7 @@ var roomMetadata =
     "treetype": "64-1",
 	"blockedFromAboveBy": [
 	    ]},
-{"id": "lv", "image": "ventkid-lab", "name": "Ventkids' Bash Lab", "category": "Labs", "prereq": "or", "capacity": -2, "energy": -5, "maxnum": null, "floor": 0, "ceil": 8,
+{"id": "lv", "image": "ventkid-lab", "name": "Ventkids' Bash Lab", "category": "Labs", "prereq": "or", "capacity": -2, "energy": -5, "maxnum": null, "floor": 0, "ceil": 8, "xp": 10000,
 	"bounds": [
 		{"x1": -8, "y1": -10, "x2": 8, "y2": 8, "floor": 0, "ceil": 8}],
 	"doors": [
@@ -417,7 +417,7 @@ var roomMetadata =
     "treetype": "32-1",
 	"blockedFromAboveBy": [
 	    ]},
-{"id": "du", "image": "dueling-room", "name": "Dueling Room", "category": "Interactive", "prereq": null, "capacity": -10, "energy": -10, "maxnum": null, "floor": 0, "ceil": 20,
+{"id": "du", "image": "dueling-room", "name": "Dueling Room", "category": "Interactive", "prereq": null, "capacity": -10, "energy": -10, "maxnum": null, "floor": 0, "ceil": 20, "xp": 15000,
 	"bounds": [
 		{"x1": -16, "y1": -16, "x2": 16, "y2": 16, "floor": 0, "ceil": 20}],
 	"doors": [
@@ -433,7 +433,7 @@ var roomMetadata =
     "treetype": "32-1",
 	"blockedFromAboveBy": [
 	    ]},
-{"id": "oc", "image": "obstacle-course", "name": "Obstacle Course", "category": "Interactive", "prereq": null, "capacity": -10, "energy": -10, "maxnum": null, "floor": -24, "ceil": 24,
+{"id": "oc", "image": "obstacle-course", "name": "Obstacle Course", "category": "Interactive", "prereq": null, "capacity": -10, "energy": -10, "maxnum": null, "floor": -24, "ceil": 24, "xp": 15000,
 	"bounds": [
 		{"x1": -84, "y1": -98, "x2": 84, "y2": 94, "floor": -24, "ceil": 24},
 		{"x1": -8, "y1": 94, "x2": 8, "y2": 98, "floor": -24, "ceil": 24}],
@@ -450,7 +450,7 @@ var roomMetadata =
     "treetype": "oc-1",
 	"blockedFromAboveBy": [
 	    ]},
-{"id": "oa", "image": "obstacle-course-architect", "name": "Obstacle Course Architect", "category": "Interactive", "prereq": null, "capacity": 0, "energy": -2, "maxnum": 5, "floor": 0, "ceil": 48,
+{"id": "oa", "image": "obstacle-course-architect", "name": "Obstacle Course Architect", "category": "Interactive", "prereq": null, "capacity": 0, "energy": -2, "maxnum": 5, "floor": 0, "ceil": 48, "xp": 15000,
 	"bounds": [
 		{"x1": -76, "y1": -80, "x2": 76, "y2": 74, "floor": 0, "ceil": 48},
 		{"x1": -6, "y1": 74, "x2": 6, "y2": 82, "floor": 0, "ceil": 48}],
@@ -519,7 +519,7 @@ var roomMetadata =
     "treetype": "64-4",
 	"blockedFromAboveBy": [
 	    ]},
-{"id": "th", "image": "temple-of-honor", "name": "Temple Of Honor", "category": "Misc", "prereq": null, "capacity": -2, "energy": -5, "maxnum": null, "floor": 0, "ceil": 20,
+{"id": "th", "image": "temple-of-honor", "name": "Temple Of Honor", "category": "Misc", "prereq": null, "capacity": -2, "energy": -5, "maxnum": null, "floor": 0, "ceil": 20, "xp": 15000,
 	"bounds": [
 		{"x1": -32, "y1": -8, "x2": 32, "y2": 8, "floor": 0, "ceil": 20},
 		{"x1": -8, "y1": -32, "x2": 8, "y2": 32, "floor": 0, "ceil": 20},
