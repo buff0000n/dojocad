@@ -19,7 +19,7 @@ var bg_grid_width = 160;
 
 // max and min zoom levels
 var maxViewScale = 60;
-var minViewScale = 0.5;
+var minViewScale = 0.2;
 // roughly how many pixels does a mousewheel have to scroll to translate to a 2x zoom in or 0.5x zoom out
 var wheel2xZoomScale = 200;
 // square of the distance the mouse/touch has to be dragged before drag kicking in
