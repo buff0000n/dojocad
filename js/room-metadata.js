@@ -523,7 +523,8 @@ var roomMetadata =
 	"bounds": [
 		{"x1": -32, "y1": -8, "x2": 32, "y2": 8, "floor": 0, "ceil": 20},
 		{"x1": -8, "y1": -32, "x2": 8, "y2": 32, "floor": 0, "ceil": 20},
-		{"x1": -16, "y1": -16, "x2": 16, "y2": 16, "floor": 0, "ceil": 20}],
+		{"x1": -16, "y1": -16, "x2": 16, "y2": 16, "floor": 0, "ceil": 20},
+		{"x1": -17, "y1": -17, "x2": 17, "y2": 17, "floor": 8, "ceil": 20}],
 	"doors": [
 		{"x": 0, "y": 32, "floor": 0, "outx": 0, "outy": 1},
 		{"x": 32, "y": 0, "floor": 0, "outx": 1, "outy": 0},
@@ -576,7 +577,8 @@ var roomMetadata =
 		"ob"]},
 {"id": "b1", "image": "barracks", "name": "Barracks", "category": "Utility", "prereq": null, "capacity": -1, "energy": -1, "maxnum": 4, "floor": -8, "ceil": 12,
 	"bounds": [
-		{"x1": -16, "y1": -18, "x2": 16, "y2": 18, "floor": -8, "ceil": 12}],
+	    // todo: revisit the ceiling level on the barracks
+		{"x1": -16, "y1": -18, "x2": 16, "y2": 18, "floor": -8, "ceil": 8}],
 	"doors": [
 		{"x": 0, "y": 18, "floor": 0, "outx": 0, "outy": 1}],
 	"resources": [
