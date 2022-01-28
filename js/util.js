@@ -259,7 +259,7 @@ function formatNumber(num) {
         return num;
     }
     // get the number of digits
-    var digits = Math.ceil(Math.log10(num));
+    var digits = Math.ceil(Math.log10(Math.abs(num)));
     // highest multiple of 3 that's strictly less than digits
     // max out with trillions
     var refDigits = Math.min(digits - ((digits - 1) % 3) - 1, 12);
