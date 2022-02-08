@@ -264,7 +264,7 @@ var roomMetadata =
 
 {"id": "or", "image": "oracle2", "name": "Oracle", "category": "Labs", "prereq": null, "capacity": -2, "energy": -5, "maxnum": null, "floor": -8, "ceil": 12, "xp": 10000,
 	"bounds": [
-		{"x1": -14, "y1": -15, "x2": 14, "y2": 15, "floor": -8, "ceil": 12}],
+		{"x1": -14, "y1": -14, "x2": 14, "y2": 15, "floor": -8, "ceil": 12}],
 	"doors": [
 		{"x": 0, "y": 15, "floor": 0, "outx": 0, "outy": 1}],
 	"resources": [
@@ -278,7 +278,7 @@ var roomMetadata =
 	    ]},
 {"id": "lt", "image": "tenno-lab2", "name": "Tenno Lab", "category": "Labs", "prereq": "or", "capacity": -2, "energy": -5, "maxnum": null, "floor": 0, "ceil": 8, "xp": 10000,
 	"bounds": [
-		{"x1": -10, "y1": -11, "x2": 10, "y2": 9, "floor": 0, "ceil": 8}],
+		{"x1": -10, "y1": -10, "x2": 10, "y2": 9, "floor": 0, "ceil": 8}],
 	"doors": [
 		{"x": 0, "y": 9, "floor": 0, "outx": 0, "outy": 1}],
 	"floor_images": [
@@ -294,7 +294,7 @@ var roomMetadata =
 	    ]},
 {"id": "le", "image": "energy-lab", "name": "Energy Lab", "category": "Labs", "prereq": "or", "capacity": -2, "energy": -5, "maxnum": null, "floor": 0, "ceil": 16, "xp": 10000,
 	"bounds": [
-		{"x1": -14, "y1": -14, "x2": 14, "y2": 14, "floor": 0, "ceil": 16}],
+		{"x1": -14, "y1": -15, "x2": 14, "y2": 14, "floor": 0, "ceil": 16}],
 	"doors": [
 		{"x": 0, "y": 14, "floor": 0, "outx": 0, "outy": 1}],
 	"floor_images": [
@@ -326,7 +326,7 @@ var roomMetadata =
 	    ]},
 {"id": "lb", "image": "bio-lab", "name": "Bio Lab", "category": "Labs", "prereq": "or", "capacity": -2, "energy": -5, "maxnum": null, "floor": 0, "ceil": 12, "xp": 10000,
 	"bounds": [
-		{"x1": -14, "y1": -14, "x2": 14, "y2": 14, "floor": 0, "ceil": 12}],
+		{"x1": -14, "y1": -15, "x2": 14, "y2": 14, "floor": 0, "ceil": 12}],
 	"doors": [
 		{"x": 0, "y": 14, "floor": 0, "outx": 0, "outy": 1}],
 	"floor_images": [
@@ -358,7 +358,8 @@ var roomMetadata =
 	    ]},
 {"id": "lv", "image": "ventkid-lab", "name": "Ventkids' Bash Lab", "category": "Labs", "prereq": "or", "capacity": -2, "energy": -5, "maxnum": null, "floor": 0, "ceil": 8, "xp": 10000,
 	"bounds": [
-		{"x1": -8, "y1": -10, "x2": 8, "y2": 8, "floor": 0, "ceil": 8}],
+		{"x1": -8, "y1": -10, "x2": 8, "y2": 8, "floor": 0, "ceil": 8},
+		{"x1": -2, "y1": -15, "x2": 2, "y2": -10, "floor": 0, "ceil": 8}],
 	"doors": [
 		{"x": 0, "y": 8, "floor": 0, "outx": 0, "outy": 1}],
 	"floor_images": [
@@ -376,7 +377,7 @@ var roomMetadata =
 {"id": "dd", "image": "dry-dock", "name": "Dry Dock", "category": "Interactive", "prereq": null, "capacity": -20, "energy": -6, "maxnum": 1, "floor": -80, "ceil": 200,
 	"bounds": [
 		{"x1": -128, "y1":  -128, "x2": 128, "y2":  128, "floor": -72, "ceil": 200},
-		{"x1": -128, "y1": -1272, "x2": 128, "y2":  -95, "floor": -200, "ceil": 200, "invis": "true"}],
+		{"x1": -128, "y1": -1272, "x2": 128, "y2":  -95.5, "floor": -200, "ceil": 200, "invis": "true"}],
 	"doors": [
 		{"x": 0, "y": 128, "floor": 0, "outx": 0, "outy": 1},
 		{"x": 128, "y": 0, "floor": 0, "outx": 1, "outy": 0},
@@ -404,8 +405,8 @@ var roomMetadata =
 	    ]},
 {"id": "cr", "image": "crimson-branch", "name": "Crimson Branch", "category": "Interactive", "prereq": null, "capacity": -2, "energy": -4, "maxnum": null, "floor": 0, "ceil": 12,
 	"bounds": [
-		{"x1": -30, "y1":  1, "x2": 30, "y2": -30, "floor": 0, "ceil": 12},
-		{"x1": -16, "y1": 16, "x2": 16, "y2": -30, "floor": 0, "ceil": 12}],
+		{"x1": -30, "y1":  1, "x2": 30, "y2": -28, "floor": 0, "ceil": 12},
+		{"x1": -16, "y1": 16, "x2": 16, "y2": -28, "floor": 0, "ceil": 12}],
 	"doors": [
 		{"x": 0, "y": 16, "floor": 0, "outx": 0, "outy": 1}],
 	"resources": [
@@ -419,7 +420,7 @@ var roomMetadata =
 	    ]},
 {"id": "du", "image": "dueling-room", "name": "Dueling Room", "category": "Interactive", "prereq": null, "capacity": -10, "energy": -10, "maxnum": null, "floor": 0, "ceil": 20, "xp": 15000,
 	"bounds": [
-		{"x1": -16, "y1": -16, "x2": 16, "y2": 16, "floor": 0, "ceil": 20}],
+		{"x1": -16, "y1": -15.5, "x2": 16, "y2": 16, "floor": 0, "ceil": 20}],
 	"doors": [
 		{"x": 0, "y": 16, "floor": 0, "outx": 0, "outy": 1}],
 	"floor_images": [
