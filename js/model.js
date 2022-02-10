@@ -1614,10 +1614,11 @@ class Room {
                     // filter out doors that are connected to non-traversible rooms like labels
                     doorKey += (door.otherDoor && !door.crossBranch && isTraversableRoom(door.otherDoor.room)) ? "1" : "0";
                 }
-                // check if the metadata has a door eky conversion function
+                // check if the metadata has a door key conversion function
                 if (this.treemetadata.convertKey) {
-                    // call thevfunction
+                    // call the function
                     var doorKeys = this.treemetadata.convertKey(doorKey);
+                    // console.log("Key: " + doorKey + " => " + doorKeys);
                 } else {
                     // otherwise, we just have the one door key
                     var doorKeys = [doorKey];

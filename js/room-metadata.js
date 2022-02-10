@@ -102,7 +102,7 @@ var roomMetadata =
 	"blockedFromAboveBy": [
 	    ]},
 
-{"id": "h1", "image": "clan-hall", "name": "Clan Hall", "category": "Halls", "prereq": null, "capacity": 100, "energy": 5, "maxnum": 1, "spawn": true, "floor": -12, "ceil": 24,
+{"id": "h1", "image": "clan-hall", "name": "Clan Hall", "category": "Classic Halls", "prereq": null, "capacity": 100, "energy": 5, "maxnum": 1, "spawn": true, "floor": -12, "ceil": 24,
 	"bounds": [
 		{"x1": -8, "y1": -32, "x2": 8, "y2": 32, "floor": -12, "ceil": 24},
 		{"x1": -17, "y1": -24, "x2": 17, "y2": 24, "floor": -12, "ceil": 24}],
@@ -113,7 +113,7 @@ var roomMetadata =
     "treetype": "64-2",
 	"blockedFromAboveBy": [
 	    ]},
-{"id": "h2", "image": "clan-great-hall", "name": "Clan Great Hall", "category": "Halls", "prereq": null, "capacity": 200, "energy": -2, "maxnum": 1, "spawn": true, "floor": -12, "ceil": 24,
+{"id": "h2", "image": "clan-great-hall", "name": "Clan Great Hall", "category": "Classic Halls", "prereq": null, "capacity": 200, "energy": -2, "maxnum": 1, "spawn": true, "floor": -12, "ceil": 24,
 	"bounds": [
 		{"x1": -17, "y1": -32, "x2": 17, "y2": 32, "floor": -12, "ceil": 24}],
 	"doors": [
@@ -128,7 +128,7 @@ var roomMetadata =
     "treetype": "64-2",
 	"blockedFromAboveBy": [
 	    ]},
-{"id": "h3", "image": "clan-greater-hall", "name": "Clan Greater Hall", "category": "Halls", "prereq": null, "capacity": 200, "energy": -2, "maxnum": 1, "spawn": true, "floor": -12, "ceil": 24,
+{"id": "h3", "image": "clan-greater-hall", "name": "Clan Greater Hall", "category": "Classic Halls", "prereq": null, "capacity": 200, "energy": -2, "maxnum": 1, "spawn": true, "floor": -12, "ceil": 24,
 	"bounds": [
 		{"x1": -24, "y1": -32, "x2": 24, "y2": 32, "floor": -12, "ceil": 24},
 		{"x1": -40, "y1": -12, "x2": 40, "y2": 12, "floor": -12, "ceil": 24}],
@@ -144,7 +144,7 @@ var roomMetadata =
     "treetype": "64-2",
 	"blockedFromAboveBy": [
 	    ]},
-{"id": "h4", "image": "clan-grand-hall", "name": "Clan Grand Hall", "category": "Halls", "prereq": null, "capacity": 200, "energy": -2, "maxnum": 1, "spawn": true, "floor": -12, "ceil": 30,
+{"id": "h4", "image": "clan-grand-hall", "name": "Clan Grand Hall", "category": "Classic Halls", "prereq": null, "capacity": 200, "energy": -2, "maxnum": 1, "spawn": true, "floor": -12, "ceil": 30,
 	"bounds": [
 		{"x1": -32, "y1": -32, "x2": 32, "y2": 32, "floor": -12, "ceil": 30}],
 	"doors": [
@@ -163,7 +163,7 @@ var roomMetadata =
     "treetype": "h-6",
 	"blockedFromAboveBy": [
 	    ]},
-{"id": "h5", "image": "clan-grandest-hall", "name": "Clan Grandest Hall", "category": "Halls", "prereq": null, "capacity": 200, "energy": -2, "maxnum": 1, "spawn": true, "floor": -12, "ceil": 30,
+{"id": "h5", "image": "clan-grandest-hall", "name": "Clan Grandest Hall", "category": "Classic Halls", "prereq": null, "capacity": 200, "energy": -2, "maxnum": 1, "spawn": true, "floor": -12, "ceil": 30,
 	"bounds": [
 		{"x1": -32, "y1": -32, "x2": 32, "y2": 32, "floor": -12, "ceil": 30}],
 	"doors": [
@@ -182,7 +182,7 @@ var roomMetadata =
     "treetype": "h-6",
 	"blockedFromAboveBy": [
 	    ]},
-{"id": "hi", "image": "inspiration-hall", "name": "Inspiration Hall", "category": "Halls", "prereq": null, "capacity": 100, "energy": -1, "maxnum": 3, "spawn": true, "floor": -12, "ceil": 44,
+{"id": "hi", "image": "inspiration-hall", "name": "Inspiration Hall", "category": "Theme Halls", "prereq": null, "capacity": 100, "energy": -1, "maxnum": 3, "spawn": true, "floor": -12, "ceil": 44,
 	"bounds": [
 		{"x1": -32, "y1": -32, "x2": 32, "y2": 32, "floor": -12, "ceil": 44}],
 	"doors": [
@@ -203,8 +203,8 @@ var roomMetadata =
 		{"resource": "Forma", "costs": [1, 1, 3, 8, 25]}],
     "treetype": "h-6",
 	"blockedFromAboveBy": [
-		"ce","ob","oc","re"]},
-{"id": "he", "image": "entrati-hall", "name": "Entrati Audience Chamber", "category": "Halls", "spawn": true, "prereq": null, "capacity": 200, "energy": -2, "maxnum": null, "floor": -12, "ceil": 36,
+		"ce","ob","oc","re","ef"]},
+{"id": "he", "image": "entrati-hall", "name": "Entrati Audience Chamber", "category": "Theme Halls", "spawn": true, "prereq": null, "capacity": 200, "energy": -2, "maxnum": null, "floor": -12, "ceil": 36,
 	"bounds": [
 		{"x1": -32, "y1": -32, "x2": 32, "y2": 32, "floor": -12, "ceil": 36}],
 	"doors": [
@@ -223,7 +223,7 @@ var roomMetadata =
     "treetype": "h-6",
 	"blockedFromAboveBy": [
 		"ob"]},
-{"id": "hf", "image": "infested-hall", "name": "Infested Chamber", "category": "Halls", "spawn": true, "prereq": null, "capacity": 200, "energy": -5, "maxnum": null, "floor": -12, "ceil": 36,
+{"id": "hf", "image": "infested-hall", "name": "Infested Chamber", "category": "Theme Halls", "spawn": true, "prereq": null, "capacity": 200, "energy": -5, "maxnum": null, "floor": -12, "ceil": 36,
 	"bounds": [
 		{"x1": -32, "y1": -32, "x2": 32, "y2": 32, "floor": -12, "ceil": 36}],
 	"doors": [
@@ -242,9 +242,50 @@ var roomMetadata =
     "treetype": "h-6",
 	"blockedFromAboveBy": [
 		"ob"]},
-{"id": "sm", "image": "starlight-market", "name": "Starlight Market", "category": "Halls", "spawn": true, "prereq": null, "capacity": 200, "energy": -5, "maxnum": null, "floor": -12, "ceil": 36,
+{"id": "sm", "image": "starlight-market", "name": "Starlight Market", "category": "Theme Halls", "spawn": true, "prereq": null, "capacity": 200, "energy": -5, "maxnum": null, "floor": -12, "ceil": 36,
 	"bounds": [
 		{"x1": -32, "y1": -32, "x2": 32, "y2": 32, "floor": -12, "ceil": 36}],
+	"doors": [
+		{"x": 0, "y": 32, "floor": 0, "outx": 0, "outy": 1},
+		{"x": 32, "y": 16, "floor": 0, "outx": 1, "outy": 0},
+		{"x": 32, "y": -16, "floor": 0, "outx": 1, "outy": 0},
+		{"x": 0, "y": -32, "floor": 0, "outx": 0, "outy": -1},
+		{"x": -32, "y": -16, "floor": 0, "outx": -1, "outy": 0},
+		{"x": -32, "y": 16, "floor": 0, "outx": -1, "outy": 0}],
+	"resources": [
+		{"resource": "Credits", "costs": [1000, 3000, 10000, 30000, 100000]},
+		{"resource": "Ferrite", "costs": [800, 2400, 8000, 24000, 80000]},
+		{"resource": "Circuits", "costs": [200, 600, 2000, 6000, 20000]},
+		{"resource": "Salvage", "costs": [500, 1500, 5000, 15000, 50000]},
+		{"resource": "Forma", "costs": [1, 1, 1, 3, 10]}], "unverified": true,
+    "treetype": "h-6",
+	"blockedFromAboveBy": [
+		"ob"]},
+{"id": "ef", "image": "earth-forest", "name": "Earth Forest Chamber", "category": "Theme Halls", "spawn": true, "prereq": null, "capacity": 200, "energy": -5, "maxnum": null, "floor": -22, "ceil": 72,
+	"bounds": [
+		{"x1": -32, "y1": -64, "x2": 32, "y2": 64, "floor": -22, "ceil": 72}],
+	"doors": [
+		{"x": 0, "y": 64, "floor": 0, "outx": 0, "outy": 1},
+		{"x": 32, "y": 48, "floor": 0, "outx": 1, "outy": 0},
+		{"x": 32, "y": 16, "floor": 0, "outx": 1, "outy": 0},
+		{"x": 32, "y": -16, "floor": 0, "outx": 1, "outy": 0},
+		{"x": 32, "y": -48, "floor": 0, "outx": 1, "outy": 0},
+		{"x": 0, "y": -64, "floor": 0, "outx": 0, "outy": -1},
+		{"x": -32, "y": -48, "floor": 0, "outx": -1, "outy": 0},
+		{"x": -32, "y": -16, "floor": 0, "outx": -1, "outy": 0},
+		{"x": -32, "y": 16, "floor": 0, "outx": -1, "outy": 0},
+		{"x": -32, "y": 48, "floor": 0, "outx": -1, "outy": 0}],
+	"resources": [
+		{"resource": "Credits", "costs": [1000, 3000, 10000, 30000, 100000]},
+		{"resource": "Ferrite", "costs": [800, 2400, 8000, 24000, 80000]},
+		{"resource": "Circuits", "costs": [200, 600, 2000, 6000, 20000]},
+		{"resource": "Salvage", "costs": [500, 1500, 5000, 15000, 50000]},
+		{"resource": "Forma", "costs": [1, 1, 1, 3, 10]}], "unverified": true,
+    "treetype": "h-10",
+	"blockedFromAboveBy": []},
+{"id": "uc", "image": "uranus-chamber", "name": "Uranus Chamber", "category": "Theme Halls", "spawn": true, "prereq": null, "capacity": 200, "energy": -5, "maxnum": null, "floor": -20, "ceil": 36,
+	"bounds": [
+		{"x1": -32, "y1": -32, "x2": 32, "y2": 32, "floor": -20, "ceil": 36}],
 	"doors": [
 		{"x": 0, "y": 32, "floor": 0, "outx": 0, "outy": 1},
 		{"x": 32, "y": 16, "floor": 0, "outx": 1, "outy": 0},
@@ -449,8 +490,7 @@ var roomMetadata =
 		{"resource": "Rubedo", "costs": [1200, 3600, 12000, 36000, 120000]},
 		{"resource": "Forma", "costs": [1, 1, 2, 5, 15]}],
     "treetype": "oc-1",
-	"blockedFromAboveBy": [
-	    ]},
+	"blockedFromAboveBy": []},
 {"id": "oa", "image": "obstacle-course-architect", "name": "Obstacle Course Architect", "category": "Interactive", "prereq": null, "capacity": 0, "energy": -2, "maxnum": 5, "floor": 0, "ceil": 48, "xp": 15000,
 	"bounds": [
 		{"x1": -76, "y1": -80, "x2": 76, "y2": 74, "floor": 0, "ceil": 48},
@@ -467,7 +507,7 @@ var roomMetadata =
 		{"resource": "Forma", "costs": [1, 1, 2, 5, 15]}], "unverified": true,
     "treetype": "os-1",
 	"blockedFromAboveBy": [
-		"ob","oc","re","ce"]}, //"b4"?
+		"ob","oc","re","ce","ef","uc"]}, //"b4"?
 
 {"id": "ob", "image": "observatory", "name": "Observatory", "category": "Misc", "prereq": null, "capacity": -2, "energy": -5, "maxnum": null, "floor": -32, "ceil": 52,
 	"bounds": [
@@ -483,7 +523,7 @@ var roomMetadata =
 		{"resource": "Forma", "costs": [1, 1, 2, 5, 15]}], "unverified": true,
     "treetype": "ob-1",
 	"blockedFromAboveBy": [
-		"lc","ce","ob","oc","lo","re"]}, //"b4"?
+		"lc","ce","ob","oc","lo","re","uc","ef"]}, //"b4"?
 {"id": "gs", "image": "small-garden", "name": "Small Garden", "category": "Misc", "prereq": null, "capacity": -10, "energy": -6, "maxnum": null, "floor": 0, "ceil": 20,
 	"bounds": [
 		{"x1": -16, "y1": -16, "x2": 16, "y2": 16, "floor": 0, "ceil": 20}],
@@ -779,10 +819,143 @@ var treeMetadata = {
         "b-1111" : {"tree": true, "image": "tree-h-4", "x": 0, "y": -16, "rot": 180, "fx": 0, "fy": 0, "z": 1 },
         // split a 6-door key into two 4-door keys
         "convertKey": function(key) {
-            // the extra door is the connection between the two halves
+            // 6-door layout:
+            //    0
+            // 5     1
+            // 4     2
+            //    3
+            //
+            // gets split into:
+            //
+            //    0
+            // 5     1
+            //    X     (1 if 2|3|4, 0 otherwise)
+            //
+            //    X     (1 if 0|1|5, 0 otherwise)
+            // 4     2
+            //    3
             return [
                 "a-" + key[0] + key[1] + (key.substring(2,5) == "000" ? "0" : "1") + key[5],
                 "b-" + key[3] + key[4] + ((key.substring(5) + key.substring(0,2)) == "000" ? "0" : "1") + key[2]
+            ];
+        }
+    },
+    "h-10": {
+        // Oh god how to break down 1023 possible door combinations
+        // top quarter of a 10-door hall
+        "a-1000" : {"tree": true, "image": "tree-he-2a", "x": 0, "y": 48, "rot": 0, "fx": 1, "fy": 0, "z": 1 },
+        "a-0100" : {"tree": true, "image": "tree-he-2b", "x": 0, "y": 48, "rot": 0, "fx": 1, "fy": 0, "z": 1 },
+        "a-0010" : {"tree": true, "image": "tree-he-0", "x": 0, "y": 48, "rot": 0, "fx": 1, "fy": 0, "z": 1 },
+        "a-0001" : {"tree": true, "image": "tree-he-2b", "x": 0, "y": 48, "rot": 0, "fx": 0, "fy": 0, "z": 1 },
+        "a-1010" : {"tree": true, "image": "tree-he-2a", "x": 0, "y": 48, "rot": 0, "fx": 1, "fy": 0, "z": 1 },
+        "a-0101" : {"tree": true, "image": "tree-he-3b", "x": 0, "y": 48, "rot": 0, "fx": 1, "fy": 0, "z": 1 },
+        "a-1100" : {"tree": true, "image": "tree-he-3a", "x": 0, "y": 48, "rot": 0, "fx": 1, "fy": 0, "z": 1 },
+        "a-0110" : {"tree": true, "image": "tree-he-2b", "x": 0, "y": 48, "rot": 0, "fx": 1, "fy": 0, "z": 1 },
+        "a-0011" : {"tree": true, "image": "tree-he-2b", "x": 0, "y": 48, "rot": 0, "fx": 0, "fy": 0, "z": 1 },
+        "a-1001" : {"tree": true, "image": "tree-he-3a", "x": 0, "y": 48, "rot": 0, "fx": 0, "fy": 0, "z": 1 },
+        "a-1110" : {"tree": true, "image": "tree-he-3a", "x": 0, "y": 48, "rot": 0, "fx": 1, "fy": 0, "z": 1 },
+        "a-0111" : {"tree": true, "image": "tree-he-3b", "x": 0, "y": 48, "rot": 0, "fx": 1, "fy": 0, "z": 1 },
+        "a-1011" : {"tree": true, "image": "tree-he-3a", "x": 0, "y": 48, "rot": 0, "fx": 0, "fy": 0, "z": 1 },
+        "a-1101" : {"tree": true, "image": "tree-he-4", "x": 0, "y": 48, "rot": 0, "fx": 1, "fy": 0, "z": 1 },
+        "a-1111" : {"tree": true, "image": "tree-he-4", "x": 0, "y": 48, "rot": 0, "fx": 1, "fy": 0, "z": 1 },
+        // middle top quarter of a 10-door hall
+        "b-0000" : {"tree": true, "image": "tree-h-0", "x": 0, "y": 16, "rot": 0, "fx": 0, "fy": 0, "z": 1 },
+        "b-1000" : {"tree": true, "image": "tree-h-2a", "x": 0, "y": 16, "rot": 0, "fx": 0, "fy": 0, "z": 1 },
+        "b-0100" : {"tree": true, "image": "tree-h-2b", "x": 0, "y": 16, "rot": 0, "fx": 0, "fy": 0, "z": 1 },
+        "b-0010" : {"tree": true, "image": "tree-h-0", "x": 0, "y": 16, "rot": 0, "fx": 0, "fy": 0, "z": 1 },
+        "b-0001" : {"tree": true, "image": "tree-h-2b", "x": 0, "y": 16, "rot": 0, "fx": 1, "fy": 0, "z": 1 },
+        "b-1010" : {"tree": true, "image": "tree-h-2a", "x": 0, "y": 16, "rot": 0, "fx": 0, "fy": 0, "z": 1 },
+        "b-0101" : {"tree": true, "image": "tree-h-3b", "x": 0, "y": 16, "rot": 0, "fx": 0, "fy": 0, "z": 1 },
+        "b-1100" : {"tree": true, "image": "tree-h-3a", "x": 0, "y": 16, "rot": 0, "fx": 0, "fy": 0, "z": 1 },
+        "b-0110" : {"tree": true, "image": "tree-h-2b", "x": 0, "y": 16, "rot": 0, "fx": 0, "fy": 0, "z": 1 },
+        "b-0011" : {"tree": true, "image": "tree-h-2b", "x": 0, "y": 16, "rot": 0, "fx": 1, "fy": 0, "z": 1 },
+        "b-1001" : {"tree": true, "image": "tree-h-3a", "x": 0, "y": 16, "rot": 0, "fx": 1, "fy": 0, "z": 1 },
+        "b-1110" : {"tree": true, "image": "tree-h-3a", "x": 0, "y": 16, "rot": 0, "fx": 0, "fy": 0, "z": 1 },
+        "b-0111" : {"tree": true, "image": "tree-h-3b", "x": 0, "y": 16, "rot": 0, "fx": 0, "fy": 0, "z": 1 },
+        "b-1011" : {"tree": true, "image": "tree-h-3a", "x": 0, "y": 16, "rot": 0, "fx": 1, "fy": 0, "z": 1 },
+        "b-1101" : {"tree": true, "image": "tree-h-4", "x": 0, "y": 16, "rot": 0, "fx": 0, "fy": 0, "z": 1 },
+        "b-1111" : {"tree": true, "image": "tree-h-4", "x": 0, "y": 16, "rot": 0, "fx": 0, "fy": 0, "z": 1 },
+        // middle top quarter of a 10-door hall, rotated 180
+        "c-0000" : {"tree": true, "image": "tree-h-0", "x": 0, "y": -16, "rot": 180, "fx": 0, "fy": 0, "z": 1 },
+        "c-1000" : {"tree": true, "image": "tree-h-0", "x": 0, "y": -16, "rot": 180, "fx": 0, "fy": 0, "z": 1 },
+        "c-0100" : {"tree": true, "image": "tree-h-2b", "x": 0, "y": -16, "rot": 180, "fx": 0, "fy": 0, "z": 1 },
+        "c-0010" : {"tree": true, "image": "tree-h-0", "x": 0, "y": -16, "rot": 180, "fx": 0, "fy": 0, "z": 1 },
+        "c-0001" : {"tree": true, "image": "tree-h-2b", "x": 0, "y": -16, "rot": 180, "fx": 1, "fy": 0, "z": 1 },
+        "c-1010" : {"tree": true, "image": "tree-h-2a", "x": 0, "y": -16, "rot": 180, "fx": 0, "fy": 0, "z": 1 },
+        "c-0101" : {"tree": true, "image": "tree-h-3b", "x": 0, "y": -16, "rot": 180, "fx": 0, "fy": 0, "z": 1 },
+        "c-1100" : {"tree": true, "image": "tree-h-2b", "x": 0, "y": -16, "rot": 180, "fx": 0, "fy": 0, "z": 1 },
+        "c-0110" : {"tree": true, "image": "tree-h-2b", "x": 0, "y": -16, "rot": 180, "fx": 0, "fy": 0, "z": 1 },
+        "c-0011" : {"tree": true, "image": "tree-h-2b", "x": 0, "y": -16, "rot": 180, "fx": 1, "fy": 0, "z": 1 },
+        "c-1001" : {"tree": true, "image": "tree-h-2b", "x": 0, "y": -16, "rot": 180, "fx": 1, "fy": 0, "z": 1 },
+        "c-1110" : {"tree": true, "image": "tree-h-3a", "x": 0, "y": -16, "rot": 180, "fx": 0, "fy": 0, "z": 1 },
+        "c-0111" : {"tree": true, "image": "tree-h-3b", "x": 0, "y": -16, "rot": 180, "fx": 0, "fy": 0, "z": 1 },
+        "c-1011" : {"tree": true, "image": "tree-h-3a", "x": 0, "y": -16, "rot": 180, "fx": 1, "fy": 0, "z": 1 },
+        "c-1101" : {"tree": true, "image": "tree-h-3b", "x": 0, "y": -16, "rot": 180, "fx": 0, "fy": 0, "z": 1 },
+        "c-1111" : {"tree": true, "image": "tree-h-4", "x": 0, "y": -16, "rot": 180, "fx": 0, "fy": 0, "z": 1 },
+        // top quarter of a 10-door hall, rotated 180
+        "d-1000" : {"tree": true, "image": "tree-he-2a", "x": 0, "y": -48, "rot": 180, "fx": 0, "fy": 0, "z": 1 },
+        "d-0100" : {"tree": true, "image": "tree-he-2b", "x": 0, "y": -48, "rot": 180, "fx": 0, "fy": 0, "z": 1 },
+        "d-0010" : {"tree": true, "image": "tree-he-0", "x": 0, "y": -48, "rot": 180, "fx": 0, "fy": 0, "z": 1 },
+        "d-0001" : {"tree": true, "image": "tree-he-2b", "x": 0, "y": -48, "rot": 180, "fx": 1, "fy": 0, "z": 1 },
+        "d-1010" : {"tree": true, "image": "tree-he-2a", "x": 0, "y": -48, "rot": 180, "fx": 0, "fy": 0, "z": 1 },
+        "d-0101" : {"tree": true, "image": "tree-he-3b", "x": 0, "y": -48, "rot": 180, "fx": 0, "fy": 0, "z": 1 },
+        "d-1100" : {"tree": true, "image": "tree-he-2b", "x": 0, "y": -48, "rot": 180, "fx": 0, "fy": 0, "z": 1 },
+        "d-0110" : {"tree": true, "image": "tree-he-2b", "x": 0, "y": -48, "rot": 180, "fx": 0, "fy": 0, "z": 1 },
+        "d-0011" : {"tree": true, "image": "tree-he-2b", "x": 0, "y": -48, "rot": 180, "fx": 1, "fy": 0, "z": 1 },
+        "d-1001" : {"tree": true, "image": "tree-he-2b", "x": 0, "y": -48, "rot": 180, "fx": 1, "fy": 0, "z": 1 },
+        "d-1110" : {"tree": true, "image": "tree-he-3a", "x": 0, "y": -48, "rot": 180, "fx": 0, "fy": 0, "z": 1 },
+        "d-0111" : {"tree": true, "image": "tree-he-3b", "x": 0, "y": -48, "rot": 180, "fx": 0, "fy": 0, "z": 1 },
+        "d-1011" : {"tree": true, "image": "tree-he-3a", "x": 0, "y": -48, "rot": 180, "fx": 1, "fy": 0, "z": 1 },
+        "d-1101" : {"tree": true, "image": "tree-he-3b", "x": 0, "y": -48, "rot": 180, "fx": 0, "fy": 0, "z": 1 },
+        "d-1111" : {"tree": true, "image": "tree-he-4", "x": 0, "y": -48, "rot": 180, "fx": 0, "fy": 0, "z": 1 },
+        // split a 10-door key into four 4-door keys
+        "convertKey": function(key) {
+            // 10-door layout:
+            //    0
+            // 9     1
+            // 8     2
+            // 7     3
+            // 6     4
+            //    5
+            //
+            // gets split into:
+            //
+            //    0
+            // 9     1
+            //    X     (1 if 0|1|9, 0 otherwise)
+            //
+            //    X     (1 if 0|1|9, 0 otherwise)
+            // 8     2
+            //    X     (1 if it's connected to anything, 0 otherwise)
+            //
+            //    X     (1 if it's connected to anything, 0 otherwise)
+            // 7     3
+            //    X     (1 if 4|6|5, 0 otherwise)
+            //
+            //    X     (1 if 4|6|5, 0 otherwise)
+            // 6     4
+            //    5
+            return [
+                "a-" +
+                    key[0] +
+                    key[9] +
+                    ((key[0]+key[1]+key[9]) == "000" ? "0" : "1") +
+                    key[1],
+                "b-" +
+                    ((key[0]+key[1]+key[9]) == "000" ? "0" : "1") +
+                    key[2] +
+                    (key.includes("1") ? "1" : 0) +
+                    key[8],
+                "c-" +
+                    (key.includes("1") ? "1" : 0) +
+                    key[7] +
+                    ((key[4]+key[5]+key[6]) == "000" ? "0" : "1") +
+                    key[3],
+                "d-" +
+                    ((key[4]+key[5]+key[6]) == "000" ? "0" : "1") +
+                    key[6] +
+                    key[5] +
+                    key[4]
             ];
         }
     },
