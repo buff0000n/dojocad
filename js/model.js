@@ -193,6 +193,20 @@ function roomFromString(string) {
     return room;
 }
 
+function cleanseLabel(label) {
+    if (!label || label.length == 0) {
+        return label;
+    }
+    return label.replace(/</g, "&lt;");
+}
+
+function uncleanseLabel(label) {
+    if (!label || label.length == 0) {
+        return label;
+    }
+    return label.replace(/%lt;/g, "<");
+}
+
 //==============================================================
 // Bound object
 //==============================================================
@@ -1483,6 +1497,7 @@ class Room {
         if (label != null && label.length == 0) {
             label = null;
         }
+        label = cleanseLabel(label);
         // check for change
         if (label != this.label) {
             // set the label, taking into account the metadata's default if there is one

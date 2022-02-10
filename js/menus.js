@@ -877,7 +877,7 @@ function doLabelMenu() {
     textArea.rows = "3";
     textArea.cols = "32";
     // init the value with the room's current label
-    textArea.value = room.label;
+    textArea.value = uncleanseLabel(room.label);
 
     // add to the menu
     td.appendChild(textArea);
