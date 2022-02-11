@@ -1775,6 +1775,10 @@ class Room {
 	        element.style.transformOrigin = (-this.anchorMX * imgScale) + "px " + (-this.anchorMY * imgScale) + "px";
         }
         element.src = "img" + imgScale + "x/" + imageBase + imageSuffix;
+        // console.log("Adding for " + this.id + ": " + element.src);
+        // if (element.src.endsWith("dry-dock-line-blue.png")) {
+        //     console.trace();
+        // }
 
         return this.addDisplayImageElement(element, zIndex);
     }

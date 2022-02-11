@@ -129,9 +129,9 @@ function removeRoom(room, updateTree=true) {
 	removeFloorRoom(room);
 	room.disconnectAllDoors();
 	room.removeCollisions();
+	runRulesOnRoomRemoved(room);
 	room.removeDisplay();
 	room.dispose();
-	runRulesOnRoomRemoved(room);
     if (updateTree) {
         saveModelToUrl();
         treeUpdated();
