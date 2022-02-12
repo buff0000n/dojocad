@@ -757,10 +757,15 @@ function loadModelFromUrl(url) {
 	var roomStrings = quotedSplit(modelString, "_", true);
 	// set a flag so we don't do things like autosaving while we're building the layout
 	settings.loading = true;
+	var readRooms = [];
 	for (var rs = 0; rs < roomStrings.length; rs++) {
-		var room = roomFromString(roomStrings[rs]);
-	    addRoom(room, false);
-	    room.resetPositionAndConnectDoors();
+		readRooms.push(roomFromString(roomStrings[rs], readRooms));
+	}
+
+	for (var rs = 0; rs < readRooms.length; rs++) {
+	    var room = readRooms[rs];
+        addRoom(room, false);
+        room.resetPositionAndConnectDoors();
 	}
 	// save back to the URL without autosaving, and update the tree
     saveModelToUrl();
