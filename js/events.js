@@ -438,7 +438,14 @@ function dragEvent(e) {
 	    mouseDownTargetStartPX = e.clientX;
 	    mouseDownTargetStartPY = e.clientY;
 
-		setViewP(viewPX + offsetPX, viewPY + offsetPY, viewScale);
+	    if (e.ctrlKey) {
+	        // ctrl + drag just autoscrolls when the cursor is near the edge
+    	    checkAutoScroll(e);
+
+	    } else {
+	        // normal operation just drags the screen
+            setViewP(viewPX + offsetPX, viewPY + offsetPY, viewScale);
+	    }
     }
 
     // set the dragged flag
