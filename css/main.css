@@ -111,6 +111,19 @@ html::-webkit-scrollbar, body::-webkit-scrollbar {
     border-radius: 1ex;
     z-index: 10308;
 }
+.statsBarLine1 {
+    margin: 0 0 2ex 0;
+    padding: 0;
+}
+.statsBarLine2 {
+    margin: 0;
+    padding: 0;
+}
+.statsBarInline {
+    margin: 0;
+    padding: 0;
+    display: inline;
+}
 
 /* floating sidebar */
 #sidebar {

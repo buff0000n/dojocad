@@ -40,6 +40,11 @@ function updateStat(id, value, error, rule) {
 	}
 }
 
+function updateTierStat(tier, name) {
+	var node = document.getElementById("tierStat")
+	node.innerHTML = `<img src="icons/icon-tier-${tier}.png" srcset="icons2x/icon-tier-${tier}.png 2x" title="${name} Tier"/>`;
+}
+
 class RoomCountRule extends RoomRule {
 	constructor(maxRooms) {
 		super();
@@ -397,15 +402,32 @@ class ResourceCounter extends RoomRule {
 		this.resources = {};
 		this.tier = 0;
 		this.maxTier = 4;
+		// no point in building a general map
+		this.builtTiers = [1, 0, 0, 0, 0];
+		this.tierNames = ["Ghost", "Shadow", "Storm", "Mountain", "Moon"];
 	}
 
+    updateTier() {
+        var newTier = this.getTier();
+        if (newTier != this.tier) {
+            this.tier = newTier;
+            updateTierStat(this.tier, this.tierNames[this.tier]);
+        }
+    }
+
 	getTier() {
-	    return Math.min(this.tier, this.maxTier);
+	    for (var i = this.maxTier; i >= 0; i--) {
+	        if (this.builtTiers[i] > 0) {
+	            return i;
+	        }
+	    }
+	    return 0;
 	}
 
 	roomAdded(room) {
-	    if (room.metadata.id == "b1") {
-	        this.tier++;
+	    if (room.metadata.tier) {
+	        this.builtTiers[room.metadata.tier]++;
+	        this.updateTier();
 	    }
 
 	    var tier = this.getTier();
@@ -429,8 +451,9 @@ class ResourceCounter extends RoomRule {
 	}
 
 	roomRemoved(room) {
-	    if (room.metadata.id == "b1") {
-	        this.tier--;
+	    if (room.metadata.tier) {
+	        this.builtTiers[room.metadata.tier]--;
+	        this.updateTier();
 	    }
 
 	    var tier = this.getTier();

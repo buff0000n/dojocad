@@ -507,7 +507,7 @@ var roomMetadata =
 		{"resource": "Forma", "costs": [1, 1, 2, 5, 15]}], "unverified": true,
     "treetype": "os-1",
 	"blockedFromAboveBy": [
-		"ob","oc","re","ce","ef","uc"]}, //"b4"?
+		"ob","oc","re","ce","ef","uc","t4"]},
 
 {"id": "ob", "image": "observatory", "name": "Observatory", "category": "Misc", "prereq": null, "capacity": -2, "energy": -5, "maxnum": null, "floor": -32, "ceil": 52,
 	"bounds": [
@@ -523,7 +523,7 @@ var roomMetadata =
 		{"resource": "Forma", "costs": [1, 1, 2, 5, 15]}], "unverified": true,
     "treetype": "ob-1",
 	"blockedFromAboveBy": [
-		"lc","ce","ob","oc","lo","re","uc","ef"]}, //"b4"?
+		"lc","ce","ob","oc","lo","re","uc","ef","t4"]},
 {"id": "gs", "image": "small-garden", "name": "Small Garden", "category": "Misc", "prereq": null, "capacity": -10, "energy": -6, "maxnum": null, "floor": 0, "ceil": 20,
 	"bounds": [
 		{"x1": -16, "y1": -16, "x2": 16, "y2": 16, "floor": 0, "ceil": 20}],
@@ -616,18 +616,67 @@ var roomMetadata =
     "treetype": "32-1",
 	"blockedFromAboveBy": [
 		"ob"]},
-{"id": "b1", "image": "barracks", "name": "Barracks", "category": "Utility", "prereq": null, "capacity": -1, "energy": -1, "maxnum": 4, "floor": -8, "ceil": 12,
+{"id": "t1", "image": "barracks", "iconImage": "barracks1", "name": "Shadow Barracks", "category": "Utility", "prereq": null, "capacity": -1, "energy": -1, "maxnum": 1, "floor": -6, "ceil": 12, "tier": 1,
 	"bounds": [
-	    // todo: revisit the ceiling level on the barracks
-		{"x1": -16, "y1": -18, "x2": 16, "y2": 18, "floor": -8, "ceil": 8}],
+		{"x1": -16, "y1": -18, "x2": 16, "y2": 18, "floor": -6, "ceil": 8}],
 	"doors": [
 		{"x": 0, "y": 18, "floor": 0, "outx": 0, "outy": 1}],
+	"floor_images": [
+		{"floor": 0, "image": "barracks", "marker_images": [{"image": "marker-barracks-1", "x": 0, "y": 6}]}],
 	"resources": [
-		{"resource": "Credits", "costs": [1000, 3000, 10000, 100000, 100000]},
-		{"resource": "Alloy Plate", "costs": [150, 450, 1500, 15000, 15000]},
-		{"resource": "Ferrite", "costs": [600, 1800, 6000, 60000, 60000]},
-		{"resource": "Rubedo", "costs": [300, 900, 3000, 30000, 30000]},
-		{"resource": "Forma", "costs": [1, 1, 3, 25, 25]}], "unverified": true,
+		{"resource": "Credits", "costs": [1000, 1000, 1000, 1000, 1000]},
+		{"resource": "Alloy Plate", "costs": [150, 150, 150, 150, 150]},
+		{"resource": "Ferrite", "costs": [600, 600, 600, 600, 600]},
+		{"resource": "Rubedo", "costs": [300, 300, 300, 300, 300]},
+		{"resource": "Forma", "costs": [1, 1, 1, 1, 1]}],
+    "treetype": "32-1",
+	"blockedFromAboveBy": [
+	    ]},
+{"id": "t2", "image": "barracks", "iconImage": "barracks2", "name": "Storm Barracks", "category": "Utility", "prereq": "t1", "capacity": -1, "energy": -1, "maxnum": 1, "floor": -6, "ceil": 12, "tier": 2,
+	"bounds": [
+		{"x1": -16, "y1": -18, "x2": 16, "y2": 18, "floor": -6, "ceil": 8}],
+	"doors": [
+		{"x": 0, "y": 18, "floor": 0, "outx": 0, "outy": 1}],
+	"floor_images": [
+		{"floor": 0, "image": "barracks", "marker_images": [{"image": "marker-barracks-2", "x": 0, "y": 6}]}],
+	"resources": [
+		{"resource": "Credits", "costs": [3000, 3000, 3000, 3000, 3000]},
+		{"resource": "Alloy Plate", "costs": [450, 450, 450, 450, 450]},
+		{"resource": "Ferrite", "costs": [1800, 1800, 1800, 1800, 1800]},
+		{"resource": "Rubedo", "costs": [900, 900, 900, 900, 900]},
+		{"resource": "Forma", "costs": [1, 1, 1, 1, 1]}], "unverified": true,
+    "treetype": "32-1",
+	"blockedFromAboveBy": [
+	    ]},
+{"id": "t3", "image": "barracks", "iconImage": "barracks3", "name": "Mountain Barracks", "category": "Utility", "prereq": "t2", "capacity": -1, "energy": -1, "maxnum": 1, "floor": -12, "ceil": 12, "tier": 3,
+	"bounds": [
+		{"x1": -16, "y1": -18, "x2": 16, "y2": 18, "floor": -12, "ceil": 8}],
+	"doors": [
+		{"x": 0, "y": 18, "floor": 0, "outx": 0, "outy": 1}],
+	"floor_images": [
+		{"floor": 0, "image": "barracks", "marker_images": [{"image": "marker-barracks-3", "x": 0, "y": 6}]}],
+	"resources": [
+		{"resource": "Credits", "costs": [10000, 10000, 10000, 10000, 10000]},
+		{"resource": "Alloy Plate", "costs": [1500, 1500, 1500, 1500, 1500]},
+		{"resource": "Ferrite", "costs": [6000, 6000, 6000, 6000, 6000]},
+		{"resource": "Rubedo", "costs": [3000, 3000, 3000, 3000, 3000]},
+		{"resource": "Forma", "costs": [3, 3, 3, 3, 3]}], "unverified": true,
+    "treetype": "32-1",
+	"blockedFromAboveBy": [
+	    ]},
+{"id": "t4", "image": "barracks", "iconImage": "barracks4", "name": "Moon Barracks", "category": "Utility", "prereq": "t3", "capacity": -1, "energy": -1, "maxnum": 1, "floor": -18, "ceil": 12, "tier": 4,
+	"bounds": [
+		{"x1": -16, "y1": -18, "x2": 16, "y2": 18, "floor": -18, "ceil": 8}],
+	"doors": [
+		{"x": 0, "y": 18, "floor": 0, "outx": 0, "outy": 1}],
+	"floor_images": [
+		{"floor": 0, "image": "barracks", "marker_images": [{"image": "marker-barracks-4", "x": 0, "y": 6}]}],
+	"resources": [
+		{"resource": "Credits", "costs": [100000, 100000, 100000, 100000, 100000, 100000, ]},
+		{"resource": "Alloy Plate", "costs": [15000, 15000, 15000, 15000, 15000]},
+		{"resource": "Ferrite", "costs": [60000, 60000, 60000, 60000, 60000]},
+		{"resource": "Rubedo", "costs": [3000, 3000, 3000, 3000, 3000]},
+		{"resource": "Forma", "costs": [25, 25, 25, 25, 25]}], "unverified": true,
     "treetype": "32-1",
 	"blockedFromAboveBy": [
 	    ]},

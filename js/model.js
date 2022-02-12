@@ -143,10 +143,35 @@ function roomToString(room, urlencode=false) {
     return s;
 }
 
-function roomFromString(string) {
+function roomFromString(string, readRooms) {
     // split by comma taking into account quotes, removing both commas and quotes
     var s = quotedSplit(string, ",");
-    var room = new Room(getRoomMetadata(s[0]));
+    var mid = s[0];
+    // migrate old single barracks rooms to a separate barracks room for each tier
+    // just increment them in the order in which they appear in the saved room list
+    if (mid == "b1") {
+        // use the read room list to get the current highest tier barracks
+        var tier = 0;
+        for (var i = 0; i < readRooms.length; i++) {
+            var roomTier = readRooms[i].metadata.tier;
+            if (roomTier && roomTier > tier) {
+                tier = roomTier;
+            }
+        }
+        while (true) {
+            // look for the barracks for the next tier up
+            var newmd = roomMetadata.rooms.find(room => room.tier == tier + 1);
+            if (newmd) {
+                // found it
+                console.log("Migration: replacing room " + mid + " with room " + newmd.id);
+                mid = newmd.id;
+                break;
+            }
+            // layout has too many barracks, decrease the tier until we find a matching barracks we can add
+            tier--;
+        }
+    }
+    var room = new Room(getRoomMetadata(mid));
     // room coordinates may be fractional because of old dojo rooms, floor and rotation are still ints
     room.setPosition(parseFloat(s[1]), parseFloat(s[2]), parseInt(s[3]), parseInt(s[4]) * 90);
     // look for optional hue
