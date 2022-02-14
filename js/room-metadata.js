@@ -261,9 +261,9 @@ var roomMetadata =
     "treetype": "h-6",
 	"blockedFromAboveBy": [
 		"ob"]},
-{"id": "ef", "image": "earth-forest", "name": "Earth Forest Chamber", "category": "Theme Halls", "spawn": true, "prereq": null, "capacity": 200, "energy": -5, "maxnum": null, "floor": -22, "ceil": 72,
+{"id": "ef", "image": "earth-forest", "name": "Earth Forest Chamber", "category": "Theme Halls", "spawn": true, "prereq": null, "capacity": 200, "energy": -5, "maxnum": null, "floor": -22, "ceil": 68,
 	"bounds": [
-		{"x1": -32, "y1": -64, "x2": 32, "y2": 64, "floor": -22, "ceil": 72}],
+		{"x1": -32, "y1": -64, "x2": 32, "y2": 64, "floor": -22, "ceil": 68}],
 	"doors": [
 		{"x": 0, "y": 64, "floor": 0, "outx": 0, "outy": 1},
 		{"x": 32, "y": 48, "floor": 0, "outx": 1, "outy": 0},
