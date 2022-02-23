@@ -663,16 +663,16 @@ td .menu-button {
     pointer-events: none;
 }
 .debugBounds {
-    border-color: #0000FF;
+    border-color: #00FFFF80;
 }
 .debugOverlapBounds {
-    border-color: #FF00FF;
+    border-color: #FF00FF80;
 }
 .debugDoorBounds {
-    border-color: #00FF00;
+    border-color: #00FF0080;
 }
 .debugOverlapDoorBounds {
-    border-color: #FFFF00;
+    border-color: #FFFF0080;
 }
 
 .matrix-table {

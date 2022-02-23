@@ -400,7 +400,7 @@ var roomMetadata =
     "treetype": "64-1",
 	"blockedFromAboveBy": [
 	    ]},
-{"id": "lv", "image": "ventkid-lab", "name": "Ventkids' Bash Lab", "category": "Labs", "prereq": "or", "capacity": -2, "energy": -5, "maxnum": null, "floor": 0, "ceil": 8, "xp": 10000,
+{"id": "lv", "image": "ventkid-lab", "name": "Ventkids' Bash Lab", "category": "Labs", "prereq": "lt", "capacity": -2, "energy": -5, "maxnum": null, "floor": 0, "ceil": 8, "xp": 10000,
 	"bounds": [
 		{"x1": -8, "y1": -10, "x2": 8, "y2": 8, "floor": 0, "ceil": 8},
 		{"x1": -2, "y1": -15, "x2": 2, "y2": -10, "floor": 0, "ceil": 8}],
@@ -496,7 +496,7 @@ var roomMetadata =
 	"blockedFromAboveBy": []},
 {"id": "oa", "image": "obstacle-course-architect", "name": "Obstacle Course Architect", "category": "Interactive", "prereq": null, "capacity": 0, "energy": -2, "maxnum": 5, "floor": 0, "ceil": 48, "xp": 15000,
 	"bounds": [
-		{"x1": -76, "y1": -80, "x2": 76, "y2": 74, "floor": 0, "ceil": 48},
+		{"x1": -76, "y1": -78, "x2": 76, "y2": 74, "floor": 0, "ceil": 48},
 		{"x1": -6, "y1": 74, "x2": 6, "y2": 82, "floor": 0, "ceil": 48}],
 	"doors": [
 		{"x": 0, "y": 82, "floor": 0, "outx": 0, "outy": 1}],
