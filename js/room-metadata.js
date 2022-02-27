@@ -242,7 +242,7 @@ var roomMetadata =
     "treetype": "h-6",
 	"blockedFromAboveBy": [
 		"ob"]},
-{"id": "sm", "image": "starlight-market", "name": "Starlight Market", "category": "Theme Halls", "spawn": true, "prereq": null, "capacity": 200, "energy": -5, "maxnum": null, "floor": -12, "ceil": 36,
+{"id": "sm", "image": "starlight-market", "name": "Starlight Market", "category": "Theme Halls", "spawn": false, "prereq": null, "capacity": 200, "energy": -5, "maxnum": null, "floor": -12, "ceil": 36,
 	"bounds": [
 		{"x1": -32, "y1": -32, "x2": 32, "y2": 32, "floor": -12, "ceil": 36}],
 	"doors": [
@@ -261,7 +261,7 @@ var roomMetadata =
     "treetype": "h-6",
 	"blockedFromAboveBy": [
 		"ob"]},
-{"id": "ef", "image": "earth-forest", "name": "Earth Forest Chamber", "category": "Theme Halls", "spawn": true, "prereq": null, "capacity": 200, "energy": -5, "maxnum": null, "floor": -22, "ceil": 68,
+{"id": "ef", "image": "earth-forest", "name": "Earth Forest Chamber", "category": "Theme Halls", "spawn": false, "prereq": null, "capacity": 200, "energy": -5, "maxnum": null, "floor": -22, "ceil": 68,
 	"bounds": [
 		{"x1": -32, "y1": -64, "x2": 32, "y2": 64, "floor": -22, "ceil": 68}],
 	"doors": [
@@ -286,7 +286,7 @@ var roomMetadata =
 		{"resource": "Forma", "costs": [1, 1, 1, 3, 10]}], "unverified": true,
     "treetype": "h-10",
 	"blockedFromAboveBy": []},
-{"id": "uc", "image": "uranus-chamber", "name": "Uranus Chamber", "category": "Theme Halls", "spawn": true, "prereq": null, "capacity": 200, "energy": -5, "maxnum": null, "floor": -20, "ceil": 36,
+{"id": "uc", "image": "uranus-chamber", "name": "Uranus Chamber", "category": "Theme Halls", "spawn": false, "prereq": null, "capacity": 200, "energy": -5, "maxnum": null, "floor": -20, "ceil": 36,
 	"bounds": [
 		{"x1": -32, "y1": -32, "x2": 32, "y2": 32, "floor": -20, "ceil": 36}],
 	"doors": [

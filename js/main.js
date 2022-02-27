@@ -388,14 +388,18 @@ function getCurrentSpawnRoom() {
 function setSpawnPointRoom(newSpawnRoom, allowUndo=true) {
     // factored out so we can call this when loading a layout
     var currentSpawnRoom = getCurrentSpawnRoom();
-    if (currentSpawnRoom) {
-        currentSpawnRoom.setSpawnPoint(false);
-    }
-    if (newSpawnRoom) {
-        newSpawnRoom.setSpawnPoint(true);
-    }
-    if (allowUndo) {
-        addUndoAction(new ChangeSpawnPointAction(currentSpawnRoom, newSpawnRoom));
+    // gotta check the metadata because I screwed up and thought a few rooms could be spawn points
+    // when they can't
+    if (newSpawnRoom.metadata.spawn) {
+        if (currentSpawnRoom) {
+            currentSpawnRoom.setSpawnPoint(false);
+        }
+        if (newSpawnRoom) {
+            newSpawnRoom.setSpawnPoint(true);
+        }
+        if (allowUndo) {
+            addUndoAction(new ChangeSpawnPointAction(currentSpawnRoom, newSpawnRoom));
+        }
     }
 }
 
