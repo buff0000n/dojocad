@@ -390,7 +390,7 @@ function setSpawnPointRoom(newSpawnRoom, allowUndo=true) {
     var currentSpawnRoom = getCurrentSpawnRoom();
     // gotta check the metadata because I screwed up and thought a few rooms could be spawn points
     // when they can't
-    if (newSpawnRoom.metadata.spawn) {
+    if (!newSpawnRoom || newSpawnRoom.metadata.spawn) {
         if (currentSpawnRoom) {
             currentSpawnRoom.setSpawnPoint(false);
         }
