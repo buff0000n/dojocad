@@ -322,7 +322,7 @@ var roomMetadata =
 	    ]},
 {"id": "lt", "image": "tenno-lab2", "name": "Tenno Lab", "category": "Labs", "prereq": "or", "capacity": -2, "energy": -5, "maxnum": null, "floor": 0, "ceil": 8, "xp": 10000,
 	"bounds": [
-		{"x1": -10, "y1": -10, "x2": 10, "y2": 9, "floor": 0, "ceil": 8}],
+		{"x1": -11, "y1": -10, "x2": 11, "y2": 9, "floor": 0, "ceil": 8}],
 	"doors": [
 		{"x": 0, "y": 9, "floor": 0, "outx": 0, "outy": 1}],
 	"floor_images": [
