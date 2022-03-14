@@ -1,5 +1,5 @@
 var roomMetadata =
-{"general": {"floor_distance": 64, "max_rooms": 128 },
+{"general": {"floor_distance": 66, "max_rooms": 128 },
 "rooms": [
 
 {"id": "cc", "image": "cross-connector", "name": "Cross Connector", "category": "Connectors", "prereq": null, "capacity": -10, "energy": -3, "maxnum": null, "floor": 0, "ceil": 8,
@@ -182,9 +182,9 @@ var roomMetadata =
     "treetype": "h-6",
 	"blockedFromAboveBy": [
 	    ]},
-{"id": "hi", "image": "inspiration-hall", "name": "Inspiration Hall", "category": "Theme Halls", "prereq": null, "capacity": 100, "energy": -1, "maxnum": 3, "spawn": true, "floor": -12, "ceil": 44,
+{"id": "hi", "image": "inspiration-hall", "name": "Inspiration Hall", "category": "Theme Halls", "prereq": null, "capacity": 100, "energy": -1, "maxnum": 3, "spawn": true, "floor": -12, "ceil": 46,
 	"bounds": [
-		{"x1": -32, "y1": -32, "x2": 32, "y2": 32, "floor": -12, "ceil": 44}],
+		{"x1": -32, "y1": -32, "x2": 32, "y2": 32, "floor": -12, "ceil": 46}],
 	"doors": [
 		{"x": 0, "y": 32, "floor": 0, "outx": 0, "outy": 1},
 		{"x": 32, "y": 16, "floor": 0, "outx": 1, "outy": 0},
@@ -352,9 +352,9 @@ var roomMetadata =
     "treetype": "32-1",
 	"blockedFromAboveBy": [
 	    ]},
-{"id": "lc", "image": "chem-lab", "name": "Chem Lab", "category": "Labs", "prereq": "or", "capacity": -2, "energy": -5, "maxnum": null, "floor": -12, "ceil": 16, "xp": 10000,
+{"id": "lc", "image": "chem-lab", "name": "Chem Lab", "category": "Labs", "prereq": "or", "capacity": -2, "energy": -5, "maxnum": null, "floor": -16, "ceil": 16, "xp": 10000,
 	"bounds": [
-		{"x1": -15, "y1": -15, "x2": 15, "y2": 16, "floor": -14, "ceil": 16}],
+		{"x1": -15, "y1": -15, "x2": 15, "y2": 16, "floor": -16, "ceil": 16}],
 	"doors": [
 		{"x": 0, "y": 16, "floor": 0, "outx": 0, "outy": 1}],
 	"floor_images": [
@@ -420,8 +420,8 @@ var roomMetadata =
 
 {"id": "dd", "image": "dry-dock", "name": "Dry Dock", "category": "Interactive", "prereq": null, "capacity": -20, "energy": -6, "maxnum": 1, "floor": -80, "ceil": 200,
 	"bounds": [
-		{"x1": -128, "y1":  -128, "x2": 128, "y2":  128, "floor": -72, "ceil": 200},
-		{"x1": -128, "y1": -1272, "x2": 128, "y2":  -95.5, "floor": -200, "ceil": 200, "invis": "true"}],
+		{"x1": -128, "y1":  -128, "x2": 128, "y2":  128, "floor": -80, "ceil": 200},
+		{"x1": -128, "y1": -1280, "x2": 128, "y2":  -95.5, "floor": -200, "ceil": 200, "invis": "true"}],
 	"doors": [
 		{"x": 0, "y": 128, "floor": 0, "outx": 0, "outy": 1},
 		{"x": 128, "y": 0, "floor": 0, "outx": 1, "outy": 0},
@@ -494,10 +494,10 @@ var roomMetadata =
 		{"resource": "Forma", "costs": [1, 1, 2, 5, 15]}],
     "treetype": "oc-1",
 	"blockedFromAboveBy": []},
-{"id": "oa", "image": "obstacle-course-architect", "name": "Obstacle Course Architect", "category": "Interactive", "prereq": null, "capacity": 0, "energy": -2, "maxnum": 5, "floor": 0, "ceil": 48, "xp": 15000,
+{"id": "oa", "image": "obstacle-course-architect", "name": "Obstacle Course Architect", "category": "Interactive", "prereq": null, "capacity": 0, "energy": -2, "maxnum": 5, "floor": 0, "ceil": 50, "xp": 15000,
 	"bounds": [
-		{"x1": -76, "y1": -78, "x2": 76, "y2": 74, "floor": 0, "ceil": 48},
-		{"x1": -6, "y1": 74, "x2": 6, "y2": 82, "floor": 0, "ceil": 48}],
+		{"x1": -76, "y1": -78, "x2": 76, "y2": 74, "floor": 0, "ceil": 50},
+		{"x1": -6, "y1": 74, "x2": 6, "y2": 82, "floor": 0, "ceil": 50}],
 	"doors": [
 		{"x": 0, "y": 82, "floor": 0, "outx": 0, "outy": 1}],
 	"floor_images": [
