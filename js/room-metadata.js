@@ -623,10 +623,10 @@ var roomMetadata =
     "treetype": "64-4",
 	"blockedFromAboveBy": [
 	    ]},
-{"id": "os", "image": "open-space", "name": "Open Space", "category": "Misc", "prereq": null, "capacity": -2, "energy": -5, "maxnum": null, "floor": -60, "ceil": 78,
+{"id": "os", "image": "open-space", "name": "Open Space", "category": "Misc", "prereq": null, "capacity": -2, "energy": -5, "maxnum": null, "floor": -60, "ceil": 80,
 	"bounds": [
-		{"x1": -76, "y1": -80, "x2": 76, "y2": 74, "floor": -60, "ceil": 78},
-		{"x1": -6, "y1": 74, "x2": 6, "y2": 82, "floor": -60, "ceil": 78}],
+		{"x1": -76, "y1": -80, "x2": 76, "y2": 74, "floor": -64, "ceil": 80},
+		{"x1": -6, "y1": 74, "x2": 6, "y2": 82, "floor": -64, "ceil": 80}],
 	"doors": [
 		{"x": 0, "y": 82, "floor": 0, "outx": 0, "outy": 1}],
 	"floor_images": [
