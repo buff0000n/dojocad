@@ -537,7 +537,7 @@ var roomMetadata =
 {"id": "oa", "image": "obstacle-course-architect", "name": "Obstacle Course Architect", "category": "Interactive", "prereq": null, "capacity": 0, "energy": -2, "maxnum": 5, "floor": 0, "ceil": 50, "xp": 15000,
 	"bounds": [
 		{"x1": -76, "y1": -78, "x2": 76, "y2": 74, "floor": 0, "ceil": 50},
-		{"x1": -6, "y1": 74, "x2": 6, "y2": 82, "floor": 0, "ceil": 50}],
+		{"x1": -6, "y1": 74, "x2": 6, "y2": 82, "floor": 0, "ceil": 12}],
 	"doors": [
 		{"x": 0, "y": 82, "floor": 0, "outx": 0, "outy": 1}],
 	"floor_images": [
@@ -626,7 +626,7 @@ var roomMetadata =
 {"id": "os", "image": "open-space", "name": "Open Space", "category": "Misc", "prereq": null, "capacity": -2, "energy": -5, "maxnum": null, "floor": -60, "ceil": 80,
 	"bounds": [
 		{"x1": -76, "y1": -80, "x2": 76, "y2": 75, "floor": -64, "ceil": 80},
-		{"x1": -6, "y1": 75, "x2": 6, "y2": 82, "floor": -64, "ceil": 80}],
+		{"x1": -6, "y1": 75, "x2": 6, "y2": 82, "floor": 0, "ceil": 12}],
 	"doors": [
 		{"x": 0, "y": 82, "floor": 0, "outx": 0, "outy": 1}],
 	"floor_images": [
