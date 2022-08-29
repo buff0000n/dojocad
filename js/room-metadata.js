@@ -85,7 +85,7 @@ var roomMetadata =
 	    ]},
 {"id": "ce", "image": "elevator-bottom", "name": "Elevator", "category": "Connectors", "prereq": null, "capacity": -2, "energy": -2, "maxnum": null, "floor": -24, "ceil": 16, "multifloor": true,
 	"bounds": [
-		{"x1": -7, "y1": -11, "x2": 7, "y2": 12, "floor": -24, "ceil": 80}],
+		{"x1": -7, "y1": -10, "x2": 7, "y2": 12, "floor": -24, "ceil": 80}],
 	"doors": [
 		{"x": 0, "y": 12, "floor": 0, "outx": 0, "outy": 1},
 		{"x": 0, "y": 12, "floor": 1, "outx": 0, "outy": 1}],
@@ -538,8 +538,8 @@ var roomMetadata =
 	"blockedFromAboveBy": []},
 {"id": "oa", "image": "obstacle-course-architect", "name": "Obstacle Course Architect", "category": "Interactive", "prereq": null, "capacity": 0, "energy": -2, "maxnum": 5, "floor": 0, "ceil": 50, "xp": 15000,
 	"bounds": [
-		{"x1": -76, "y1": -78, "x2": 76, "y2": 74, "floor": 0, "ceil": 50},
-		{"x1": -6, "y1": 74, "x2": 6, "y2": 82, "floor": 0, "ceil": 12}],
+		{"x1": -76, "y1": -78, "x2": 76, "y2": 72, "floor": 0, "ceil": 50},
+		{"x1": -6, "y1": 72, "x2": 6, "y2": 82, "floor": 0, "ceil": 12}],
 	"doors": [
 		{"x": 0, "y": 82, "floor": 0, "outx": 0, "outy": 1}],
 	"floor_images": [
@@ -556,7 +556,7 @@ var roomMetadata =
 
 {"id": "ob", "image": "observatory", "name": "Observatory", "category": "Misc", "prereq": null, "capacity": -2, "energy": -5, "maxnum": null, "floor": -36, "ceil": 52,
 	"bounds": [
-		{"x1": -50, "y1": -72, "x2": 50, "y2": 73, "floor": -36, "ceil": 52},
+		{"x1": -50, "y1": -74, "x2": 50, "y2": 73, "floor": -36, "ceil": 52},
 		{"x1": -6, "y1": 72, "x2": 6, "y2": 80, "floor": -32, "ceil": 52}],
 	"doors": [
 		{"x": 0, "y": 80, "floor": 0, "outx": 0, "outy": 1}],
@@ -627,8 +627,8 @@ var roomMetadata =
 	    ]},
 {"id": "os", "image": "open-space", "name": "Open Space", "category": "Misc", "prereq": null, "capacity": -2, "energy": -5, "maxnum": null, "floor": -60, "ceil": 80,
 	"bounds": [
-		{"x1": -76, "y1": -80, "x2": 76, "y2": 75, "floor": -64, "ceil": 80},
-		{"x1": -6, "y1": 75, "x2": 6, "y2": 82, "floor": 0, "ceil": 12}],
+		{"x1": -76, "y1": -80, "x2": 76, "y2": 73, "floor": -64, "ceil": 80},
+		{"x1": -6, "y1": 73, "x2": 6, "y2": 82, "floor": 0, "ceil": 12}],
 	"doors": [
 		{"x": 0, "y": 82, "floor": 0, "outx": 0, "outy": 1}],
 	"floor_images": [
