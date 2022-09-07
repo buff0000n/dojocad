@@ -253,7 +253,7 @@ var roomMetadata =
 		{"x": -32, "y": -16, "floor": 0, "outx": -1, "outy": 0},
 		{"x": -32, "y": 16, "floor": 0, "outx": -1, "outy": 0}],
 	"floor_images": [
-		{"floor": 0, "image": "starlight-market", "marker_images": [{"image": "marker-starlight-market-glass", "x": 22.5, "y": -43, "rot": 0}]}],
+		{"floor": 0, "image": "starlight-market", "marker_images": []}],
 	"resources": [
 		{"resource": "Credits", "costs": [1000, 3000, 10000, 30000, 100000]},
 		{"resource": "Ferrite", "costs": [800, 2400, 8000, 24000, 80000]},
