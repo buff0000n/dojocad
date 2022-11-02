@@ -347,6 +347,24 @@ var roomMetadata =
 		{"resource": "Forma", "costs": [1, 1, 1, 3, 10]}], "unverified": true,
     "treetype": "h-6",
 	"blockedFromAboveBy": []},
+{"id": "co", "image": "ostron-cove", "name": "Ostron Cove", "category": "Theme Halls", "spawn": false, "prereq": null, "capacity": 200, "energy": -5, "maxnum": null, "floor": -12, "ceil": 32,
+	"bounds": [
+		{"x1": -32, "y1": -38, "x2": 32, "y2": 32, "floor": -12, "ceil": 32},
+		{"x1": -31, "y1": -86, "x2": 31, "y2": -38, "floor": -12, "ceil": 32}],
+	"doors": [
+		{"x": 0, "y": 32, "floor": 0, "outx": 0, "outy": 1},
+		{"x": 32, "y": 16, "floor": 0, "outx": 1, "outy": 0},
+		{"x": 32, "y": -16, "floor": 0, "outx": 1, "outy": 0},
+		{"x": -32, "y": -16, "floor": 0, "outx": -1, "outy": 0},
+		{"x": -32, "y": 16, "floor": 0, "outx": -1, "outy": 0}],
+	"resources": [
+		{"resource": "Credits", "costs": [1000, 3000, 10000, 30000, 100000]},
+		{"resource": "Ferrite", "costs": [800, 2400, 8000, 24000, 80000]},
+		{"resource": "Circuits", "costs": [200, 600, 2000, 6000, 20000]},
+		{"resource": "Salvage", "costs": [500, 1500, 5000, 15000, 50000]},
+		{"resource": "Forma", "costs": [1, 1, 1, 3, 10]}], "unverified": true,
+    "treetype": "h-5",
+	"blockedFromAboveBy": []},
 
 {"id": "or", "image": "oracle2", "name": "Oracle", "category": "Labs", "prereq": null, "capacity": -2, "energy": -5, "maxnum": null, "floor": -8, "ceil": 12, "xp": 10000,
 	"bounds": [
@@ -1050,6 +1068,55 @@ var treeMetadata = {
                     key[6] +
                     key[5] +
                     key[4]
+            ];
+        }
+    },
+    "h-5": {
+        // bottom half of a 5-door hall
+        "a-0000" : {"tree": true, "image": "tree-h-0", "x": 0, "y": 16, "rot": 0, "fx": 0, "fy": 0, "z": 1 },
+        "a-1000" : {"tree": true, "image": "tree-h-2a", "x": 0, "y": 16, "rot": 0, "fx": 0, "fy": 0, "z": 1 },
+        "a-0100" : {"tree": true, "image": "tree-h-2b", "x": 0, "y": 16, "rot": 0, "fx": 0, "fy": 0, "z": 1 },
+        "a-0010" : {"tree": true, "image": "tree-h-0", "x": 0, "y": 16, "rot": 0, "fx": 0, "fy": 0, "z": 1 },
+        "a-0001" : {"tree": true, "image": "tree-h-2b", "x": 0, "y": 16, "rot": 0, "fx": 1, "fy": 0, "z": 1 },
+        "a-1010" : {"tree": true, "image": "tree-h-2a", "x": 0, "y": 16, "rot": 0, "fx": 0, "fy": 0, "z": 1 },
+        "a-0101" : {"tree": true, "image": "tree-h-3b", "x": 0, "y": 16, "rot": 0, "fx": 0, "fy": 0, "z": 1 },
+        "a-1100" : {"tree": true, "image": "tree-h-3a", "x": 0, "y": 16, "rot": 0, "fx": 0, "fy": 0, "z": 1 },
+        "a-0110" : {"tree": true, "image": "tree-h-2b", "x": 0, "y": 16, "rot": 0, "fx": 0, "fy": 0, "z": 1 },
+        "a-0011" : {"tree": true, "image": "tree-h-2b", "x": 0, "y": 16, "rot": 0, "fx": 1, "fy": 0, "z": 1 },
+        "a-1001" : {"tree": true, "image": "tree-h-3a", "x": 0, "y": 16, "rot": 0, "fx": 1, "fy": 0, "z": 1 },
+        "a-1110" : {"tree": true, "image": "tree-h-3a", "x": 0, "y": 16, "rot": 0, "fx": 0, "fy": 0, "z": 1 },
+        "a-0111" : {"tree": true, "image": "tree-h-3b", "x": 0, "y": 16, "rot": 0, "fx": 0, "fy": 0, "z": 1 },
+        "a-1011" : {"tree": true, "image": "tree-h-3a", "x": 0, "y": 16, "rot": 0, "fx": 1, "fy": 0, "z": 1 },
+        "a-1101" : {"tree": true, "image": "tree-h-4", "x": 0, "y": 16, "rot": 0, "fx": 0, "fy": 0, "z": 1 },
+        "a-1111" : {"tree": true, "image": "tree-h-4", "x": 0, "y": 16, "rot": 0, "fx": 0, "fy": 0, "z": 1 },
+        // top half of a 5-door hall, rotated 180
+        "b-0000" : {"tree": true, "image": "tree-h-0", "x": 0, "y": -16, "rot": 180, "fx": 0, "fy": 0, "z": 1 },
+        "b-0100" : {"tree": true, "image": "tree-h-2b", "x": 0, "y": -16, "rot": 180, "fx": 0, "fy": 0, "z": 1 },
+        "b-0010" : {"tree": true, "image": "tree-h-0", "x": 0, "y": -16, "rot": 180, "fx": 0, "fy": 0, "z": 1 },
+        "b-0001" : {"tree": true, "image": "tree-h-2b", "x": 0, "y": -16, "rot": 180, "fx": 1, "fy": 0, "z": 1 },
+        "b-0101" : {"tree": true, "image": "tree-h-3b", "x": 0, "y": -16, "rot": 180, "fx": 0, "fy": 0, "z": 1 },
+        "b-0110" : {"tree": true, "image": "tree-h-2b", "x": 0, "y": -16, "rot": 180, "fx": 0, "fy": 0, "z": 1 },
+        "b-0011" : {"tree": true, "image": "tree-h-2b", "x": 0, "y": -16, "rot": 180, "fx": 1, "fy": 0, "z": 1 },
+        "b-0111" : {"tree": true, "image": "tree-h-3b", "x": 0, "y": -16, "rot": 180, "fx": 0, "fy": 0, "z": 1 },
+        // split a 6-door key into two 4-door keys
+        "convertKey": function(key) {
+            // 5-door layout:
+            //    0
+            // 4     1
+            // 3     2
+            //
+            // gets split into:
+            //
+            //    0
+            // 4     1
+            //    X     (1 if 2|3, 0 otherwise)
+            //
+            //    X     (1 if 0|1|4, 0 otherwise)
+            // 3     2
+            //
+            return [
+                "a-" + key[0] + key[1] + (key.substring(2,4) == "00" ? "0" : "1") + key[4],
+                "b-0" + key[3] + ((key.substring(4) + key.substring(0,2)) == "000" ? "0" : "1") + key[2]
             ];
         }
     },
