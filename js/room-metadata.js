@@ -203,7 +203,7 @@ var roomMetadata =
 		{"resource": "Forma", "costs": [1, 1, 3, 8, 25]}],
     "treetype": "h-6",
 	"blockedFromAboveBy": [
-		"ce","ob","oc","re","ef", "ot"]},
+		"ce","ob","oc","re","ef", "ot", "gc"]},
 {"id": "he", "image": "entrati-hall", "name": "Entrati Audience Chamber", "category": "Theme Halls", "spawn": true, "prereq": null, "capacity": 200, "energy": -2, "maxnum": null, "floor": -12, "ceil": 32,
 	"bounds": [
 		{"x1": -32, "y1": -32, "x2": 32, "y2": 32, "floor": -12, "ceil": 32}],
@@ -310,6 +310,25 @@ var roomMetadata =
 {"id": "ka", "image": "kuva-asteroid", "name": "Kuva Asteroid", "category": "Theme Halls", "spawn": false, "prereq": null, "capacity": 200, "energy": -5, "maxnum": null, "floor": -4, "ceil": 32,
 	"bounds": [
 		{"x1": -32, "y1": -32, "x2": 32, "y2": 32, "floor": -4, "ceil": 32}],
+	"doors": [
+		{"x": 0, "y": 32, "floor": 0, "outx": 0, "outy": 1},
+		{"x": 32, "y": 16, "floor": 0, "outx": 1, "outy": 0},
+		{"x": 32, "y": -16, "floor": 0, "outx": 1, "outy": 0},
+		{"x": 0, "y": -32, "floor": 0, "outx": 0, "outy": -1},
+		{"x": -32, "y": -16, "floor": 0, "outx": -1, "outy": 0},
+		{"x": -32, "y": 16, "floor": 0, "outx": -1, "outy": 0}],
+	"resources": [
+		{"resource": "Credits", "costs": [1000, 3000, 10000, 30000, 100000]},
+		{"resource": "Ferrite", "costs": [800, 2400, 8000, 24000, 80000]},
+		{"resource": "Circuits", "costs": [200, 600, 2000, 6000, 20000]},
+		{"resource": "Salvage", "costs": [500, 1500, 5000, 15000, 50000]},
+		{"resource": "Forma", "costs": [1, 1, 1, 3, 10]}], "unverified": true,
+    "treetype": "h-6",
+	"blockedFromAboveBy": [
+		"ob"]},
+{"id": "gc", "image": "galleon-chamber", "name": "Galleon Chamber", "category": "Theme Halls", "spawn": false, "prereq": null, "capacity": 200, "energy": -5, "maxnum": null, "floor": -26, "ceil": 34,
+	"bounds": [
+		{"x1": -32, "y1": -32, "x2": 32, "y2": 32, "floor": -26, "ceil": 34}],
 	"doors": [
 		{"x": 0, "y": 32, "floor": 0, "outx": 0, "outy": 1},
 		{"x": 32, "y": 16, "floor": 0, "outx": 1, "outy": 0},
@@ -570,7 +589,7 @@ var roomMetadata =
 		{"resource": "Forma", "costs": [1, 1, 2, 5, 15]}], "unverified": true,
     "treetype": "os-1",
 	"blockedFromAboveBy": [
-		"ob","oc","re","ce","ef","uc","t4","ot"]},
+		"ob","oc","re","ce","ef","uc","t4","ot","gc"]},
 
 {"id": "ob", "image": "observatory", "name": "Observatory", "category": "Misc", "prereq": null, "capacity": -2, "energy": -5, "maxnum": null, "floor": -36, "ceil": 52,
 	"bounds": [
@@ -586,7 +605,7 @@ var roomMetadata =
 		{"resource": "Forma", "costs": [1, 1, 2, 5, 15]}], "unverified": true,
     "treetype": "ob-1",
 	"blockedFromAboveBy": [
-		"lc","ce","ob","oc","lo","re","uc","ef","t4","ot"]},
+		"lc","ce","ob","oc","lo","re","uc","ef","t4","ot","gc"]},
 {"id": "gs", "image": "small-garden", "name": "Small Garden", "category": "Misc", "prereq": null, "capacity": -10, "energy": -6, "maxnum": null, "floor": 0, "ceil": 20,
 	"bounds": [
 		{"x1": -16, "y1": -16, "x2": 16, "y2": 16, "floor": 0, "ceil": 20}],
