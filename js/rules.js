@@ -368,6 +368,7 @@ class RoomCounter extends RoomRule {
 	constructor() {
 		super();
 		this.room_counts = {};
+		this.category_counts = {};
 	}
 
 	roomAdded(room) {
@@ -376,6 +377,12 @@ class RoomCounter extends RoomRule {
 	        this.room_counts[id] = 0;
 	    }
         this.room_counts[id]++;
+
+	    var cat = room.metadata.category;
+	    if (!this.category_counts[cat]) {
+	        this.category_counts[cat] = 0;
+	    }
+        this.category_counts[cat]++;
 	}
 
 	roomRemoved(room) {
@@ -383,11 +390,21 @@ class RoomCounter extends RoomRule {
 	    if (this.room_counts[id]) {
 	        this.room_counts[id]--;
 	    }
+
+	    var cat = room.metadata.category;
+	    if (this.category_counts[cat]) {
+	        this.category_counts[cat]--;
+	    }
 	}
 
 	getRoomCount(metadata) {
 	    var id = metadata.id;
 	    var count = this.room_counts[id];
+	    return count ? count : 0
+	}
+
+	getCategoryCount(category) {
+	    var count = this.category_counts[category];
 	    return count ? count : 0
 	}
 

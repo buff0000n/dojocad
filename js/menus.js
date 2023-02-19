@@ -386,7 +386,9 @@ function doAddMenu() {
 	menuDiv.appendChild(buildMenuHeaderLine("Categories", 6));
 
     for (var cat in rmd) {
-        var catButtonDiv = buildMenuButton(cat, doAddCategoryMenu, icon="icon-room-" + rmd[cat][0].image);
+        var catCount = roomCounter.getCategoryCount(cat);
+        var title = cat + (catCount > 0 ? (" (" + catCount + ")") : "");
+        var catButtonDiv = buildMenuButton(title, doAddCategoryMenu, icon="icon-room-" + rmd[cat][0].image);
         for (var i = 0; i < catButtonDiv.children.length; i++) {
 	        catButtonDiv.children[i].category = cat;
 	        catButtonDiv.children[i].roomList = rmd[cat];
@@ -418,7 +420,9 @@ function doAddCategoryMenu() {
 
     var menuDiv = buildMenu();
 
-	menuDiv.appendChild(buildMenuHeaderLine(catButton.category, 6));
+    var catCount = roomCounter.getCategoryCount(catButton.category);
+    var menuTitle = catButton.category + (catCount > 0 ? (" (" + catCount + ")") : "");
+	menuDiv.appendChild(buildMenuHeaderLine(menuTitle, 6));
 
     for (var r in roomList) {
 	    var roomMetadata = roomList[r];
