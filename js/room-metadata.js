@@ -182,7 +182,7 @@ var roomMetadata =
     "treetype": "h-6",
 	"blockedFromAboveBy": [
 	    ]},
-{"id": "hi", "image": "inspiration-hall", "name": "Inspiration Hall", "category": "Theme Halls", "prereq": null, "capacity": 100, "energy": -1, "maxnum": 3, "spawn": true, "floor": -12, "ceil": 46,
+{"id": "hi", "image": "inspiration-hall", "name": "Inspiration Hall", "category": "Classic Halls", "prereq": null, "capacity": 100, "energy": -1, "maxnum": 3, "spawn": true, "floor": -12, "ceil": 46,
 	"bounds": [
 		{"x1": -32, "y1": -32, "x2": 32, "y2": 32, "floor": -12, "ceil": 46}],
 	"doors": [
@@ -203,15 +203,16 @@ var roomMetadata =
 		{"resource": "Forma", "costs": [1, 1, 3, 8, 25]}],
     "treetype": "h-6",
 	"blockedFromAboveBy": [
-		"ce","ob","oc","re","ef", "ot", "gc"]},
-{"id": "he", "image": "entrati-hall", "name": "Entrati Audience Chamber", "category": "Theme Halls", "spawn": true, "prereq": null, "capacity": 200, "energy": -2, "maxnum": null, "floor": -12, "ceil": 32,
+		"ce","ob","oc","re","ef", "ot", "gc", "dc"]},
+
+
+{"id": "dc", "image": "duviri-cave", "name": "Duviri Cave", "category": "Theme Halls A-J", "spawn": false, "prereq": null, "capacity": 200, "energy": -5, "maxnum": null, "floor": -22, "ceil": 36,
 	"bounds": [
-		{"x1": -32, "y1": -32, "x2": 32, "y2": 32, "floor": -12, "ceil": 32}],
+		{"x1": -32, "y1": -32, "x2": 32, "y2": 32, "floor": -22, "ceil": 36}],
 	"doors": [
 		{"x": 0, "y": 32, "floor": 0, "outx": 0, "outy": 1},
 		{"x": 32, "y": 16, "floor": 0, "outx": 1, "outy": 0},
 		{"x": 32, "y": -16, "floor": 0, "outx": 1, "outy": 0},
-		{"x": 0, "y": -32, "floor": 0, "outx": 0, "outy": -1},
 		{"x": -32, "y": -16, "floor": 0, "outx": -1, "outy": 0},
 		{"x": -32, "y": 16, "floor": 0, "outx": -1, "outy": 0}],
 	"resources": [
@@ -220,50 +221,9 @@ var roomMetadata =
 		{"resource": "Circuits", "costs": [200, 600, 2000, 6000, 20000]},
 		{"resource": "Salvage", "costs": [500, 1500, 5000, 15000, 50000]},
 		{"resource": "Forma", "costs": [1, 1, 1, 3, 10]}], "unverified": true,
-    "treetype": "h-6",
-	"blockedFromAboveBy": [
-		"ob"]},
-{"id": "hf", "image": "infested-hall", "name": "Infested Chamber", "category": "Theme Halls", "spawn": true, "prereq": null, "capacity": 200, "energy": -5, "maxnum": null, "floor": -12, "ceil": 32,
-	"bounds": [
-		{"x1": -32, "y1": -32, "x2": 32, "y2": 32, "floor": -12, "ceil": 32}],
-	"doors": [
-		{"x": 0, "y": 32, "floor": 0, "outx": 0, "outy": 1},
-		{"x": 32, "y": 16, "floor": 0, "outx": 1, "outy": 0},
-		{"x": 32, "y": -16, "floor": 0, "outx": 1, "outy": 0},
-		{"x": 0, "y": -32, "floor": 0, "outx": 0, "outy": -1},
-		{"x": -32, "y": -16, "floor": 0, "outx": -1, "outy": 0},
-		{"x": -32, "y": 16, "floor": 0, "outx": -1, "outy": 0}],
-	"resources": [
-		{"resource": "Credits", "costs": [1000, 3000, 10000, 30000, 100000]},
-		{"resource": "Ferrite", "costs": [800, 2400, 8000, 24000, 80000]},
-		{"resource": "Circuits", "costs": [200, 600, 2000, 6000, 20000]},
-		{"resource": "Salvage", "costs": [500, 1500, 5000, 15000, 50000]},
-		{"resource": "Forma", "costs": [1, 1, 1, 3, 10]}], "unverified": true,
-    "treetype": "h-6",
-	"blockedFromAboveBy": [
-		"ob"]},
-{"id": "sm", "image": "starlight-market", "name": "Starlight Market", "category": "Theme Halls", "spawn": false, "prereq": null, "capacity": 200, "energy": -5, "maxnum": null, "floor": -12, "ceil": 32,
-	"bounds": [
-		{"x1": -32, "y1": -32, "x2": 32, "y2": 32, "floor": -12, "ceil": 32}],
-	"doors": [
-		{"x": 0, "y": 32, "floor": 0, "outx": 0, "outy": 1},
-		{"x": 32, "y": 16, "floor": 0, "outx": 1, "outy": 0},
-		{"x": 32, "y": -16, "floor": 0, "outx": 1, "outy": 0},
-		{"x": 0, "y": -32, "floor": 0, "outx": 0, "outy": -1},
-		{"x": -32, "y": -16, "floor": 0, "outx": -1, "outy": 0},
-		{"x": -32, "y": 16, "floor": 0, "outx": -1, "outy": 0}],
-	"floor_images": [
-		{"floor": 0, "image": "starlight-market", "marker_images": []}],
-	"resources": [
-		{"resource": "Credits", "costs": [1000, 3000, 10000, 30000, 100000]},
-		{"resource": "Ferrite", "costs": [800, 2400, 8000, 24000, 80000]},
-		{"resource": "Circuits", "costs": [200, 600, 2000, 6000, 20000]},
-		{"resource": "Salvage", "costs": [500, 1500, 5000, 15000, 50000]},
-		{"resource": "Forma", "costs": [1, 1, 1, 3, 10]}], "unverified": true,
-    "treetype": "h-6",
-	"blockedFromAboveBy": [
-		"ob"]},
-{"id": "ef", "image": "earth-forest", "name": "Earth Forest Chamber", "category": "Theme Halls", "spawn": false, "prereq": null, "capacity": 200, "energy": -5, "maxnum": null, "floor": -22, "ceil": 68,
+    "treetype": "h-5",
+	"blockedFromAboveBy": ["ob"]},
+{"id": "ef", "image": "earth-forest", "name": "Earth Forest Chamber", "category": "Theme Halls A-J", "spawn": false, "prereq": null, "capacity": 200, "energy": -5, "maxnum": null, "floor": -22, "ceil": 68,
 	"bounds": [
 		{"x1": -32, "y1": -64, "x2": 32, "y2": 64, "floor": -22, "ceil": 68}],
 	"doors": [
@@ -288,9 +248,9 @@ var roomMetadata =
 		{"resource": "Forma", "costs": [1, 1, 1, 3, 10]}], "unverified": true,
     "treetype": "h-10",
 	"blockedFromAboveBy": []},
-{"id": "uc", "image": "uranus-chamber", "name": "Uranus Chamber", "category": "Theme Halls", "spawn": false, "prereq": null, "capacity": 200, "energy": -5, "maxnum": null, "floor": -20, "ceil": 32,
+{"id": "he", "image": "entrati-hall", "name": "Entrati Audience Chamber", "category": "Theme Halls A-J", "spawn": true, "prereq": null, "capacity": 200, "energy": -2, "maxnum": null, "floor": -12, "ceil": 32,
 	"bounds": [
-		{"x1": -32, "y1": -32, "x2": 32, "y2": 32, "floor": -20, "ceil": 32}],
+		{"x1": -32, "y1": -32, "x2": 32, "y2": 32, "floor": -12, "ceil": 32}],
 	"doors": [
 		{"x": 0, "y": 32, "floor": 0, "outx": 0, "outy": 1},
 		{"x": 32, "y": 16, "floor": 0, "outx": 1, "outy": 0},
@@ -307,26 +267,7 @@ var roomMetadata =
     "treetype": "h-6",
 	"blockedFromAboveBy": [
 		"ob"]},
-{"id": "ka", "image": "kuva-asteroid", "name": "Kuva Asteroid", "category": "Theme Halls", "spawn": false, "prereq": null, "capacity": 200, "energy": -5, "maxnum": null, "floor": -4, "ceil": 32,
-	"bounds": [
-		{"x1": -32, "y1": -32, "x2": 32, "y2": 32, "floor": -4, "ceil": 32}],
-	"doors": [
-		{"x": 0, "y": 32, "floor": 0, "outx": 0, "outy": 1},
-		{"x": 32, "y": 16, "floor": 0, "outx": 1, "outy": 0},
-		{"x": 32, "y": -16, "floor": 0, "outx": 1, "outy": 0},
-		{"x": 0, "y": -32, "floor": 0, "outx": 0, "outy": -1},
-		{"x": -32, "y": -16, "floor": 0, "outx": -1, "outy": 0},
-		{"x": -32, "y": 16, "floor": 0, "outx": -1, "outy": 0}],
-	"resources": [
-		{"resource": "Credits", "costs": [1000, 3000, 10000, 30000, 100000]},
-		{"resource": "Ferrite", "costs": [800, 2400, 8000, 24000, 80000]},
-		{"resource": "Circuits", "costs": [200, 600, 2000, 6000, 20000]},
-		{"resource": "Salvage", "costs": [500, 1500, 5000, 15000, 50000]},
-		{"resource": "Forma", "costs": [1, 1, 1, 3, 10]}], "unverified": true,
-    "treetype": "h-6",
-	"blockedFromAboveBy": [
-		"ob"]},
-{"id": "gc", "image": "galleon-chamber", "name": "Galleon Chamber", "category": "Theme Halls", "spawn": false, "prereq": null, "capacity": 200, "energy": -5, "maxnum": null, "floor": -26, "ceil": 34,
+{"id": "gc", "image": "galleon-chamber", "name": "Galleon Chamber", "category": "Theme Halls A-J", "spawn": false, "prereq": null, "capacity": 200, "energy": -5, "maxnum": null, "floor": -26, "ceil": 34,
 	"bounds": [
 		{"x1": -32, "y1": -32, "x2": 32, "y2": 32, "floor": -26, "ceil": 34}],
 	"doors": [
@@ -345,7 +286,46 @@ var roomMetadata =
     "treetype": "h-6",
 	"blockedFromAboveBy": [
 		"ob"]},
-{"id": "ot", "image": "orokin-tower", "name": "Orokin Tower Chamber", "category": "Theme Halls", "spawn": false, "prereq": null, "capacity": 200, "energy": -5, "maxnum": null, "floor": -32, "ceil": 70,
+{"id": "hf", "image": "infested-hall", "name": "Infested Chamber", "category": "Theme Halls A-J", "spawn": true, "prereq": null, "capacity": 200, "energy": -5, "maxnum": null, "floor": -12, "ceil": 32,
+	"bounds": [
+		{"x1": -32, "y1": -32, "x2": 32, "y2": 32, "floor": -12, "ceil": 32}],
+	"doors": [
+		{"x": 0, "y": 32, "floor": 0, "outx": 0, "outy": 1},
+		{"x": 32, "y": 16, "floor": 0, "outx": 1, "outy": 0},
+		{"x": 32, "y": -16, "floor": 0, "outx": 1, "outy": 0},
+		{"x": 0, "y": -32, "floor": 0, "outx": 0, "outy": -1},
+		{"x": -32, "y": -16, "floor": 0, "outx": -1, "outy": 0},
+		{"x": -32, "y": 16, "floor": 0, "outx": -1, "outy": 0}],
+	"resources": [
+		{"resource": "Credits", "costs": [1000, 3000, 10000, 30000, 100000]},
+		{"resource": "Ferrite", "costs": [800, 2400, 8000, 24000, 80000]},
+		{"resource": "Circuits", "costs": [200, 600, 2000, 6000, 20000]},
+		{"resource": "Salvage", "costs": [500, 1500, 5000, 15000, 50000]},
+		{"resource": "Forma", "costs": [1, 1, 1, 3, 10]}], "unverified": true,
+    "treetype": "h-6",
+	"blockedFromAboveBy": [
+		"ob"]},
+
+{"id": "ka", "image": "kuva-asteroid", "name": "Kuva Asteroid", "category": "Theme Halls K-Z", "spawn": false, "prereq": null, "capacity": 200, "energy": -5, "maxnum": null, "floor": -4, "ceil": 32,
+	"bounds": [
+		{"x1": -32, "y1": -32, "x2": 32, "y2": 32, "floor": -4, "ceil": 32}],
+	"doors": [
+		{"x": 0, "y": 32, "floor": 0, "outx": 0, "outy": 1},
+		{"x": 32, "y": 16, "floor": 0, "outx": 1, "outy": 0},
+		{"x": 32, "y": -16, "floor": 0, "outx": 1, "outy": 0},
+		{"x": 0, "y": -32, "floor": 0, "outx": 0, "outy": -1},
+		{"x": -32, "y": -16, "floor": 0, "outx": -1, "outy": 0},
+		{"x": -32, "y": 16, "floor": 0, "outx": -1, "outy": 0}],
+	"resources": [
+		{"resource": "Credits", "costs": [1000, 3000, 10000, 30000, 100000]},
+		{"resource": "Ferrite", "costs": [800, 2400, 8000, 24000, 80000]},
+		{"resource": "Circuits", "costs": [200, 600, 2000, 6000, 20000]},
+		{"resource": "Salvage", "costs": [500, 1500, 5000, 15000, 50000]},
+		{"resource": "Forma", "costs": [1, 1, 1, 3, 10]}], "unverified": true,
+    "treetype": "h-6",
+	"blockedFromAboveBy": [
+		"ob"]},
+{"id": "ot", "image": "orokin-tower", "name": "Orokin Tower Chamber", "category": "Theme Halls K-Z", "spawn": false, "prereq": null, "capacity": 200, "energy": -5, "maxnum": null, "floor": -32, "ceil": 70,
 	"bounds": [
 		{"x1": -32, "y1": -32, "x2": 32, "y2": 32, "floor": -32, "ceil": 70}],
 	"doors": [
@@ -366,7 +346,7 @@ var roomMetadata =
 		{"resource": "Forma", "costs": [1, 1, 1, 3, 10]}], "unverified": true,
     "treetype": "h-6",
 	"blockedFromAboveBy": []},
-{"id": "co", "image": "ostron-cove", "name": "Ostron Cove", "category": "Theme Halls", "spawn": false, "prereq": null, "capacity": 200, "energy": -5, "maxnum": null, "floor": -12, "ceil": 32,
+{"id": "co", "image": "ostron-cove", "name": "Ostron Cove", "category": "Theme Halls K-Z", "spawn": false, "prereq": null, "capacity": 200, "energy": -5, "maxnum": null, "floor": -12, "ceil": 32,
 	"bounds": [
 		{"x1": -32, "y1": -38, "x2": 32, "y2": 32, "floor": -12, "ceil": 32},
 		{"x1": -31, "y1": -86, "x2": 31, "y2": -38, "floor": -12, "ceil": 32}],
@@ -384,6 +364,46 @@ var roomMetadata =
 		{"resource": "Forma", "costs": [1, 1, 1, 3, 10]}], "unverified": true,
     "treetype": "h-5",
 	"blockedFromAboveBy": []},
+{"id": "sm", "image": "starlight-market", "name": "Starlight Market", "category": "Theme Halls K-Z", "spawn": false, "prereq": null, "capacity": 200, "energy": -5, "maxnum": null, "floor": -12, "ceil": 32,
+	"bounds": [
+		{"x1": -32, "y1": -32, "x2": 32, "y2": 32, "floor": -12, "ceil": 32}],
+	"doors": [
+		{"x": 0, "y": 32, "floor": 0, "outx": 0, "outy": 1},
+		{"x": 32, "y": 16, "floor": 0, "outx": 1, "outy": 0},
+		{"x": 32, "y": -16, "floor": 0, "outx": 1, "outy": 0},
+		{"x": 0, "y": -32, "floor": 0, "outx": 0, "outy": -1},
+		{"x": -32, "y": -16, "floor": 0, "outx": -1, "outy": 0},
+		{"x": -32, "y": 16, "floor": 0, "outx": -1, "outy": 0}],
+	"floor_images": [
+		{"floor": 0, "image": "starlight-market", "marker_images": []}],
+	"resources": [
+		{"resource": "Credits", "costs": [1000, 3000, 10000, 30000, 100000]},
+		{"resource": "Ferrite", "costs": [800, 2400, 8000, 24000, 80000]},
+		{"resource": "Circuits", "costs": [200, 600, 2000, 6000, 20000]},
+		{"resource": "Salvage", "costs": [500, 1500, 5000, 15000, 50000]},
+		{"resource": "Forma", "costs": [1, 1, 1, 3, 10]}], "unverified": true,
+    "treetype": "h-6",
+	"blockedFromAboveBy": [
+		"ob"]},
+{"id": "uc", "image": "uranus-chamber", "name": "Uranus Chamber", "category": "Theme Halls K-Z", "spawn": false, "prereq": null, "capacity": 200, "energy": -5, "maxnum": null, "floor": -20, "ceil": 32,
+	"bounds": [
+		{"x1": -32, "y1": -32, "x2": 32, "y2": 32, "floor": -20, "ceil": 32}],
+	"doors": [
+		{"x": 0, "y": 32, "floor": 0, "outx": 0, "outy": 1},
+		{"x": 32, "y": 16, "floor": 0, "outx": 1, "outy": 0},
+		{"x": 32, "y": -16, "floor": 0, "outx": 1, "outy": 0},
+		{"x": 0, "y": -32, "floor": 0, "outx": 0, "outy": -1},
+		{"x": -32, "y": -16, "floor": 0, "outx": -1, "outy": 0},
+		{"x": -32, "y": 16, "floor": 0, "outx": -1, "outy": 0}],
+	"resources": [
+		{"resource": "Credits", "costs": [1000, 3000, 10000, 30000, 100000]},
+		{"resource": "Ferrite", "costs": [800, 2400, 8000, 24000, 80000]},
+		{"resource": "Circuits", "costs": [200, 600, 2000, 6000, 20000]},
+		{"resource": "Salvage", "costs": [500, 1500, 5000, 15000, 50000]},
+		{"resource": "Forma", "costs": [1, 1, 1, 3, 10]}], "unverified": true,
+    "treetype": "h-6",
+	"blockedFromAboveBy": [
+		"ob"]},
 
 {"id": "or", "image": "oracle2", "name": "Oracle", "category": "Labs", "prereq": null, "capacity": -2, "energy": -5, "maxnum": null, "floor": -8, "ceil": 12, "xp": 10000,
 	"bounds": [
@@ -589,7 +609,7 @@ var roomMetadata =
 		{"resource": "Forma", "costs": [1, 1, 2, 5, 15]}], "unverified": true,
     "treetype": "os-1",
 	"blockedFromAboveBy": [
-		"ob","oc","re","ce","ef","uc","t4","ot","gc"]},
+		"ob","oc","re","ce","ef","uc","t4","ot","gc","dc"]},
 
 {"id": "ob", "image": "observatory", "name": "Observatory", "category": "Misc", "prereq": null, "capacity": -2, "energy": -5, "maxnum": null, "floor": -36, "ceil": 52,
 	"bounds": [
@@ -605,7 +625,7 @@ var roomMetadata =
 		{"resource": "Forma", "costs": [1, 1, 2, 5, 15]}], "unverified": true,
     "treetype": "ob-1",
 	"blockedFromAboveBy": [
-		"lc","ce","ob","oc","lo","re","uc","ef","t4","ot","gc"]},
+		"lc","ce","ob","oc","lo","re","uc","ef","t4","ot","gc","dc"]},
 {"id": "gs", "image": "small-garden", "name": "Small Garden", "category": "Misc", "prereq": null, "capacity": -10, "energy": -6, "maxnum": null, "floor": 0, "ceil": 20,
 	"bounds": [
 		{"x1": -16, "y1": -16, "x2": 16, "y2": 16, "floor": 0, "ceil": 20}],
