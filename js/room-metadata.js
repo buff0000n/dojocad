@@ -213,6 +213,7 @@ var roomMetadata =
 		{"x": 0, "y": 32, "floor": 0, "outx": 0, "outy": 1},
 		{"x": 32, "y": 16, "floor": 0, "outx": 1, "outy": 0},
 		{"x": 32, "y": -16, "floor": 0, "outx": 1, "outy": 0},
+		{"x": 0, "y": -32, "floor": 0, "outx": 0, "outy": -1},
 		{"x": -32, "y": -16, "floor": 0, "outx": -1, "outy": 0},
 		{"x": -32, "y": 16, "floor": 0, "outx": -1, "outy": 0}],
 	"resources": [
