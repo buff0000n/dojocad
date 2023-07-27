@@ -704,6 +704,34 @@ var roomMetadata =
     "treetype": "os-1",
 	"blockedFromAboveBy": [
 	    ]},
+{"id": "du1", "image": "duviri-courtier", "name": "Courtier's Bliss", "category": "Misc", "prereq": null, "capacity": -2, "energy": -5, "maxnum": 1, "floor": -12, "ceil": 18,
+	"bounds": [
+		{"x1": -16, "y1": -14, "x2": 16, "y2": 16, "floor": -12, "ceil": 18}],
+	"doors": [
+		{"x": 0, "y": 16, "floor": 0, "outx": 0, "outy": 1}],
+	"resources": [
+		{"resource": "Credits", "costs": [1000, 3000, 10000, 30000, 100000]},
+		{"resource": "Ferrite", "costs": [800, 2400, 8000, 24000, 80000]},
+		{"resource": "Circuits", "costs": [200, 600, 2000, 6000, 20000]},
+		{"resource": "Salvage", "costs": [500, 1500, 5000, 15000, 50000]},
+		{"resource": "Forma", "costs": [1, 1, 1, 3, 10]}], "unverified": true,
+    "treetype": "32-1",
+	"blockedFromAboveBy": [
+    ]},
+{"id": "du2", "image": "duviri-harbinger", "name": "Harbinger's Pass", "category": "Misc", "prereq": null, "capacity": -2, "energy": -5, "maxnum": 1, "floor": -12, "ceil": 18,
+	"bounds": [
+		{"x1": -17, "y1": -32, "x2": 17, "y2": 16, "floor": -12, "ceil": 18}],
+	"doors": [
+		{"x": 0, "y": 16, "floor": 0, "outx": 0, "outy": 1}],
+	"resources": [
+		{"resource": "Credits", "costs": [1000, 3000, 10000, 30000, 100000]},
+		{"resource": "Ferrite", "costs": [800, 2400, 8000, 24000, 80000]},
+		{"resource": "Circuits", "costs": [200, 600, 2000, 6000, 20000]},
+		{"resource": "Salvage", "costs": [500, 1500, 5000, 15000, 50000]},
+		{"resource": "Forma", "costs": [1, 1, 1, 3, 10]}], "unverified": true,
+    "treetype": "32-1",
+	"blockedFromAboveBy": [
+    ]},
 
 {"id": "re", "image": "reactor", "name": "Reactor", "category": "Utility", "prereq": null, "capacity": -5, "energy": 25, "maxnum": null, "floor": -28, "ceil": 36,
 	"bounds": [
