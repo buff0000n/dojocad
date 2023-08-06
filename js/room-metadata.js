@@ -706,7 +706,10 @@ var roomMetadata =
 	    ]},
 {"id": "du1", "image": "duviri-courtier", "name": "Courtier's Bliss", "category": "Misc", "prereq": null, "capacity": -2, "energy": -5, "maxnum": 1, "floor": -12, "ceil": 18,
 	"bounds": [
-		{"x1": -16, "y1": -14, "x2": 16, "y2": 16, "floor": -12, "ceil": 18}],
+		{"x1": -16, "y1": -14, "x2": 16.5, "y2": 16, "floor": -12, "ceil": 18},
+		// I can't find a cleaner way to express how this room does not fit directly against any room on the left
+		// *except* for the freakin' Dry Dock
+		{"x1": -16, "y1": -14, "x2": 16, "y2": 16, "floor": -12, "ceil": 18, "bespoke": ["dd"]}],
 	"doors": [
 		{"x": 0, "y": 16, "floor": 0, "outx": 0, "outy": 1}],
 	"resources": [
@@ -720,7 +723,10 @@ var roomMetadata =
     ]},
 {"id": "du2", "image": "duviri-harbinger", "name": "Harbinger's Pass", "category": "Misc", "prereq": null, "capacity": -2, "energy": -5, "maxnum": 1, "floor": -12, "ceil": 18,
 	"bounds": [
-		{"x1": -17, "y1": -32, "x2": 17, "y2": 16, "floor": -12, "ceil": 18}],
+		{"x1": -16, "y1": -32, "x2": 16.5, "y2": 16, "floor": -12, "ceil": 18},
+		// I can't find a cleaner way to express how this room does not fit directly against any room on the left
+		// *except* for the freakin' Dry Dock
+		{"x1": -16, "y1": -32, "x2": 16, "y2": 16, "floor": -12, "ceil": 18, "bespoke": ["dd"]}],
 	"doors": [
 		{"x": 0, "y": 16, "floor": 0, "outx": 0, "outy": 1}],
 	"resources": [

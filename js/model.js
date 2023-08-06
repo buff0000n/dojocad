@@ -237,12 +237,14 @@ function uncleanseLabel(label) {
 //==============================================================
 
 class Bound {
-    constructor(room, doorMetadata) {
+    constructor(room, metadata) {
         this.room = room;
-        this.metadata = doorMetadata;
-        this.invisible = "true" == doorMetadata.invis;
+        this.metadata = metadata;
+        // invisible and bespoke bounds are ignored for display purposes, outside of debug mode
+        this.invisible = "true" == metadata.invis || metadata.bespoke != null;
         this.debugBorder = null;
-        this.ignore = doorMetadata.ignore;
+        this.ignore = metadata.ignore;
+        this.bespoke = metadata.bespoke;
 
         this.collisions = Array();
     }
@@ -333,6 +335,44 @@ class Bound {
             this.debugBorder.remove();
         }
     }
+}
+
+// convenience function to filter a room's bounds relative to another room to account for bespoke bounds
+function getApplicableBounds(room, room2) {
+    // worth optimizing this
+    if (!room.bespokeBounds) return room.bounds;
+
+    // we need to make a new list
+    var bounds = [];
+    // flag
+    var foundBespokeMatch = false;
+    // loop over the room's bounds
+    for (var i = 0; i < room.bounds.length; i++) {
+        var bound = room.bounds[i];
+        // check if the bound is bespoke 
+        if (bound.bespoke != null) {
+            // check if the bound applies to the other room
+            if (bound.bespoke.indexOf(room2.metadata.id) >= 0) {
+                // check if this is our first matching bespoke bound
+                if (!foundBespokeMatch) {
+                    // reset the list
+                    bounds = [];
+                    // set the flag
+                    foundBespokeMatch = true;
+                }
+                // add to the new bespoke list
+                bounds.push(bound)
+            }
+            // otherwise, it's a bespoke bound for another room, so ignore it
+
+        // not a bespoke bound, so check if we've found any matching bespoke bounds
+        } else if (!foundBespokeMatch) {
+            // not a bespoke bound, and no matching bespoke bounds found, so it applies
+            bounds.push(bound)
+        }
+    }
+    // done
+    return bounds;
 }
 
 //==============================================================
@@ -657,6 +697,7 @@ class Room {
         this.dragging = false;
         this.placed = false;
         this.spawn = false;
+        this.bespokeBounds = false;
 
         this.ignoreRooms = null;
 
@@ -668,7 +709,10 @@ class Room {
 
         this.bounds = Array();
         for (var i = 0; i < this.metadata.bounds.length; i++) {
-            this.bounds.push(new Bound(this, this.metadata.bounds[i]));
+            var bound = new Bound(this, this.metadata.bounds[i]);
+            this.bounds.push(bound);
+            // track whether this room has any bespoke bounds
+            this.bespokeBounds |= bound.bespoke != null;
         }
 
         this.doors = Array();
@@ -1095,9 +1139,10 @@ class Room {
 				// see if the room isn't this room
 				if (room != this) {
 					// find collisions in the two sets of bound boxes
-					var cols = findCollisions(this.bounds, room.bounds);
+					// check for bespoke bound boxes on both sides
+					var cols = findCollisions(getApplicableBounds(this, room), getApplicableBounds(room, this));
 					// iterate over the collisions
-					for (var c = 0; c <cols.length; c++) {
+					for (var c = 0; c < cols.length; c++) {
 						// save the collision state in each bound object
 						cols[c][0].addCollision(cols[c][1]);
 					}
@@ -2752,7 +2797,8 @@ function buildCollisionMatrix(table) {
 	        var upperDoor = upperRoom.doors[0];
             upperRoom.setPosition(-upperDoor.metadata.x, -upperDoor.metadata.y, 101-upperRoomOffset, 0, updateFloors=false);
 
-			var collide = findCollisions(lowerRoom.bounds, upperRoom.bounds).length > 0;
+            // check for bespoke bound boxes on both sides
+			var collide = findCollisions(getApplicableBounds(lowerRoom, upperRoom), getApplicableBounds(upperRoom, lowerRoom)).length > 0;
 			var shouldCollide = rmd1.blockedFromAboveBy && (rmd1.blockedFromAboveBy.indexOf(rmd2.id) >=0);
 
 			if (collide) {
