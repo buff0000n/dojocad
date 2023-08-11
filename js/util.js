@@ -36,13 +36,17 @@ function getHref() {
     return hrefToUpdate ? hrefToUpdate : window.location.href;
 }
 
-function updateHref(href) {
+function updateHref(href, immediately=false) {
 	if (hrefUpdateTimeout) {
 		clearTimeout(hrefUpdateTimeout);
 	}
 
 	hrefToUpdate = href;
-	hrefUpdateTimeout = setTimeout(actuallyModifyUrl, hrefUpdateDelay);
+	if (immediately) {
+	    actuallyModifyUrl();
+	} else {
+    	hrefUpdateTimeout = setTimeout(actuallyModifyUrl, hrefUpdateDelay);
+	}
 }
 
 function actuallyModifyUrl() {

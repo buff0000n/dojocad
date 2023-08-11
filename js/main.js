@@ -743,6 +743,24 @@ function loadModelFromHref() {
     return loadModelFromUrl(window.location.href);
 }
 
+function reLoadModelFromUrl(url) {
+    // HACK, just select and delete all rooms
+    selectAllRoomsLikeReallyAllOfThem();
+    deleteSelectedRooms();
+
+    // load the model and view directly from the href
+    loadModelFromUrl(url);
+    loadViewFromUrl(url);
+
+    // HACK, select everything again and de-select to clear out some glitches
+    selectAllRoomsLikeReallyAllOfThem();
+    selectRooms([]);
+
+    // update the URL and tree
+    saveModelToUrl();
+    treeUpdated();
+}
+
 function loadModelFromUrl(url) {
 	var modelString = LZString.decompressFromEncodedURIComponent(getQueryParam(url, "mz"));
 	if (!modelString) {

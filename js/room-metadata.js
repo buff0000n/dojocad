@@ -520,8 +520,11 @@ var roomMetadata =
 
 {"id": "dd", "image": "dry-dock", "name": "Dry Dock", "category": "Interactive", "prereq": null, "capacity": -20, "energy": -6, "maxnum": 1, "floor": -80, "ceil": 200,
 	"bounds": [
-		{"x1": -128, "y1":  -128, "x2": 128, "y2":  128, "floor": -80, "ceil": 200},
-		{"x1": -128, "y1": -1280, "x2": 128, "y2":  -95.5, "floor": -200, "ceil": 200, "invis": "true"}],
+//		{"x1": -128, "y1":  -128, "x2": 128, "y2":  128, "floor": -80, "ceil": 200},
+		{"x1": -127.5, "y1":  -128,   "x2": 127.5, "y2":  127.5, "floor": -80,  "ceil": 200},
+		{"x1": -128,   "y1":   -16,   "x2": 128,   "y2":   16,   "floor":  0,   "ceil": 32},
+		{"x1":  -16,   "y1":   128,   "x2":  16,   "y2":   96,   "floor":  0,   "ceil": 32},
+		{"x1": -127.5, "y1": -1279.5, "x2": 127.5, "y2":  -95.5, "floor": -200, "ceil": 200, "invis": "true"}],
 	"doors": [
 		{"x": 0, "y": 128, "floor": 0, "outx": 0, "outy": 1},
 		{"x": 128, "y": 0, "floor": 0, "outx": 1, "outy": 0},
@@ -706,10 +709,11 @@ var roomMetadata =
 	    ]},
 {"id": "du1", "image": "duviri-courtier", "name": "Courtier's Bliss", "category": "Misc", "prereq": null, "capacity": -2, "energy": -5, "maxnum": 1, "floor": -12, "ceil": 18,
 	"bounds": [
-		{"x1": -16, "y1": -14, "x2": 16.5, "y2": 16, "floor": -12, "ceil": 18},
+		{"x1": -16, "y1": -14, "x2": 16.5, "y2": 16, "floor": -12, "ceil": 18}
 		// I can't find a cleaner way to express how this room does not fit directly against any room on the left
 		// *except* for the freakin' Dry Dock
-		{"x1": -16, "y1": -14, "x2": 16, "y2": 16, "floor": -12, "ceil": 18, "bespoke": ["dd"]}],
+		//, {"x1": -16, "y1": -14, "x2": 16, "y2": 16, "floor": -12, "ceil": 18, "bespoke": ["dd"]}
+		],
 	"doors": [
 		{"x": 0, "y": 16, "floor": 0, "outx": 0, "outy": 1}],
 	"resources": [
@@ -723,10 +727,11 @@ var roomMetadata =
     ]},
 {"id": "du2", "image": "duviri-harbinger", "name": "Harbinger's Pass", "category": "Misc", "prereq": null, "capacity": -2, "energy": -5, "maxnum": 1, "floor": -12, "ceil": 18,
 	"bounds": [
-		{"x1": -16, "y1": -32, "x2": 16.5, "y2": 16, "floor": -12, "ceil": 18},
+		{"x1": -16, "y1": -32, "x2": 16.5, "y2": 16, "floor": -12, "ceil": 18}
 		// I can't find a cleaner way to express how this room does not fit directly against any room on the left
 		// *except* for the freakin' Dry Dock
-		{"x1": -16, "y1": -32, "x2": 16, "y2": 16, "floor": -12, "ceil": 18, "bespoke": ["dd"]}],
+		//, {"x1": -16, "y1": -32, "x2": 16, "y2": 16, "floor": -12, "ceil": 18, "bespoke": ["dd"]}
+		],
 	"doors": [
 		{"x": 0, "y": 16, "floor": 0, "outx": 0, "outy": 1}],
 	"resources": [
