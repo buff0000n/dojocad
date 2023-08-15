@@ -222,7 +222,7 @@ var roomMetadata =
 		{"resource": "Circuits", "costs": [200, 600, 2000, 6000, 20000]},
 		{"resource": "Salvage", "costs": [500, 1500, 5000, 15000, 50000]},
 		{"resource": "Forma", "costs": [1, 1, 1, 3, 10]}], "unverified": true,
-    "treetype": "h-5",
+    "treetype": "h-6",
 	"blockedFromAboveBy": ["ob"]},
 {"id": "ef", "image": "earth-forest", "name": "Earth Forest Chamber", "category": "Theme Halls A-J", "spawn": false, "prereq": null, "capacity": 200, "energy": -5, "maxnum": null, "floor": -22, "ceil": 68,
 	"bounds": [
