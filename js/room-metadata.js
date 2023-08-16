@@ -707,7 +707,7 @@ var roomMetadata =
     "treetype": "os-1",
 	"blockedFromAboveBy": [
 	    ]},
-{"id": "du1", "image": "duviri-courtier", "name": "Courtier's Bliss", "category": "Misc", "prereq": null, "capacity": -2, "energy": -5, "maxnum": 1, "floor": -12, "ceil": 18,
+{"id": "du1", "image": "duviri-courtier", "name": "Courtier's Bliss", "category": "Misc", "prereq": null, "capacity": 200, "energy": -5, "maxnum": 1, "floor": -12, "ceil": 18,
 	"bounds": [
 		{"x1": -16, "y1": -14, "x2": 16.5, "y2": 16, "floor": -12, "ceil": 18}
 		// I can't find a cleaner way to express how this room does not fit directly against any room on the left
@@ -725,7 +725,7 @@ var roomMetadata =
     "treetype": "32-1",
 	"blockedFromAboveBy": [
     ]},
-{"id": "du2", "image": "duviri-harbinger", "name": "Harbinger's Pass", "category": "Misc", "prereq": null, "capacity": -2, "energy": -5, "maxnum": 1, "floor": -12, "ceil": 18,
+{"id": "du2", "image": "duviri-harbinger", "name": "Harbinger's Pass", "category": "Misc", "prereq": null, "capacity": 200, "energy": -5, "maxnum": 1, "floor": -12, "ceil": 18,
 	"bounds": [
 		{"x1": -16, "y1": -32, "x2": 16.5, "y2": 16, "floor": -12, "ceil": 18}
 		// I can't find a cleaner way to express how this room does not fit directly against any room on the left
