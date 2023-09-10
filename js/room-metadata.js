@@ -886,6 +886,17 @@ var roomMetadata =
     "treetype": "16-2",
 	"blockedFromAboveBy": [
 	    ]},
+{"id": "oce", "image": "old-elbow-connector", "name": "(Old) Elbow Connector", "category": "Discontinued", "discontinued": true, "prereq": null, "capacity": 0, "energy": 0, "maxnum": null, "floor": -8, "ceil": 24,
+	"bounds": [
+		{"x1": -8.25, "y1": -8.25, "x2": 18.25, "y2": 18.25, "floor": -8, "ceil": 24}],
+	"doors": [
+		{"x": 0, "y": 18.25, "floor": 0, "outx": 0, "outy": 1},
+		{"x": 18.25, "y": 0, "floor": 0, "outx": 1, "outy": 0}],
+		//{"x": 0, "y": -18.25, "floor": 0, "outx": 0, "outy": -1}],
+	"resources": [], "unverified": true,
+    "treetype": "32-2e",
+	"blockedFromAboveBy": [
+	    ]},
 {"id": "ore", "image": "old-reactor", "name": "(Old) Reactor", "category": "Discontinued", "discontinued": true, "prereq": null, "capacity": 0, "energy": 25, "maxnum": null, "floor": -8, "ceil": 24,
 	"bounds": [
 		{"x1": -10, "y1": -15, "x2": 10, "y2": 15, "floor": -8, "ceil": 24}],
