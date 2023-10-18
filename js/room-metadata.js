@@ -517,6 +517,23 @@ var roomMetadata =
     "treetype": "16-1",
 	"blockedFromAboveBy": [
 	    ]},
+{"id": "ld", "image": "dagath-lab", "name": "Dagath Lab", "category": "Labs", "prereq": "lt", "capacity": -2, "energy": -5, "maxnum": null, "floor": -8, "ceil": 30, "xp": 10000,
+	"bounds": [
+		{"x1": -5, "y1": 19, "x2": 5, "y2": 27, "floor": 0, "ceil": 8},
+		{"x1": -23, "y1": -28, "x2": 23, "y2": 19, "floor": -8, "ceil": 30}],
+	"doors": [
+		{"x": 0, "y": 27, "floor": 0, "outx": 0, "outy": 1}],
+//	"floor_images": [
+//		{"floor": 0, "image": "dagath-lab", "marker_images": [{"image": "marker-dagath-lab", "x": 0, "y": 8}]}],
+	"resources": [
+		{"resource": "Credits", "costs": [1000, 3000, 10000, 30000, 100000]},
+		{"resource": "Alloy Plate", "costs": [500, 1500, 5000, 15000, 50000]},
+		{"resource": "Circuits", "costs": [200, 600, 2000, 6000, 20000]},
+		{"resource": "Cryotic", "costs": [100, 300, 1000, 3000, 10000]},
+		{"resource": "Forma", "costs": [1, 1, 2, 5, 15]}],
+    "treetype": "64-1",
+	"blockedFromAboveBy": [
+	    ]},
 
 {"id": "dd", "image": "dry-dock", "name": "Dry Dock", "category": "Interactive", "prereq": null, "capacity": -20, "energy": -6, "maxnum": 1, "floor": -80, "ceil": 200,
 	"bounds": [
