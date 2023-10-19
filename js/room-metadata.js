@@ -517,7 +517,7 @@ var roomMetadata =
     "treetype": "16-1",
 	"blockedFromAboveBy": [
 	    ]},
-{"id": "ld", "image": "dagath-lab", "name": "Dagath Lab", "category": "Labs", "prereq": "lt", "capacity": -2, "energy": -5, "maxnum": null, "floor": -8, "ceil": 30, "xp": 10000,
+{"id": "ld", "image": "dagath-lab", "name": "Dagath's Hollow", "category": "Labs", "prereq": "lt", "capacity": -2, "energy": -5, "maxnum": null, "floor": -8, "ceil": 30, "xp": 10000,
 	"bounds": [
 		{"x1": -5, "y1": 19, "x2": 5, "y2": 27, "floor": 0, "ceil": 8},
 		{"x1": -23, "y1": -28, "x2": 23, "y2": 19, "floor": -8, "ceil": 30}],
