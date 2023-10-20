@@ -467,8 +467,13 @@ function buildAddRoomButton(roomMetadata, rooms = null, errors = null) {
     // for the new room + option and the duplicate single room option, use the
     // room type's icon
     if (roomMetadata) {
-        // callback is for adding a single room
-        var roomButtonDiv = buildMenuButton(menuTitle, doAddRoomButton, icon="icon-room-" + (roomMetadata.iconImage ? roomMetadata.iconImage : roomMetadata.image));
+        if (rooms) {
+            // callback is for duplicating a single room
+            var roomButtonDiv = buildMenuButton(menuTitle, duplicateSelectedRooms, icon="icon-room-" + (roomMetadata.iconImage ? roomMetadata.iconImage : roomMetadata.image));
+        } else {
+            // callback is for adding a new single room
+            var roomButtonDiv = buildMenuButton(menuTitle, doAddRoomButton, icon="icon-room-" + (roomMetadata.iconImage ? roomMetadata.iconImage : roomMetadata.image));
+        }
 
     // for the paste option use the paste icon
     } else if (rooms == copiedRooms) {
