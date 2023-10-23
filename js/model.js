@@ -653,7 +653,7 @@ class Marker {
             if (!this.marker) {
                 // create the marker if necessary
     	        this.marker = this.room.addDisplayImage(".png", getZIndex(this.room, part_marker) + (this.metadata.z != null ? this.metadata.z : 0), this.metadata.image, true);
-    	        if (this.metadata.tree) {
+    	        if (this.metadata.tree || this.metadata.nonclickable) {
     	            // hax for tree markers, ignore all clicks because some of them will extend beyond the bounds of their door
     	            this.marker.style.pointerEvents = "none";
     	            this.marker.style.touchEvents = "none";

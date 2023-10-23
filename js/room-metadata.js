@@ -454,7 +454,7 @@ var roomMetadata =
 	    ]},
 {"id": "lc", "image": "chem-lab", "name": "Chem Lab", "category": "Labs", "prereq": "or", "capacity": -2, "energy": -5, "maxnum": null, "floor": -16, "ceil": 16, "xp": 10000,
 	"bounds": [
-		{"x1": -15, "y1": -15, "x2": 15, "y2": 16, "floor": -16, "ceil": 16}],
+		{"x1": -14, "y1": -15, "x2": 14, "y2": 16, "floor": -16, "ceil": 16}],
 	"doors": [
 		{"x": 0, "y": 16, "floor": 0, "outx": 0, "outy": 1}],
 	"floor_images": [
@@ -523,8 +523,8 @@ var roomMetadata =
 		{"x1": -23, "y1": -28, "x2": 23, "y2": 19, "floor": -8, "ceil": 30}],
 	"doors": [
 		{"x": 0, "y": 27, "floor": 0, "outx": 0, "outy": 1}],
-//	"floor_images": [
-//		{"floor": 0, "image": "dagath-lab", "marker_images": [{"image": "marker-dagath-lab", "x": 0, "y": 8}]}],
+	"floor_images": [
+		{"floor": 0, "image": "dagath-lab", "marker_images": [{"image": "marker-dagath-lab", "x": 0, "y": 27}]}],
 	"resources": [
 		{"resource": "Credits", "costs": [1000, 3000, 10000, 30000, 100000]},
 		{"resource": "Alloy Plate", "costs": [500, 1500, 5000, 15000, 50000]},
@@ -600,12 +600,15 @@ var roomMetadata =
 	    ]},
 {"id": "oc", "image": "obstacle-course", "name": "Obstacle Course", "category": "Interactive", "prereq": null, "capacity": -10, "energy": -10, "maxnum": null, "floor": -24, "ceil": 24, "xp": 15000,
 	"bounds": [
-		{"x1": -84, "y1": -98, "x2": 84, "y2": 94, "floor": -24, "ceil": 24},
+		{"x1": -82, "y1": -98, "x2": 82, "y2": 94, "floor": -24, "ceil": 24},
 		{"x1": -8, "y1": 94, "x2": 8, "y2": 98, "floor": -24, "ceil": 24}],
 	"doors": [
 		{"x": 0, "y": 98, "floor": 0, "outx": 0, "outy": 1}],
 	"floor_images": [
-		{"floor": 0, "image": "obstacle-course", "marker_images": [{"image": "marker-obstacle", "x": 0, "y": 78}]}],
+		{"floor": 0, "image": "obstacle-course", "marker_images": [
+		    {"image": "marker-obstacle", "x": 0, "y": 78},
+		    {"image": "marker-obstacle-course-fog-plane", "x": 0, "y": -8, "z": -5, "rot": 0, "nonclickable": true}
+        ]}],
 	"resources": [
 		{"resource": "Credits", "costs": [1000, 3000, 10000, 30000, 100000]},
 		{"resource": "Alloy Plate", "costs": [650, 1950, 6500, 19500, 65000]},

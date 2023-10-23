@@ -1465,7 +1465,12 @@ function buildStorageListingLine(entry, menuDiv) {
     // the name column value is an actual link containing the room layout
     var nameDiv = document.createElement("td");
     nameDiv.className = "field";
-    nameDiv.innerHTML = `<a href="?${entry.item}">${truncateName(name)}</href>`;
+    var link = document.createElement("a");
+    link.href = "?" + entry.item;
+    link.innerHTML = truncateName(name);
+    link.addEventListener("click", storageLinkClicked);
+    nameDiv.appendChild(link);
+//    nameDiv.innerHTML = `<a href="?${entry.item}">${truncateName(name)}</href>`;
     tr.appendChild(nameDiv);
 
     // the date column is formatted for the user's locale
@@ -1490,6 +1495,11 @@ function buildStorageListingLine(entry, menuDiv) {
     tr.appendChild(iconTd);
 
     return tr;
+}
+
+function storageLinkClicked(e) {
+    directLoadLink(e);
+    clearMenus();
 }
 
 function rebuildStorageListing(menuDiv) {

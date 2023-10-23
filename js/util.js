@@ -89,6 +89,24 @@ function buildQueryUrl(query) {
     return url;
 }
 
+function directLoadLink(e) {
+    // get the href from the clicked link
+    var href = e.target.href;
+    // disable default action
+    e.preventDefault();
+
+    // turn the help section off
+    //toggleHelp();
+
+    // load the link after the UI updates
+    setTimeout(() => {
+        reLoadModelFromUrl(href);
+    }, 10);
+
+    // this is what actually prevents the link from being handled normally
+    return false;
+}
+
 //////////////////////////////////////////////////////////////////////////
 // PNG conversion
 //////////////////////////////////////////////////////////////////////////
