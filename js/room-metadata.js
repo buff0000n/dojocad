@@ -109,6 +109,8 @@ var roomMetadata =
 	"doors": [
 		{"x": 0, "y": 32, "floor": 0, "outx": 0, "outy": 1},
 		{"x": 0, "y": -32, "floor": 0, "outx": 0, "outy": -1}],
+	"floor_images": [
+		{"floor": 0, "image": "clan-hall", "marker_images": [{"image": "marker-console", "x": -1, "y": 12, "rot": 0}]}],
 	"resources": [],
     "treetype": "64-2",
 	"blockedFromAboveBy": [
@@ -119,6 +121,8 @@ var roomMetadata =
 	"doors": [
 		{"x": 0, "y": 32, "floor": 0, "outx": 0, "outy": 1},
 		{"x": 0, "y": -32, "floor": 0, "outx": 0, "outy": -1}],
+	"floor_images": [
+		{"floor": 0, "image": "clan-great-hall", "marker_images": [{"image": "marker-console", "x": -1, "y": 28, "rot": 0}]}],
 	"resources": [
 		{"resource": "Credits", "costs": [1000, 3000, 10000, 30000, 100000]},
 		{"resource": "Salvage", "costs": [150, 450, 1500, 4500, 15000]},
@@ -135,6 +139,8 @@ var roomMetadata =
 	"doors": [
 		{"x": 0, "y": 32, "floor": 0, "outx": 0, "outy": 1},
 		{"x": 0, "y": -32, "floor": 0, "outx": 0, "outy": -1}],
+	"floor_images": [
+		{"floor": 0, "image": "clan-greater-hall", "marker_images": [{"image": "marker-console", "x": -1, "y": 28, "rot": 0}]}],
 	"resources": [
 		{"resource": "Credits", "costs": [1000, 3000, 10000, 30000, 100000]},
 		{"resource": "Salvage", "costs": [150, 450, 1500, 4500, 15000]},
@@ -154,6 +160,8 @@ var roomMetadata =
 		{"x": 0, "y": -32, "floor": 0, "outx": 0, "outy": -1},
 		{"x": -32, "y": -16, "floor": 0, "outx": -1, "outy": 0},
 		{"x": -32, "y": 16, "floor": 0, "outx": -1, "outy": 0}],
+	"floor_images": [
+		{"floor": 0, "image": "clan-grand-hall", "marker_images": [{"image": "marker-console", "x": -1, "y": 28, "rot": 0}]}],
 	"resources": [
 		{"resource": "Credits", "costs": [1000, 3000, 10000, 30000, 100000]},
 		{"resource": "Salvage", "costs": [150, 450, 1500, 4500, 15000]},
@@ -173,6 +181,8 @@ var roomMetadata =
 		{"x": 0, "y": -32, "floor": 0, "outx": 0, "outy": -1},
 		{"x": -32, "y": -16, "floor": 0, "outx": -1, "outy": 0},
 		{"x": -32, "y": 16, "floor": 0, "outx": -1, "outy": 0}],
+	"floor_images": [
+		{"floor": 0, "image": "clan-grandest-hall", "marker_images": [{"image": "marker-console", "x": -1, "y": 28, "rot": 0}]}],
 	"resources": [
 		{"resource": "Credits", "costs": [1000, 3000, 10000, 30000, 100000]},
 		{"resource": "Salvage", "costs": [150, 450, 1500, 4500, 15000]},
@@ -193,7 +203,7 @@ var roomMetadata =
 		{"x": -32, "y": -16, "floor": 0, "outx": -1, "outy": 0},
 		{"x": -32, "y": 16, "floor": 0, "outx": -1, "outy": 0}],
 	"floor_images": [
-		{"floor": 0, "image": "inspiration-hall"},
+		{"floor": 0, "image": "inspiration-hall", "marker_images": [{"image": "marker-console", "x": -1, "y": 28, "rot": 0}]},
 		{"floor": 1, "image": "inspiration-hall-other"}],
 	"resources": [
 		{"resource": "Credits", "costs": [1000, 3000, 10000, 30000, 100000]},
@@ -216,6 +226,8 @@ var roomMetadata =
 		{"x": 0, "y": -32, "floor": 0, "outx": 0, "outy": -1},
 		{"x": -32, "y": -16, "floor": 0, "outx": -1, "outy": 0},
 		{"x": -32, "y": 16, "floor": 0, "outx": -1, "outy": 0}],
+	"floor_images": [
+		{"floor": 0, "image": "duviri-cave", "marker_images": [{"image": "marker-console", "x": -1, "y": 28, "rot": 0}]}],
 	"resources": [
 		{"resource": "Credits", "costs": [1000, 3000, 10000, 30000, 100000]},
 		{"resource": "Ferrite", "costs": [800, 2400, 8000, 24000, 80000]},
@@ -239,7 +251,7 @@ var roomMetadata =
 		{"x": -32, "y": 16, "floor": 0, "outx": -1, "outy": 0},
 		{"x": -32, "y": 48, "floor": 0, "outx": -1, "outy": 0}],
 	"floor_images": [
-		{"floor": 0, "image": "earth-forest"},
+		{"floor": 0, "image": "earth-forest", "marker_images": [{"image": "marker-console", "x": 1, "y": -60, "rot": 180}]},
 		{"floor": 1, "image": "earth-forest-other"}],
 	"resources": [
 		{"resource": "Credits", "costs": [1000, 3000, 10000, 30000, 100000]},
@@ -259,6 +271,8 @@ var roomMetadata =
 		{"x": 0, "y": -32, "floor": 0, "outx": 0, "outy": -1},
 		{"x": -32, "y": -16, "floor": 0, "outx": -1, "outy": 0},
 		{"x": -32, "y": 16, "floor": 0, "outx": -1, "outy": 0}],
+	"floor_images": [
+		{"floor": 0, "image": "entrati-hall", "marker_images": [{"image": "marker-console", "x": -1, "y": 28, "rot": 0}]}],
 	"resources": [
 		{"resource": "Credits", "costs": [1000, 3000, 10000, 30000, 100000]},
 		{"resource": "Ferrite", "costs": [800, 2400, 8000, 24000, 80000]},
@@ -278,6 +292,8 @@ var roomMetadata =
 		{"x": 0, "y": -32, "floor": 0, "outx": 0, "outy": -1},
 		{"x": -32, "y": -16, "floor": 0, "outx": -1, "outy": 0},
 		{"x": -32, "y": 16, "floor": 0, "outx": -1, "outy": 0}],
+	"floor_images": [
+		{"floor": 0, "image": "galleon-chamber", "marker_images": [{"image": "marker-console", "x": -1, "y": 28, "rot": 0}]}],
 	"resources": [
 		{"resource": "Credits", "costs": [1000, 3000, 10000, 30000, 100000]},
 		{"resource": "Ferrite", "costs": [800, 2400, 8000, 24000, 80000]},
@@ -297,6 +313,8 @@ var roomMetadata =
 		{"x": 0, "y": -32, "floor": 0, "outx": 0, "outy": -1},
 		{"x": -32, "y": -16, "floor": 0, "outx": -1, "outy": 0},
 		{"x": -32, "y": 16, "floor": 0, "outx": -1, "outy": 0}],
+	"floor_images": [
+		{"floor": 0, "image": "infested-hall", "marker_images": [{"image": "marker-console", "x": 1, "y": -28, "rot": 180}]}],
 	"resources": [
 		{"resource": "Credits", "costs": [1000, 3000, 10000, 30000, 100000]},
 		{"resource": "Ferrite", "costs": [800, 2400, 8000, 24000, 80000]},
@@ -317,6 +335,8 @@ var roomMetadata =
 		{"x": 0, "y": -32, "floor": 0, "outx": 0, "outy": -1},
 		{"x": -32, "y": -16, "floor": 0, "outx": -1, "outy": 0},
 		{"x": -32, "y": 16, "floor": 0, "outx": -1, "outy": 0}],
+	"floor_images": [
+		{"floor": 0, "image": "kuva-asteroid", "marker_images": [{"image": "marker-console", "x": -1, "y": 28, "rot": 0}]}],
 	"resources": [
 		{"resource": "Credits", "costs": [1000, 3000, 10000, 30000, 100000]},
 		{"resource": "Ferrite", "costs": [800, 2400, 8000, 24000, 80000]},
@@ -337,7 +357,7 @@ var roomMetadata =
 		{"x": -32, "y": -16, "floor": 0, "outx": -1, "outy": 0},
 		{"x": -32, "y": 16, "floor": 0, "outx": -1, "outy": 0}],
 	"floor_images": [
-		{"floor": 0, "image": "orokin-tower"},
+		{"floor": 0, "image": "orokin-tower", "marker_images": [{"image": "marker-console", "x": -1, "y": 28, "rot": 0}]},
 		{"floor": 1, "image": "orokin-tower-other"}],
 	"resources": [
 		{"resource": "Credits", "costs": [1000, 3000, 10000, 30000, 100000]},
@@ -357,6 +377,8 @@ var roomMetadata =
 		{"x": 32, "y": -16, "floor": 0, "outx": 1, "outy": 0},
 		{"x": -32, "y": -16, "floor": 0, "outx": -1, "outy": 0},
 		{"x": -32, "y": 16, "floor": 0, "outx": -1, "outy": 0}],
+	"floor_images": [
+		{"floor": 0, "image": "ostron-cove", "marker_images": [{"image": "marker-console", "x": -1, "y": 28, "rot": 0}]}],
 	"resources": [
 		{"resource": "Credits", "costs": [1000, 3000, 10000, 30000, 100000]},
 		{"resource": "Ferrite", "costs": [800, 2400, 8000, 24000, 80000]},
@@ -376,7 +398,7 @@ var roomMetadata =
 		{"x": -32, "y": -16, "floor": 0, "outx": -1, "outy": 0},
 		{"x": -32, "y": 16, "floor": 0, "outx": -1, "outy": 0}],
 	"floor_images": [
-		{"floor": 0, "image": "starlight-market", "marker_images": []}],
+		{"floor": 0, "image": "starlight-market", "marker_images": [{"image": "marker-console", "x": -1, "y": 28, "rot": 0}]}],
 	"resources": [
 		{"resource": "Credits", "costs": [1000, 3000, 10000, 30000, 100000]},
 		{"resource": "Ferrite", "costs": [800, 2400, 8000, 24000, 80000]},
@@ -396,6 +418,8 @@ var roomMetadata =
 		{"x": 0, "y": -32, "floor": 0, "outx": 0, "outy": -1},
 		{"x": -32, "y": -16, "floor": 0, "outx": -1, "outy": 0},
 		{"x": -32, "y": 16, "floor": 0, "outx": -1, "outy": 0}],
+	"floor_images": [
+		{"floor": 0, "image": "uranus-chamber", "marker_images": [{"image": "marker-console", "x": -1, "y": 28, "rot": 0}]}],
 	"resources": [
 		{"resource": "Credits", "costs": [1000, 3000, 10000, 30000, 100000]},
 		{"resource": "Ferrite", "costs": [800, 2400, 8000, 24000, 80000]},
@@ -855,7 +879,8 @@ var roomMetadata =
 
 {"id": "oh1", "image": "old-hall", "name": "(Old) Clan Hall", "category": "Discontinued", "discontinued": true, "spawn": true, "prereq": null, "capacity": 100, "energy": 5, "maxnum": null, "floor": -8, "ceil": 24,
 	"bounds": [
-		{"x1": -18, "y1": -32.25, "x2": 18, "y2": 32.25, "floor": -8, "ceil": 24}],
+		{"x1": -18.25, "y1": -32.25, "x2": 18.25, "y2": 1.75, "floor": -8, "ceil": 24},
+		{"x1": -26, "y1": 1.75, "x2": 26, "y2": 32.25, "floor": -8, "ceil": 24}],
 	"doors": [
 		{"x": 0, "y": 32.25, "floor": 0, "outx": 0, "outy": 1},
 		{"x": 0, "y": -32.25, "floor": 0, "outx": 0, "outy": -1}],
@@ -865,7 +890,7 @@ var roomMetadata =
 	    ]},
 {"id": "oh2", "image": "old-great-hall", "name": "(Old) Clan Great Hall", "category": "Discontinued", "discontinued": true, "spawn": true, "prereq": null, "capacity": 0, "energy": 0, "maxnum": null, "floor": -8, "ceil": 24,
 	"bounds": [
-		{"x1": -32, "y1": -32, "x2": 32, "y2": 32, "floor": -8, "ceil": 24}],
+		{"x1": -35, "y1": -32, "x2": 35, "y2": 32, "floor": -8, "ceil": 24}],
 	"doors": [
 		{"x": 0, "y": 32, "floor": 0, "outx": 0, "outy": 1},
 		{"x": 0, "y": -32, "floor": 0, "outx": 0, "outy": -1}],
