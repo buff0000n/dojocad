@@ -152,7 +152,10 @@ var roomMetadata =
 	    ]},
 {"id": "h4", "image": "clan-grand-hall", "name": "Clan Grand Hall", "category": "Classic Halls", "prereq": null, "capacity": 200, "energy": -2, "maxnum": 1, "spawn": true, "floor": -12, "ceil": 30,
 	"bounds": [
-		{"x1": -32, "y1": -32, "x2": 32, "y2": 32, "floor": -12, "ceil": 30}],
+		{"x1": -31.5, "y1": -31.5, "x2": 31.5, "y2": 31.5, "floor": -8, "ceil": 32},
+		{"x1": -32, "y1": -24, "x2": 32, "y2": -8, "floor": 0, "ceil": 8},
+		{"x1": -32, "y1": 8, "x2": 32, "y2": 24, "floor": 0, "ceil": 8},
+		{"x1": -8, "y1": -32, "x2": 8, "y2": 32, "floor": 0, "ceil": 8}],
 	"doors": [
 		{"x": 0, "y": 32, "floor": 0, "outx": 0, "outy": 1},
 		{"x": 32, "y": 16, "floor": 0, "outx": 1, "outy": 0},
@@ -173,7 +176,10 @@ var roomMetadata =
 	    ]},
 {"id": "h5", "image": "clan-grandest-hall", "name": "Clan Grandest Hall", "category": "Classic Halls", "prereq": null, "capacity": 200, "energy": -2, "maxnum": 1, "spawn": true, "floor": -12, "ceil": 30,
 	"bounds": [
-		{"x1": -32, "y1": -32, "x2": 32, "y2": 32, "floor": -12, "ceil": 30}],
+		{"x1": -31.5, "y1": -31.5, "x2": 31.5, "y2": 31.5, "floor": -8, "ceil": 32},
+		{"x1": -32, "y1": -24, "x2": 32, "y2": -8, "floor": 0, "ceil": 8},
+		{"x1": -32, "y1": 8, "x2": 32, "y2": 24, "floor": 0, "ceil": 8},
+		{"x1": -8, "y1": -32, "x2": 8, "y2": 32, "floor": 0, "ceil": 8}],
 	"doors": [
 		{"x": 0, "y": 32, "floor": 0, "outx": 0, "outy": 1},
 		{"x": 32, "y": 16, "floor": 0, "outx": 1, "outy": 0},
@@ -218,7 +224,10 @@ var roomMetadata =
 
 {"id": "dc", "image": "duviri-cave", "name": "Duviri Cave", "category": "Theme Halls A-J", "spawn": false, "prereq": null, "capacity": 200, "energy": -5, "maxnum": null, "floor": -22, "ceil": 36,
 	"bounds": [
-		{"x1": -32, "y1": -32, "x2": 32, "y2": 32, "floor": -22, "ceil": 36}],
+		{"x1": -31.5, "y1": -31.5, "x2": 31.5, "y2": 31.5, "floor": -22, "ceil": 32},
+		{"x1": -32, "y1": -24, "x2": 32, "y2": -8, "floor": 0, "ceil": 8},
+		{"x1": -32, "y1": 8, "x2": 32, "y2": 24, "floor": 0, "ceil": 8},
+		{"x1": -8, "y1": -32, "x2": 8, "y2": 32, "floor": 0, "ceil": 8}],
 	"doors": [
 		{"x": 0, "y": 32, "floor": 0, "outx": 0, "outy": 1},
 		{"x": 32, "y": 16, "floor": 0, "outx": 1, "outy": 0},
@@ -238,7 +247,12 @@ var roomMetadata =
 	"blockedFromAboveBy": ["ob"]},
 {"id": "ef", "image": "earth-forest", "name": "Earth Forest Chamber", "category": "Theme Halls A-J", "spawn": false, "prereq": null, "capacity": 200, "energy": -5, "maxnum": null, "floor": -22, "ceil": 68,
 	"bounds": [
-		{"x1": -32, "y1": -64, "x2": 32, "y2": 64, "floor": -22, "ceil": 68}],
+		{"x1": -31.5, "y1": -63.5, "x2": 31.5, "y2": 63.5, "floor": -22, "ceil": 68},
+		{"x1": -32, "y1": -40, "x2": 32, "y2": -56, "floor": 0, "ceil": 8},
+		{"x1": -32, "y1": -24, "x2": 32, "y2": -8, "floor": 0, "ceil": 8},
+		{"x1": -32, "y1": 8, "x2": 32, "y2": 24, "floor": 0, "ceil": 8},
+		{"x1": -32, "y1": 56, "x2": 32, "y2": 40, "floor": 0, "ceil": 8},
+		{"x1": -8, "y1": -64, "x2": 8, "y2": 64, "floor": 0, "ceil": 8}],
 	"doors": [
 		{"x": 0, "y": 64, "floor": 0, "outx": 0, "outy": 1},
 		{"x": 32, "y": 48, "floor": 0, "outx": 1, "outy": 0},
@@ -263,7 +277,10 @@ var roomMetadata =
 	"blockedFromAboveBy": []},
 {"id": "he", "image": "entrati-hall", "name": "Entrati Audience Chamber", "category": "Theme Halls A-J", "spawn": true, "prereq": null, "capacity": 200, "energy": -2, "maxnum": null, "floor": -12, "ceil": 32,
 	"bounds": [
-		{"x1": -32, "y1": -32, "x2": 32, "y2": 32, "floor": -12, "ceil": 32}],
+		{"x1": -31.5, "y1": -31.5, "x2": 31.5, "y2": 31.5, "floor": -12, "ceil": 32},
+		{"x1": -32, "y1": -24, "x2": 32, "y2": -8, "floor": 0, "ceil": 8},
+		{"x1": -32, "y1": 8, "x2": 32, "y2": 24, "floor": 0, "ceil": 8},
+		{"x1": -8, "y1": -32, "x2": 8, "y2": 32, "floor": 0, "ceil": 8}],
 	"doors": [
 		{"x": 0, "y": 32, "floor": 0, "outx": 0, "outy": 1},
 		{"x": 32, "y": 16, "floor": 0, "outx": 1, "outy": 0},
@@ -284,7 +301,10 @@ var roomMetadata =
 		"ob"]},
 {"id": "gc", "image": "galleon-chamber", "name": "Galleon Chamber", "category": "Theme Halls A-J", "spawn": false, "prereq": null, "capacity": 200, "energy": -5, "maxnum": null, "floor": -26, "ceil": 34,
 	"bounds": [
-		{"x1": -32, "y1": -32, "x2": 32, "y2": 32, "floor": -26, "ceil": 34}],
+		{"x1": -31.5, "y1": -31.5, "x2": 31.5, "y2": 31.5, "floor": -26, "ceil": 34},
+		{"x1": -32, "y1": -24, "x2": 32, "y2": -8, "floor": 0, "ceil": 8},
+		{"x1": -32, "y1": 8, "x2": 32, "y2": 24, "floor": 0, "ceil": 8},
+		{"x1": -8, "y1": -32, "x2": 8, "y2": 32, "floor": 0, "ceil": 8}],
 	"doors": [
 		{"x": 0, "y": 32, "floor": 0, "outx": 0, "outy": 1},
 		{"x": 32, "y": 16, "floor": 0, "outx": 1, "outy": 0},
@@ -305,7 +325,10 @@ var roomMetadata =
 		"ob"]},
 {"id": "hf", "image": "infested-hall", "name": "Infested Chamber", "category": "Theme Halls A-J", "spawn": true, "prereq": null, "capacity": 200, "energy": -5, "maxnum": null, "floor": -12, "ceil": 32,
 	"bounds": [
-		{"x1": -32, "y1": -32, "x2": 32, "y2": 32, "floor": -12, "ceil": 32}],
+		{"x1": -31.5, "y1": -31.5, "x2": 31.5, "y2": 31.5, "floor": -12, "ceil": 32},
+		{"x1": -32, "y1": -24, "x2": 32, "y2": -8, "floor": 0, "ceil": 8},
+		{"x1": -32, "y1": 8, "x2": 32, "y2": 24, "floor": 0, "ceil": 8},
+		{"x1": -8, "y1": -32, "x2": 8, "y2": 32, "floor": 0, "ceil": 8}],
 	"doors": [
 		{"x": 0, "y": 32, "floor": 0, "outx": 0, "outy": 1},
 		{"x": 32, "y": 16, "floor": 0, "outx": 1, "outy": 0},
@@ -327,7 +350,10 @@ var roomMetadata =
 
 {"id": "ka", "image": "kuva-asteroid", "name": "Kuva Asteroid", "category": "Theme Halls K-Z", "spawn": false, "prereq": null, "capacity": 200, "energy": -5, "maxnum": null, "floor": -4, "ceil": 32,
 	"bounds": [
-		{"x1": -32, "y1": -32, "x2": 32, "y2": 32, "floor": -4, "ceil": 32}],
+		{"x1": -31.5, "y1": -31.5, "x2": 31.5, "y2": 31.5, "floor": -8, "ceil": 32},
+		{"x1": -32, "y1": -24, "x2": 32, "y2": -8, "floor": 0, "ceil": 8},
+		{"x1": -32, "y1": 8, "x2": 32, "y2": 24, "floor": 0, "ceil": 8},
+		{"x1": -8, "y1": -32, "x2": 8, "y2": 32, "floor": 0, "ceil": 8}],
 	"doors": [
 		{"x": 0, "y": 32, "floor": 0, "outx": 0, "outy": 1},
 		{"x": 32, "y": 16, "floor": 0, "outx": 1, "outy": 0},
@@ -348,7 +374,10 @@ var roomMetadata =
 		"ob"]},
 {"id": "ot", "image": "orokin-tower", "name": "Orokin Tower Chamber", "category": "Theme Halls K-Z", "spawn": false, "prereq": null, "capacity": 200, "energy": -5, "maxnum": null, "floor": -32, "ceil": 70,
 	"bounds": [
-		{"x1": -32, "y1": -32, "x2": 32, "y2": 32, "floor": -32, "ceil": 70}],
+		{"x1": -31.5, "y1": -31.5, "x2": 31.5, "y2": 31.5, "floor": -32, "ceil": 70},
+		{"x1": -32, "y1": -24, "x2": 32, "y2": -8, "floor": 0, "ceil": 8},
+		{"x1": -32, "y1": 8, "x2": 32, "y2": 24, "floor": 0, "ceil": 8},
+		{"x1": -8, "y1": -32, "x2": 8, "y2": 32, "floor": 0, "ceil": 8}],
 	"doors": [
 		{"x": 0, "y": 32, "floor": 0, "outx": 0, "outy": 1},
 		{"x": 32, "y": 16, "floor": 0, "outx": 1, "outy": 0},
@@ -369,8 +398,11 @@ var roomMetadata =
 	"blockedFromAboveBy": []},
 {"id": "co", "image": "ostron-cove", "name": "Ostron Cove", "category": "Theme Halls K-Z", "spawn": false, "prereq": null, "capacity": 200, "energy": -5, "maxnum": null, "floor": -12, "ceil": 32,
 	"bounds": [
-		{"x1": -32, "y1": -38, "x2": 32, "y2": 32, "floor": -12, "ceil": 32},
-		{"x1": -31, "y1": -86, "x2": 31, "y2": -38, "floor": -12, "ceil": 32}],
+		{"x1": -31.5, "y1": -31.5, "x2": 31.5, "y2": 31.5, "floor": -12, "ceil": 32},
+		{"x1": -31, "y1": -86, "x2": 31, "y2": -38, "floor": -12, "ceil": 32},
+		{"x1": -32, "y1": -24, "x2": 32, "y2": -8, "floor": 0, "ceil": 8},
+		{"x1": -32, "y1": 8, "x2": 32, "y2": 24, "floor": 0, "ceil": 8},
+		{"x1": -8, "y1": -32, "x2": 8, "y2": -24, "floor": 0, "ceil": 8}],
 	"doors": [
 		{"x": 0, "y": 32, "floor": 0, "outx": 0, "outy": 1},
 		{"x": 32, "y": 16, "floor": 0, "outx": 1, "outy": 0},
@@ -389,7 +421,10 @@ var roomMetadata =
 	"blockedFromAboveBy": []},
 {"id": "sm", "image": "starlight-market", "name": "Starlight Market", "category": "Theme Halls K-Z", "spawn": false, "prereq": null, "capacity": 200, "energy": -5, "maxnum": null, "floor": -12, "ceil": 32,
 	"bounds": [
-		{"x1": -32, "y1": -32, "x2": 32, "y2": 32, "floor": -12, "ceil": 32}],
+		{"x1": -31.5, "y1": -31.5, "x2": 31.5, "y2": 31.5, "floor": -12, "ceil": 32},
+		{"x1": -32, "y1": -24, "x2": 32, "y2": -8, "floor": 0, "ceil": 8},
+		{"x1": -32, "y1": 8, "x2": 32, "y2": 24, "floor": 0, "ceil": 8},
+		{"x1": -8, "y1": -32, "x2": 8, "y2": 32, "floor": 0, "ceil": 8}],
 	"doors": [
 		{"x": 0, "y": 32, "floor": 0, "outx": 0, "outy": 1},
 		{"x": 32, "y": 16, "floor": 0, "outx": 1, "outy": 0},
@@ -410,7 +445,10 @@ var roomMetadata =
 		"ob"]},
 {"id": "uc", "image": "uranus-chamber", "name": "Uranus Chamber", "category": "Theme Halls K-Z", "spawn": false, "prereq": null, "capacity": 200, "energy": -5, "maxnum": null, "floor": -20, "ceil": 32,
 	"bounds": [
-		{"x1": -32, "y1": -32, "x2": 32, "y2": 32, "floor": -20, "ceil": 32}],
+		{"x1": -31.5, "y1": -31.5, "x2": 31.5, "y2": 31.5, "floor": -20, "ceil": 32},
+		{"x1": -32, "y1": -24, "x2": 32, "y2": -8, "floor": 0, "ceil": 8},
+		{"x1": -32, "y1": 8, "x2": 32, "y2": 24, "floor": 0, "ceil": 8},
+		{"x1": -8, "y1": -32, "x2": 8, "y2": 32, "floor": 0, "ceil": 8}],
 	"doors": [
 		{"x": 0, "y": 32, "floor": 0, "outx": 0, "outy": 1},
 		{"x": 32, "y": 16, "floor": 0, "outx": 1, "outy": 0},
