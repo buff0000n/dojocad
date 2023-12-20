@@ -398,11 +398,11 @@ var roomMetadata =
 	"blockedFromAboveBy": []},
 {"id": "co", "image": "ostron-cove", "name": "Ostron Cove", "category": "Theme Halls K-Z", "spawn": false, "prereq": null, "capacity": 200, "energy": -5, "maxnum": null, "floor": -12, "ceil": 32,
 	"bounds": [
-		{"x1": -31.5, "y1": -31.5, "x2": 31.5, "y2": 31.5, "floor": -12, "ceil": 32},
+		{"x1": -31.5, "y1": -38, "x2": 31.5, "y2": 31.5, "floor": -12, "ceil": 32},
 		{"x1": -31, "y1": -86, "x2": 31, "y2": -38, "floor": -12, "ceil": 32},
 		{"x1": -32, "y1": -24, "x2": 32, "y2": -8, "floor": 0, "ceil": 8},
 		{"x1": -32, "y1": 8, "x2": 32, "y2": 24, "floor": 0, "ceil": 8},
-		{"x1": -8, "y1": -32, "x2": 8, "y2": -24, "floor": 0, "ceil": 8}],
+		{"x1": -8, "y1": 32, "x2": 8, "y2": 24, "floor": 0, "ceil": 8}],
 	"doors": [
 		{"x": 0, "y": 32, "floor": 0, "outx": 0, "outy": 1},
 		{"x": 32, "y": 16, "floor": 0, "outx": 1, "outy": 0},
