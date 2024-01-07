@@ -113,8 +113,11 @@ function parseRoomDoorFlags(room, flagString) {
 function roomToString(room, urlencode=false) {
     var s = room.metadata.id + "," + room.mv.x + "," + room.mv.y + "," + room.floor + "," + (room.rotation / 90)
     var flags = "";
-    if (room.isSpawnPoint()) {
+    if (room.isSpawnRoom()) {
         flags = flags + "s";
+    }
+    if (room.isArrivalRoom()) {
+        flags = flags + "a";
     }
     var doorFlags = getRoomDoorFlags(room);
 
@@ -204,8 +207,12 @@ function roomFromString(string, readRooms) {
                 if (s.length > 8) {
                     var flags = s[8];
                     if (flags.includes("s")) {
-                        // go through the global method to set the spawn point to make sure there's only one
-                        setSpawnPointRoom(room, false);
+                        // go through the global method to set the spawn room to make sure there's only one
+                        setSpawnRoom(room, false);
+                    }
+                    if (flags.includes("a")) {
+                        // go through the global method to set the spawn room to make sure there's only one
+                        setArrivalRoom(room, false);
                     }
                     if (s.length > 9) {
                         var doorFlags = s[9];
@@ -697,6 +704,7 @@ class Room {
         this.dragging = false;
         this.placed = false;
         this.spawn = false;
+        this.arrival = false;
         this.bespokeBounds = false;
 
         this.ignoreRooms = null;
@@ -760,9 +768,9 @@ class Room {
         this.ruleWarnings = Array();
     }
 
-    setSpawnPoint(isSpawnPoint) {
-        if (isSpawnPoint != this.spawn) {
-            if (isSpawnPoint) {
+    setSpawnRoom(isSpawnRoom) {
+        if (isSpawnRoom != this.spawn) {
+            if (isSpawnRoom) {
                 // appears on floor 0 relative to the room's base floor
                 var spawnMarker = new Marker(this, 0, spawnMarkerMetadata);
                 this.markers.push(spawnMarker);
@@ -788,8 +796,40 @@ class Room {
         }
     }
 
-    isSpawnPoint() {
+    isSpawnRoom() {
         return this.spawn;
+    }
+
+    setArrivalRoom(isArrivalRoom) {
+        if (isArrivalRoom != this.arrival) {
+            if (isArrivalRoom) {
+                // appears on floor 0 relative to the room's base floor
+                var arrivalMarker = new Marker(this, 0, ArrivalMarkerMetadata);
+                this.markers.push(arrivalMarker);
+                // this can be set before the room is actually displayed
+                if (this.viewContainer) {
+                    // have to update position first
+                    arrivalMarker.updatePosition();
+                    arrivalMarker.addDisplay(this.viewContainer);
+                    arrivalMarker.updateView();
+                }
+                this.arrival = true;
+            } else {
+                var index = this.markers.findIndex((marker) => marker.metadata == ArrivalMarkerMetadata);
+                if (index != -1) {
+                    var arrivalMarker = this.markers[index];
+                    this.markers.splice(index, 1);
+                    if (this.viewContainer) {
+                        arrivalMarker.removeDisplay(this.viewContainer);
+                    }
+                }
+                this.arrival = false;
+            }
+        }
+    }
+
+    isArrivalRoom() {
+        return this.arrival;
     }
 
     refreshMarkers() {

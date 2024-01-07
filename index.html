@@ -295,7 +295,7 @@
         <div class="helpContainer">
             <p style="text-align: center;">
                 <span class="title">DojoCAD</span><br/>
-                v2.6.9: 2023-12-19<br/>
+                v2.7.0: 2024-01-07<br/>
                 <a href="https://github.com/buff0000n/dojoarch">Source</a>&nbsp;
                 <a href="https://github.com/buff0000n/dojoarch/issues/2">Feedback</a>&nbsp;
                 <a href="https://github.com/buff0000n/dojocad/issues/new">Bugs</a><br/>
@@ -465,13 +465,14 @@
                     </ul>
                 </li>
                 <li><a href="#ExportToPng">Exporting to PNG</a></li>
+                <li><a href="#ArrivalGate">Arrival Gate</a></li>
                 <li>
                     <a href="#Structure">Structure Mode</a>
                     <ul>
                         <li>
                             <a href="#StructureBasic">Basic mode</a>
                             <ul>
-                                <li><a href="#SpawnPoint">Spawn Point</a></li>
+                                <li><a href="#SpawnRoom">Spawn Room</a></li>
                                 <li><a href="#Connectedness">Connectedness</a></li>
                             </ul>
                         </li>
@@ -484,7 +485,7 @@
                                         <li><a href="#TreeDisplay">Tree Structure Display</a></li>
                                         <li><a href="#SelectBranch">Select Branch</a></li>
                                         <li><a href="#SelectRoot">Select Root</a></li>
-                                        <li><a href="#MovingTheSpawnPoint">Moving The Spawn Point</a></li>
+                                        <li><a href="#MovingTheSpawnRoom">Moving The Spawn Room</a></li>
                                     </ul>
                                 </li>
                                 <li>
@@ -505,7 +506,7 @@
                         <li>
                             <a href="#StructureMenu">Structure Menu</a>
                             <ul>
-                                <li><a href="#ShowSpanPoint">Find Spawn Point</a></li>
+                                <li><a href="#ShowSpawnRoom">Find Spawn Room</a></li>
                                 <li><a href="#AutoFixStructure">Auto-Fix Structure</a></li>
                                 <li><a href="#ResetAllStructure">Reset All Structure</a></li>
                             </ul>
@@ -1026,7 +1027,7 @@
                         <li><strong>Earth Forest Chamber</strong></li>
                         <li><strong>Uranus Chamber</strong></li>
                     </ul>
-                    See below for more on <a href="#SpawnPoint">Spawn Points</a>.
+                    See below for more on <a href="#SpawnRoom">Spawn Rooms</a>.
                 </li>
                 <li>An <strong>Oracle</strong> is the prequisite for all the Labs</li>
                 <li>You can only have one of each classic <strong>Clan Hall</strong></li>
@@ -1200,37 +1201,63 @@
                     for the image links to appear.</strong>
             </p>
 
+            <h1 id="ArrivalGate">Arrival Gate</h1>
+            <p>
+                On any room, you can click on the room menu and select
+                <span class="docImgButton"><img src="icons/icon-arrival.png" srcset="icons2x/icon-arrival.png 2x" title="Arrival Gate"/></span>
+                <strong>Set Arrival Gate</strong> to designate that room as the one containing the <strong>Arrival Gate</strong>.
+                If another room contained the Arrival Gate then the Arrival Gate will be moved.
+            </p>
+            <p>
+                <strong class="warn">Note: The Arrival Gate is different from the <a href="#SpawnRoom">Spawn Room</a>.</strong>
+                Your dojo must contain a Spawn Room, which determines the root of its tree structure, and only certain rooms
+                can be the Spawn Room.  An Arrival Gate, however, is optional and can be placed in any room.
+            </p>
+            <p>
+                The Arrival Gate room will have a
+                <span class="docImgButton-clear"><img src="icons/icon-arrival.png" srcset="icons2x/icon-arrival.png 2x" title="Arrival Gate"/></span>
+                marker on it.
+            </p>
+            <p>
+                To remove the Arrival Gate from your layout, click on the Arrival Gate room's menu and select
+                <span class="docImgButton"><img src="icons/icon-arrival-delete.png" srcset="icons2x/icon-arrival-delete.png 2x" title="Arrival Room Delete"/></span>
+                <strong>Remove Arrival Gate</strong>.  After this your layout will not have an Arrival Gate.
+            </p>
+
             <h1 id="Structure">Structure Mode</h1>
 
             <h2 id="StructureBasic">Basic Mode</h2>
             <p>
-                Basic structure checking is enabled by default.  All you need to do is add a spawn point.
+                Basic structure checking is enabled by default.  All you need to do is add a spawn room.
             </p>
 
-            <h3 id="SpawnPoint">Spawn Point</h3>
+            <h3 id="SpawnRoom">Spawn Room</h3>
             <p>
-                On rooms that support being a spawn point, click on the room menu and select
-                <span class="docImgButton"><img src="icons/icon-spawn.png" srcset="icons2x/icon-spawn.png 2x" title="Spawn Point"/></span>
-                <strong>Set Spawn Point</strong> to designate that room as the spawn point.  If another room is already
-                designaged as the spawn point then the spawn point will be moved.
+                On rooms that support being a spawn room, click on the room menu and select
+                <span class="docImgButton"><img src="icons/icon-spawn.png" srcset="icons2x/icon-spawn.png 2x" title="Spawn Room"/></span>
+                <strong>Set Spawn Room</strong> to designate that room as the spawn room.  If another room is already
+                designaged as the spawn room then the spawn room will be moved.
             </p>
             <p>
-                The designated spawn point room will have a
-                <span class="docImgButton-clear"><img src="icons/icon-spawn.png" srcset="icons2x/icon-spawn.png 2x" title="Spawn Point"/></span>
+                <strong class="warn">Note: The Spawn Room is different from the <a href="#ArrivalGate">Arrival Gate</a>.</strong>
+            </p>
+            <p>
+                The designated spawn room will have a
+                <span class="docImgButton-clear"><img src="icons/icon-spawn.png" srcset="icons2x/icon-spawn.png 2x" title="Spawn Room"/></span>
                 marker on it.
             </p>
             <p>
-                To remove the spawn point from your layout, click on the spawn point room menu and select
-                <span class="docImgButton"><img src="icons/icon-spawn-delete.png" srcset="icons2x/icon-spawn-delete.png 2x" title="Spawn Point Delete"/></span>
-                <strong>Remove Spawn Point</strong>.  After this your layout will not have a spawn point.
+                To remove the spawn room from your layout, click on the spawn room room menu and select
+                <span class="docImgButton"><img src="icons/icon-spawn-delete.png" srcset="icons2x/icon-spawn-delete.png 2x" title="Spawn Room Delete"/></span>
+                <strong>Remove Spawn Room</strong>.  After this your layout will not have a spawn room.
             </p>
             <h3 id="Connectedness">Connectedness</h3>
             <p>
-                When a spawn point is designated the dojo will be checked to make sure every room is connected to the
-                spawn point room, either directly or indirectly through other rooms.
+                When a spawn room is designated the dojo will be checked to make sure every room is connected to the
+                spawn room room, either directly or indirectly through other rooms.
             </p>
             <p>
-                Rooms that are not connected to the spawn point room will be highlighted in yellow and show up as
+                Rooms that are not connected to the spawn room room will be highlighted in yellow and show up as
                 <span class="docImgButton-clear"><img src="icons/icon-warn.png" srcset="icons2x/icon-warn.png 2x" title="Warning"/></span>
                 warnings.
             </p>
@@ -1242,7 +1269,7 @@
                 then checking the <strong>Enabled</strong> checkbox.
             </p>
             <p>
-                <strong class="warn">A <a href="#SpawnPoint">spawn point</a> is required for Advanced Structure Mode.</strong>
+                <strong class="warn">A <a href="#SpawnRoom">spawn room</a> is required for Advanced Structure Mode.</strong>
             </p>
             <p>
                 When Advanced Structure Mode is enabled your dojo layout will be overlayed with green lines.
@@ -1261,12 +1288,12 @@
                 structure.  It's called a "tree".  Computer Science is not good at naming things.
             </p>
             <p>
-                The root of this tree is your Spawn Point.  The branch that starts at your Spawn Point contains all
+                The root of this tree is your Spawn Room.  The branch that starts at your Spawn Room contains all
                 other branches inside it.
             </p>
             <p>
                 When Advanced Structure Mode is enabled, DojoCAD will try to build the tree structure from your layout,
-                starting with the spawn point.  It will be able to do so automatically, <strong class="warn">unless
+                starting with the spawn room.  It will be able to do so automatically, <strong class="warn">unless
                 your layout contains <a href="#Loops">loops</a>.</strong>
             </p>
 
@@ -1288,26 +1315,26 @@
             </p>
             <p>
                 <strong class="info">In-game, the branch under a room represents all the rooms that must be destroyed
-                    before that room can be destroyed, assuming your spawn point stays the same.</strong>
+                    before that room can be destroyed, assuming your spawn room stays the same.</strong>
             </p>
             <h4 id="SelectRoot">Select Root</h4>
             <p>
                 Select a single room and use
                 <span class="docImgButton"><img src="icons/icon-select-root.png" srcset="icons2x/icon-select-root.png 2x" title="Root"/></span>
-                <strong>Root</strong> to select the path of parent rooms from that room leading back to the Spawn Point.
+                <strong>Root</strong> to select the path of parent rooms from that room leading back to the Spawn Room.
             </p>
             <p>
-                <strong class="info">In-game, the root path leading leading back to the spawn point represents all the
-                    rooms that must be built before that room can be built, assuming your spawn point stays the same.</strong>
+                <strong class="info">In-game, the root path leading leading back to the spawn room represents all the
+                    rooms that must be built before that room can be built, assuming your spawn room stays the same.</strong>
             </p>
 
-            <h4 id="MovingTheSpawnPoint">Moving the Spawn Point</h4>
+            <h4 id="MovingTheSpawnRoom">Moving the Spawn Room</h4>
             <p>
-                If the layout has a valid tree structure, then the spawn point can be moved anywhere and it will still
+                If the layout has a valid tree structure, then the spawn room can be moved anywhere and it will still
                 be a valid tree.
             </p>
             <p>
-                If the spawn point is moved from one side of a room to the other along the tree, then the branch
+                If the spawn room is moved from one side of a room to the other along the tree, then the branch
                 structure for that room changes. Its previous parent becomes one of its child branches, and one of
                 it's previous child rooms becomes its parent.  This is sometimes helpful in destroying a room while
                 preserving one of its previous child rooms, but it practice it's is pretty hard to avoid destroying
@@ -1441,7 +1468,7 @@
             </p>
             <p>
                 Once you have the tree structure from your in-game dojo mapped in DojoCAD, you can start using the
-                <strong>Select Branch</strong> and <strong>Select Root</strong> along with spawn point manipulation
+                <strong>Select Branch</strong> and <strong>Select Root</strong> along with spawn room manipulation
                 to figure out the best way to destroy rooms in your dojo.
             </p>
 
@@ -1452,11 +1479,11 @@
                 <strong>Structure</strong> menu after enabling it.
             </p>
 
-            <h3 id="ShowSpanPoint">Find Spawn Point</h3>
+            <h3 id="ShowSpawnRoom">Find Spawn Room</h3>
             <p>
-                If you have a big dojo or otherwise can't find the spawn point, use
-                <span class="docImgButton"><img src="icons/icon-spawn.png" srcset="icons2x/icon-spawn.png 2x" title="Find Spawn Point"/></span>
-                <strong>Find Spawn Point</strong> to automatically show your spawn point and select it.
+                If you have a big dojo or otherwise can't find the spawn room, use
+                <span class="docImgButton"><img src="icons/icon-spawn.png" srcset="icons2x/icon-spawn.png 2x" title="Find Spawn Room"/></span>
+                <strong>Find Spawn Room</strong> to automatically show your spawn room and select it.
             </p>
 
             <h3 id="AutoFixStructure">Auto-Fix Structure</h3>
@@ -1468,7 +1495,7 @@
             </p>
             <p>
                 <strong>Auto-Fix Structure</strong> will try to create the shortest branches possible, according to
-                your current Spawn Point.  Shorter branches means the dojo can be completed faster and torn down faster.
+                your current Spawn Room.  Shorter branches means the dojo can be completed faster and torn down faster.
             </p>
             <p>
                 If there are already some Cross Branch Doors set then they will be left alone.
@@ -1615,8 +1642,8 @@
                 <li>Tweaked the bounds on the Obstacle Course Architect and Open Space rooms after further testing.
                     The Inspiration Hall now shows up on the floor above it in game.</li>
                 <li>Added the Entrati Audience Chamber room</li>
-                <li>Oh, Inspiration Halls can be spawn points</li>
-                <li>Apparently the Entradi Audience Chamber can also be a spawn point</li>
+                <li>Oh, Inspiration Halls can be spawn rooms</li>
+                <li>Apparently the Entradi Audience Chamber can also be a spawn room</li>
                 <li>Taking a few bites out of the starter hall bounding box (thanks <strong>wingcobob </strong>)</li>
                 <li>Added an ideal decorator's example layout (thanks <strong>Vash</strong>)</li>
             </ul>
@@ -1665,7 +1692,7 @@
             </ul>
             <h3 id="UpdateNotes2.2">v2.2: 2021-08-10</h3>
             <ul>
-                <li>Added a spawn point marker and connectedness checking</li>
+                <li>Added a spawn room marker and connectedness checking</li>
                 <li>Added local storage for saving layouts</li>
                 <li>Added settings menu with settings for showing other floors, showing map markers, and autosave</li>
                 <li>Added setting for showing labels</li>
@@ -1760,6 +1787,11 @@
                 <li>Got some help testing the old room boundaries (<strong>huge</strong> thanks to <strong>x-cessive</strong>)</li>
                 <li>Tweaked the boundaries on almost all 6-door and 10-door halls, thanks again to the freakin' Duviri
                     portal rooms (thanks <strong>MacDB</strong>)</li>
+            </ul>
+            <h3 id="UpdateNotes2.7">v2.7: 2024-01-07</h3>
+            <ul>
+                <li>Added an explicit Arrival Gate marker to make it clear that it's different from the Spawn Room,
+                    renaming a million &quot;Spawn Point&quot;s to &quot;Spawn Room&quot; (thanks <strong>Dilgins</strong>)</li>
             </ul>
 
             <h1 id="ToDo">To Do</h1>

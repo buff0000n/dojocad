@@ -432,7 +432,7 @@ class SelectionAction extends Action {
 	}
 }
 
-class ChangeSpawnPointAction extends Action {
+class ChangeSpawnRoomAction extends Action {
 	constructor(fromRoom, toRoom) {
 		super();
 		this.from = fromRoom;
@@ -448,13 +448,41 @@ class ChangeSpawnPointAction extends Action {
 	}
 
 	action(from, to) {
-        setSpawnPointRoom(to, false);
+        setSpawnRoom(to, false);
 		saveModelToUrl();
         treeUpdated();
 	}
 
 	toString() {
-		return "Change spawn point from "
+		return "Change spawn room from "
+		    + describeRoomList(this.from ? [this.from] : null) + " to "
+		    + describeRoomList(this.to ? [this.to] : null);
+	}
+}
+
+class ChangeArrivalRoomAction extends Action {
+	constructor(fromRoom, toRoom) {
+		super();
+		this.from = fromRoom;
+		this.to = toRoom;
+	}
+
+	undoAction() {
+        this.action(this.to, this.from);
+	}
+
+	redoAction() {
+        this.action(this.from, this.to);
+	}
+
+	action(from, to) {
+        setArrivalRoom(to, false);
+		saveModelToUrl();
+        treeUpdated();
+	}
+
+	toString() {
+		return "Change arrival room from "
 		    + describeRoomList(this.from ? [this.from] : null) + " to "
 		    + describeRoomList(this.to ? [this.to] : null);
 	}

@@ -664,13 +664,19 @@ function doRoomMenu(e, rooms) {
     }
 
     if (room) {
-        if (room.isSpawnPoint()) {
-            menuDiv.appendChild(buildMenuButton("Remove Spawn Point", unsetSelectedRoomSpawn, "icon-spawn-delete", buttonClass, buttonSpan));
+        if (room.isSpawnRoom()) {
+            menuDiv.appendChild(buildMenuButton("Remove spawn room", unsetSelectedRoomSpawn, "icon-spawn-delete", buttonClass, buttonSpan));
 
         } else {
             if (room.metadata.spawn) {
-                menuDiv.appendChild(buildMenuButton("Set Spawn Point", setSelectedRoomSpawn, "icon-spawn", buttonClass, buttonSpan));
+                menuDiv.appendChild(buildMenuButton("Set spawn room", setSelectedRoomSpawn, "icon-spawn", buttonClass, buttonSpan));
             }
+        }
+        if (room.isArrivalRoom()) {
+            menuDiv.appendChild(buildMenuButton("Remove Arrival Gate", unsetSelectedRoomArrival, "icon-arrival-delete", buttonClass, buttonSpan));
+
+        } else {
+            menuDiv.appendChild(buildMenuButton("Set Arrival Gate", setSelectedRoomArrival, "icon-arrival", buttonClass, buttonSpan));
         }
     }
 
@@ -1715,13 +1721,13 @@ function doStructureMenu() {
 
     menuDiv.appendChild(buildMenuDivider(4));
 
-    // show a warning if the spawn point is not present
+    // show a warning if the spawn room is not present
     if (!analysisResult.spawn) {
-        menuDiv.appendChild(buildMenuInfo("Spawn Point Missing", "icon-warn"));
+        menuDiv.appendChild(buildMenuInfo("Spawn Room Missing", "icon-warn"));
 
     } else {
-        // fins spawn point option
-        menuDiv.appendChild(buildMenuButton("Find Spawn Point", selectSpawnRoom, "icon-spawn"));
+        // find spawn room option
+        menuDiv.appendChild(buildMenuButton("Find Spawn Room", selectSpawnRoom, "icon-spawn"));
     }
 
     // auto-fix option

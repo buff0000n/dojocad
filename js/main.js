@@ -382,23 +382,23 @@ function movedSelectedRoom() {
 
 function getCurrentSpawnRoom() {
     // todo: track this explicitly?
-    return roomList.find((r) => { return r.isSpawnPoint(); } );
+    return roomList.find((r) => { return r.isSpawnRoom(); } );
 }
 
-function setSpawnPointRoom(newSpawnRoom, allowUndo=true) {
+function setSpawnRoom(newSpawnRoom, allowUndo=true) {
     // factored out so we can call this when loading a layout
     var currentSpawnRoom = getCurrentSpawnRoom();
-    // gotta check the metadata because I screwed up and thought a few rooms could be spawn points
+    // gotta check the metadata because I screwed up and thought a few rooms could be spawn rooms
     // when they can't
     if (!newSpawnRoom || newSpawnRoom.metadata.spawn) {
         if (currentSpawnRoom) {
-            currentSpawnRoom.setSpawnPoint(false);
+            currentSpawnRoom.setSpawnRoom(false);
         }
         if (newSpawnRoom) {
-            newSpawnRoom.setSpawnPoint(true);
+            newSpawnRoom.setSpawnRoom(true);
         }
         if (allowUndo) {
-            addUndoAction(new ChangeSpawnPointAction(currentSpawnRoom, newSpawnRoom));
+            addUndoAction(new ChangeSpawnRoomAction(currentSpawnRoom, newSpawnRoom));
         }
     }
 }
@@ -408,8 +408,8 @@ function setSelectedRoomSpawn() {
     if (selectedRooms.length == 1) {
         var newSpawnRoom = selectedRooms[0];
         clearMenus(0);
-        // set the spawn point
-        setSpawnPointRoom(newSpawnRoom, true);
+        // set the spawn room
+        setSpawnRoom(newSpawnRoom, true);
     	saveModelToUrl();
     	treeUpdated();
     }
@@ -418,7 +418,49 @@ function setSelectedRoomSpawn() {
 function unsetSelectedRoomSpawn() {
     if (selectedRooms.length == 1) {
         clearMenus(0);
-        setSpawnPointRoom(null, true);
+        setSpawnRoom(null, true);
+    	saveModelToUrl();
+    	treeUpdated();
+    }
+}
+
+function getCurrentArrivalRoom() {
+    // todo: track this explicitly?
+    return roomList.find((r) => { return r.isArrivalRoom(); } );
+}
+
+function setArrivalRoom(newArrivalRoom, allowUndo=true) {
+    // factored out so we can call this when loading a layout
+    var currentArrivalRoom = getCurrentArrivalRoom();
+
+    // any room can be an arrival room
+    if (currentArrivalRoom) {
+        currentArrivalRoom.setArrivalRoom(false);
+    }
+    if (newArrivalRoom) {
+        newArrivalRoom.setArrivalRoom(true);
+    }
+    if (allowUndo) {
+        addUndoAction(new ChangeArrivalRoomAction(currentArrivalRoom, newArrivalRoom));
+    }
+}
+
+function setSelectedRoomArrival() {
+    // only applicable with a single room selected
+    if (selectedRooms.length == 1) {
+        var newArrivalRoom = selectedRooms[0];
+        clearMenus(0);
+        // set the arrival room
+        setArrivalRoom(newArrivalRoom, true);
+    	saveModelToUrl();
+    	treeUpdated();
+    }
+}
+
+function unsetSelectedRoomArrival() {
+    if (selectedRooms.length == 1) {
+        clearMenus(0);
+        setArrivalRoom(null, true);
     	saveModelToUrl();
     	treeUpdated();
     }
@@ -446,6 +488,18 @@ function selectSpawnRoom() {
     var room = getCurrentSpawnRoom();
     if (room) {
         // if there is a spawn room, set the selection to it
+        selectRoom(room, true, false);
+        // make sure it's in view
+        centerViewOnIfNotVisible(room.mv.x, room.mv.y, room.floor);
+    }
+}
+
+function selectArrivalRoom() {
+    clearMenus(0);
+    // get the current arrival room
+    var room = getCurrentArrivalRoom();
+    if (room) {
+        // if there is a arrival room, set the selection to it
         selectRoom(room, true, false);
         // make sure it's in view
         centerViewOnIfNotVisible(room.mv.x, room.mv.y, room.floor);

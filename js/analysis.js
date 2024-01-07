@@ -20,7 +20,7 @@ function treeUpdated() {
 // helper class for storing the state of the last tree analysis
 class AnalysisResult {
     constructor() {
-        // whether there is a spawn point
+        // whether there is a spawn room
         this.spawn = false;
         // whether there are any disconnected rooms
         this.disconnected = false;
@@ -39,7 +39,7 @@ class AnalysisResult {
         }
         this.spawn = spawn;
         if (spawn) {
-            // if there is a spawn point then reset the other flags so we can re-calculate them
+            // if there is a spawn room then reset the other flags so we can re-calculate them
             this.setDisconnected(false);
             this.setLoops(false);
         }
@@ -76,7 +76,7 @@ var analysisResult = new AnalysisResult();
 // static rule we can add as a warning to disconected rooms
 class SpawnPointMissingRule {
     constructor() {
-        this.globalMessage = "Spawn Point Missing";
+        this.globalMessage = "Spawn Room Missing";
     }
 }
 var spawnPointMissingRule = new SpawnPointMissingRule();
@@ -107,7 +107,7 @@ function actuallyUpdateTree() {
     var root = getCurrentSpawnRoom();
     if (!root) {
         if (ranATreeUpdate) {
-            // if there is no spawn point but there was at some time then just clear all warnings
+            // if there is no spawn room but there was at some time then just clear all warnings
             for (var r = 0; r < roomList.length; r++) {
                 var room = roomList[r];
                 room.removeRuleWarning(disconnectedRule);
@@ -276,7 +276,7 @@ class TreeStructureCallback extends AbstractTreeTraversalCallback {
     }
 
     end() {
-        // make sure we know there's a spawn point
+        // make sure we know there's a spawn room
         analysisResult.setSpawn(true);
 
         // check the disconnected count

@@ -1327,6 +1327,10 @@ var treeMetadata = {
     },
 };
 
-// spark point marker, just put it in the center of the room
+// spark room marker, just put it in the center of the room
 // add 1 to the ze index so it appears above tree structure markers
 var spawnMarkerMetadata = {"image": "marker-spawn", "x": 0, "y": 0, "z": 2};
+
+// spark point marker, just put it in the center of the room
+// add 2 to the ze index so it appears above tree structure markers and spawn room marker
+var ArrivalMarkerMetadata = {"image": "marker-arrival", "x": 0, "y": 0, "z": 3};
