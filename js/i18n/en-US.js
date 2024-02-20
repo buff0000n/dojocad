@@ -1,0 +1,35 @@
+{
+    "menu.close": "Close Menu",
+    "menu.error": "Error",
+    "menu.warning": "Warning",
+
+    "menu.new": "New",
+    "menu.local.storage": "Local Storage",
+    "menu.share": "Share",
+    "menu.png": "PNG",
+    "menu.structure": "Structure",
+    "menu.settings": "Settings",
+    "menu.language": "Language",
+    "menu.debug.collision.matrix": "Collision Matrix",
+	"menu.debug.color.picker": "Color Picker",
+	"menu.debug.saturation.picker": "Saturation Picker",
+	"menu.debug.luminance.picker": "Luminance Picker",
+
+    "main.page.alttext.burgerButton": "Menu",
+    "main.page.alttext.addRoomButton": "Add Room",
+    "main.page.alttext.undoButton": "Undo",
+    "main.page.alttext.redoButton": "Redo",
+    "main.page.alttext.multiselectButton": "Enable Multiselect Mode",
+    "main.page.alttext.allErrorsButton": "OK",
+    "main.page.alttext.floorUpButtonImg": "Up",
+    "main.page.alttext.floorDownButtonImg": "Down",
+    "main.page.alttext.helpToggle": "Show Help",
+    "main.page.alttext.numRoomsStatField": "Room Count",
+    "main.page.alttext.energyStatField": "Energy",
+    "main.page.alttext.capacityStatField": "Capacity",
+    "main.page.alttext.tierStat": "Ghost Tier",
+    "main.page.alttext.xpCountStatField": "Rooms providing Clan XP",
+    "main.page.alttext.showResoucesStat": "Resources",
+
+    "help.file": "help-en-US.html"
+}

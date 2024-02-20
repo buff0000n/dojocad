@@ -22,6 +22,18 @@ function modifyUrlQueryParam(key, value) {
 	updateHref(href);
 }
 
+function modifyUrlAnchor(newAnchor) {
+    var href = getHref();
+    var index = href.indexOf("#");
+    if (index > 0) {
+        href = href.substring(0, index);
+    }
+    // todo: escape '#' characters in newAnchor?
+    href = href + "#" + newAnchor;
+
+    updateHref(href);
+}
+
 function removeUrlQueryParam(key) {
     var href = getHref();
 
@@ -56,13 +68,13 @@ function actuallyModifyUrl() {
 	hrefToUpdate = null;
 }
 
-function removeUrlAnchor() {
-    var href = getHref();
-    if (href.indexOf("#") > 0) {
-        href = href.substring(0, href.indexOf("#"));
-        updateHref(href);
-    }
-}
+//function removeUrlAnchor() {
+//    var href = getHref();
+//    if (href.indexOf("#") > 0) {
+//        href = href.substring(0, href.indexOf("#"));
+//        updateHref(href);
+//    }
+//}
 
 function getQueryParam(url, name) {
     // from https://stackoverflow.com/questions/901115/how-can-i-get-query-string-values-in-javascript
@@ -77,6 +89,15 @@ function getQueryParam(url, name) {
         return '';
     }
     return decodeURIComponent(results[2].replace(/\+/g, ' '));
+}
+
+function getAnchor(url) {
+    var index = url.indexOf("#");
+    if (index > 0) {
+        // todo: unescape '#' characters in anchor?
+        return url.substring(index + 1);
+    }
+    return null;
 }
 
 function buildQueryUrl(query) {

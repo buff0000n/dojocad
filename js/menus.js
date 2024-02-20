@@ -138,7 +138,7 @@ function buildCloseMenuButton() {
     // doesn't look dumb
     buttonDiv.style = "text-align: right";
 //    buttonDiv.className = "field";
-    buttonDiv.innerHTML = `<img class="imgButton closeMenuButton" src="icons/icon-close.png" srcset="icons2x/icon-close.png 2x" title="Close Menu"/>`;
+    buttonDiv.innerHTML = `<img class="imgButton closeMenuButton" src="icons/icon-close.png" srcset="icons2x/icon-close.png 2x" title="${i18n.str("menu.close")}"}"/>`;
     buttonDiv.onclick = doCloseMenu;
     buttonDiv.menuLevel = getCurrentMenuLevel();
     return buttonDiv;
@@ -214,9 +214,9 @@ function buildErrorPopup(errors, warns, span = true) {
     var buttonDiv = document.createElement(span ? "span" : "td");
     buttonDiv.className = "menu-button-clear";
     if (errors && errors.length > 0) {
-	    buttonDiv.innerHTML = `<img src="icons/icon-error.png" srcset="icons2x/icon-error.png 2x" title="Error"/>`
+	    buttonDiv.innerHTML = `<img src="icons/icon-error.png" srcset="icons2x/icon-error.png 2x" title="${i18n.str("menu.error")}"/>`
     } else {
-	    buttonDiv.innerHTML = `<img src="icons/icon-warn.png" srcset="icons2x/icon-warn.png 2x" title="Warning"/>`
+	    buttonDiv.innerHTML = `<img src="icons/icon-warn.png" srcset="icons2x/icon-warn.png 2x" title="${i18n.str("menu.warning")}"/>`
     }
     buttonDiv.roomMetadata = roomMetadata;
     buttonDiv.errors = errors;
@@ -355,23 +355,25 @@ function doBurgerMenu() {
 	menuDiv.appendChild(buildMenuHeaderLine("Menu", 3));
 
     // need to explicitly pass in the layout for a new dojo now that we can autoload from autosave
-    menuDiv.appendChild(buildLinkMenuButton("New", "index.html?v=2,0,0,0&mz=BYRgNADJ0UA", "icon-new"));
+    menuDiv.appendChild(buildLinkMenuButton(i18n.str("menu.new"), "./?v=2,0,0,0#BYRgNADJ0UA", "icon-new"));
 
-    menuDiv.appendChild(buildMenuButton("Local Storage", doStorageMenu, "icon-save"));
+    menuDiv.appendChild(buildMenuButton(i18n.str("menu.local.storage"), doStorageMenu, "icon-save"));
 
-    menuDiv.appendChild(buildMenuButton("Share", doShare, "icon-link"));
+    menuDiv.appendChild(buildMenuButton(i18n.str("menu.share"), doShare, "icon-link"));
 
-    menuDiv.appendChild(buildMenuButton("PNG", doPngMenu, "icon-png"));
+    menuDiv.appendChild(buildMenuButton(i18n.str("menu.png"), doPngMenu, "icon-png"));
 
-    menuDiv.appendChild(buildMenuButton("Structure", doStructureMenu, "icon-structure"));
+    menuDiv.appendChild(buildMenuButton(i18n.str("menu.structure"), doStructureMenu, "icon-structure"));
 
-    menuDiv.appendChild(buildMenuButton("Settings", doSettingsMenu, "icon-settings"));
+    menuDiv.appendChild(buildMenuButton(i18n.str("menu.settings"), doSettingsMenu, "icon-settings"));
+
+    menuDiv.appendChild(buildMenuButton(i18n.str("menu.language"), doLanguageMenu, "icon-language"));
 
     if (debugEnabled) {
-	    menuDiv.appendChild(buildMenuButton("Collision Matrix", doCollisionMatrix));
-	    menuDiv.appendChild(buildMenuButton("Color Picker", doGenerateColorPicker));
-	    menuDiv.appendChild(buildMenuButton("Saturation Picker", doGenerateSatPicker));
-	    menuDiv.appendChild(buildMenuButton("Luminance Picker", doGenerateLumPicker));
+	    menuDiv.appendChild(buildMenuButton(i18n.str("menu.debug.collision.matrix"), doCollisionMatrix));
+	    menuDiv.appendChild(buildMenuButton(i18n.str("menu.debug.color.picker"), doGenerateColorPicker));
+	    menuDiv.appendChild(buildMenuButton(i18n.str("menu.debug.saturation.picker"), doGenerateSatPicker));
+	    menuDiv.appendChild(buildMenuButton(i18n.str("menu.debug.luminance.picker"), doGenerateLumPicker));
     }
 
     showMenu(menuDiv, element);
@@ -1623,7 +1625,7 @@ function doStorageSave(name) {
     // get the layout parameter
     var layout = buildCompressedModelParam();
     // build a URL snippet and save that directly
-    storage.addItem(name, `v=${view}&mz=${layout}`);
+    storage.addItem(name, `v=${view}#${layout}`);
 
     // let's go ahead and rebuild the whole menu because we may need to change the sizing/placement
     // also because I'm not quite sure how many menus deep we are
@@ -1689,6 +1691,36 @@ function doSettingsMenu() {
     menuDiv.appendChild(buildMenuDivider(4));
 
     menuDiv.appendChild(buildCheckbox("autosave", "Autosave", settings.autosave, (value) => { setAutosave(value); }));
+
+    showMenu(menuDiv, button);
+}
+
+function doLanguageMenu() {
+	var button = getMenuTarget();
+
+    var menuDiv = buildMenu();
+
+	menuDiv.appendChild(buildMenuHeaderLine(i18n.str("menu.language"), 4, "icon-language"));
+
+	function insertLanguageEntry(key, name) {
+        menuDiv.appendChild(buildMenuButton(name, () => {
+            settings.language = key;
+            settings.save();
+            i18n.refreshLanguage();
+            doCloseMenu();
+        }, key == settings.language ? "icon-language" : null));
+	}
+
+	var languageList = i18n.getLanguageList();
+
+	for (var i = 0; i < languageList.length; i++) {
+	    var entry = languageList[i];
+	    insertLanguageEntry(entry.key, entry.name);
+	}
+
+    menuDiv.appendChild(buildMenuDivider(4));
+
+    insertLanguageEntry(null, "Reset to default");
 
     showMenu(menuDiv, button);
 }

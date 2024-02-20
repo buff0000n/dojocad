@@ -1,0 +1,1611 @@
+<html>
+<head></head>
+<link rel="stylesheet" type="text/css" href="css/main.css"/>
+<link rel="stylesheet" type="text/css" href="css/slider.css"/>
+<script type="text/javascript" language="javascript" src="js/init.js"></script>
+<body>
+
+<div class="helpTop">
+    <a class=".top" href="#TOC">top</a>
+</div>
+
+<div class="helpBox">
+    <div class="helpContainer">
+        <p style="text-align: center;">
+            <span class="title">DojoCAD</span><br/>
+            v3.0.0: 2024-02-20<br/>
+            <a target="_blank" href="https://github.com/buff0000n/dojoarch">Source</a>&nbsp;
+            <a target="_blank" href="https://github.com/buff0000n/dojoarch/issues/2">Feedback</a>&nbsp;
+            <a target="_blank" href="https://github.com/buff0000n/dojocad/issues/new">Bugs</a><br/>
+            Contact:
+            <a target="_blank" href="https://forums.warframe.com/messenger/compose/?to=1331202">Forums</a>&nbsp;
+            <a target="_blank" href="https://www.reddit.com/user/buff0000n">Reddit</a>&nbsp;
+            <a target="_blank" href="https://www.youtube.com/c/Buff00n">YouTube</a>&nbsp;
+            <a target="_blank" href="https://github.com/buff0000n/dojocad/issues/new">git</a>
+        </p>
+
+        <p>Thanks: <a target="_blank" href="https://www.reddit.com/user/AeliosZero">AeliosZero</a></p>
+
+        <h1>What is this?</h1>
+        <p>
+            This is a tool for planning a valid Warframe Clan Dojo layout.  I've tried to model the in-game
+            room boundaries and constraints as accurately as possible.
+        </p>
+
+        <h2>Disclaimer</h2>
+        <p>
+            <strong class="warn">All the room boundaries have been found by in-game experiment, waypoint
+                measurement, or straight-up guesswork.</strong>  If you see a problem or if you'd like to help me
+            determine bounds and stats for the old, discontinued rooms then please drop me a line!
+        </p>
+
+        <h1>Getting started</h1>
+        <p>
+            The starter <strong>Clan Hall</strong> is already added by default.
+        </p>
+        <p>
+            Click the <span class="docImgButton"><img src="icons/icon-add.png" srcset="icons2x/icon-add.png 2x" title="Add"/></span> button to select a category and room to add.
+            Then drag and click where the room should be placed.
+        </p>
+
+        <h2 id="Examples">Examples</h2>
+        <ul id="preset-list">
+            <li>
+                <a id="preset-minimal" target="_top" href="./?v=1.6,97,-61,0#CbA0FoEYDYAZXvAzAfQDYBdQwgFkggugEbbSi7nwBM6AxhDuLgByGzoCmj5lhtAewBOoFvFwB2fijoiocRrlzsUQ7mLxtE6ARTYBWLaFprskanuloAbpeaIiAC24P4BUB4DOKTgDNQAJxUhJCq3JDmmipoYPJu+vr8QA">
+                    Minimal clan dojo
+                </a>
+            </li>
+            <li>
+                <a id="preset-minimal-affinity" target="_top" href="./?v=1.5,74,160,0#PYJwNAtA7AnGAsAOMAGMBmA+gGwC5jgkTTQEYcBTSKZCU0gJlQxwGNJiOSXsAjMUvEj0mZHMEgwyANmZZsANzDJSssQBMArgNlJm5YO1IwhEBgFY1AzMACGkBvCZnLczLgAWkdM5-7MIFREZIxugToCoWLhwcrcWB5BfhAwVmhgGQDOmOrq3s4WaZis4LEQfmhY4apx-hQAZvlg0kIkOHkMUE1kQA">
+                    Minimal clan dojo with full utility and Clan Affinity
+                </a>
+            </li>
+            <li>
+                <a id="preset-maximal" target="_top" href="./?v=1.2,19,-83,1#BYRgNADJ0Q+gTgUzAWgMwCZUBYAc01YBjZDfFPVcEYo6C88OJVTHRsQouqSqOYFigBOAGwxYwNNBCj+kYqXx8wNbtEpNJ2aGNULgAVhj6oYcwGdYAe3itwmzrAA2AFxzVx4Qs+QVxKLL6PnSUgV6qLgBGYNheETTO1qiG+LhQ3rT0QYEKLOhY4VROLGxFuWo8qgFaACa12cJYWkQAHvSOcER2ojrp+jS1AK7sqiDNTgDmzmC91RkKrsAycqaw06hzsgtw1gCGVADs+NvBCH5sOZmlzTWR6rwcu3Qgwjqn1OsWVGRgGBD4eTmcytABcoLBsCWPxOqyBwLBENBX1Uv3+gOgwLAiMh0PGsPkZgR4ORk2+KH6p3h5iRkKI5JAEB06JkKMpcMxwJJrWI30ZzIBrPybDC12QIo4lWg-VycA2gTRhnE1LA4MhG3xfyVJixauR1himrQogxGBsMQV+GNpvWM0Ch3ELJVONJMxADr+gudevOrCwMrFnH9UAqWQy42KcGhDFiGKjy36KiJNMRbIyvxV3LTYD0mZxttR+FznJpapR7vExeT2JJvsuEdDwuaDcyD1U2B0svLHqpJZr4O7XgzfZ9ZKO8UJWP76rtFZzyoUY4p6bjU7BqaX-SrdeaHeKNCb7c7raqc67RHcmg51aRxEvJ2HN7p7hjvawuvXd9Gmqg765z9GYszSIGJKCrKcIWIUD8AwbUoGkLEAP6WCFwQrlIJA0YUOgP8Uy-ZctVQtcB3pGFUXkXDVR5Uj7S8Y0cIg6jDV+FRwEQ5FMJjeQ1Atfp5C4ckZQwHRfyg1AZVY4h2lo2MJDacdqjk6SzyCfgpIUriR2o5SG0kziQD3TSuAtAzOz4+4TI9AjvXU8y1MPFSnDbFlz3aOc5jU+S5zYTy3I9Ql1LPHyFFIs84L+XkwCEkSIswiS40C3SMR4o9RlEzCz3MtjiTE0zxMnD8wz+bAQy0KJwHQAUOEIcrWGZErihq7x6tKyJarQKr9y-EM9O+BrKUiZwADdYnDCYUpk7D4MY3KPSmv5iMkZA5idSILAAW02TqFl1bkOIZJl5wIFFLSOtTrG+eC0BtYAADMcOEiRgAASwe95ICAA">
+                    Maximal clan dojo
+                </a>
+            </li>
+            <li>
+                <a id="preset-thirteen-floor" target="_top" href="./?v=1.6,7,61,2#BYRgNADJ1SAsA2AXAVgkkEIH0DGBTMAJgA4wBaOM2MEEk1dTHA4sqi8LxRjLbYERiditCCl7Mw0sAA8kAgMzDyQqAHY4krDLBJZAuMPCx62qDKRX5C1qvbUwyugzR8WuaBxO0zb5niE9mAcqk5iEv78dqQU3uFEieaBbCFkXMRJUR5eZGqZRMnAKML5iYXZMgDOetZW2AA2AC5x4OQgCKLK5ckNQYi0nULdWUz8DZ6hHaLgPdmNAEYhndNCs6Pu2AD2AE5x6pwr4S69WxQo6UfOfmMsQbEcw8Qo6smssZR5tM+v8+8Ox2IAE50H97mRPuFuiC3i0oJCjLMYZVLPIUh8OIinCBFG9wWkQlCcbDoJCSuBFMSUdJ9ApgABLYQlKCU3HU2q02z4slQxSRW7ogHkpx85JNYDCTos0XsuopYIcTrKPnIMGpSFXFCqgX-OIQtYRPGpULOMCaI3BSHkZVmrTzcUqZRQKjmXRygDmDWgQKOXBum1wcIJ1vCLr+QatprDtzdaJ2-UcIeU0c28YJ8Kjrh1hAxEKxKYCMQBlFDWYDEdCWKIoJjqNsQcrCRrqYThziTeSae8nRLs2bhe5oRK3X70RzxeF1eS7pq1qEQ5g05qiiEVuZkGSWyWsDgRgOwy1b08zrI69ZJJPYCVIv55dyZu+KqPpMe0DmtekNgUABNv6SQECQhlBshYVuk3wnLKaK4MeBJOj8F56oCRAvK6dbYDOFArkhBwsoe8yYdhHC4U4+ECt+ACuSHtNe3SofMlFIdMNoob85FUd2yH0exwbMd8rGdq20xGNCo44GmVrCQkyICl2EJSUiYnYHJgyEopS7UdMZ5Uh+chWAomGQlp0DnrKtIYTUnHaWyukepZ8mdNZaGfvpeBLNh0wHBSZEBksc5tgcyo+YW26qYFpHau4sZuf+nReRFzl6AYuB+R5PbrkpKVOKu0zkCUahvKFuX5Ru7LQaFNHnIuZW2LBkJQDukUBJ6pI+sYPDhi+ELDqVOp1VM0CYLeUgyF+GFevCbXtIN4iCUhUC0TKsmEBwC2Pktd6XtNzizfMDQAG4hLAvq+GWATAAAZioRhQFOZmcspK0Oe2fZzUZPYicQmWDvJxwdQKwCEA1hK3TJUWWHUChVAAtsI8ECfdNjbLOIDqGQbUUqdm41PC8DpdVOp7FAJC3aI76bFsACGg0DN0CGdVtwpKVsOO0AMeWiJlsGhPk5rzCzNM9kBtrPvCPPQHzuljVu-67hQvN2gKmE7kYTkERNYBtWrSv2ZrjmPjpmyGRwWsmYbzW6+QU0+ENGm43L02wLtOvUdbM3Dfwab2zdgtvaEbUsmzTWe09FABxB-0UxV8B7iZwXRGBD5BcHLCJ1cG0jTS0ENuw0lKRJCBGPEphnfwLWF3rEFY+rFAVxjEH+gEAuo+jJ2QctV5F+BJeIatf0p0AA">
+                    Thirteen floor clan dojo
+                </a>
+            </li>
+            <li>
+                <a id="preset-dry-dock" target="_top" href="./?v=0.9,182,974,0#CbA0FoA4AZohGeAmOd4H0DOBbCB2SAFgSRlDgGZ0ALAU3yIgE4A2VUeUL0TdWgMwiFIzNuQ59BhFsXCt2VAaAoUWo9hiUoRcsWkmgyujQfDw8a4+M2DwFaLPnXThCknXOl4AKxir+rxZIHScAwW9kBGhfcWgDCPczeEZ2blAALgAPdJys3PTTc0tkMkpTIJ0Sky9fODNSBRc3ElLlU3tZKvFFW2EWxqUjLrKtaEqG7oMVYomRqRl+7rSM-PzM9ABjehYUBHhVZy3QHbrEBwQJOlBvCz3duHc0vNzN7d2k884MI5O9g-dvm9TvBzhRLvQbsVkHBiEhXsd3ogDuAAfDfh9ZGDAQjgcjiNj0WdZN5wddbkl3iS4V4ih5UUppI4xO4espkU56YJtHSJEoElEYu44oM6hzeeFIklGEKXCFmeKhOMyCyDEMJirRkqHm0lNNFhr5p11TrbLT6sqTRAOjybFbzubtazwK5EmLbc7mg7QAaILUbaY-V6feAKv7AsF9aTIXdtXCrtGKZRyDQIeTELtONSpEN9mp8VNvIkkXmFaw-iXbUgkJ1c6B815SJVa-XevAoQcWwg-MW6wq7EXm33vIQax2+30rCiFYyPFPWXrJ5zrpKQTEp8KJQPGOuU2Soe93FnvWNZ0ujE4p+6J1056rThNb5rFo-BAubz6Z16XwhyRel2Y0wfYNrUXPsQPfS0PVdPx-xdZ9g0DP8h27IDINDUD3XQiCMHjNNoQuONU33OowSPMxu1rHxpxzZESVtChC3LX1S3bSw6IMKtRzYvtGyYqj3U9Ht+JcNs+PYmoRzEqM8PeWF0AAJzeLjmIwRS9z2IJmLiNSExBPBEipBSiKifShG9Iz1KSTTnWTHS02gUy7HMuyoWssFtOMswHMSQ8LN0tsdBlFyTKLZzPMQazOA8yy9KFMKYoC2I-Ps0zM2S1yRCi9KQu9eL-M0oLwu85Q8rwzT3KAA">
+                    Just how big <i>is</i> the Dry Dock?
+                </a>
+            </li>
+            <li>
+                <a id="preset-discontinued" target="_top" href="./?v=1.5,36,119,0#PYCwjANADNsxCDOB9YBjNsCsUB0W5UNYAOAdkPUxgFod9KAnAUwgGY3cAmAuvAmGFQsINDt170B7ItVHkmsGmC54ehADYAXCFzISIU2EI0AjdlwMLByDazGX1RmG1uYxAFisUXyNK0EwfXUYLlQQLlE2ADYGGNwyAkgoWSjYggVkvx1PAxprGTQdNi91fJ8ZEVyysDAATkIRErzahpgUtERRLBI8gqFOw16y-r93EkdeAo7MCb6KlKq5mvrG+2XJaTCRDe6t5B3J0VbCYlrSqYWx47AL+Suim7vlVdDsiHOW1+hrz5qsZI-YgvZ5gAGndx-XhgEhsCEfW4tWFrCC7ZTg3xLI7owEDHJomFw3zA+g1ZHta7KYbQ8lAzCkmlEukfanHWkdHQE2muDTAD5YWIjCpCEBwsTpUR6AxZdA6GCZD5+VhsNQZCiQAaYI4KSIpCKiDxYBJq3SKx7ihg0RLSs3mGheXjW9SQMJoO3RXqOo3Owo5D2WsBQYJJXTvGj+6FsOo211+z3HMhgGMIFMALgAHqmww7jkGbRyDQGo-nswHEyX-LpOJHoz6BvY6hLlMWfa4AOYaG5NwPBj4-DtdstJn3wNOZrMDjzVhPDkMpNtdKXQvMjvzu+M0VScVduwu8Lc2yApiCZsPxfdQbchuHH8eoACGaUtKtnfZSABN35KoEbEqiKJErjAHaqi-tCXAuj8WggMc0TYtMyAgB435FrWBCREeKbjqmOGIRelpOuhhTpqIEbHC2RGYQgGZEB8UDRvuvYYZSOabkx0BAA">
+                    Example with the old, discontinued rooms.
+                </a>
+            </li>
+            <li>
+                <a id="preset-ideal-vash" target="_top" href="./?v=0.5,18,311,0#CbA0AYKgmVoVmgLgIwvK84D6ALAplALQoBskFoAnACxIAcy6kARAKIB2ALgE4CGXAJYAoAKoAHYQDE+AY0EcA5izyES5KJADM1Oo0ytOvASIAy+AGZdpchctWgylSCl0MmWUO278hwgEqCirjWMvJKKgTE0PT0MG76zF5GviIAIgD2AO4cNuH2ADZcoEQ0riQA7KRQOghM6AbYBWo01SQ0NDVwiKgNzE0ARqCtJShVUK51vRj9BbLDce2dLt31M1jYXLjR0MswPWjrOLI8JTSL0LtdU4eNBRkl8BcVsNqr040Zp6UVJVrge1qBz6GwKADdhpAiNAXhN3rd+jxCOczlRqisUPQ6Ch4ChUPAcFFLnsVhgKnicYTCDE4pRXGSKQSHFpEJpHBAkOT8VThmQ2fTOYyeednOyGdyHPAOvyOVzKQ5Sny6bKhQqpSSxYKJVFSvRRQK5UydSzXnDxfKdTSZeajWpidatRbCFD1fEbTyoeRaXAVdrnWc9W7HbbiGV0T73Q4oSag4acBkhiQULAiPANG9SFRUBUKkhoBsMvMSFoKt63igqPAkATPnxHFpSKaMZXq0dsBkAM4lXZQtAk9td6E0FwoPbQAdwYejUeaCc9xwzyDjpGjaW6-lY-GqldLBbxTHY3ESlejzrrumbnHbwinvdLxyXo-yztnTxJ-sv1Mad+zl-D3uLhAE5pgBH5dv+C5jsBGh9jAE6lJ4sFLvBIGQXBn6wUQpCxDUE6Ydh3ooFGJSkLC96Ri+mFYoR2A7iiRBaA2XQHlux7IosjHhq4LFXmxe4MdhcI8U+TIrvREEYo+14Bn8gnllJfHrghlA6MJqoYTORDUbhURQnqlCvMGHolPQpBjr6TrEBUTHkUZxFEFQVCmoZcb2egaaxqquklE53ouV5hCkU2oA6JGUTWeGbxhYF4BliFFkhqZGqhXZUS+WyKWuVE+kZQlPLuZF8XRQu+a5cVjnBZlAUkWRXTFVhsVlalagRU1WVqElbXVVpngqXlCrpX19UFV1fo+U5o2WUmpVDXZL6xKBv5di8i0UHhAKrUBn4LdOYGjBtu1LSUK2HWt22BkhcDwegU6XeOn4nXdE47U9L6PYB91djdI5QXRiw0FopqqQp8pif9gNCSDTKUZpzA0RpZ5w7hCPTnJIV4bDZA0d500Gf1MOI4D8ODphKBEzpahoFik0hiQuxxVVY3Jiis3tQu1Os+pX35pt8bc4hH3XTzaHIRhws-mtOPM35-VSwenljb2WjJgrlm9h0ePFUr4y2a5BOrjhLjXbD5zelotEtP9ZnMVDOBg2c1uSYe1W9gS5mRgUdapjQKZk1czhGV4AASfAFAUHYAAQZBYEdbIIkeyBk9w8BHfBIsIwDx+InsAJ74MAqeR-gPgmKAEcDAArtYsh8Bw5f4BHHZZHw4jiPnEdZIIWzCAAylwacFEEIRl18EcAJIcBY+Adlw+fCFkBBImC+Apxw+CyNPHZpznjcKBvwhbPgO+4Hwy8R044ARzX4ixxkGQsCFAB0ytNHWrTRvQ8Abs73JeGQEdIjkFwL4kcOz4HwAAW0jsA+uB8CARwUPgMEXc+ADGaBHDgFcIEDBXlHCwcDIHjyvhkCuBRgAcAAORcAjtPa++BH7CDHrHHggh27NA7F2COAArCuM8MFIJXsIcQtc14FxIVwB+Whn5EU9j5UsfwWT8hbDWJILAADighl51y2AIWO8DgCWD4KQ6hicK48DAcIE+kc+AR09jwRQuDcBdwGBkAAHno2uUc265A7MIjeZcu4dz4JHHBfCYHiCrgg6wGQ66eOLgXa+D8aCPzGK-R48AdBEAqFKNkmZsy5mFiwAAKvAhMYCeBggEF8HeQCK6hwKDnYQ8dKHULXvnduFhR6yE9nXfgHAADWoBLHZAESnLuFDI57wKBXAxYjtEEGELncRu8OAbyiRMxuQgw6pwjv0o+Qi07UOjlfHpEcq6CEHlwHOkjpFpNIIorSMQ2S0HcAYZIJchARxPmHSOxy44JyTqPCBvDrA4JoR8wQj8I4AHVcA72ABkPR08G4n2XgfRFYLi7GCEAAfgjgAIXXkYsBSLGmoobhfK+LdU4cASZ4sFtdhAAHk1GN2ETkABd8IFQpKUfVO6ds5yA6bYJQEdM4WCnkibgGdBBIlkEIGJkdOkpw7P0nOLj3ERJ4OITs08GE93ARHAAOiwTIXDEU93ZXXAAChkBQXAOwmuEMggxiKYEV1pSvGetcC4Lxzo-G5L9gAV34v8PYkxgRtlkaQCsoxoATQvD-SkXgABqwTcARwAMLZD4IIQQEzGFpDYAAQVMBHItmamX+GLUUqtwg0hMoAFJMofvAR+CAmhgHgFQbs-t2Q3BBDgaNfJcZsgwEcLwEhgACHzkgCO+ZoBaGEBHIgBKK4SqwBwB+KBH5UCIvbVMTynasUpEAA">
+                    Ideal decorator's dojo 2023
+                </a>
+                (thanks <a href="https://www.youtube.com/watch?v=yUgHOIU3M88">Vash</a>)
+            </li>
+            <li>
+                <a id="preset-tree-spaces-fool" target="_top"  href="./?v=0.4,21,351,0#CbA0AYKgmVoVmgLgIwvK84D6ALAplALQoBskFoAnACxIAcy6kARAKIB2ALgE4CGXAJYAoAKoAHYQDE+AY0EcA5izyES5KJADM1Oo0ytOvASIAy+AGZdpchctWgylSCl0MmWUO278hwgEqCirjWMvJKKgTE0PT0MG76zF5GviIAIgD2AO4cNuH2ADZcoEQ0riQA7KRQOghM6AbYBWo01SQ0NDVwiKgNzE0ARqCtJShVUK51vRj9BbLDce2dLt31M1jYXLjR0MswPWjrOLI8JTSL0LtdU4eNBRmg8BcVsCs3fRsZpzQVJfBUr0cq2mdwAbmdIERoC9rgcPjgeC1FlpwHsdCh6HQUPAUKh4AjCOczlRqisMVicXicBkhmhYERSPBSUDSFRUBUKkhoJ95uoqHFKOiqPAkPjGhk+I5SIxNECUMLRUdsBkAM4lXaQtB7alqqE0FwoPbQZVqjWjQ2aE1wfWOC2QY2I0YdM4CiaYvG47EEp2dIn2xzu7Ge-HYR2GzqlV0uQOUr2hwjhhbxckeqlW0qeEh2iDppma7M64aZrWW1WPDRZ7VW-UGo1WvO2utljO1mC5jQl+3pktECqYmpWnt9vYoQcWoi0Efxl0lLRaZnomPB71Eohz5muFNBtOO1fz12bpc7wmLGsTAMU5fTyOz6VdLexkOOm8t+9HuPNnuTgdl2L5qtli8-6lmq6A2pWIElH+5oAbqYHARQ6ZATBkFENBnZwN2qKtl2zbIRhxq-vQOGYYB3KNm2ZbwRRXbPquNBaICi6XseSalIx54PleVHjocU6frxYE-nBvHQKQaJjhGKBifxoG8TQVwuN28mKaAWiDtyCE5lRmk0aRcG6QR3a6RBiE8VJTyyShJCWQOdGnuJb4sXGu4OSOF6pnGBSSmhHFLM4EBIBUy5eAAKv4bBsMIADKAAKACCADCbDRaA0gAPLpaYLCOOAAB0GzecMFZaPQ8CylxVJeAA1NJAAE6XiPgHB1dF4hyPgKrCNV8B1f4+ByFwXxdbVWDgHVvD4J1OVaHlWijkVE59rOWjlZQ8oimKSQsAA4oIoLNRNuACEd+B1cAlh8AArkUdWyBkV08Cq+DCMAGSdRwADkXB1cdB11XwHAAJ4TYinV1QoEPFMIgg-VkfAqnVAydT9Q11eIV0-bDwgZC1gN1c1wB3Xw4g5TQeVjE0PnwPAOi9vA2qgKy7KcrpLBSIIBQFA1AzPTwoICF8QPCFksO4KDU2I0NwgALZ8AoXDyy1Wz4HLQiyMI90cCqggqlwzWyEDM1zQtkqkKtUExLKtDuAYXgAHI0hkwAg7IfCIojfADA91gqgA1kD3sAB51V8gjNYrQi42lABWV16+jmMS51MMtRYPC4z9GQWFDxvzdgwBXWxKLue8SpFaQ8qjNAAIVe++JeAAagj4uJdk8uCJ9XUAJJpGw8WmHVfeJel-jxaFo-CGk6UAFLpcI4WRXVbBpN3oXd+l9s5fAeUINgljEKVjMYMFaYH5COKAhQQVXufJTiQFJ+3xYxBVFGgWn3Gd9oSSspP2fL9NTgFUtfT+IZv5oEQH-G+ADiDSWItAsBOAIH6nfv-L+gDRi02ZKA5+3QcFqQ-ngo+sodDoPAS-S+pCiGwIftQ8hyCX5v3oTAjBoB6C-0FDQth6AQGEIYfvF+kCr78NYRQ++NouECIPlCJkLCkGCNnP2KRYjGF-GkvIvBvY7wqIUTIjhBCyGqMUSQYBjMjF6JflmKBuirz2WJAuDy24eExAChYvBhpwDv3cWmKi84tKFhQP4vSDokR-CttoJxj41EkFcZo2B7QvHxI-HBYJpltKpI7NmUJM4iANkiZVFyJ4-gaDJPXFcixEAHiiVo7E85kkhk-IgAJ3ZmkhMUXUwx3DGmgTaekwJbSjIQNII5ZwxiIEVFrmMhR5lRgVGdEpASUl5kSQgQCR+xjZkkCoKiCYykpI7IkgUMA-x1SqUmHCI4QA">
+                    Ideal decorator's dojo, TREE EDITION :)
+                </a>
+            </li>
+            <li>
+                <a id="preset-cursed" target="_top" href="./?v=0.7,114,693,0#CbA0FoA4AZohGeAmOd4H0DOBbCB2SAFgSRlDgGZ0B7TCGOceCgTmNVFACIApagK2oAoAEoBTAGZiATmIB2AYzFcadcADZCjZm3J7uAcQCWAQzkAXAAQjqAI2rmhK2hAooErdvq7GzVm-aOzmqEZEyeenDcfIKikjLySsF64bochqYW1nYOTqoI6toR6bwCwuJSsorK+RQArEgead6+WQG5yfAsjaleUaWxFQnVyXXITX2cA+XxVUn5ULD0hOp6jRl+2YF5Lhpay6tw69NxlYk1u4ShB2tTrf45QQukkDdHUzEzZyMLyK9QK1uGzajx2dDcb1Ax0+p2G8xcXR6REOULumQe22S9SRgPe0TKsLmFzoYxxKOO9y2HXy6iQqyYsFeaA+BKGRJUAAsxPgiBAWIU9BhJBBruB+RwhRJQCtiGKBZR0MKKBR6eLBYqpSh-mq0BrQGEdaBJQg8Kr5Ua9eAKNBZYbjeBCBC5RLLXUBc71cKNJBtebjaSENA3ZE9QGmPBeelOKAAFwADxjifjSZjlvgppIZAVXvUPszLq9bu0pA4VC9jp6f1LlutsqrejLUod-3r2alYVboEbUOgLZLDb1yvpne7MvzDejnBT07jNLpJAhzOBGOpSlAtO0zBRGDXG4Q8BtCAtXNAdQz4fceOjyaT6DXdX5+5VRq7d+5e-Dz8aO+5D+HW67V8T00Td3GIJB8i1PkWDgcCWUGWZzhUJVeXDQ9iG7MNEHQ18XAaPsI2lFp0SpJ4XBVAjXi8fEEO+eE6HTYckEI6ifBI9onmFJBgzQ4gML1TccO7K1UOwvjcPBXNoNg1Fl1IsFT3dFgYKI6FWUQn570fXiIEaKhd3cHSrQtLT-0PB1XwMwTZTqC0EXGJhmP+Wz+hhNkkL1UJrIgWyqDw0gSEI8AXPgr44WJLtn0coKQrkji8iVBp93M3y9SQJA6wPGzXy9F5kuyvyGIc5TGFsil2NBUYArFFTgtktjNnizlf3PMSfItWR6G0INVnA9BOvAJA8ErHrVP67lEBG4M+oGyb9yS9hxqhYb5saRbOq0bqeLKpamFa0a6ogzqoIZbaoSWitVva6BdsYq66pu47e3uly7zjU9unyoiMHI8ySvatTaPC5CpT+L7+IRVUVLguLKt+JiWO8NyNPmYVtLaurCq6wLnOIxq4d2A1arK0LCQ8r0nQx1LdiGysnOu0n3J+GmVpq0r6spJq03dKnX2O-ZwySh6lvgYcDp2r0wZ0iG1BO5BEf6TmCbUO62dUxmUZqXKeLamXXCk6KqKR9S6Iiq0Df+mGGpBTEltzFsAOIDBOvt8GOu5S7TvpHa7B86rdcA7gAGVzAAVwAByMYAhAAQUwTAhAAEWkEwAHNqDkZIHQoTKUsD63HDc0EmfmAAbbkO3gOoZJu0vzFPCg8HHXVS4ANwbs0XVL6hQHR5UmXIGhpB8q4+WYNZ0FLhRpU0QNpvO0vbCNf9q+uu9h4ZZ6L2rAbIEp-sFV3p1DSoF2BeQJZFoUeuQP3KT1vfVnEHv494D5HmL8FSdMCAA">
+                    Cursed
+                </a>
+            </li>
+            <li>
+                <a id="preset-testbed" target="_top" href="./?v=0.4,-402,37,0#DYQwNAtAjAbADGWYELAIgCIHkCiBlAOQBUACAdSwCUBpPNMAZgDoGoB9ACykhgBYwATHAAcyQcgBcAVjgSocOGwBOAU0gBOGIIH8UkmXIVtQkATsjCkCBmHQUadRi3bAAbpF4KPUrXrMxpWXlFAGMAZw8+b19xf0DDRQB7ACMPBgEeTzEEOINgthDUiF5NSB89UIji9LKpDJQCqt4AdgyIcrFuXKCjFMgGOH4IPgrtALyjcP7B2vrkApDpobrRawKADw8vdvgxG26EgoAXfoYtHb0ugXGe0KKBVrLdv2v44NtbCXWNrYR2gVWjGMJ3+ogYvBsFTekyqUl4-HBunEsgmdw8pWKUQQVxuhxCamqbV4zzEB3yU2EfykdWyx0Q8KelzG0MqYCyF06zNRBVSSA5L1x5M2UCgbQ62K5tzYfWgzXOI2ykrxVSgctmtMKkCgDP5pNe3PxplFjM5ZMmm0xywBex+IrF1ux0oiOj+fDmOX1UqmLvVDUNqrFJJxLOBPHM4Mh2RDwBBMB8jAhipRUpj6K0EaTIYA5sB+jSBkiBD9hiJGDScvovbHHgxy8iQ4bipSE4D6g3Us1hMt1O6lflU5ZzlJhFJFWbQosmzl49YPp8vhIFmUGQIZ4w52AJAvGsv+AIan7YTMoD3Ocm8QSActjbPx8Z3BB0qJ2jfEH2jDmwDBHqDSe+khEUinsM1xjp6hwcBkoqiEIraVniFoMF2Hi8HBd5uChz68GuGToQ+qF-NhMS4eBQqIGqv5rKmDxilIkYeoKkypN+YpqgKIaJBEzRnIgw6ZgamwsYIa4MDug6CFYUbcpBPA-hCvZxK8+QcDYww-isf6KQE5KTkJU4ahaCr6VRiQ8KWAjavxXoWnCe6lg0MqoTwa4MQ2FpObqihHNwEDNjsCmkeaYAdJRiA-M0MyrjEonAKZZzPlIEVgYxoSbJ4VJsfMnFsts35Iq5BoRKq6YOvMIRKOR6Z1m2An0giPFQtyiSLM0NLDOoox3iEmytYGfhsN5YCtBlgIFdZQ0wDBIk7tAQ51qEBJ8olAUpQUagFrUMRjXik4+rq+yBag87rIumrQMauokatIQgvFJq3odbAACZPYgUA8fCcHnuSajqKe2FtPUa1gH9GQtOcXQ7vI5gyEMuG2oM1gzGs3WIHANbI0CqMijMG0o4s0P8BpEC4fB+SDY+UF8Y1UqDYlWhmL231BbZ2j5TywUMie7rKGo9OIKeErM6EFVRWWcw1V6qSwYwDVAhh+4ZAwcvcMLbCfmLeOCAUFV3crxFk0YqbpOossxKrblm4wmOiaj6XW0itsVSUVVzJCDYnDRZSlbbJxAfagK24J5ihewRwcGyzYy0LLJzgui5ZoBxrFXshusgRiCTaSHNSMnDKOnbpRa0HbJRMXPwbXdfqbPrbIHljutZ-bNOHBhT45UyasYUR4tntGD780Ioxq1MvVlMhh5DUIvplZs4mXeFyELxTsDYuohZp8Yi27P4VmHCvp4nhvXdFNzYx7-kiQVST5hmKOLfkz5Zj8Eff5qxTYuvxWXe7fGz8X5MZ2Hl5KaUelMT60RaTAFSEhIY2E-D-i3owaexQZCgOurrNqICKxdQiLWIkLlpTOz5PCU2ODHrAEWBnYoTlyHXUnKvTOegbBzhOluJc0BD4kltrtcwjD8amHjPwoEK9rSii2pvFeuxxEAK8k-PhoEH5G0WqBUos4T5ahgBkNRb41ZX1MPuEG0VJFPyEYoqSKZf5aB0RbJqFV4Cm0fBPdc6FFisycUiYM3JoGcyJLQt8XUKr80tMlBsEQYAkMkjFNQETCL+IOhg4KFEq6xDAYBHixRJLsC4MgwQ9l6zeNMjkSySjUr9BIuzVGlMBY8xycMF++cClShyTUbUx9LZRH-tXL8L9BZlUWFEYRtjmncBqM2b+HSX6lUUE9AArj0oxsiBoR2CbwSS21yQnGGt7QOdJOxWl2TdIabUNIoxOPPU5IiI4iizsZVJ11hTyDgeMsK2V5DNCGLA00aS3rWjuewcqiALLnGwXqB5aM5IvIBUVWAWEsg5ARuyDOBdHm3LWcRBGpZ-nLJBhddF6CwkgywVkga3B15wOJAS7kn5RR8i+QizUwgMT0vuQ2NQTK-GAi8VLN6tyWUl32XmN2iDAXzxSRso25ztieGaFS2m3BhA1EyRvXBYBKSEXMAimScosL1wlUdMAJ1jAdgyWs-KIqWoZJZS4NQ3EQVoLoSGHJEU4F6otVqPF-iXADLkv4q6bKtRIviYgjCs1CI4RFSqU1UKkEQE7IwZx7tvEgmbDKpZIRJxORZayJsOU4Jx2+Kmc6YN0bpqqD6TwrYOE+mzTNNpea-wFtDLKLQabSkcPrbWotMs20WNbqfSy1rN76NlKOflm9KGmFLEOruD4ZbtwmYVQNCJpkzSzauydvlrB1iTVKEdIobD4L7gaBhDIj0Ip8bKBEO6J2XnkL3GO3iHwpwXU01uz7jSvslu+iw1hSrfv7O4ddX1+5qr-SBp9mdkEQZTM+kqMHW6LGbOevtl9nZgjoksnxSBazmq7tvMseHownCiKg++rK7ELOqKrMF0YYFEgGKE5NuSyNytbmoQijH2LMfDeR-1kG7TQbfiGOZvyH2oaMINRhUBqYSZmfMsWOiUCW2k30xQsUakSSI7VRhXT5iqEWXp5TtUIFi0dDJaCdVhPSQqXkhDylbP1sXc02zLyAOTEWJ-IMm8LM6nxQ9VaMl0g5Hye50IJxLPYqOWLIzPwARTWinFsxo1jAEz+RAx13JRPxbZsevdFVGE0LIRRqsuWoue3jNi4Aah-6oIQehaWlX4FsbIuoPFMaKTCCwjG7tcZxO7ovGZTCqdVU7A8B1gkuxiheAC8RiwsrptMjwhYOFXKRVzyVRlsqRQj0vh5kcwryKwoyT2v5lxYDNgYi22Uz+anbTAWuxuI1GbNOZINqwrcp1Ng5ZoaNDcXxUtAufEOu8+jYA+XHehGrZh+jOO5f24SwPE2IJlCFBU3GvSwim9SHmobiY46YymEE-taj0RDe4GW7R5rrbKMaMz64PvSknKzde6a0oJVKgCmyapYtVIzrzkEGcz6PvGiTLruWGUWhy8L7WVTLN6aLHLsRfTFcRHtlT-baVSOXJLi7e68xu7qT6Qky2+OfbVqyCh225bLcbrnY8StWGQTXDHcj2dgj7UG1B9fB4qlQXw-yJ+R8Mw7n6vVrmEmWKjvqcvEhNIwrluUww3MYZiGlhW2cz+x8WCI0NdOK6hPYDLw1nrmFn46rhuTy7H8K3kaJo17rOwT8+Lo5vrIndVvrIO+l45ndFODRjbqBsP33RhKGCnnp9ChMe41wAtSELxpE54-L4Lpm0j-v7weBIbni7vw98Y8G4SLYKqfm-a2GhMBRRqFnYD5MQXV367W8iHA0Lde3vn5a3fvfR+GVX7pc4xXAdIkGbLGe4KPHvIPeAMETGIsIPVmLWWAiPDOBA8PMoNUFlVXMMBEEkHNOMdMHAmaDSM4CoNdIuAgote2DMdtIPfFFAqYRbRgAgmgrNAAzfd-REazInceP3LJEVIoEnH-c7VaOAvzeuW-MpEsVbbOKpXOIkF5EuPbWHR2YsVZeQjmSQrfRLM6MWRQx0ItDaXtYzHlYPfgUFHhcpawN3dsQQcXDxaQ1IZlRNGaTbTVWXFUPFVwwAqjZuWXDsEPflDmdQZJJwzUAwx-XvJuHvTUEBK3HOa0FDLw4YeMAIs6UoGxaUHbZCJzOTXmCwiXUfA0HbGkXnScI9enFhD4LcZ7RCaeco5w5CRWAyTQ4SRLUNXgW+Vw1PckK-JyXnBw-6PyJWDmQmSOP4KCOkPaHXOketUKX2MDHZG0I5WaBYs5ZdFYrGZ3dkHXJ7dhJYr2WYukR8DJKYqpO6A4pYkBc44nP5E4+-Icc3JYkKW4h2dYuYs4549XD4pVD4jEZ4sNcbS4Q4wTcrcpAEzoOkQiDrEjZ5QEo5TbKExZEEjQpE9xI7AFQXPyNEw4iBJE-FJEr5EEn7NE-7Z7E4YLMEguMkrBBEgkrEo5PEukk4HExk0YiksKI5F1Nk9EoaaNWErZNFBEivEE4QdfQU+EvkkGCiFk8lLk6Yh7DrVIWQ2UzUIyaPHYjmHVJQxtD4UktVdfdZOkEUilFLI5I0rUv0E4IIkFSSDID7L7SUkFP1EkukVUp0u0l0pFG0ukJU9-C04KT1E0z2Wws7RXS060raQ4zbEAuYwiaMukKM5hYsTEtQpYjaQQuY-SOw1Ys-LMjYsyBLDUYnHnESHY06QXXo6aVMhoks90vY8XOovYv+Ss53W+ZsrUCfNs-4hskEeXTs0obszIFoxY26XCNs6cLQsk0cicwzNszpNs3s6c3Tecjs6c-+co0s+M2otsjvNslvXcqOGsyo3U1mBszYJUyfb04s6cu1Ic1YogzGbkmIh8+M3GZ8uErOLWbkkwl4yk0wDGTxQ4mtN853adYCrUdAsC6AM9SCwTT8w45DSCrNGC9MMCnDMCpCgC00pGTCiLT9VC6CnCyqH89kz2UCwikCBEEIos1tPVQ4ogqiv8sGcIvYrIMwwC0sNipYlOTinshkMwkkssj1Jit2eChAHil42uP0gwkA8LUwcXYRCQs+SzBlHs08dIi45PbODCCJc4SSoQ6wm87PESo5IyDAncUyggl7ZY2tF7HDZxeTTRNkG0idAmVtZykeDEuuCWDcs6JyYkZQri1tLEeWHsmi4rIw1uCLMK9NEcyvWXTzJs4xOObcKpUoZS3wjQLQYRRXBhMRbhf7FKqXeS-9dQnLJTSM-MeaatJrDrUo6kiUltV40SpqvYrFS5bgWsn1OQ2EqhMEeypcZDfq2yz9fqnxVNEpNvZRMTM1Tgw4fRPymTWazZKDfy4cyOUuAKqVDatawTValGefUQUFCK7o+Yo6zeTUXat1d+bgBURmGKnpccxY5iUsGXWSqA28rGQScyVwpIexcfTTEXZULyoTBlQCeIkqikOlRpTA6vPI7Mo9FIwXLwFIqoBgdAuHIEi6EnVWTGtoLRF+WeISk0HGs6YEvA3RUlSAeNdoQ+AJR6I4Noam-Gt8cQgaVSJmoROm1aPoJlLKnA86ueOcrQ9lfs1go4fgXm7QKCHI1GSWz+MqRaLGkAxXC0YEjSEmzyq4om0OaUcAPyN0QnfebgNBGm6W1mg7eUPhbbKDJIrKsqKKsoWmspJaaReYBm4KV0K21mo4GwE28m7gc24Ue40QEmtQJaZWpcJaCGy7FcxYsOuAW+Vgl7OW2fH4HsAslGS7HeaaRIcAEYmTP7d+F+BOvcGHGjEeYUEuocjW17RGq2c49aY4yrUO+uuiQGWXGuY4qbIGFQAAM3rqMgljAX5M0oRWymZs8G8q7lMlaFdlTjVk-HEnpxVq-GSLfMEnFzgtRm2Tgs-E1PLhMvDHXuClPC3rPN2DPrVQwvBNNIQswrnjQoAtzrVVTQTqWqMA4FtRpB8K51xSVmPplK3q2Q+n8XUxnvjS2y6JhB5NbUeARQM05L13URDAM2BJvIlC6m5yCsqWAdbR0VtlSC6wQEuSLAHGpGCh9nOuJ2AhOKKGZvOMMh-DMpelpzaBH1ZooNKE8GKzLw03aHBGBsBp0jTATQCuFB0G61hPEZIR61Mmgg1W8uW1FEqxBx+XkcgS1R8m2TuRNyUi8FsDCE4ADo4IYIP3yFQdYAY0Ucej6BFBpAUvOoJirovOxhEAzs+t+UeszrRkSsWMeWrMXJkynL8aBSQAUttGBSBw1CKkiaeWkPOVI3JLHpibCe01K0pxOLV2+KqsGkuMSj+1Bzzo4LRoQQrtCYZh+umMidPKBQrK0OFEsY+rmPehXFTqmBab3BeTRHeh53Fyogi08C6D6YKJTDihD2EHMTDyOWJkFW8fV1mY8cuPEgHyAyxS7EDhp1WrjRCPnyVXWZvs7vOEVX2zwQyUpEDProWbeNuSuZ3DOPOdpEGnuYEbMa-zTNueix-A+Zqx-EsDYftsEHZA+aKgogeYH1IufEpHCpFRq3ZD+cNuWspw+YiwomRfmN8l4K6njshcxd3zQacIwhmLBdowNAGaGA+fZwsFxfBQ8gWe5L5GBZtuJcUvODpZmhDmWa5usNzQxYkS6iZN+JVx+D12GGGZXpFe2W6RFfJslzZAxGZtlYlaqtRhCjZc-Heu2ZP2umeshbdX5eBs1bWolYxt8ufFuefuJi6xWg4nAFrggCH06hsbztBfUAKadaZddYRY83RYWZhr+DlBIMZX9blhincG1C8D0wG2WvUZBPena0BNscaZlygdZHDa8ZIsQDRoZjaYi1ibu2xgBHTdEk-DazaASP-ALV2KQ0SeqgKoB0NElsfHWT4L1LhmGYIbVQxByxUszb8w62FHhBryToHb4Xzd5CzdOC0KKkHf6BJFDPpCxT0o7baRrzllIbDcd0fH5qxczeSWCqmd5GHFMIjrBzqGsBgGhY0Rk3zCSnbTeTqAyChQFvpD4Ust5HaIlpINTG1CCIzxGbxAGdbPqZfZflfGdpnd9LcJA8zYxWxiPcYKrXacadQVg4ab8z9SMd4mQiScmtTfg8LcLN4m-rjIurPY7ievpEeG7bKmndFsOWnZrDA+GJaCVhDemI-fyMVzkfHyJGCv4y9DkbogZjgdw4KDkZY8BeHmsJXdlLmSgmaDVH3aocQFhr46hlhvhVlwi1hp0RXqgAefweelmSgg6gaTSYA4FmPEylElQYeeCqjaMDmQDqHyysX2U5PB4hH1Eic5U8eGyOOqYl8-k8Szk-IgombY8pU5esS1s6xQi5E2M7C9c-M+jdhuyMwP06yFFH6gOzS8yj04ea89tEK8aQc-k3k55x+uff0-MnnNhoV3U6yCHmkIJgeaM3OpBeNE0708mgQEM9Qd64WWQdJczmbCiVyNhT+Hi6XVVGTmnllcm6Iu8cW+yLK6hmaDpwjoOw29swZVcqjiq7KcW4HNVCvIo9O6yus+mJ26s1-yS6g1WNm+C-ifImNF0+GIU+sS0N5D4BDu+8ziciK589gCciU7VmB9+9u5yIh96MO4S4Dsh+WPbQush8M8-szgxHUp+78n884DDomaGCx6i+fFx+B9hqgs8U3lC6e7WKEegf08GUXM0EOqrSkyZWxHNip8S5PEijh5G48+zcS0TgFh4na-B+55c4e-XBHl5GEEeBTIi2Z-mIW8l69XuxmDV+-aZVlX7cs6GBJSkw6hBTWyO8l6R7CmB7N+DXF5M54nkPc-w5zb16aeGLl7BguZp7U4urd8cv2qC-Gw1F5CV9zV-JPCzi9Nssh4vPR6FK9gwceh88FRvi1adXZW2CK9lr5Fi1C6T-Sv47xGYnZD0vnbFXm-mEgJ-BHwkL0mo5XrUkBhwmLBr88Kb5-C98YbaHe6qT0jz9b7LYlj77HEH6iI76idlfr8WXH6Enb9kigjncH5lzr6Ega4r--sLEH+XqM+4BxJw-Nv4J1BSLSjpWVfnzpTL+88S59N382b8hQzRGoRw7mKv4Yof5NbSg8mtQ5jxNrRYaP3R3-bIgV4kG7JDbGDHUo9Qm46lCICODwb-ciGcrc2CoTVCXIJC-McUITXaDIC7s6PU2g9RvrUUEBTRRQsAN-r6QSBKhPilAMgTkCfOR+Egcp1BjEUp8SvLekVDgCP0DmIMU+kNRjpgwDSqMRgXfzpCMDrsO4QQSVWB7vQUKlPMppgK0CSsMB-MSaCaSwbHJNcaBeQUNX4JqhOWChJUpy1IGswDBxYDOMYL5xOQzB7kJAGYMyIS0I+tgoaBjVoH4orm1XHwGayzhrBUG7g39EtgT6zIEeezaMogmp7wA-gFeV5uVyYThCumiCbwbcngGRDpiQnKmp4IBYyYzmMlZIWc1AZQwUhvkFvgdh8G+R4kwxMIRYAw7tN8hHydfqEO2AKCpmUVUjPs0niwBmhhQoqDAFIw1CWumcZoVkJR71C0h87NoeSzSELReIbVfKqqjaQc4uURnOftsHQGNDohTVOoa6E05TNhQxQ96msFEywBvi0w-wbxFuToDA6Jw58P-xNwnpeIXdQNkVHyHwce2GQ+UPklkovDMg9w24fKC94-dcooWW0DsPbbZDWWZfd4fkOUGB9VhorRDgTGKENCRUKLP5JqT94BhIWlQ3kK0EuFisPufyXYR3Qx6vDDkQdDECiKBADcMQEQrljpgvbyhNO1wqUBSKOaxD9WsASkaUOxi0ieAwIyPqSLBEhD5kxUKkEcNWj7CuRuoc2k0KGD4j3hXQ6UZsOmJyiqaYIxUaRkhF+hXK2uSyp0O1xJ0dR0otTsDyxG+CvW8mAOsaN8gsj-B5o5EfyLvBGi8RmwmnEKJapIi5hNoB0QlG3ZqMk+nJLwfjyxR+jqRUoanjAKpo2wBRUEMMbbRGxqN54MrfStyFs4hxlhcQ-HiHHxHm0QWNDIatpxTEPEUWwEGUddyLFtNsxeNWihdQDbOQp2lUV0F0w+5TYgx7w5oDQwLHkQaG8-dHte076c4W2MmW5FaXBKhDSMQ42bNJDDqDd7WfYrqD90x6ZR2AwPfIWOMTEhiAhKnSrOgIZGHAyelWfEduLIj6dNx7Y-TrYXQEZcusCUIakVEvHciSCtjDjrgPj7gptQ+Y+YXBxDwnEGmbY98Q02xyc4MiQKNUVV0waZs8RlTbGO3E8gRNfiJ4qCc8Xeg3F82ubbXA8QaZ4jCEBbb4gBP9CZcygSqeGCwyeSugROWwt6McRwlFQoJg3BbgoHdEFww6eEqnBDHL65gRiE-EmNbRFBLxtG4xA7EE2VFjE8ydof1igiGIHY3Ggk0wMJLgCVZeJMkkOPJKSBFNkRt7EluNHeQBx8BaMLYmhLeifiAJtjKuhyE4n59WsFEdqoDjsaM02oQ9UUYKOy5U1bJ6k9jD41ZYm07JDYCqEOLjQZJPJhRB0rP2kmiQwckkuNLnGklh5sMxk1qEJKmaMSeJWQ0Lo2wVYuTzJrLEPEDAEE6hLJPnRtqmNVTk9LJppWCfRxBgoJipCTA5CEzNILxGUgrAftjCYkCF4YTUpePQ1an+NpRlWTqW9Ham2FWpuFJeJkyBRtVKJvKKkABOp5MShIXQfsTNJE56dmp3dbWMlPlac14prbZyPtiqmO11BtU1KV4QOlW0O2KUq2kvyYbVRB+lMfqMAFegng2oF7aFqyJ7CuhpohLV6XeNNHTFbxDdAWP1PNToR7p6gR6e9E-xoghAfIBMXPjyRQyW+H0i6JmJhb-TLhrhA8fT1+kwBKxrXWwtDOMCvQhANQC9lhgJlwBWk5DTPIiwUDYhXwT+MPjBAGGK9w+i+e7FnAFwCw2Zy5cPkxwOxK8R8RYMHH9FNjZEU2oYIeAgDl5s5vhK2HLkHWaFuYmcFwrfCn28QEwJOkHMyV-g+EMNM42Ew5AM3Ug4SIsxQyydVko5EhPWmWUrDJzPx+h32vqd8VKNdGEj1i9LcUcAJGHuy1OYOLoaOGKD4MQ0P3Loc-ljGrQzZbQkFI-hRwEwehJTd+upla5Nd227nG7hH0Tkc8mimXKbhGWxjk9ch2MG7ub2dqFz85svKjjiIG69ExWKcunPOR6EuNtOTXOrlRzaZB0kADZOcZHMakEwQZeNRvrzPamVkcZlwgEYbzaixTwZExMmVBFfCK5RY08uzFLPFkfUp8hM3CLRR8RrzrYvQ+mb70JrLzzeq8heYh2lgLzD5UMUtq7LlIUSypAvGeBl2D4E4GUYdM3stG+kfTTh4wxESp1sJBiCuv8uWN01+kLNnan0w1gXCD7jyTWN43+ZZSZn0TQC2gOiEwFahPABATAVcDaGaieYfsPgdBZgocg5IzAuM0UCgvIxRSKcq4ZgKgvaAikMF5ClHEQssyzd6F6aU+UPjIXaAoAnCtYNgokjWgzA3C1Bd0iED9k2yW8mpkICFrglqIcADhagrD48Kci+iYFPgtHA88lFAXCGbADUVcKlFK9A+c8WIUIK5i+4E5ObkSAnY8mmUMiToFQn6zAWesijquCxoQ0KsWNeft6FQgmKJiPpEnD2zMVih82zoCdjrWiy7ZlhcWT4gBM3moQglheMObCwmb650Zv1QFpYCwKhzQM+4Cyd5nQiew0aC2fxcGLmpWKlU--MPJYpIhUc3hynQJQDQJH7hIo4ir2AOXqUNdvQ7cSRT6BcbOhqmTvCyLHVWKDKTOO0iSBPggk1YkIntSnneAMyMxS6MghLlLV6Qp4XKggckpG0cYbLp4r1Z9sCiLYTEFyWCl7MYp4BYzWFDQeZVQs4XDBWAlykrIcGF6KxdFdy7hQQrSm9AiFP2DbtQoYWg5TlPyvgA8vUzSx0gryxVFIAeWayY8SCv5RYFrDQqBRcK25dxF0VWy08Ly1hb5PRWPLL43y2wpYF4CaLo5OCwlXGBBUTEblNCrocwA+WyU748KuNMCvpUTFwV2KuUMSo+XzssVmC4YBcu5XSgCVz4NrFCuEWfKkggK2wpoBgCUrvQ1Kv2ZNGaAgqacvKxVSDJVX6tGVqKzQEitnE7LXlrY2VfSuRlqrHacATVZfgNXYq8F0KuLGfKmJ8KLIYiIQJoqFVdBLMEUFVXolOXML1Abq0LqIvhVBN9Fm8eZTotYVdYSVeiYVVqHYGyrxVlSqVSTzgDfg5VnmdlXyvkCIqTV9o9cdqpoXZqoV3KxBINALV+yh8uKmFUQmtV8qh8xavjC2zNX2suhDymGc2vkBpqPl7ahVXGq7XkKOY5azKsaoHWagg1nCk8G6rHVyLg1rqxNYOojWYLsu+i4wKZHHWoKIkoamXrWr9kikG1N9aWL2t8gUrWVqMO+MHRCaKxJphyRrIjM6KDrdsqUxQBwAACWknHIKRKp6eY5F8oWfIgj7r8KRVr4Vmuj1EVDg+krNLMN+tJFw5EEHAfumBqknPj4eWmaUZ4SbUzE8ZPnIQB5HVESrB1gwS4ZWWlgzEFBi4-NZhurl5qughGpydawCk4azW5-BdTqBaEW8KNrG5ytRryQeREh+G6dbxo5EkacpEGrfqhv1zVrsNtGiit9IE0JRjcYmxjRoDc76qlN9rWmYpspx8bq1Y6ynJfMdAawRA162kAAGtwAUiuBMFVZqJBSK6+EAubTXWpq4Y+SVJWwDCAABbPJIkxViIJZk360jHHxKX5BsNwJFJJJoo0XQECAoj1RdB9AYqTqFkSLSrAXV4p7NKWwGCJ3I00aSEera0bDJBRKZot+W2dm621bFaji-3SGSChI6nySE9nRTfGvTxJDp1WfEThfxi1sN8uGG2Lfkl-oHKWq32SLF+PGVaTvGCylqtLEoJl8iw2GvWOf3OqTaI2lTbDSAj0yizwlxRaaBwDsjsi1s6EczcCU0CjB0AAAQWABhBEgJAI4CoDCDXanoJAAAO4vrw4JAAABIgAlAyQF9QADsswKgJQAAHIwgJAAAAogAwgEQAAFAABJAHe5pIDfabNJAZILMhfV3SftWYK7RwBABHA0AQAA">
+                    Room boundary testbed
+                </a>
+            </li>
+            <li>
+                <a id="preset-my-actual-dojo" target="_top" href="./?v=1.0,18,98,0#BYRgNADJ0MxiBWCAuATAFmSGUBEBRANwFMAnATwHsA7YgKGIBsBnYgAgHcBDZugE0oBLagHM2ggC65IAOhgIA+gGMlYdAA5oUKIhQYsOZao1gAtDFRb4SNJmwQFwS6YBs6K3ADsqWwbwAVYDJ6LlJ2CTDiZmkIGQRFRmIwZzdYaz07HDBcAGUuADNiCXI6AAkuAC9QvjoAGS4AIxi5BNUoUwBOFzTdX3tsgCFBUga6xub5BUYGsA73Tu6ddL6s3FLKUlINsabZSYlgMxBUTW1oXv1+3H9iAFsAB0S6Sny6AdIuERFhEWb4hTCR083XMljOGBAKwcgNMIGBYAs0EsEKhCkoXDMqE87jOcAumTwAHkGswJFwlE8AMKUACupFYdAAYhs2EMvmQ6ABBagSaIKPh8NSaUwYM46GyXVZ0aUy0oASQAhNIQDJ1KhlEkFpj1PNwOKMn4NWYupiXO1kcl0JDJQ4lJqTSLUEsoCibUatbCTRbXQT3Q7UE6EUirajGBJknBQT0JQTsjdqNRKDsJopKMxMQhhRZccsbdkcvdyfQAAqMLjkERbGnUGq4ZQzD0gDqWdxwH2GpTp2EnbVi3O+5i3I7oebZ6MGq7U0jUOgAWUq9HwPCksn+jEIYG8ZkRS3xfmyACUuBJk7JUCAphiTKZ0Cazr17PvcAARYhKDbH4h8OtloVmdCpGc3h+E+crUGwxZbJWUR8r+17oDuWggVcACqNZvh+Ehfj+V7CugEB9iij5XAA6jQADkEhsK+74fFhOEIoiJhisgKBXAelCULcdA3KSPxcmEXAMa4urNmoSFsasz4UNRlBKAA1nQWF8aIbChMQQmrgkGIidqwpgpArFPtJ5CyQpSlRBIPxqYJfyKEo4Yeic+nBtavp2saIIwCAXmuaiHlOWJN7JJabmGr+umgu0OKGZJeAmWZinKVZqnqZpsT-IORzHJi+HnP2T5TjO84VPQlLEDyHyMHZjgIH+pjqH2e5XIEWwcA05KKRxXF2WAzD1p526BsFLohm6AUOk2iwhc1hhKKQRw9uYLinOcMaFcebwfNQSjADVfA0kcZq5Tms0BEEc7CJQZJ0imaINscmg4DFlhndkjI0owjAlDRmFfnQxKsKQhDHhs5B1jCPnmhAq36qikPwo1aTtvYAKalDmJbi6BWo2mmIdO0GNQHi61XDkNL3Byz4Uxy1I1jSDkbHWWWwiOR2naTqxFXOC50CRlk1Z2i36QRVhnWjg2wsdu6cw4Ihdo92UGeAb3XMAgjMGwWxcXQwhYTygg0FwX0lIk+RUQ0ZbUPJzTnmAYDIAAHsgyASx6Y4yxOhgIyCSPE6F8P2iCIA5UsKOGMQ+TJDDRwIDA01QMBea4GRn01FQNJsIwgjyfQEiUFrlkAPx1pHyRbiK6irZYSexrghJhCINA8R8gjVQoZdOsK6h3iFtdPgAmrSbDAFwJB0MwwDXWwqA4BAdD3LSNa8C8bD5Jx34d1HXfbjqSKbj4ydD5no-jw0tIiMAVFIPP3BNzOHBBEwfKdzHIl9v3VzPgXGd0NwPJsHznQdepA+CAIuqQQQJBSAly3tHYUCBQ590PnXVOjB07D2zrnJSBdEihGoLA1+wpgSwwPlCQYXAagcA0gcDkjA0z0FQGwPg5YX7bzfiACAGArCf1WGgsBv8sHhCTPQygilQhLz4IQ9hwoQ4IAMjXFBg9h6nzzlwXO4EuB-y2KIJSdJqClxkcLD+SirjH1IGwSgjtxC8D4EwQQShDY0mYDIaU5jLGOzoKPTWfBBBfhkHWAKTZnDYAUQHca6MgogCrkcPyNhUZBKiQgboepwnuQelEns3oQzxLmpEkJqQRQhRRLk20GSQlBVegHUpEtUDJNjnvMOY1fSAjqcHeIys0mGlafU2E8j7xdNRhFAMolnAGRQHFbIhJKbgQLEWCyKkxBpRqsM7h3ZNDjKMlcaZFU2BzLtAslKSzbJaTdhjWESC2zNMNEEeAS0fJi1ltkcowwSjdVuDVBm8AokJxxqsfAAA5fwcoDz4FqAPHihJCRsFnJyAFEKBgoQGAMWo+Acg1WAFHdZYBAIzSeS+SOwhJBMBKAC6eXAZxgUKKSf6lJR63AaGQFZGJ46yJ7KkiZT53lsDtG3fiyVrLLNOb+VlwtYnaC2asbl+RRGkEOYKk5GVFDyyOD8gZqtuYlXoLOIld0VV+3yqrWcpkOCCEKHQM2VFbjEFtheFVsJ4RNXxYDMkFIyq0npPQZkFjuS8jumXbFRM8Ve3ioS6gxLvp0DJVRLR3rLJ0DpVwBlTLhU6ThCCW8vzsgAHFIHgQPBpSmcqnSz2kDAGQ6BPCOCSFiEJ9ykJulubWsVHLURNororFijaa0V1xRKiJyR7k5VhEGcOtoa33LZv7MdUxKDwAgCCXFKt8XFiEDyRIzBeDzl2sIeg9RdixEmD04OGhVrgBnU2t+opDX4tnDQYgJRiySBqkQ4cMdsa8LwMfEeY96CkGrJYmkJ5V4NE+okP1aJHKK10vefF+BHZKGNoIBowxvxaXti7J2LsFDyQxM2z04yyHJzJRwcBGsbF0BIPQxxi8agfEcaIF9UcQ4hI6WkT92Rv2qP4H4sBLw6DPnIKwHkZBwYKBEKoAj3zCMcYJfkIlWFI3RrUnQXNu6OTZuNokGggs526U7dAWTr55PhsU6S8lM5CSkh0QmygJB9qSdSMEnhpipJhojeZmNAmaSEGGIIBNv6apySGq9R1o7rmoybfUnMIbHCCFVa9HsH7XN4GLGQQoDlI0N18dQUIbzOIfNORsBLEYOj71i3BWR6BuFARS3GUo+BWRymzWwbNKEB4-kFK4MrN4z2GRtEAA">
+                    My actual clan dojo
+                </a>
+            </li>
+        </ul>
+
+        <h1 id="TOC">Table of Contents</h1>
+        <ul>
+            <li><a href="#KeyboardShortcuts">Keyboard shortcut cheat sheet</a></li>
+            <li>
+                <a href="#Navigation">Navigation</a>
+                <ul>
+                    <li><a href="#Xooming">Zooming</a></li>
+                    <li><a href="#ChangingFloors">Changing Floors</a></li>
+                </ul>
+            </li>
+            <li>
+                <a href="#Editing">Editing</a>
+                <ul>
+                    <li>
+                        <a href="#SelectingARoom">Selecting a Room</a>
+                        <ul>
+                            <li><a href="#Multiselection">Multiselection</a></li>
+                            <li><a href="#SelectAll">Select All</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="#AddingARoom">Adding Rooms</a></li>
+                    <li><a href="#MovingARoom">Moving Rooms</a></li>
+                    <li><a href="#RotatingARoom">Rotating Rooms</a></li>
+                    <li><a href="#ChangingARoomsFloor">Changing an Elevator's Floor</a></li>
+                    <li><a href="#DeletingARoom">Deleting Rooms</a></li>
+                    <li><a href="#CopyAndPaste">Copy and Paste</a></li>
+                    <li><a href="#DeletingEverything">Deleting Everything</a></li>
+                    <li><a href="#UndoRedo">Undo and Redo</a></li>
+                </ul>
+            </li>
+            <li>
+                <a href="#Cosmetics">Cosmetics</a>
+                <ul>
+                    <li><a href="#Colors">Colors</a></li>
+                    <li>
+                        <a href="#Labels">Labels</a>
+                        <ul>
+                            <li><a href="#LabelObject">Label Object</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </li>
+            <li>
+                <a href="#Constraints">Constraints</a>
+                <ul>
+                    <li><a href="#RoomResources">Room Resources</a></li>
+                    <li>
+                        <a href="#RoomBoundaries">Room Boundaries</a>
+                        <ul>
+                            <li><a href="#SpecialNoteAboutDryDock">Special Note About the Dry Dock</a></li>
+                            <li><a href="#SpecialNoteAboutDiscontinued">Special Note About the Discontinued Rooms</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="#RoomRules">Specific Room Rules</a></li>
+                    <li><a href="#ConstraintFeedback">Other Constraint Feedback</a></li>
+                    <li><a href="#Resources">Resources</a></li>
+                </ul>
+            </li>
+            <li><a href="#ClanTier">Clan Tier</a></li>
+            <li>
+                <a href="#ClanAffinity">Clan Affinity</a>
+                <ul>
+                    <li><a href="#XPRooms">Clan Affinity Rooms</a></li>
+                </ul>
+            </li>
+            <li>
+                <a href="#SavingAndSharing">Saving And Sharing</a>
+                <ul>
+                    <li><a href="#Sharing">Sharing</a></li>
+                </ul>
+                <ul>
+                    <li><a href="#LocalStorage">Local Storage</a></li>
+                </ul>
+            </li>
+            <li><a href="#ExportToPng">Exporting to PNG</a></li>
+            <li><a href="#ArrivalGate">Arrival Gate</a></li>
+            <li>
+                <a href="#Structure">Structure Mode</a>
+                <ul>
+                    <li>
+                        <a href="#StructureBasic">Basic mode</a>
+                        <ul>
+                            <li><a href="#SpawnRoom">Spawn Room</a></li>
+                            <li><a href="#Connectedness">Connectedness</a></li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="#StructureAdvanced">Advanced</a>
+                        <ul>
+                            <li>
+                                <a href="#TreeView">Your Dojo is a Tree</a>
+                                <ul>
+                                    <li><a href="#TreeDisplay">Tree Structure Display</a></li>
+                                    <li><a href="#SelectBranch">Select Branch</a></li>
+                                    <li><a href="#SelectRoot">Select Root</a></li>
+                                    <li><a href="#MovingTheSpawnRoom">Moving The Spawn Room</a></li>
+                                </ul>
+                            </li>
+                            <li>
+                                <a href="#Loops">Loops</a>
+                                <ul>
+                                    <li><a href="#LoopDetection">Loop Detection</a></li>
+                                </ul>
+                            </li>
+                            <li>
+                                <a href="#CrossBranchDoors">Cross Branch Doors</a>
+                                <ul>
+                                    <li><a href="#HowCrossBranchDoors">How to find</a></li>
+                                    <li><a href="#MarkingCrossBranchDoors">Marking</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="#StructureMenu">Structure Menu</a>
+                        <ul>
+                            <li><a href="#ShowSpawnRoom">Find Spawn Room</a></li>
+                            <li><a href="#AutoFixStructure">Auto-Fix Structure</a></li>
+                            <li><a href="#ResetAllStructure">Reset All Structure</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </li>
+            <li>
+                <a href="#Settings">Settings</a>
+                <ul>
+                    <li><a href="#ShowAllFloors">Show All Floors</a></li>
+                    <li><a href="#ShowMapMarkers">Show Map Markers</a></li>
+                    <li><a href="#ShowLabels">Show Labels</a></li>
+                    <li><a href="#DimRooms">Dim Rooms</a></li>
+                    <li><a href="#EnableRules">Enable Rules</a></li>
+                    <li><a href="#Autosave">Autosave</a></li>
+                </ul>
+            </li>
+            <li><a href="#ObstacleCourseFogPlane">What's that thing around the Obstacle Course?</a></li>
+            <li><a href="#UpdateNotes">Update Notes</a></li>
+            <li><a href="#ToDo">To Do</a></li>
+            <li><a href="#KnownIssues">Known Issues</a></li>
+        </ul>
+
+        <h3 id="KeyboardShortcuts">Keyboard shortcut cheat sheet</h3>
+        <ul>
+            <li><strong>Shift-click</strong>: Add a room to the selection</li>
+            <li><strong>Shift-drag</strong>: Add an area of rooms to the selection</li>
+            <li><strong>Control-Shift-drag</strong>: Add an area of rooms across all floors to the selection</li>
+            <li><strong>Control-A</strong>: Select all rooms on the current floor</li>
+            <li><strong>Control-Shift-A</strong>: Select all rooms in the layout, across all floors</li>
+            <li><strong>Drag background</strong>: Scroll the screen</li>
+            <li><strong>Control-Drag background</strong>: Autoscrolls the screen when near the edge</li>
+            <li><strong>Drag room-Shift</strong>: Disable door snapping while dragging rooms</li>
+            <li><strong>Drag room-Control/Command</strong>: Snap to the nearest 8m while dragging rooms</li>
+            <li><strong>R</strong>: Rotate the selected rooms (<i>works while dragging</i>)</li>
+            <li><strong>D</strong>: Duplicate the selected rooms</li>
+            <li><strong>Alt-click</strong>: Delete a room or the selected rooms</li>
+            <li><strong>Control-C</strong>: Copy the selected rooms</li>
+            <li><strong>Control-X</strong>: Cut the selected rooms</li>
+            <li><strong>Control-V</strong>: Paste the previously copied or cut rooms</li>
+            <li><strong>Up arrow key</strong>: Move the view up a floor</li>
+            <li><strong>Down arrow key</strong>: Move the view down a floor</li>
+            <li><strong>Escape</strong>: Cancel adding/moving a room or rooms, or cancel out of any open menu</li>
+        </ul>
+        <h1 id="Navigation">Navigation</h1>
+        <p>
+            Click and drag anywhere in the grid area to move around.
+        </p>
+        <p>
+            This includes clicking on a room, as long as that room isn't currently selected (see
+            <a href="#SelectingARoom">Selecting a Room</a>).
+        </p>
+        <p>
+            If a room is selected and being dragged into position, then dragging near the window boundary will
+            automatically scroll in that direction.  The closer the cursor is to the window boundary the faster
+            the scrolling.
+        </p>
+
+        <h2 id="Xooming">Zooming</h2>
+        <p>
+            Use the mouse wheel to zoom in and out.  The cursor marks the center point for zooming.
+        </p>
+        <p>
+            On a touch screen, pinch two fingers to zoom in or spread them to zoom out.
+        </p>
+
+        <h2 id="ChangingFloors">Changing Floors</h2>
+        <p>
+            The highlighted floor on the left side of the screen shows which floor is currently in view.
+            The floor numbers start at <strong>1</strong> on the ground floor and go up from there.  Below floor
+            <strong>1</strong> is <strong>B1</strong>, and they count down from there.
+        </p>
+        <p>
+            Use the <span class="docImgButton"><img src="icons/icon-up.png" srcset="icons2x/icon-up.png 2x" title="Up"/></span> button above the floor listing to view the next floor up.
+            Use the <span class="docImgButton"><img src="icons/icon-down.png" srcset="icons2x/icon-down.png 2x" title="Down"/></span> button to view the next floor down.
+        </p>
+        <p>
+            You can also use the <strong>up</strong> and <strong>down</strong> arrow keys to move between floors.
+        </p>
+        <p>
+            Click on a floor to go directly to it.
+        </p>
+        <p>
+            The floor listing has a maximum number of floors it will display at one time.  If there is overflow
+            on the top any/or bottom then the <span class="docImgButton"><img src="icons/icon-up.png" srcset="icons2x/icon-up.png 2x" title="Up"/></span>
+            and/or <span class="docImgButton"><img src="icons/icon-down.png" srcset="icons2x/icon-down.png 2x" title="Down"/></span>
+            buttons will be replaced with <span class="docImgButton"><img src="icons/icon-up-more.png" srcset="icons2x/icon-up-more.png 2x" title="Up"/></span>
+            and/or <span class="docImgButton"><img src="icons/icon-down-more.png" srcset="icons2x/icon-down-more.png 2x" title="Down"/></span>
+        </p>
+        <p>
+            Floors containing rooms with errors will be highlighted in <span class="docButton-error">red</span>.
+        </p>
+
+        <h1 id="Editing">Editing</h1>
+
+        <h2 id="SelectingARoom">Selecting a Room</h2>
+        <p>
+            Select a room by clicking on it without dragging.  The currently selected room will have a blue
+            outline around it.
+        </p>
+        <p>
+            You can also click on a room that's not in the current floor but visible in the background in gray to go
+            directly to that room's floor and select it.  <strong class="warn">Note that if there's a room on a
+            floor directly above the room where you're trying to click then you will select that one instead, even
+            if you can see the lower room through the holes in the upper one.</strong>
+        </p>
+
+        <h3 id="Multiselection">Multiselection</h3>
+        <p>
+            Hold the <strong>Shift</strong> key or click the
+            <span class="docImgButton"><img src="icons/icon-multiselect.png" srcset="icons2x/icon-multiselect.png 2x" title="Multiselect"/></span>
+            button to enable multiselect mode.
+        </p>
+        <p>
+            While multiselect is enabled, clicking on rooms will add them to the current selection.  Clicking on an
+            already selected room will unselect it.
+        </p>
+        <p>
+            While multiselect is enabled, clicking and dragging will create a selection box.  All rooms in the selection
+            box will be added to the current selection when the mouse button or touch is released.
+        </p>
+        <p>
+            By default multiselect mode only selects rooms on the current floor.  Holding both
+            <strong>Shift</strong> and <strong>Control/Command</strong> while dragging or clicking a room will
+            select across all floors.  You will see a different multiselect icon,
+            <span class="docImgButton"><img src="icons/icon-multiselect-floors.png" srcset="icons2x/icon-multiselect-floors.png 2x" title="Multiselect"/></span>
+            when multi-floor selection is enabled.
+        </p>
+
+        <h3 id="SelectAll">Select All</h3>
+        <p>
+            Use <strong>Control-A</strong> to select all rooms on the current floor.
+        </p>
+        <p>
+            Use <strong>Shift-Control-A</strong> or <strong>Shift-Command-A</strong> to select all rooms in the
+            entire layout, across all floors.
+        </p>
+        <p>
+            Under the room menu, use
+            <span class="docImgButton"><img src="icons/icon-multiselect.png" srcset="icons2x/icon-multiselect.png 2x" title="Select All"/></span>
+            Select All to select all rooms of the same type across the whole dojo.
+        </p>
+
+        <h2 id="AddingARoom">Adding Rooms</h2>
+        <p>
+            Click the <span class="docImgButton"><img src="icons/icon-add.png" srcset="icons2x/icon-add.png 2x" title="Add Room"/></span>
+            button to show a menu of room categories.  Click one of these categories to show a menu of rooms.
+            Click one of those rooms to add one under your cursor.  Drag and drop the room to where you want to
+            place it.
+        </p>
+        <p>
+            If you have already added a room once, then the
+            <span class="docImgButton"><img src="icons/icon-add.png" srcset="icons2x/icon-add.png 2x" title="Add Room"/></span>
+            menu will contain a quick option at the bottom to add another copy of the last room you added.
+        </p>
+        <p>
+            Clicking on the currently selected room or rooms will bring up the room menu.  Click
+            <span class="docButton">Duplicate</span> to create a copy of the room or rooms to place somewhere else.
+        </p>
+        <p>
+            Hitting the <strong>D</strong> key when a room or rooms are selected will duplicate the without having
+            to bring up the menu.
+        </p>
+        <p>
+            Hitting <strong>Escape</strong> while dragging a newly created room or rooms for the first time will
+            cancel the add operation and remove the room or rooms.
+        </p>
+
+        <h2 id="MovingARoom">Moving Rooms</h2>
+        <p>
+            After selecting one or more rooms, click again and drag on one of the selected rooms to move them.
+        </p>
+        <p>
+            Hold down <strong>Control/Command</strong> while dragging rooms to snap their position to the nearest
+            8 meters on the grid.  Otherwise the rooms' positions are snapped to the nearest meter.
+        </p>
+        <p>
+            If you drag one room so one of its doors is close to another room's door that's facing the opposite
+            direction, then all of your currently selected rooms will be snapped to connect those doors.
+        </p>
+        <ul>
+            <li>The zone of sensitivity with door snapping does not change with zoom.  If you're having trouble
+                snapping a room to the correct door then try zooming in.</li>
+            <li>You can also control the priority of door snapping by clicking a point on the room closer to a
+                particular door when dragging.</li>
+        </ul>
+        <p>
+            Hold down <strong>Shift</strong> while dragging rooms to disable door snapping.
+        </p>
+        <p>
+            Note that <strong>Shift</strong>-dragging, <strong>Alt</strong>-dragging, and door snapping also
+            apply to newly created or pasted rooms that are in the process of being placed for the first time.
+        </p>
+        <p>
+            Hitting <strong>Escape</strong> while dragging one or more rooms will cancel the operation and return
+            the rooms to where they started.
+        </p>
+
+        <h2 id="RotatingARoom">Rotating Rooms</h2>
+        <p>
+            Clicking again on the a currently selected room will bring up a menu.  Click
+            <span class="docImgButton"><img src="icons/icon-rotate-cw.png" srcset="icons2x/icon-rotate-cw.png 2x" title="Rotate"/></span>
+            to rotate the rooms 90 degrees.
+        </p>
+        <p>
+            You can also press the <strong>R</strong> key to rotate the seleted rooms.  This also works while
+            dragging the rooms.
+        </p>
+        <p>
+            If more than one room is selected, then all of the rooms will be rotated together.  The center of
+            rotation depends on how the rotation was triggered.
+        </p>
+        <ul>
+            <li>If the rotation was triggered from the
+                <span class="docImgButton"><img src="icons/icon-rotate-cw.png" srcset="icons2x/icon-rotate-cw.png 2x" title="Rotate"/></span>
+                option on the room menu, then the room that was clicked on to bring up the menu is the center or
+                rotation.</li>
+            <li>If the rotation was triggered while dragging rooms, the room that was clicked to start the
+                drag operation is the center of rotation.</li>
+            <li>If you're just using the <strong>R</strong> key with a set of selected rooms, then the center of
+                rotation is the center of the rooms' combined bounding box.</li>
+        </ul>
+
+        <h2 id="ChangingARoomsFloor">Changing an Elevator's Floor</h2>
+        <p>
+            Elevators span two floors, either going up from the current floor or going down.  To switch which
+            direction an elevator is going, select only that elevator and then click again to bring up the room menu.  Select
+            <span class="docImgButton"><img src="icons/icon-change-floor.png" srcset="icons2x/icon-change-floor.png 2x" title="Change Floor"/></span>
+            to swap the direction the elevator is going.
+        </p>
+
+        <h2 id="DeletingARoom">Deleting Rooms</h2>
+        <p>
+            Clicking again on a currently selected room will bring up the room menu.  Click
+            <span class="docImgButton"><img src="icons/icon-delete.png" srcset="icons2x/icon-delete.png 2x" title="Delete"/></span>
+            to delete the selected room or rooms.
+        </p>
+        <p>
+            Press the <strong>Delete</strong> key to delete the selected rooms without having to bring up a menu.
+        </p>
+        <p>
+            Hold down <strong>Alt</strong> and click on an unselected room to delete it with one click.
+        </p>
+        <p>
+            Hold down <strong>Alt</strong> and click on an selected room to delete all selected rooms with one click.
+        </p>
+
+        <h2 id="CopyAndPaste">Copy and Paste</h2>
+        <p>
+            With one or more rooms selected, click on a selected room and use the
+            <span class="docImgButton"><img src="icons/icon-copy.png" srcset="icons2x/icon-copy.png 2x" title="Copy"/></span>
+            Copy option in the room menu to copy the selected rooms to an internal clipboard.  You can also use
+            <strong>Control-C</strong>.
+        </p>
+        <p>
+            Use the
+            <span class="docImgButton"><img src="icons/icon-cut.png" srcset="icons2x/icon-cut.png 2x" title="Cut"/></span>
+            Cut option or <strong>Control-X</strong> to copy the selected room or rooms to
+            the internal clipboard and delete the originals.
+        </p>
+        <p>
+            When there are rooms on the clipboard, Under the
+            <span class="docImgButton"><img src="icons/icon-add.png" srcset="icons2x/icon-add.png 2x" title="Add Room"/></span>
+            Add menu will be a
+            <span class="docImgButton"><img src="icons/icon-paste.png" srcset="icons2x/icon-paste.png 2x" title="Paste"/></span>
+            Paste option.  You can also use <strong>Control-P</strong>.
+        </p>
+
+        <h2 id="DeletingEverything">Deleting Everything</h2>
+        <p>
+            Click on <span class="docImgButton"><img src="icons/icon-burger.png" srcset="icons2x/icon-burger.png 2x" title="Menu"/></span>
+            then <span class="docImgButton"><img src="icons/icon-new.png" srcset="icons2x/icon-new.png 2x" title="New"/></span>
+            to start fresh.
+        </p>
+        <p>
+            Note that this opens as a new link, so you can use your browser's <strong>Back</strong> button to go
+            back to your previous layout.
+        </p>
+
+        <h2 id="UndoRedo">Undo and Redo</h2>
+        <p>
+            Click on <span class="docImgButton"><img src="icons/icon-undo.png" srcset="icons2x/icon-undo.png 2x" title="Undo"/></span>
+            or use <strong>Control-Z</strong> to undo your last action.  Actions include <strong>moving</strong>,
+            <strong>rotating</strong>, <strong>changing floors</strong>, <strong>adding</strong>,
+            <strong>deleting</strong>, and <strong>changing the selection</strong>.  You can continue clicking
+            <span class="docImgButton"><img src="icons/icon-undo.png" srcset="icons2x/icon-undo.png 2x" title="Undo"/></span>
+            or using <strong>Control-Z</strong> to undo previous actions.
+        </p>
+        <p>
+            Click <span class="docImgButton"><img src="icons/icon-redo.png" srcset="icons2x/icon-redo.png 2x" title="Redo"/></span>
+            or use <strong>Control-Shift-Z</strong> or <strong>Control-Y</strong> to redo an action you have just
+            undone.  You can continue clicking
+            <span class="docImgButton"><img src="icons/icon-undo.png" srcset="icons2x/icon-undo.png 2x" title="Undo"/></span>
+            or using <strong>Control-Shift-Z</strong>/<strong>Control-Y</strong> to redo previously undone actions.
+        </p>
+        <p>
+            Performing another action after undoing will clear out all the redoable actions.
+        </p>
+        <p>
+            <strong class="warn">You can undo a maximum of 250 actions.</strong>
+        </p>
+
+        <h1 id="Cosmetics">Cosmetics</h1>
+        <p>
+            There are a few cosmetic options available, beyond what's in the game.  They don't affect any of the
+            core layout mechanics or rules.  They are intended for making the layout easier to follow and
+            understand.
+        </p>
+        <p>
+            Duplicating or copying a room will carry over any cosmetic customizations.
+        </p>
+
+        <h2 id="Colors">Colors</h2>
+        <p>
+            By default, rooms are gray like they appear in the in-game map.  However, under the room menu is a
+            <span class="docImgButton"><img src="icons/icon-color.png" srcset="icons2x/icon-color.png 2x" title="Color"/></span>
+            Color option.  This will bring up a color picker that can assign a color to all the selected rooms.
+        </p>
+        <p>
+            Use the three sliders to adjust the
+            <span class="docImgButton"><img src="icons/icon-color.png" srcset="icons2x/icon-color.png 2x" title="Hue"/></span> hue,
+            <span class="docImgButton"><img src="icons/icon-sat.png" srcset="icons2x/icon-sat.png 2x" title="Saturation"/></span> saturation,
+            and <span class="docImgButton"><img src="icons/icon-lum.png" srcset="icons2x/icon-lum.png 2x" title="Brightness"/></span> brightness.
+        </p>
+        <p>
+            Click
+            <span class="docImgButton"><img src="icons/icon-delete.png" srcset="icons2x/icon-delete.png 2x" title="Clear"/></span>
+            Clear to reset the selected rooms back to gray.
+        </p>
+        <p>
+            Click
+            <span class="docImgButton"><img src="icons/icon-save.png" srcset="icons2x/icon-save.png 2x" title="Save"/></span>
+            Save or just close the color picker to save the color change.
+        </p>
+        <p>
+            Click
+            <span class="docImgButton"><img src="icons/icon-undo.png" srcset="icons2x/icon-undo.png 2x" title="Cancel"/></span>
+            Cancel to close the color picker and reset and changes.
+        </p>
+        <p>
+            Beside
+            <span class="docImgButton"><img src="icons/icon-multiselect.png" srcset="icons2x/icon-multiselect.png 2x" title="Select All"/></span>
+            there are four options for selecting rooms with similar colors.
+        </p>
+        <ul>
+            <li><strong>Select Exact</strong>: Selects all rooms in the dojo with the same hue, saturation, and
+                brightness settings.</li>
+            <li>
+                <span class="docImgButton"><img src="icons/icon-color.png" srcset="icons2x/icon-color.png 2x" title="Hue"/></span>:
+                Selects all rooms in the dojo with the same hue, regardless of other color settings.
+            </li>
+            <li>
+                <span class="docImgButton"><img src="icons/icon-sat.png" srcset="icons2x/icon-sat.png 2x" title="Saturation"/></span>:
+                Selects all rooms in the dojo with the same saturation, regardless of other color settings.
+            </li>
+            <li>
+                <span class="docImgButton"><img src="icons/icon-lum.png" srcset="icons2x/icon-lum.png 2x" title="Brightness"/></span>:
+                Selects all rooms in the dojo with the same brightness, regardless of other color settings.
+            </li>
+        </ul>
+        <p>
+            If there are already some rooms with colors in the layout, then those colors will create markers on the
+            saturation, and luminance sliders.  Moving any slider close enough to a mark will snap to them.  The
+            snapping can be disabled by holding the shift key.
+        </p>
+        <p>
+            If you have multiple rooms selected that currently have different colors, then only the color parts that
+            are modified will be changed.  For example, if you have a red and a green room selected, and only adjust
+            the brightness slider without touching hue, then the rooms will still be red and green and only their
+            brightness will be changed.
+        </p>
+        <h3>
+            <strong>Q</strong>: Is this entirely too much attention paid to a color picker?
+        </h3>
+        <h3>
+            <strong>A</strong>: Not for Warframe
+        </h3>
+
+        <h2 id="Labels">Labels</h2>
+        <p>
+            Any room can have a label assigned to it.  Under the room menu is a
+            <span class="docImgButton"><img src="icons/icon-room-label.png" srcset="icons2x/icon-room-label.png 2x" title="Label"/></span>
+            Label option that will bring up a label editor.  It's only available if a single room is selected.
+        </p>
+        <p>
+            Enter the room's label in the the text box.  The label can have multiple lines.  It will be centered
+            on the selected room.
+        </p>
+        <p>
+            Use the <span class="docImgButton"><img src="icons/icon-label-scale.png" srcset="icons2x/icon-label-scale.png 2x" title="Scale"/></span>
+            scale slider to change the size of the label.
+        </p>
+        <p>
+            Like with the color pickers, the sizes of other labels in the layout will show up as markers that the
+            scale slider can snap to.  Hold The shift key to disable snapping.
+        </p>
+        <p>
+            Click
+            <span class="docImgButton"><img src="icons/icon-delete.png" srcset="icons2x/icon-delete.png 2x" title="Clear"/></span>
+            Clear to remove the label from the selected room.
+        </p>
+        <p>
+            Click
+            <span class="docImgButton"><img src="icons/icon-save.png" srcset="icons2x/icon-save.png 2x" title="Save"/></span>
+            Save or just close the label editor to save the label change.
+        </p>
+        <p>
+            Click
+            <span class="docImgButton"><img src="icons/icon-undo.png" srcset="icons2x/icon-undo.png 2x" title="Cancel"/></span>
+            Cancel to close the label editor and reset and changes.
+        </p>
+        <p>
+            If a room has a color customization then that color also applies to the label.
+        </p>
+        <p>
+            A room can be selected and dragged by clicking on its label.
+        </p>
+
+        <h3 id="LabelObject">Label Object</h3>
+        <p>
+            Under the <strong>Utility</strong> section of the
+            <span class="docImgButton"><img src="icons/icon-add.png" srcset="icons2x/icon-add.png 2x" title="Add Room"/></span>
+            Add menu there is a
+            <span class="docImgButton"><img src="icons/icon-room-label.png" srcset="icons2x/icon-room-label.png 2x" title="Label"/></span>
+            Label object.
+        </p>
+        <p>
+            The Label object does not count towards the resource totals or dojo boundaries.  It allows you to place
+            a label that's not tied to the center of a dojo room.  You can place as many of these as you want.
+        </p>
+        <p>
+            <strong class="warn">When generating a PNG, the boundaries of the image are determined by the actual rooms
+                and not the labels.</strong>  There is a little bit of a margin, but if a label is too big, or if
+            a label object is placed too far away from the rooms themselves, then it won't show up completely or at
+            all.
+        </p>
+
+
+        <h1 id="Constraints">Constraints</h1>
+        <p>
+            There are three types on constraints on room placemement: <strong>Room Resources</strong>,
+            <strong>Room Boundaries</strong>, and <strong>Room Rules</strong>.
+        </p>
+
+        <h2 id="RoomResources">Room Resources</h2>
+        <p>
+            There are three constraints that affect all rooms in the Dojo:
+        </p>
+        <ul>
+            <li><strong>Room Count:</strong> There's a hard limit of 128 rooms total.</li>
+            <li><strong>Energy:</strong> Each room requires some amount of Energy.  You must build
+                <strong>Reactors</strong> to increase the available energy.</li>
+            <li><strong>Capacity:</strong> Each room requires some amount of Capacity.  You must build
+                <strong>Clan Halls</strong> or other Halls to get more capacity.</li>
+        </ul>
+        <p>
+            The current Room count, Energy, and Capacity of your dojo is displayed in the lower left.  When any
+            of those resources is exceeded it will be highlighted in <span class="docButton-error">red</span>.
+        </p>
+
+        <h2 id="RoomBoundaries">Room Boundaries</h2>
+        <p>
+            If you move a room too close to another room so that their boundaries overlap then they will be
+            highlighted in <span class="docButton-error">red</span>.  The dojo layout is invalid as long as there
+            are any room boundaries overlapping.
+        </p>
+        <p>
+            Note that rooms on adjacent floors may also overlap boundaries.  If a currently visible room is
+            overlapping with a room on a different floor then you will see just the other room's boundary in
+            <span class="docButton-error">red</span>.
+        </p>
+        <h3 id="SpecialNoteAboutDryDock">Special Note About the Dry Dock</h3>
+        <p>
+            The Dry Dock is <strong>very big</strong>.  The outline and bounds visible on the Dry Dock do not
+            extend all the way to the back of it, which extends roughly 6-7 times farther than the visible size of
+            the Dry Dock.  Boundary collisions with the entire length of the Dry Dock will still be detected, but
+            it may not be obvious what's colliding unless you zoom out and find the Dry Dock.
+        </p>
+        <h3 id="SpecialNoteAboutDiscontinued">Special Note About the Discontinued Rooms</h3>
+        <p>
+            The old, discontinued dojo rooms are available to place in your layout.  <strong class="warn">They come
+            with a warning icon <span class="docImgButton-clear"><img src="icons/icon-warn.png" srcset="icons2x/icon-warn.png 2x" title="Warning"/></span>
+            because there are number of caveats:</strong>
+        </p>
+        <p>
+            I have gotten some help testing the old room boundaries (huge thanks to <strong>x-cessive</strong>).
+        </p>
+        <p>
+            However, even with testing, the discontinued rooms are going to be a bit looser than the others.  They
+            don't follow a standard grid.  And since I don't have them in my dojo, I can't test them on an
+            ongoing basis.  Finally, there are still some assumptions I have to make:
+        </p>
+        <ul>
+            <li>
+                I'm assuming that the <strong>Old Reactor</strong> provides the same 25 energy as a newer reactor
+            </li>
+            <li>
+                For everything else I'm assuming they use zero energy and consume zero capacity.
+            </li>
+            <li>
+                I'm assuming all the old rooms have the height and depth of the starter <strong>Clan Hall</strong>.
+            </li>
+        </ul>
+
+        <h2 id="RoomRules">Specific Room Rules</h2>
+        <p>
+            There are a handful of constraints that apply to specific rooms:
+        </p>
+        <ul>
+            <li>
+                You need at least one <strong>Spawn Room</strong>.  These are marked in the room menus with
+                a <span class="docImgButton-clear"><img src="icons/icon-spawn-supported.png" srcset="icons2x/icon-spawn-supported.png 2x" title="Spawn Supported"/></span>
+                icon.  Possible spawn rooms are:
+                <ul>
+                    <li>Any of the Classic <strong>Clan Halls</strong></li>
+                    <li><strong>Inspiration Hall</strong></li>
+                    <li><strong>Entrati Audience Chamber</strong></li>
+                    <li><strong>Infested Chamber</strong></li>
+                </ul>
+                See below for more on <a href="#SpawnRoom">Spawn Rooms</a>.
+            </li>
+            <li>An <strong>Oracle</strong> is the prequisite for all the Labs</li>
+            <li>You can only have one of each classic <strong>Clan Hall</strong></li>
+            <li>You can only have up to three <strong>Inspiration Halls</strong></li>
+            <li>You can only have up to five <strong>Obstacle Course Architect</strong> rooms</li>
+            <li>You can only have one of each type of <strong>Barracks</strong>, and each
+                tier Barracks is the prerequisite for the next one.</li>
+            <li>You can only have one <strong>Dry Dock</strong></li>
+        </ul>
+        <p>
+            When a room is violating a specific rule then it will be highlighted in <span class="docButton-error">red</span>.
+        </p>
+
+        <h2 id="ConstraintFeedback">Other Constraint Feedback</h2>
+        <p>
+            When a room is violating a resource, boundary, or rule constraint it will be highlighted in <span class="docButton-error">red</span>.
+            Clicking on the room twice to bring up the room menu.  Beside the room name will be a
+            <span class="docImgButton-clear"><img src="icons/icon-error.png" srcset="icons2x/icon-error.png 2x" title="Error"/></span>
+            button.  Clicking on it will bring up a list of the constraints that the room is breaking.
+        </p>
+        <p>
+            The floor indicator along the left side of the screen will hightlight in <span class="docButton-error">red</span>
+            any floors containing rooms with constraint violations.
+        </p>
+        <p>
+            The <span class="docImgButton"><img src="icons/icon-add.png" srcset="icons2x/icon-add.png 2x" title="Add Room"/></span>
+            menu will show <span class="docImgButton-clear"><img src="icons/icon-error.png" srcset="icons2x/icon-error.png 2x" title="Error"/></span>
+            buttons next to rooms that will have a constraint violation if added.  This also applies to the
+            <strong class="docButton">Duplicate</strong> option in the individual room menus.
+        </p>
+        <p>
+            Finally, in the top bar there is a global error icon, either
+            <span class="docImgButton-clear"><img src="icons/icon-ok.png" srcset="icons2x/icon-ok.png 2x" title="OK"/></span>,
+            <span class="docImgButton-clear"><img src="icons/icon-error.png" srcset="icons2x/icon-error.png 2x" title="Error"/></span>, or
+            <span class="docImgButton-clear"><img src="icons/icon-warn.png" srcset="icons2x/icon-warn.png 2x" title="Warning"/></span>.
+            Click on it to bring up a list of all errors or warnings detected in the dojo.
+        </p>
+
+        <h2 id="Resources">Resources</h2>
+        <p>
+            When adding or duplicating a room, next to the energy and capacity constraints will be a
+            <span class="docImgButton-clear"><img src="icons/icon-resources.png" srcset="icons2x/icon-resources.png 2x" title="Resources"/></span>
+            resources button.  Clicking this will display the resources needed to build that room, considering
+            the current clan tier.
+        </p>
+        <p>
+            At the bottom of the screen, next to the total rooms, energy, and capacity, is another
+            <span class="docImgButton-clear"><img src="icons/icon-resources.png" srcset="icons2x/icon-resources.png 2x" title="Resources"/></span>
+            resources button.  Clicking this will display the total resources needed to build the entire dojo,
+            considering the current clan tier.
+        </p>
+        <h1 id="ClanTier">Clan Tier</h1>
+        <p>
+            The <strong>Clan Tier</strong> is determined by highest tier Barracks room that is present.  There are
+            five tiers:
+        </p>
+        <ol>
+            <li>0. Ghost <span class="docImgButton-clear"><img src="icons/icon-tier-0.png" srcset="icons2x/icon-tier-0.png 2x" title="Ghost"/></span>
+                (No Barracks)</li>
+            <li>1. Shadow <span class="docImgButton-clear"><img src="icons/icon-tier-1.png" srcset="icons2x/icon-tier-1.png 2x" title="Shadow"/></span></li>
+            <li>2. Storm <span class="docImgButton-clear"><img src="icons/icon-tier-2.png" srcset="icons2x/icon-tier-2.png 2x" title="Storm"/></span></li>
+            <li>3. Mountain <span class="docImgButton-clear"><img src="icons/icon-tier-3.png" srcset="icons2x/icon-tier-3.png 2x" title="Mountain"/></span></li>
+            <li>4. Moon <span class="docImgButton-clear"><img src="icons/icon-tier-4.png" srcset="icons2x/icon-tier-4.png 2x" title="Moon"/></span></li>
+        </ol>
+        <p>The current Clan Tier is displayed at the bottom of the screen next to Clan Affinity and Resources.</p>
+        <p>
+            All resources displayed will be for the current Clan Tier of the layout.  <span class="warn">Note that
+                this will be an overestimate; you're going to build at least some of your dojo before building any
+                Barracks.</span>
+        </p>
+
+        <h1 id="ClanAffinity">Clan Affinity</h1>
+        <p>
+            Some of the rooms you can build provide <strong>Clan Affinity</strong> when they're built for the first
+            time.
+        </p>
+        <h2 id="XPRooms">Clan Affinity Rooms</h2>
+        <p>
+            The 11 rooms that currently provide <strong>Clan Affinity</strong> are:
+        </p>
+        <ul>
+            <li>Oracle</li>
+            <li>All six labs</li>
+            <li>Both obstacle courses</li>
+            <li>Dueling Room</li>
+            <li>Temple of Honor</li>
+        </ul>
+        <p>
+            These rooms will appear with a
+            <span class="docImgButton-clear"><img src="icons/icon-xp.png" srcset="icons2x/icon-xp.png 2x" title="Rooms providing Clan XP"/></span>
+            icon in the menu until the first one is added to the layout.  After that they will be added to the
+            <span class="docImgButton-clear"><img src="icons/icon-xp.png" srcset="icons2x/icon-xp.png 2x" title="Rooms providing Clan XP"/></span>
+            count at the bottom of the screen.
+        </p>
+        <p>
+            If you delete the last of one of these rooms then you lose the Clan Affinity for that room until it is
+            built again.
+        </p>
+
+        <h1 id="SavingAndSharing">Saving And Sharing</h1>
+        <p>
+            The current layout and view are continually saved to your browser's location bar.  If you go forward or
+            back in your browser history, then reversing that should restore the layout and view you had
+            previously.
+        </p>
+        <h2 id="Sharing">Sharing</h2>
+        <p>
+            A copy of the browser location is also available by clicking
+            <span class="docImgButton"><img src="icons/icon-burger.png" srcset="icons2x/icon-burger.png 2x" title="Menu"/></span>, then
+            <span class="docImgButton"><img src="icons/icon-link.png" srcset="icons2x/icon-link.png 2x" title="Share"/></span>,
+            then <strong class="docButton">Copy</strong>.  This will place a link to the current layout in your
+            clipboard.  Anyone can use this link to recreate your dojo layout.
+        </p>
+        <h2 id="LocalStorage">Local Storage</h2>
+        <p>
+            Click
+            <span class="docImgButton"><img src="icons/icon-burger.png" srcset="icons2x/icon-burger.png 2x" title="Menu"/></span>, then
+            <span class="docImgButton"><img src="icons/icon-save.png" srcset="icons2x/icon-save.png 2x" title="Local Storage"/></span> to
+            open Local Storage.
+        </p>
+        <p>
+            Use <strong class="docButton">Add</strong> to add the currentl layout as a new entry in Local Storage.
+            You will be asked to give the layout a name.
+        </p>
+        <p>
+            If there is an existing entry in Local Storage, then you can use
+            <span class="docImgButton"><img src="icons/icon-save.png" srcset="icons2x/icon-save.png 2x" title="Save"/></span>
+            to overwrite that entry with the current layout.
+        </p>
+        <p>
+            An existing entry can be removed with
+            <span class="docImgButton"><img src="icons/icon-delete.png" srcset="icons2x/icon-delete.png 2x" title="Delete"/></span>.
+        </p>
+        <p>
+            Click on the the <strong>Name</strong> and <strong>Date</strong> column headers to sort by that column.
+            Clicking again will reverse the direction of the sort.
+        </p>
+        <p>
+            <strong class="warn">Note: Local Storage is specific to your browser instance.</strong>  To share a layout
+            with other people, or with yourself on another browser, you will have to use
+            <span class="docImgButton"><img src="icons/icon-link.png" srcset="icons2x/icon-link.png 2x" title="Share"/></span>
+            to share a link.
+        </p>
+
+        <h1 id="ExportToPng">Exporting to PNG</h1>
+        <p>
+            Click <span class="docImgButton"><img src="icons/icon-burger.png" srcset="icons2x/icon-burger.png 2x" title="Menu"/></span>
+            then <span class="docImgButton"><img src="icons/icon-png.png" srcset="icons2x/icon-png.png 2x" title="PNG"/></span>
+            to bring up a menu for exporting your dojo layout to one or
+            more PNG files.
+        </p>
+        <ul>
+            <li>
+                The <strong>Scale</strong> field controls the scale of the PNG image.  It's in
+                <strong>pixels per meter</strong>.  The larger the scale the bigger the image will be.
+            </li>
+            <li>
+                The <strong>Size</strong> field shows the size of the PNG(s) that will be generated.
+            </li>
+        </ul>
+        <p>
+            Click <strong class="docButton">Create</strong> to generate the PNG images.  They will be displayed as
+            links for you to download.
+        </p>
+        <p>
+            If your dojo has multiple floors then a separate image is generated for each floor.  The same size and
+            positioning is used for each floors' image, so they will line up on top of each other.
+        </p>
+        <p>
+            <strong class="warn">If you have a huge dojo and generate a huge image then it may take a little while
+                for the image links to appear.</strong>
+        </p>
+
+        <h1 id="ArrivalGate">Arrival Gate</h1>
+        <p>
+            On any room, you can click on the room menu and select
+            <span class="docImgButton"><img src="icons/icon-arrival.png" srcset="icons2x/icon-arrival.png 2x" title="Arrival Gate"/></span>
+            <strong>Set Arrival Gate</strong> to designate that room as the one containing the <strong>Arrival Gate</strong>.
+            If another room contained the Arrival Gate then the Arrival Gate will be moved.
+        </p>
+        <p>
+            <strong class="warn">Note: The Arrival Gate is different from the <a href="#SpawnRoom">Spawn Room</a>.</strong>
+            Your dojo must contain a Spawn Room, which determines the root of its tree structure, and only certain rooms
+            can be the Spawn Room.  An Arrival Gate, however, is optional and can be placed in any room.
+        </p>
+        <p>
+            The Arrival Gate room will have a
+            <span class="docImgButton-clear"><img src="icons/icon-arrival.png" srcset="icons2x/icon-arrival.png 2x" title="Arrival Gate"/></span>
+            marker on it.
+        </p>
+        <p>
+            To remove the Arrival Gate from your layout, click on the Arrival Gate room's menu and select
+            <span class="docImgButton"><img src="icons/icon-arrival-delete.png" srcset="icons2x/icon-arrival-delete.png 2x" title="Arrival Room Delete"/></span>
+            <strong>Remove Arrival Gate</strong>.  After this your layout will not have an Arrival Gate.
+        </p>
+
+        <h1 id="Structure">Structure Mode</h1>
+
+        <h2 id="StructureBasic">Basic Mode</h2>
+        <p>
+            Basic structure checking is enabled by default.  All you need to do is add a spawn room.
+        </p>
+
+        <h3 id="SpawnRoom">Spawn Room</h3>
+        <p>
+            On rooms that support being a spawn room, click on the room menu and select
+            <span class="docImgButton"><img src="icons/icon-spawn.png" srcset="icons2x/icon-spawn.png 2x" title="Spawn Room"/></span>
+            <strong>Set Spawn Room</strong> to designate that room as the spawn room.  If another room is already
+            designaged as the spawn room then the spawn room will be moved.
+        </p>
+        <p>
+            <strong class="warn">Note: The Spawn Room is different from the <a href="#ArrivalGate">Arrival Gate</a>.</strong>
+        </p>
+        <p>
+            The designated spawn room will have a
+            <span class="docImgButton-clear"><img src="icons/icon-spawn.png" srcset="icons2x/icon-spawn.png 2x" title="Spawn Room"/></span>
+            marker on it.
+        </p>
+        <p>
+            To remove the spawn room from your layout, click on the spawn room room menu and select
+            <span class="docImgButton"><img src="icons/icon-spawn-delete.png" srcset="icons2x/icon-spawn-delete.png 2x" title="Spawn Room Delete"/></span>
+            <strong>Remove Spawn Room</strong>.  After this your layout will not have a spawn room.
+        </p>
+        <h3 id="Connectedness">Connectedness</h3>
+        <p>
+            When a spawn room is designated the dojo will be checked to make sure every room is connected to the
+            spawn room room, either directly or indirectly through other rooms.
+        </p>
+        <p>
+            Rooms that are not connected to the spawn room room will be highlighted in yellow and show up as
+            <span class="docImgButton-clear"><img src="icons/icon-warn.png" srcset="icons2x/icon-warn.png 2x" title="Warning"/></span>
+            warnings.
+        </p>
+        <h2 id="StructureAdvanced">Advanced Mode</h2>
+        <p>
+            Enable <strong>Advanced Structure Mode</strong> by clicking
+            <span class="docImgButton"><img src="icons/icon-burger.png" srcset="icons2x/icon-burger.png 2x" title="Menu"/></span>, then
+            <span class="docImgButton"><img src="icons/icon-structure.png" srcset="icons2x/icon-structure.png 2x" title="Structure"/></span>,
+            then checking the <strong>Enabled</strong> checkbox.
+        </p>
+        <p>
+            <strong class="warn">A <a href="#SpawnRoom">spawn room</a> is required for Advanced Structure Mode.</strong>
+        </p>
+        <p>
+            When Advanced Structure Mode is enabled your dojo layout will be overlayed with green lines.
+            This shows the internal structure of your dojo as it would exist inside the game.
+        </p>
+        <h3 id="TreeView">Your Dojo is a Tree</h3>
+        <p>
+            Whenever you add a room do your dojo, you start with a door.  The door you use to create a new room
+            creates a parent-child relationship between the rooms on either side.  The room built first is the
+            parent, the room bult second is the child.  <strong class="warn">This build order is mostly set in
+            stone.</strong>  It's there until those room are destroyed.
+        </p>
+        <p>
+            If you start from any room, then the build order of its child rooms, and their child rooms, and their
+            child rooms, etc., branch out like a tree.  Computer science has a technical term for this kind of
+            structure.  It's called a "tree".  Computer Science is not good at naming things.
+        </p>
+        <p>
+            The root of this tree is your Spawn Room.  The branch that starts at your Spawn Room contains all
+            other branches inside it.
+        </p>
+        <p>
+            When Advanced Structure Mode is enabled, DojoCAD will try to build the tree structure from your layout,
+            starting with the spawn room.  It will be able to do so automatically, <strong class="warn">unless
+            your layout contains <a href="#Loops">loops</a>.</strong>
+        </p>
+
+        <h4 id="TreeDisplay">Tree Structure Display</h4>
+        <p>
+            The tree structure is shown in Advanced Structure Mode as green arrows over the doors, pointing from
+            parent room to child room.  These arrows are joined by lines through the center of each room.  Each
+            room's center is highlighted with a larger green square.
+        </p>
+
+        <h4 id="SelectBranch">Select Branch</h4>
+        <p>
+            When Advanced Structure Mode is enabled and your layout has a valid tree structure the room menu  will
+            have a few more options for selecting rooms.
+        </p>
+        <p>
+            Select a single room and use <span class="docImgButton"><img src="icons/icon-select-branch.png" srcset="icons2x/icon-select-branch.png 2x" title="Branch"/></span>
+            <strong>Branch</strong> to select all the child rooms branching out from that room.
+        </p>
+        <p>
+            <strong class="info">In-game, the branch under a room represents all the rooms that must be destroyed
+                before that room can be destroyed, assuming your spawn room stays the same.</strong>
+        </p>
+        <h4 id="SelectRoot">Select Root</h4>
+        <p>
+            Select a single room and use
+            <span class="docImgButton"><img src="icons/icon-select-root.png" srcset="icons2x/icon-select-root.png 2x" title="Root"/></span>
+            <strong>Root</strong> to select the path of parent rooms from that room leading back to the Spawn Room.
+        </p>
+        <p>
+            <strong class="info">In-game, the root path leading leading back to the spawn room represents all the
+                rooms that must be built before that room can be built, assuming your spawn room stays the same.</strong>
+        </p>
+
+        <h4 id="MovingTheSpawnRoom">Moving the Spawn Room</h4>
+        <p>
+            If the layout has a valid tree structure, then the spawn room can be moved anywhere and it will still
+            be a valid tree.
+        </p>
+        <p>
+            If the spawn room is moved from one side of a room to the other along the tree, then the branch
+            structure for that room changes. Its previous parent becomes one of its child branches, and one of
+            it's previous child rooms becomes its parent.  This is sometimes helpful in destroying a room while
+            preserving one of its previous child rooms, but it practice it's is pretty hard to avoid destroying
+            tons of other rooms.
+        </p>
+
+        <h3 id="Loops">Loops</h3>
+        <p>
+            <strong class="info">The defining characteristic of a tree is that branches don't connect again
+                after branching out.</strong>  With valid a tree there is no way to return a room you already
+            visited without retracing your steps.  You must ultimately end up at the end of a branch.
+        </p>
+        <p>
+            Obviously, you <i>can</i> build a dojo with a loop in it.  So what's going on?
+        </p>
+        <p>
+            You'll notice that no other map in the game has loops in it.  Explore the map on any in-game mission and
+            you'll only find dead ends.  There are no large-scale loops involving multiple rooms.  It seems only
+            dojos can have those.
+        </p>
+        <p>
+            I'm pretty sure that under the covers, it's still the same basic engine driving both mission maps and
+            dojos.  Both use tree structures to define the layout in terms of branches.  However, dojos have a
+            special kind of door that can cross between two branches.  I'm calling this a <strong>Cross Branch
+            Door</strong> because I'm not good at naming things, either.
+        </p>
+
+        <h4 id="LoopDetection">Loop Detection</h4>
+        <p>
+            When Advanced Structure Mode is enabled, any loops detected will be shown in two ways.  The rooms
+            involved in the loop wll be as highlighted as warnings in yellow.  And the doors involved in the loop
+            will have bi-directional yellow arrows on them.
+        </p>
+        <p>
+            Note that if you have a complicated layout then it's possible to have a some rooms involved in more
+            than one loop.
+        </p>
+        <p>
+            <strong class="warn">Most of the Advanced Structure Mode features, like selecting branches and root
+                paths, are not available until the loops have been resolved.</strong>
+        </p>
+
+        <h3 id="CrossBranchDoors">Cross Branch Doors</h3>
+        <p>
+            Click on the arrow above any door to bring up a small menu.  Use
+            <span class="docImgButton"><img src="icons/icon-force-cross-branch.png" srcset="icons2x/icon-force-cross-branch.png 2x" title="Force Cross Branch"/></span>
+            to force that door to be a Cross Branch Door.
+        </p>
+        <p>
+            <strong class="info">Cross Branch Doors are allowed to be connected, but they are not counted when
+                determining the tree structure of the layout.</strong>
+        </p>
+        <p>
+            Click on a Cross Branch Door and use
+            <span class="docImgButton"><img src="icons/icon-force-cross-branch-reset.png" srcset="icons2x/icon-force-cross-branch-reset.png 2x" title=Reset/></span>
+            to reset the Cross Branch Door setting.
+        </p>
+        <p>
+            <strong class="warn">Note that breaking a door connection by moving or deleting a room will also clear
+                any Cross Branch setting that may have been on that door.</strong>
+        </p>
+
+        <h4 id="HowCrossBranchDoors">How to find cross branch doors</h4>
+        <p>
+            If you're using DojoCAD to model an existing dojo then the Cross Branch Doors are already in place
+            in your dojo.  You just have to go into the game and find where they are.  This can be tedious, but
+            it's not difficult.
+        </p>
+        <p>
+            When you try to destroy a room, one of two things happens:
+        </p>
+        <ol>
+            <li>
+                You get a prompt asking if you really want to queue the room for destruction.  This means the room
+                you're in is at the end of a branch and has no child rooms.
+            </li>
+            <li>
+                You get a message about child components, and the option to show them in the minimap.  This will
+                highlight child rooms with blue markers on the in-game map.
+            </li>
+        </ol>
+        <p>
+            <strong class="warn">Note that you don't actually have to go through with destroying the room.</strong>
+            Just getting far enough to see one of those two prompts is good enough.
+        </p>
+        <p>
+            Figuring out Cross Branch doors from these two results is a bit of a puzzle, but there's a simple rule:
+        </p>
+        <p>
+            <strong class="info">If you find a door that is never highlighted when trying to destroy the rooms on
+                both sides, then that is a Cross Branch door.</strong>
+        </p>
+        <p>
+            Putting this into practice:
+        </p>
+        <ol>
+            <li>
+                Pick a room in your dojo that has a looping warning in DojoCAD, and try to destroy it.  <strong>Not
+                your Spawn Room.</strong>
+            </li>
+            <li>
+                If you get the prompt to queue it for destruction immediately, then pick any door along the loop and
+                go to step 4.
+            </li>
+            <li>
+                If you get the child room prompt, then tell it to show child rooms.
+            </li>
+            <li>
+                Follow the loop through doors with blue icons on them until you reach a room where the icon is on a
+                console, or until you reach a room where the next door in the loop doesn't have the icon on it.
+            </li>
+            <li>
+                Go through that door and try to destroy that room.
+            </li>
+            <li>
+                If you get the prompt to queue it for destruction immediately, then go to step 8.
+            </li>
+            <li>
+                If you get the child room prompt, then tell it to show child rooms.  The door you just went through
+                should <i>not</i> have the blue icon on it.
+            </li>
+            <li>
+                In DojoCAD, mark that door you just went through as a Cross Branch Door.
+            </li>
+            <li>
+                Repeat until DojoCAD doesn't show any more loops.
+            </li>
+        </ol>
+        <p>
+            <strong class="warn">Steps 5, 6, and 7 may not always be necessary, but it's good to check yourself.</strong>
+        </p>
+        <p>
+            Once you have the tree structure from your in-game dojo mapped in DojoCAD, you can start using the
+            <strong>Select Branch</strong> and <strong>Select Root</strong> along with spawn room manipulation
+            to figure out the best way to destroy rooms in your dojo.
+        </p>
+
+        <h2 id="StructureMenu">Structure Menu</h2>
+        <p>
+            There are more options available under the
+            <span class="docImgButton"><img src="icons/icon-structure.png" srcset="icons2x/icon-structure.png 2x" title="Structure"/></span>
+            <strong>Structure</strong> menu after enabling it.
+        </p>
+
+        <h3 id="ShowSpawnRoom">Find Spawn Room</h3>
+        <p>
+            If you have a big dojo or otherwise can't find the spawn room, use
+            <span class="docImgButton"><img src="icons/icon-spawn.png" srcset="icons2x/icon-spawn.png 2x" title="Find Spawn Room"/></span>
+            <strong>Find Spawn Room</strong> to automatically show your spawn room and select it.
+        </p>
+
+        <h3 id="AutoFixStructure">Auto-Fix Structure</h3>
+        <p>
+            If you're designing a layout from scratch and don't want to deal with resolving loops manually, then use
+            <span class="docImgButton"><img src="icons/icon-structure-fix.png" srcset="icons2x/icon-structure-fix.png 2x" title="Auto-fix Structure"/></span>
+            <strong>Auto-Fix Structure</strong> to automatically set any Cross Branch Doors necessary to resolve
+            loops and make the structure at valid tree.
+        </p>
+        <p>
+            <strong>Auto-Fix Structure</strong> will try to create the shortest branches possible, according to
+            your current Spawn Room.  Shorter branches means the dojo can be completed faster and torn down faster.
+        </p>
+        <p>
+            If there are already some Cross Branch Doors set then they will be left alone.
+        </p>
+
+        <h3 id="ResetAllStructure">Reset All Structure</h3>
+        <p>
+            To reset all the Cross Branch doors in the layout, use
+            <span class="docImgButton"><img src="icons/icon-force-cross-branch-reset.png" srcset="icons2x/icon-force-cross-branch-reset.png 2x" title=Reset/></span>
+            <strong>Reset All Structure</strong>.  If there were any loops before then they will have to be
+            resolved again.
+        </p>
+
+        <h1 id="Settings">Settings</h1>
+        <p>
+            Click
+            <span class="docImgButton"><img src="icons/icon-burger.png" srcset="icons2x/icon-burger.png 2x" title="Menu"/></span> then
+            <span class="docImgButton"><img src="icons/icon-settings.png" srcset="icons2x/icon-settings.png 2x" title="Settings"/></span> to
+            open Settings.
+        </p>
+        <p>
+            Settings are stored with your browser, so opening DojoCAD again should restore the same settings you
+            had before.
+        </p>
+        <h2 id="ShowAllFloors">Show all Floors</h2>
+        <p>
+            By default, while viewing one floor all the other floors will be shown grayed out in the backgorund.
+            If that gets too cluttered, or if it's lagging your browser, then that can be disabled with the
+            <strong>Show All Floors</strong> setting.
+        </p>
+        <p>
+            If you have <strong>Show All Floors</strong> disabled then you can still select rooms on
+            other floors using <strong>Ctrl-Shift-A</strong>, <strong>Ctrl-Shift-drag</strong>, and
+            the various methods for selecting rooms of the same type or color.  The other rooms will
+            only show up when selected.
+        </p>
+        <h2 id="ShowMapMarkers">Show Map Markers</h2>
+        <p>
+            By default, the map markers for certain rooms like labs and the Dry Dock are displayed.  Use the
+            <strong>Show Map Markers</strong> setting to turn that off.
+        </p>
+        <p>
+            Note that this setting also applies to images generated with the PNG function.
+        </p>
+        <h2 id="ShowLabels">Show Labels</h2>
+        <p>
+            Sometimes labels can clutter things up when you're editing.  Use the <strong>Show Labels</strong>
+            setting to turn off labels without removing them.
+        </p>
+        <p>
+            Note that this setting also applies to images generated with the PNG function.  You also cannot edit
+            labels unless <strong>Show Labels</strong> is enabled.
+        </p>
+        <h2 id="DimRooms">Dim Rooms</h2>
+        <p>
+            Sometimes bright room colors can make reading labels or looking at Advanced Structure Mode more
+            difficult.  Use the <strong>Dim Rooms</strong> setting to make the actual rooms darker.
+        </p>
+        <p>
+            I have to be honest.  This setting is only here to make Advanced Structure Mode look cool.
+        </p>
+        <h2 id="EnableRules">Enable Rules</h2>
+        <p>
+            Use this setting to turn off rules for room limits, prerequisites, energy, and capacity.  When disabled
+            those things will not be checked and will not add errors to the rooms and the layout.
+        </p>
+        <p>
+            <strong class="warn">Note that this not affect collision errors, which are still checked.</strong>
+        </p>
+        <h2 id="Autosave">Autosave</h2>
+        <p>
+            If the <strong>Autosave</strong> setting is enabled, then as you edit your layout it will be automatically
+            saved to <a href="#LocalStorage">Local Storage</a> under an special <strong>Autosave</strong> entry.
+        </p>
+        <p>
+            When you open DojoCAD with no layout in the link, it will automatically load anything
+            currently saved as an <strong>Autosave</strong>
+        </p>
+        <p>
+            If you have an Autosave but you accidentally load a DojoCAD link with a layout, your original autosave
+            will still be there in Local Storage until you actually make an edit.
+        </p>
+
+        <h1 id="ObstacleCourseFogPlane">What's that thing around the Obstacle Course?</h1>
+        <p>
+            Below the Obstacle Course is a huge fog plane that extends well beyond its actual boundaries.  If you
+            place another big enough room, like the Open Space, close enough to the Obstacle Course then this fog
+            plane will clip into the other room.
+        </p>
+
+        <h1 id="UpdateNotes">Update Notes</h1>
+        <h3 id="UpdateNotes1.1">v1.1: 2020-01-19</h3>
+        <ul>
+            <li>Added compression for the model string, it saves about 30-50% on the size of URLs.  All old URLs
+                will still work (thanks <strong>u/Almagnus1</strong>)</li>
+            <li>Added wall displays for the Dry Dock 1 floor below and 3 floors above to make it more clear that
+                you can't build any rooms there (thanks <strong>u/Almagnus1</strong>)</li>
+            <li>Adjusted rules for Hall prerequisites and added a new rule to make sure you have at least one hall
+                (Thanks <strong>u/yarl5000</strong>)</li>
+            <li>Fixed lower boundary for Dry Dock (thanks <strong>(PC) KCToxic</strong>)</li>
+            <li>Fixed boundary for Crimson Branch (thanks <strong>KingOfYou115</strong> and
+                <strong>u/Ramarr</strong>)</li>
+            <li>Fixed the constraint on Obstacle Course Architect rooms to 5 instead of 3
+                (thanks <strong>u/Alighierian</strong>)</li>
+            <li>
+                Added some keyboard shortcuts (thanks <strong>Kisutora</strong>):
+                <ul>
+                    <li>Pressing <strong>R</strong> will now rotate the selected room.  Note that this also works
+                        while dragging the room.  <i>Absolutely do not hold the R key down it is definitely not fun
+                            at all ;)</i></li>
+                    <li>Pressing <strong>D</strong> will now duplicate the selected room.</li>
+                </ul>
+            </li>
+            <li>Did some re-measurement of room upper/lower boundaries and re-testing of combinations
+                (thanks <strong>Zarzab</strong>)</li>
+        </ul>
+        <h3 id="UpdateNotes1.2">v1.2: 2020-01-22</h3>
+        <ul>
+            <li>Added my best guess at the old, discontinued rooms.  <strong class="warn">Note that the dimensions,
+                bounds and stats for these rooms are speculative at best.</strong>
+                (thanks <strong>(PC) ShadowMageAlpha</strong>, <strong>u/Ramarr</strong>)</li>
+            <li>Added a less severe Warning system, currently only applies to the presence of discontinued rooms</li>
+            <li>Added map icons for things that have map icons in-game</li>
+            <li>Implemented auto-scrolling when dragging a room near the boundary of the window.</li>
+            <li>Overhauled the menus, adding icons and close buttons and drop shadows and other cool crap.</li>
+            <li>Added visible door markers when moving a room.</li>
+        </ul>
+        <h3 id="UpdateNotes1.3">v1.3: 2020-02-09</h3>
+        <ul>
+            <li>Now showing rooms that are not on the current floor in the background in gray.  Selecting a room now
+                always goes to the floor that room is on.  (thanks <strong>(PC) .--._---_.--_._.-</strong>)</li>
+            <li>Shift-clicking a room automatically selects it for dragging, so you don't have to click every room
+                twice to move a bunch of rooms in a row.</li>
+        </ul>
+        <h3 id="UpdateNotes1.4">v1.4: 2020-02-13</h3>
+        <ul>
+            <li>Implemented undo/redo.</li>
+            <li>Updated the boundary on the Obstacle Course Architect room (thanks <strong>yodaxep</strong>)</li>
+            <li>Updated the Observatory with new slightly smaller bounds.</li>
+            <li>Added a more efficient but goofball minimal dojo example (thanks <strong>Egdot</strong>)</li>
+            <li>Updated the bounds on the Crimson Branch yet again and slightly updated the bounds on the Chem Lab
+                (thanks <strong>zaza7</strong>)</li>
+            <li>Added the Open Space room</li>
+            <li>Tweaked the bounds on the Obstacle Course Architect and Open Space rooms after further testing.
+                The Inspiration Hall now shows up on the floor above it in game.</li>
+            <li>Added the Entrati Audience Chamber room</li>
+            <li>Oh, Inspiration Halls can be spawn rooms</li>
+            <li>Apparently the Entradi Audience Chamber can also be a spawn room</li>
+            <li>Taking a few bites out of the starter hall bounding box (thanks <strong>wingcobob </strong>)</li>
+            <li>Added an ideal decorator's example layout (thanks <strong>Vash</strong>)</li>
+        </ul>
+        <h3 id="UpdateNotes1.5">v1.5: 2020-10-29</h3>
+        <ul>
+            <li>Added room counts to all room menus.  Added room and total resource displays.</li>
+            <li>Added the Infested Chamber after disabling all the safety features in my drawing tool.</li>
+            <li>Tweaked the Tenno Lab bounds (thanks <strong>---EGG---Fantoman</strong>)</li>
+            <li>Fixed the ceiling bounds on the Entradi Audience Chamber and Infested Chamber
+                (thanks <strong>gyrozco</strong>)</li>
+            <li>Fixed the bounds on the Orokin Lab (thanks <strong>zaza7</strong>)</li>
+            <li>Fixed the bounds on the Large Garden (thanks <strong>AeliosZero</strong>)</li>
+            <li>Removed the build dependencies between clan halls</li>
+            <li>Added the Starlight Market</li>
+            <li>The Infested Hall and Starlight Market require 5 energy instead of 2 for some reason
+                (Thanks <strong>Smerkut</strong>)</li>
+        </ul>
+        <h3 id="UpdateNotes2.0">v2.0: 2021-04-04</h3>
+        <ul>
+            <li>Multiselect, copy/paste</li>
+            <li>Labels</li>
+            <li>Color coding</li>
+            <li>Fixed the bounds on the Entrati Audience Chamber, Infested Chamber, and Starlight Market (thanks
+                <strong>kukurbis</strong> and <strong>AeliosZero</strong>)</li>
+            <li>Fixed resources on the Dry Dock and Crimson Branch</li>
+            <li>Hue and saturation and luminance and bears, oh my</li>
+            <li>Adding slightly different images for the open space's and inspiration hall's appearance on adjacent
+                floors (thanks <strong>AeliosZero</strong>)</li>
+            <li>Fixed the new hall height yet again.  I swear I got it right this time.  (thanks
+                <strong>purzzle</strong>)</li>
+        </ul>
+        <h3 id="UpdateNotes2.1">v2.1: 2021-05-14</h3>
+        <ul>
+            <li>Fixed a bunch of issues with selecting across floors and added more ways to do it.</li>
+            <li>Fixing total resources not decreasing when you delete a room (thanks <strong>flieee</strong>)</li>
+            <li>Fixed the Observatory bounds yet again (thanks <strong>CobaltRat</strong>)</li>
+            <li>Fixed a number of bugs with duplicating/copying rooms across floors (thanks
+                <strong>Kavukamari</strong>)</li>
+            <li>Added the Ventkids' Bash Lab</li>
+            <li>Added an icon for the Ventkids' Bash Lab because I can</li>
+            <li>Added size slider for labels</li>
+            <li>Fixed the Clan Hall bounds (Thanks <strong>adrienne</strong>)</li>
+            <li>Fixed the Bash Lab prerequisite</li>
+            <li>Flip the label outline color to white when the brightness of a room's color is set low enough
+                (Thanks <strong>adrienne</strong>)</li>
+        </ul>
+        <h3 id="UpdateNotes2.2">v2.2: 2021-08-10</h3>
+        <ul>
+            <li>Added a spawn room marker and connectedness checking</li>
+            <li>Added local storage for saving layouts</li>
+            <li>Added settings menu with settings for showing other floors, showing map markers, and autosave</li>
+            <li>Added setting for showing labels</li>
+        </ul>
+        <h3 id="UpdateNotes2.3">v2.3: 2021-08-31</h3>
+        <ul>
+            <li>Structure mode: tree display, loop checking, loop resolving, basic branch analysis</li>
+            <li>Fixed a bug with placing a new room or rooms so its center is exactly at (0, 0) on the grid
+                (thanks <strong>DrLego</strong></li>
+            <li>Fixed generating a PNG with structure mode enabled (thanks <strong>DrLego</strong>)</li>
+            <li>Fixed Bash Lab bounds (thanks <strong>deathbybolt</strong>)</li>
+            <li>Fixed Bash Lab bounds again, along with Elevator bounds (thanks <strong>KrauszerII</strong>)</li>
+            <li>Fixed Bash Lab bounds again again, along with Chem Lab and starter Clan Hall bounds (thanks
+                <strong>Dash, apparently</strong>)</li>
+            <li>Fixed Bash Lab bounds again again <strong class="warn">AGAIN</strong>, and fixed the bounds on
+                the Observatory, Elevator, and all connectors (thanks
+                <strong>adrienne</strong>, <strong>Imperial Salamander</strong>, <strong>deathbybolt</strong>,
+                <strong>KrauszerII</strong>, <strong>Dash, apparently</strong>, and probably a ton more)</li>
+            <li>Took a closer look at the Dry Dock sub-basement bounds, updated my actual dojo layout,
+                fixed some debug stuff</li>
+            <li>Added an old room I've never seen before</li>
+            <li>Updated Barracks outline, bounds are still the same.</li>
+        </ul>
+        <h3 id="UpdateNotes2.4">v2.4: 2022-01-15</h3>
+        <ul>
+            <li>Added a Clan Affinity room rounter (thanks <strong>Vash</strong>)</li>
+            <li>Made a massive but almost unnoticeable optimization to scrolling/zooming</li>
+            <li>increased the maximum zoom out, allowing more finer-grained zooms in the URL</li>
+            <li>Shortening big numbers in the layout stats section at the bottom</li>
+            <li>Added an extra, barely noticeable bounding box for the second floor of the Temple of Honor
+                (thanks <strong>id</strong>)</li>
+            <li>Re-measured literally everything and updated the bounds on eight rooms, including the Bash
+                Lab which has tiny bounding box just for the light tunnel, and the Duelling Room which is
+                just slightly, <i>slightly</i> less than square (thanks <strong>CookiesRUs</strong> and
+                <strong>Dash, apparently</strong>) </li>
+            <li>Added Earth Forest Chamber and Uranus Chamber.</li>
+            <li>Oops doing a little XSS cleansing on the label text</li>
+        </ul>
+        <h3 id="UpdateNotes2.5">v2.5: 2022-02-12</h3>
+        <ul>
+            <li>Added Clan Tier tracker, broke Barracks into four separate rooms because there actually is a
+                difference.</li>
+            <li>Fixed the ceiling level on the Forest Chamber (thanks <strong>ZiuNto</strong>)</li>
+            <li>Since you can't put anything immediately above it, added an image for the floor above the Forest
+                Chamber.</li>
+            <li>Fixed seams in the Structure Mode tree lines on 6-door and 10-door halls that literally only I would
+                notice.  It was bugging me, okay?</li>
+            <li>Fixed the bounds on the Obstacle Course Architect and updated the display on the Open Space, the
+                former is shorter than the latter by 2m (thanks <strong>ZiuNto</strong>)</li>
+            <li>Oh, you can't use the Tree room, Uranus room, or the freaking Starlight Market as spawn rooms.
+                Because of reasons. (thanks <strong>BabyKurama's B.U.A</strong>)</li>
+            <li>Fixed the bounds on the Tenno Lab (thanks <strong>MostlyRhyme</strong>)</li>
+            <li>Updated bounds on the Dry Dock by being a crazy person</li>
+            <li>Added Kuva Asteroid and Orokin Tower Chamber, fixed ceiling bounds on the other halls</li>
+            <li>Updated bounds on the starter Clan Hall (thanks <strong>manuelando</strong>)</li>
+            <li>Adjusted bounds on the Open Space (thanks <strong>ZiuNto</strong>)</li>
+            <li>Adjusted front bounds on the Open Space by one freakin' meter (thanks <strong>5184</strong>)</li>
+            <li>Adjusted vertical bounds on the Open Space and Obstacle Course Architect's entrance halls
+                (thanks <strong>Strayspark7</strong>)</li>
+            <li>Added a visual marker for the piece of glass on the Starlight Market that clips into the
+                adjacent room (thanks <strong>XHADgaming</strong>)</li>
+            <li>Noticed my testbed was broken and had to adjust the bounds on the Open Space, Obstacle Course
+                Architect, Elevator, and Observatory</li>
+            <li>Removed the piece of glass on the Starlight Market that clips into the adjacent room, because
+                apparently all I had to do to get that fixed was put it in DojoCAD</li>
+            <li>Added Ostron Cove</li>
+            <li>Added Galleon Chamber</li>
+            <li>Added overall room counts for room categories in the Add Room menu (thanks <strong>Cephalon_Elyksis</strong>)</li>
+            <li>Added Duviri Cove, also alphabetized and split the Theme Room menu into two menus.  There are ten frickin' theme halls now.</li>
+            <li>Added Courtier's Bliss and Harbinger's Pass.</li>
+        </ul>
+        <h3 id="UpdateNotes2.6">v2.6: 2023-08-04</h3>
+        <ul>
+            <li>Fixing bounds on Courtier's Bliss and Harbinger's Pass, implementing a whole new routine around
+                bounds checking because the bounds on these two rooms don't make sense specifically when paired
+                against the Dry Dock. (thanks <strong>BobVonBob</strong>, <strong>justawarframeuser</strong>)</li>
+            <li>After testing in a second account, tweaked the bounds on the Dry Dock and simplified the bounds on
+                Courtier's Bliss and Harbinger's Pass.</li>
+            <li>Fixed the rookie copy/paste mistake with the Duviri Cave structure (thanks <strong>ZiuNto</strong>)</li>
+            <li>Added the old elbow connector (thanks <strong>Strayspark7</strong>)</li>
+            <li>Added Dagath room, preliminary until I can get back to my PC</li>
+            <li>Fixed duplicate option on room menu so it preserves rotation when just a single room is selected
+                (thanks <strong>Dizzzy12</strong>)</li>
+            <li>Re-drew Dagath's Hollow because it was terrible. Yeesh.</li>
+            <li>Added a lab icon for Dagath's Hollow because somebody has to</li>
+            <li>Adjusted bounds on the old Obstacle Course and the Chem Lab.  You can place the Chem Lab and
+                the Energy lab so close to the Obstacle Course that their walls clip into it.
+                (thanks <strong>Dreamwalk3r</strong>)</li>
+            <li>Added a marker for the huge fog plane below the Obstacle Course that extends past its
+                bounds and into the next room if it's big enough.</li>
+            <li>Added markers for the console location in all the halls (thanks <strong>likilike</strong>)</li>
+            <li>Got some help testing the old room boundaries (<strong>huge</strong> thanks to <strong>x-cessive</strong>)</li>
+            <li>Tweaked the boundaries on almost all 6-door and 10-door halls, thanks again to the freakin' Duviri
+                portal rooms (thanks <strong>MacDB</strong>)</li>
+        </ul>
+        <h3 id="UpdateNotes2.7">v2.7: 2024-01-07</h3>
+        <ul>
+            <li>Added an explicit Arrival Gate marker to make it clear that it's different from the Spawn Room,
+                renaming a million instances of &quot;Spawn Point&quot; to &quot;Spawn Room&quot;
+                (thanks <strong>Dilgins</strong>)</li>
+            <li>Added a marker to the room menus to show which rooms support being spawn rooms.
+                (thanks <strong>Prince Zuhayr</strong>)</li>
+        </ul>
+
+        <h1 id="ToDo">To Do</h1>
+        <ul>
+            <li>
+                It's time to add scrollbars to some of the room menus.
+            </li>
+            <li>
+                Search function for the Add Room menu
+            </li>
+            <li>
+                Smaller, binary layout format for links
+            </li>
+            <li>
+                Option to set Cross Branch Doors automatically as new rooms are added.
+            </li>
+            <li>
+                Build order analysis
+                <ul>
+                    <li>Optimal steps for building a layout from scratch</li>
+                    <li>Optimal steps for tearing down a layout</li>
+                    <li>Optimal steps for changing from one layout to another</li>
+                </ul>
+            </li>
+            <li>
+                More metadata
+                <ul>
+                    <li>Maybe find some place to cram in decoration capacity</li>
+                    <li>Maybe think about possibly considering throwing clan research data in here in some way perhaps</li>
+                </ul>
+            </li>
+            <li>
+                Add some actions for the error menus, i.e. clicking on the "Oracle is required" error creates an Oracle room to place.
+            </li>
+            <li>
+                Level of detail image sets for zoom levels
+            </li>
+            <li>
+                World peace
+            </li>
+        </ul>
+
+        <h1 id="KnownIssues">Known Issues</h1>
+        <ul>
+            <li>
+                Pop-up menus have issues fitting itself entirely inside the screen sometimes.
+            </li>
+            <li>
+                If you're on a phone, the UI doesn't fit very well in landscape mode.
+            </li>
+            <li>
+                In Mobile Chrome you can still hide the URL bar and mess up the layout.
+            </li>
+            <li>
+                There are still some z-index issues, basically visible as a room you're dragging appearing to go
+                underneath other rooms.
+            </li>
+            <li>
+                Similarly, there are issues with trying to select a room that's within the bounding box of another
+                room
+            </li>
+            <li>
+                Clicking an internal link in the Help section in Chrome will flicker the screen, because some
+                things in Chrome are very stupid.  Possibly this also happens in mobile Safari, too.
+            </li>
+            <li>
+                Speaking of Safari, it pops when you switch floors to a floor with rooms off the screen.
+            </li>
+            <li>
+                PNGs exported with Safari look like ass.
+            </li>
+            <li>
+                Color coding doesn't work when generating PNGs on Safari.
+            </li>
+            <li>
+                Safari is really, really slow with a large dojo.
+            </li>
+            <li>
+                Don't use Safari
+            </li>
+            <li>
+                You can't click anywhere on the color slider to select a color, you have to drag the button.
+            </li>
+            <li>
+                The Local Storage listing doesn't have a scrollbar, so you can add more entries than the screen can
+                contain.
+            </li>
+            <li>
+                There's some rare bug with connecting rooms where it doesn't register that it's connected, but I
+                haven't been able to track it down.
+            </li>
+        </ul>
+    </div>
+</div>
+
+</body>
+</html>

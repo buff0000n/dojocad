@@ -778,17 +778,17 @@ function saveModelToUrl() {
     }
 
 	if (debugEnabled) {
-		modifyUrlQueryParam("m", buildModelParam(true));
+		modifyUrlAnchor(buildModelParam(true));
 
 	} else {
 	    var modelString = buildCompressedModelParam();
-		modifyUrlQueryParam("mz", modelString);
+		modifyUrlAnchor(modelString);
 		// check for autosave
 		if (settings.autosave) {
 		    // the view is part of the autosave
             var view = buildViewParam();
             // schedule the autosave
-            storage.autosaveItem(`v=${view}&mz=${modelString}`);
+            storage.autosaveItem(`v=${view}#${modelString}`);
 		}
 	}
 }
@@ -816,13 +816,37 @@ function reLoadModelFromUrl(url) {
 }
 
 function loadModelFromUrl(url) {
-	var modelString = LZString.decompressFromEncodedURIComponent(getQueryParam(url, "mz"));
+    // for backwards compatibility, there are a number of ways the model string can be embedded in the URL
+	var modelString = null;
+    // load the model from the URL anchor by default
+	if (getQueryParam(url, "debug")) {
+	    // if the debug parameter is set, load uncompressed
+    	modelString = getAnchor(url);
+	} else {
+	    // otherwise, load compressed
+    	modelString = LZString.decompressFromEncodedURIComponent(getAnchor(url));
+	}
+
+	// otherwise, try the 'mz' parameter
 	if (!modelString) {
-		// backwards compatible with the, uh, like maybe couple of dozen old URLs floating around.
+		// backwards compatible with old URLs floating around.
+		var modelStringCompressed = getQueryParam(url, "mz");
+
+		if (modelStringCompressed) {
+            modelString = LZString.decompressFromEncodedURIComponent(modelStringCompressed);
+            // make things easier and just remove the "mz=" section and replace it with an anchor
+			removeUrlQueryParam("mz");
+			modifyUrlAnchor(modelStringCompressed);
+		}
+    }
+	// otherwise, try the 'm' parameter
+	if (!modelString) {
+		// backwards compatible with the, uh, like maybe couple of dozen super old URLs floating around.
 		modelString = getQueryParam(url, "m");
-		// make things easier and just remove the "m=" section so we can replace it with "mz="
+        // make things easier and just remove the "m=" section and replace it with an anchor
 		if (modelString) {
 			removeUrlQueryParam("m");
+			modifyUrlAnchor(LZString.compressToEncodedURIComponent(modelString));
 		}
 	}
 	if (!modelString) {
@@ -894,8 +918,8 @@ function loadViewFromUrl(url) {
 function buildUrlParams() {
 	// this is called from the Save button
 	return "?v=" + buildViewParam() + (debugEnabled
-		? "&m=" + buildModelParam()
-		: "&mz=" + LZString.compressToEncodedURIComponent(buildModelParam()));
+		? ("&debug=true#" + buildModelParam())
+		: ("#" + LZString.compressToEncodedURIComponent(buildModelParam())));
 }
 
 function centerViewOn(mx, my, scale = null, floor = null) {
