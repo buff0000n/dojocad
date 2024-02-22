@@ -272,7 +272,7 @@ class PrereqRule extends RoomRule {
 	}
 
 	toString() {
-		return i18n.str("rule.room.required", this.prereq_md.name);
+		return i18n.str("rule.room.required", i18n.str(this.prereq_md.name));
 	}
 }
 
@@ -420,8 +420,9 @@ class ResourceCounter extends RoomRule {
 		this.tier = 0;
 		this.maxTier = 4;
 		// no point in building a general map
-		this.builtTiers = [1, 0, 0, 0, 0];
+		this.builtTiers = [1, 0, 0, 0, 0, 0];
 		this.tierNames = [
+		    "tier.empty",
 		    "tier.ghost",
 		    "tier.shadow",
 		    "tier.storm",
@@ -434,13 +435,13 @@ class ResourceCounter extends RoomRule {
         var newTier = this.getTier();
         if (newTier != this.tier) {
             this.tier = newTier;
-            updateTierStat(this.tier, i18n.str(this.tierNames[this.tier]));
+            updateTierStat(this.tier, i18n.str(this.tierNames[this.tier + 1]));
         }
     }
 
 	getTier() {
-	    for (var i = this.maxTier; i >= 0; i--) {
-	        if (this.builtTiers[i] > 0) {
+	    for (var i = this.maxTier; i >= -1; i--) {
+	        if (this.builtTiers[i + 1] > 0) {
 	            return i;
 	        }
 	    }
@@ -449,9 +450,11 @@ class ResourceCounter extends RoomRule {
 
 	roomAdded(room) {
 	    if (room.metadata.tier) {
-	        this.builtTiers[room.metadata.tier]++;
-	        this.updateTier();
+	        this.builtTiers[room.metadata.tier + 1]++;
+	    } else {
+	        this.builtTiers[1]++;
 	    }
+        this.updateTier();
 
 	    var tier = this.getTier();
 
@@ -475,9 +478,11 @@ class ResourceCounter extends RoomRule {
 
 	roomRemoved(room) {
 	    if (room.metadata.tier) {
-	        this.builtTiers[room.metadata.tier]--;
-	        this.updateTier();
+	        this.builtTiers[room.metadata.tier + 1]--;
+	    } else {
+	        this.builtTiers[1]--;
 	    }
+        this.updateTier();
 
 	    var tier = this.getTier();
 

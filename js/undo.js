@@ -201,7 +201,7 @@ function describeRoomList(rooms) {
         return i18n.str("action.no.rooms");
     }
     if (rooms.length == 1) {
-        return rooms[0].metadata.name;
+        return i18n.str(rooms[0].metadata.name);
     }
     return i18n.str("action.multiple.rooms", rooms.length);
 }

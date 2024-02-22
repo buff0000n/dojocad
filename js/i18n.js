@@ -1,7 +1,7 @@
 var i18n = (function() {
     var languageList = [
-        { key: "en-US", name: "English" },
-        { key: "pl-US", name: "Igpay Atinlay" }
+        { key: "en", name: "English" },
+        { key: "pg", name: "Igpay Atinlay" }
     ];
 
     var languageSet = {};
@@ -10,7 +10,7 @@ var i18n = (function() {
         languageSet[entry.key] = entry.key;
     }
 
-    var defaultLanguage = "en-US";
+    var defaultLanguage = "en";
     var defaultBundle = null;
     var currentLanguage = null;
     var bundle = null;
@@ -36,6 +36,10 @@ var i18n = (function() {
         currentLanguage = settings.language;
         if (!currentLanguage) {
             currentLanguage = getLanguage();
+        }
+
+        if (!languageSet[currentLanguage]) {
+            currentLanguage = currentLanguage.substring(0, currentLanguage.indexOf("-"));
         }
 
         if (!languageSet[currentLanguage]) {

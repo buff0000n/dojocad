@@ -180,7 +180,11 @@ function buildMenuRow(icon = null, title = null, element, callback) {
 }
 
 function buildMenuButton(label, callback, icon = null, className = "menu-button", span=1) {
-    return buildMenuRow(icon, label, buildButton(label, callback, className, span), callback);
+    var alttext = label;
+    if (alttext.indexOf("<") > 0) {
+        alttext = alttext.substring(0, alttext.indexOf("<")).trim();
+    }
+    return buildMenuRow(icon, alttext, buildButton(label, callback, className, span), callback);
 }
 
 function buildMenuInfo(label, icon = null, className = "menu-line") {
@@ -389,7 +393,7 @@ function doAddMenu() {
 
     for (var cat in rmd) {
         var catCount = roomCounter.getCategoryCount(cat);
-        var title = catCount > 0 ? i18n.str("menu.label.and.count", cat, catCount) : cat;
+        var title = catCount > 0 ? i18n.str("menu.label.and.count", i18n.str(cat), catCount) : i18n.str(cat);
         var catButtonDiv = buildMenuButton(title, doAddCategoryMenu, icon="icon-room-" + rmd[cat][0].image);
         for (var i = 0; i < catButtonDiv.children.length; i++) {
 	        catButtonDiv.children[i].category = cat;
@@ -423,7 +427,7 @@ function doAddCategoryMenu() {
     var menuDiv = buildMenu();
 
     var catCount = roomCounter.getCategoryCount(catButton.category);
-    var menuTitle = catCount > 0 ? i18n.str("menu.label.and.count", catButton.category, catCount) : catButton.category;
+    var menuTitle = catCount > 0 ? i18n.str("menu.label.and.count", i18n.str(catButton.category), catCount) : i18n.str(catButton.category);
 	menuDiv.appendChild(buildMenuHeaderLine(menuTitle, 6));
 
     for (var r in roomList) {
@@ -453,7 +457,7 @@ function buildAddRoomButton(roomMetadata, rooms = null, errors = null) {
     if (rooms && rooms == copiedRooms) {
         var menuTitle = copiedRooms.length > 1
             ? i18n.str("menu.paste.rooms", copiedRooms.length)
-            : i18n.str("menu.paste.rooms", copiedRooms[0].metadata.name); // todo: metadata
+            : i18n.str("menu.paste.rooms", i18n.str(copiedRooms[0].metadata.name)); // todo: metadata
 
     // as the duplicate option under a single room menu or a multiselect rooms menu
     } else if (rooms) {
@@ -462,7 +466,7 @@ function buildAddRoomButton(roomMetadata, rooms = null, errors = null) {
     // as a new room option under the + menu
     } else {
         var count = roomCounter.getRoomCount(roomMetadata);
-        var menuTitle = count > 0 ? i18n.str("menu.label.and.count", roomMetadata.name, count) : roomMetadata.name;
+        var menuTitle = count > 0 ? i18n.str("menu.label.and.count", i18n.str(roomMetadata.name), count) : i18n.str(roomMetadata.name);
         if (roomMetadata.spawn) {
             menuTitle += ` <img src="icons/icon-spawn-supported.png" srcset="icons2x/icon-spawn-supported.png 2x" title="${i18n.str("room.tag.spawn")}"/>`;
         }
@@ -616,7 +620,7 @@ function doRoomMenu(e, rooms) {
         // if we have a single room then the menu title is the room type plus a count of how many of that
         // type of room are in the dojo
         var roomCount = roomCounter.getRoomCount(room.metadata);
-        tr.appendChild(buildMenuLabel(room.metadata.name, 4, roomCount <= 1 ? null : ("&nbsp;" + i18n.str("room.tag.built", roomCount))));
+        tr.appendChild(buildMenuLabel(i18n.str(room.metadata.name), 4, roomCount <= 1 ? null : ("&nbsp;" + i18n.str("room.tag.built", roomCount))));
     } else {
         // if there are multiple rooms then the lable is a count of the number of selected rooms
         tr.appendChild(buildMenuLabel(i18n.str("room.name.multiple", rooms.length), 4, null));
@@ -714,7 +718,7 @@ function doDoorMenu(e, door) {
     clearMenus();
 
     var menuDiv = buildMenu();
-    menuDiv.appendChild(buildMenuHeaderLine(door.looping ? "Looping Door" : door.crossBranch ? i18n.str("menu.door.cross.branch") : i18n.str("menu.door"),
+    menuDiv.appendChild(buildMenuHeaderLine(door.looping ? i18n.str("menu.door.looping") : door.crossBranch ? i18n.str("menu.door.cross.branch") : i18n.str("menu.door"),
         3, door.looping ? "icon-warn" : door.crossBranch ? "icon-force-cross-branch" : null));
 
     // show the cross branch option if it's not already a cross branch
@@ -831,7 +835,7 @@ function showResources() {
     var menuDiv = buildMenu();
 
     menuDiv.appendChild(buildMenuHeaderLine((metadata
-        ? i18n.str("room.resources.single", metadata.name)
+        ? i18n.str("room.resources.single", i18n.str(metadata.name))
         : i18n.str("room.resources.multiple")
     ), 4, "icon-resources"));
 
@@ -844,7 +848,7 @@ function showResources() {
         for (var resourceName in resources) {
             var tr = document.createElement("tr");
             // todo: i18n resources
-            tr.innerHTML = `<td/><td>${resourceName}</td><td>${resources[resourceName]}</td><td/>`
+            tr.innerHTML = `<td/><td>${i18n.str(resourceName)}</td><td>${resources[resourceName]}</td><td/>`
 
             menuDiv.appendChild(tr);
         }

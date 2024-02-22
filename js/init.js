@@ -10,13 +10,13 @@
         if (help.style.visibility == "visible") {
             help.style.visibility = "hidden";
             help.innerHTML = ``;
-            helpToggle.innerHTML = '<img src="icons/icon-help.png" srcset="icons2x/icon-help.png 2x" title="${i18n.str("main.page.alttext.helpToggle")}"/>';
+            helpToggle.innerHTML = `<img src="icons/icon-help.png" srcset="icons2x/icon-help.png 2x" title="${i18n.str("main.page.alttext.helpToggle")}"/>`;
 
         } else {
             var helpUrl = i18n.getHelpUrl();
             help.innerHTML = `<embed id="helpEmbed" src="${helpUrl}"/>`;
             help.style.visibility = "visible";
-            helpToggle.innerHTML = '<img src="icons/icon-close.png" srcset="icons2x/icon-close.png 2x" title="${i18n.str("main.page.alttext.helpToggle")}"/>';
+            helpToggle.innerHTML = `<img src="icons/icon-close.png" srcset="icons2x/icon-close.png 2x" title="${i18n.str("main.page.alttext.helpToggle")}"/>`;
         }
     }
 

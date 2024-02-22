@@ -908,7 +908,7 @@ class Room {
 			}
 			for (var r = 0; r  < collidedRooms.length; r++) {
 			    // todo: how to i18n errors
-				errors2.push(collidedRooms[r].metadata.name + " collision");
+				errors2.push(i18n.str("rule.collision", i18n.str(collidedRooms[r].metadata.name)));
 			}
 			errors = errors2;
 		}
@@ -922,7 +922,7 @@ class Room {
     getSomeWarnings() {
 		if (this.ruleWarnings.length == 0) return null;
         // todo: how to i18n errors
-		if (this.ruleWarnings.length == 1 && this.ruleWarnings[0] == "Discontinued room") return null;
+		if (this.ruleWarnings.length == 1 && this.ruleWarnings[0] == i18n.str("rule.discontinued")) return null;
 		return this.ruleWarnings;
     }
 
