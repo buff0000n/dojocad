@@ -48,6 +48,8 @@
   "menu.settings.autosave": "Autosaveway",
   "menu.language": "Anguagelay",
   "menu.language.reset": "Esetray otay efaultday",
+  "menu.language.help": "Ifway ouyay'dway ikelay otay elphay ithway anslationtray, erehay'sway ethay ullfay anguagelay undlebay orfay OjoCADday:",
+  "menu.language.help.link": "Anguagelay undlebay inklay",
   "menu.debug.collision.matrix": "Ollisioncay Atrixmay",
   "menu.debug.color.picker": "Olorcay Ickerpay",
   "menu.debug.saturation.picker": "Aturationsay Ickerpay",

@@ -62,8 +62,12 @@ var i18n = (function() {
         }
     }
 
-    function loadBundle(locale, callback) {
-        var file = "js/i18n/" + locale + ".js";
+    function getBundleFile(language) {
+        return "js/i18n/" + language + ".js";
+    }
+
+    function loadBundle(language, callback) {
+        var file = getBundleFile(language);
         Loader.load(file, (text) => {
             var json = JSON.parse(text);
             callback(json);
@@ -222,6 +226,7 @@ var i18n = (function() {
         getHelpUrl: getHelpUrl, // ()
         refreshLanguage: refreshLanguage, // ()
         getLanguageList: getLanguageList, // (): { {"key", "description",
+        getBundleFile: () => { return "https://raw.githubusercontent.com/buff0000n/dojocad/master/" + getBundleFile(currentLanguage); },
         genPig: genPig, // ()
     }
 

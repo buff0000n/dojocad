@@ -1113,6 +1113,7 @@ function initModel() {
         // I smell hax
         starterRoom.placed = true;
 	    addRoom(starterRoom);
+	    setSpawnRoom(starterRoom, false);
     }
 
     redraw();

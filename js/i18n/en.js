@@ -50,6 +50,8 @@
     "menu.settings.autosave": "Autosave",
     "menu.language": "Language",
     "menu.language.reset": "Reset to default",
+    "menu.language.help": "If you'd like to help with translation, here's the full language bundle for DojoCAD:",
+    "menu.language.help.link": "Language bundle link",
     "menu.debug.collision.matrix": "Collision Matrix",
 	"menu.debug.color.picker": "Color Picker",
 	"menu.debug.saturation.picker": "Saturation Picker",

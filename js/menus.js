@@ -263,8 +263,11 @@ function doPopupDialog(title, text, error, ...callbacks) {
     showMenu(menuDiv, button);
 }
 
-function buildMenuDivider(colspan) {
+function buildMenuDivider(colspan, contents=null) {
     var roomButtonDiv = document.createElement("td");
+    if (contents) {
+        roomButtonDiv.innerHTML = contents;
+    }
     roomButtonDiv.className = "menu-divider";
     roomButtonDiv.colSpan = colspan;
     var tr = document.createElement("tr");
@@ -304,7 +307,20 @@ function showMenuAt(menuDiv, left, top) {
 
     menus.push(menuDiv);
 
+    menuDiv.menuLevel = getCurrentMenuLevel();
+    menuDiv.onclick = menuDivClick;
+
 	setTimeout(function() { menuPlacementHack1(menuDiv) }, 100);
+
+   var e = window.event;
+   e.menuHandled = true;
+}
+
+function menuDivClick(e) {
+    if (!e.menuHandled) {
+        // console.log("menudivclick: " + e.currentTarget.menuLevel);
+        clearMenus(e.currentTarget.menuLevel)
+    }
 }
 
 function menuPlacementHack1(menuDiv) {
@@ -359,7 +375,7 @@ function doBurgerMenu() {
 	menuDiv.appendChild(buildMenuHeaderLine("Menu", 3));
 
     // need to explicitly pass in the layout for a new dojo now that we can autoload from autosave
-    menuDiv.appendChild(buildLinkMenuButton(i18n.str("menu.new"), "./?v=2,0,0,0#BYRgNADJ0UA", "icon-new"));
+    menuDiv.appendChild(buildLinkMenuButton(i18n.str("menu.new"), "./?v=2,0,0,0#BYRgNADJ1WcM5A", "icon-new"));
 
     menuDiv.appendChild(buildMenuButton(i18n.str("menu.local.storage"), doStorageMenu, "icon-save"));
 
@@ -1734,6 +1750,14 @@ function doLanguageMenu() {
     menuDiv.appendChild(buildMenuDivider(4));
 
     insertLanguageEntry(null, i18n.str("menu.language.reset"));
+
+    var helpBlurb = buildMenuDivider(4, `
+        <p>${i18n.str("menu.language.help")}</p>
+        <p><a target="_blank" href="${i18n.getBundleFile()}">${i18n.str("menu.language.help.link")}</a></p>
+    `);
+    helpBlurb.children[0].style.width = "0px";
+    helpBlurb.children[0].style.textAlign = "center";
+    menuDiv.appendChild(helpBlurb);
 
     showMenu(menuDiv, button);
 }
