@@ -10,13 +10,13 @@
         if (help.style.visibility == "visible") {
             help.style.visibility = "hidden";
             help.innerHTML = ``;
-            helpToggle.innerHTML = '<img src="icons/icon-help.png" srcset="icons2x/icon-help.png 2x" title="Show Help"/>';
+            helpToggle.innerHTML = '<img src="icons/icon-help.png" srcset="icons2x/icon-help.png 2x" title="${i18n.str("main.page.alttext.helpToggle")}"/>';
 
         } else {
             var helpUrl = i18n.getHelpUrl();
             help.innerHTML = `<embed id="helpEmbed" src="${helpUrl}"/>`;
             help.style.visibility = "visible";
-            helpToggle.innerHTML = '<img src="icons/icon-close.png" srcset="icons2x/icon-close.png 2x" title="Close Help"/>';
+            helpToggle.innerHTML = '<img src="icons/icon-close.png" srcset="icons2x/icon-close.png 2x" title="${i18n.str("main.page.alttext.helpToggle")}"/>';
         }
     }
 
@@ -32,7 +32,7 @@
         if (debugEnabled) {
             debugEnabled = false;
             setModelDebug(false);
-            showDebug("Debug: off");
+            showDebug(i18n.str("misc.debug.off"));
             hideDebug();
             removeUrlQueryParam("debug");
 			saveModelToUrl();
@@ -40,7 +40,7 @@
         } else {
             debugEnabled = true;
             setModelDebug(true);
-            showDebug("Debug: on");
+            showDebug(i18n.str("misc.debug.on"));
             modifyUrlQueryParam("debug", "true");
 			saveModelToUrl();
         }
@@ -118,7 +118,14 @@
         onresize();
 
         // initialize language
-        i18n.init();
+        i18n.init(() => {
+            // init the model and debug after i18n has been initialized
+            initModel();
+
+            if (getQueryParam(window.location.href, "debug") == "true") {
+                toggleDebug();
+            }
+        });
 
         // we have to do this with addEventListener() instead of directly on the <div> so we can tell stupid Chrome that
         // none of these event handlers are passive
@@ -131,56 +138,6 @@
         // javascript is working
         clearErrors();
 
-        // init the model
-        initModel();
-
-
-//        if (window.location.href.indexOf("#") > 0) {
-//            toggleHelp();
-//        }
-
-        if (getQueryParam(window.location.href, "debug") == "true") {
-            toggleDebug();
-        }
-
-        // initHelp();
-
-        // check if there was a preset in the URL
-        var preset = getQueryParam(window.location.href, "preset");
-        if (preset) {
-            // get the link element for the preset
-            var e = document.getElementById("preset-" + preset);
-            // just ignore invalid presets
-            var href = e ? e.presetHref : null;
-            if (href) {
-                reLoadModelFromUrl(href);
-            }
-            // remove the query parameter no matter what else happens
-            removeUrlQueryParam("preset");
-        }
-    }
-//
-//    function initHelp() {
-//        // setup the help section preset links
-//        setupPresetLinks(document.getElementById("preset-list"));
-//    }
-
-    function setupPresetLinks(parent) {
-        for (var i = 0; i < parent.children.length; i++) {
-            var e = parent.children[i];
-            if (e.id && e.id.startsWith("preset-")) {
-                /*
-                // let's do this a cleaner way
-                e.addEventListener("click", directLoadLink);
-                */
-                // move the original href to another attribute
-                e.presetHref = e.href;
-                // override the link to just reference the preset
-                e.href = "?preset=" + (e.id.substring("preset-".length));
-            } else {
-                setupPresetLinks(e);
-            }
-        }
     }
 
     function onresize() {

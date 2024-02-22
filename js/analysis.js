@@ -31,11 +31,11 @@ class AnalysisResult {
     setSpawn(spawn) {
         if (!spawn && settings.structureChecking) {
             // if advanced mode is enabled then make sure there's a global warning displayed
-            addAllWarning(spawnPointMissingRule.globalMessage);
+            addAllWarning(spawnPointMissingRule.globalMessage());
 
         } else {
             // remove the global warning if present
-            removeAllWarning(spawnPointMissingRule.globalMessage);
+            removeAllWarning(spawnPointMissingRule.globalMessage());
         }
         this.spawn = spawn;
         if (spawn) {
@@ -48,11 +48,11 @@ class AnalysisResult {
     setDisconnected(disconnected) {
         if (disconnected) {
             // always make sure there's a global warning displayed
-            addAllWarning(disconnectedRule.globalMessage);
+            addAllWarning(disconnectedRule.globalMessage());
 
         } else {
             // remove the global warning if present
-            removeAllWarning(disconnectedRule.globalMessage);
+            removeAllWarning(disconnectedRule.globalMessage());
         }
         this.disconnected = disconnected;
     }
@@ -60,11 +60,11 @@ class AnalysisResult {
     setLoops(loops) {
         if (loops && settings.structureChecking) {
             // if advanced mode is enabled then make sure there's a global warning displayed
-            addAllWarning(loopedRule.globalMessage);
+            addAllWarning(loopedRule.globalMessage());
 
         } else {
             // remove the global warning if present
-            removeAllWarning(loopedRule.globalMessage);
+            removeAllWarning(loopedRule.globalMessage());
         }
         this.loops = loops;
     }
@@ -74,30 +74,21 @@ class AnalysisResult {
 var analysisResult = new AnalysisResult();
 
 // static rule we can add as a warning to disconected rooms
-class SpawnPointMissingRule {
-    constructor() {
-        this.globalMessage = "Spawn Room Missing";
-    }
+var spawnPointMissingRule = {
+    globalMessage: function() { return i18n.str("analysis.rule.spawn.room.missing"); }
 }
-var spawnPointMissingRule = new SpawnPointMissingRule();
 
 // static rule we can add as a warning to disconected rooms
-class DisconnectedRule {
-    constructor() {
-        this.globalMessage = "Disconnected rooms";
-    }
-    toString() { return "Disconnected room"; }
-}
-var disconnectedRule = new DisconnectedRule();
+var disconnectedRule = {
+    globalMessage: function() { return i18n.str("analysis.rule.disconnected.global"); },
+    toString: function() { return i18n.str("analysis.rule.disconnected"); }
+};
 
 // static rule we can add as a warning to rooms in a loop
-class LoopedRule {
-    constructor() {
-        this.globalMessage = "Loops present";
-    }
-    toString() { return "Room in a loop"; }
+var loopedRule = {
+    globalMessage: function() { return i18n.str("analysis.rule.looped.global"); },
+    toString: function() { return i18n.str("analysis.rule.looped"); }
 }
-var loopedRule = new LoopedRule();
 
 function actuallyUpdateTree() {
     // clear timeout reference
@@ -327,7 +318,7 @@ class AutoCrossBranchCallback extends AbstractTreeTraversalCallback {
             setDoorForceCrossBranch(this.autoCrossBranchDoors[d], true, true);
         }
         // finish the undo operation, we will be able to undo this as a single operation
-        endUndoCombo("Auto-fix structure");
+        endUndoCombo(i18n.str("structure.auto.fix"));
     }
 }
 
@@ -580,7 +571,7 @@ class AbstractTreeTraversal {
     }
 
     traverseUnit() {
-        throw "Not implemented";
+        throw i18n.str("misc.not.implemented");
     }
 
     runPost() {

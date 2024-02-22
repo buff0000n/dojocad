@@ -6,6 +6,7 @@ class Storage {
         // prefix under which we'll save all our stuff in local storage
         this.keyPrefix = "dojocad:save:";
         // autosave constant
+        // can't i18n this, so we have to translate elsewhere
         this.autosaveName = "Autosave";
         // idle delay before doing an autosave
         this.autosaveDelay = 2000;

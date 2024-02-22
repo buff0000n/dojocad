@@ -907,6 +907,7 @@ class Room {
 				}
 			}
 			for (var r = 0; r  < collidedRooms.length; r++) {
+			    // todo: how to i18n errors
 				errors2.push(collidedRooms[r].metadata.name + " collision");
 			}
 			errors = errors2;
@@ -920,6 +921,7 @@ class Room {
 
     getSomeWarnings() {
 		if (this.ruleWarnings.length == 0) return null;
+        // todo: how to i18n errors
 		if (this.ruleWarnings.length == 1 && this.ruleWarnings[0] == "Discontinued room") return null;
 		return this.ruleWarnings;
     }
@@ -2216,7 +2218,8 @@ function combineMetadata(rooms) {
     var combo = {};
     // use an id that won't match any room-specific rules
     combo.id = "multi";
-    combo.name = rooms.length + " Rooms";
+    // todo: is this temporary?
+    combo.name = i18n.str("room.name.multiple", rooms.length);
     // start at zero
     combo.capacity = 0;
     combo.energy = 0;
@@ -2308,6 +2311,7 @@ function getErrorsWarningsAndCombinedMetadata(rooms) {
     // the lazy way: just remove any energy and capacity errors we got from checking individual room types
     // these could be erroneous if the room list includes room types with both positive and negative values for these
     // this error type will be checked by running the combined metadata
+    // todo: how to i18n errors
     removeError(errors, "energy");
     removeError(errors, "capacity");
 
@@ -2443,7 +2447,7 @@ function convertToPngs(db, margin, scale) {
 	var linkDivs = Array();
 	for (var f = db.f1; f <= db.f2; f++) {
 		var div = document.createElement("div");
-		div.innerHTML = `...`;
+		div.innerHTML = i18n.str("misc.ellipsis");
 		linkDivs[f] = div;
 	}
 
@@ -2749,7 +2753,7 @@ function imageLoaded(targets, db, margin, scale, f, index, imageData) {
     context.textAlign = "left";
     context.fillStyle = "#8080FF";
     // title
-    context.fillText("Floor " + floorName, 8*scale, 24*scale);
+    context.fillText(i18n.str("label.floor", floorName), 8*scale, 24*scale);
 
 	var link = convertToPngLink(canvas, "dojo-floor-" + floorName);
     link.onclick = doPngClick;

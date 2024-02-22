@@ -1,7 +1,7 @@
 var i18n = (function() {
     var languageList = [
         { key: "en-US", name: "English" },
-        { key: "pl-US", name: "Pig Latin" }
+        { key: "pl-US", name: "Igpay Atinlay" }
     ];
 
     var languageSet = {};
@@ -15,10 +15,10 @@ var i18n = (function() {
     var currentLanguage = null;
     var bundle = null;
 
-    function init() {
+    function init(callback = null) {
         loadBundle(defaultLanguage, (json) => {
             defaultBundle = json;
-            refreshLanguage();
+            refreshLanguage(callback);
         });
     }
 
@@ -32,7 +32,7 @@ var i18n = (function() {
             || defaultLanguage;
     }
 
-    function refreshLanguage() {
+    function refreshLanguage(callback = null) {
         currentLanguage = settings.language;
         if (!currentLanguage) {
             currentLanguage = getLanguage();
@@ -45,12 +45,14 @@ var i18n = (function() {
         if (currentLanguage == defaultLanguage) {
             bundle = defaultBundle;
             initUIStrings();
+            if (callback) callback();
 
         } else {
             bundle = null;
             loadBundle(currentLanguage, (json) => {
                 bundle = json;
                 initUIStrings();
+                if (callback) callback();
             });
         }
     }
@@ -85,6 +87,11 @@ var i18n = (function() {
             var container = document.getElementById(key);
             setTitle(container, alttext);
         }
+        // uh
+        if (modelInitialized) {
+            doSetFloor(0);
+            reLoadModelFromUrl(getHref());
+        }
     }
 
     function str(name, ...subs) {
@@ -97,11 +104,13 @@ var i18n = (function() {
             string = defaultBundle[name];
         }
         if (!string) {
-            return "???";
+            console.log("Unknown i18n key: " + name);
+            return name;
         }
         if (subs.length == 0) {
             return string;
         }
+        return sub(string, subs);
     }
 
     function sub(string, subs) {
@@ -203,7 +212,7 @@ var i18n = (function() {
     }
 
     return {
-        init: init, // ()
+        init: init, // (callback)
         str: str, // (name, ...subs)
         getHelpUrl: getHelpUrl, // ()
         refreshLanguage: refreshLanguage, // ()

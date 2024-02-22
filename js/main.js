@@ -2,6 +2,8 @@
 // view state
 //==============================================================
 
+var modelInitialized = false;
+
 // Coordinate convention:
 //  - mx, my, mv = measured in in-game meters
 //  - px, py, pv = measured in pixels
@@ -528,7 +530,7 @@ function doResetAllStructure() {
         }
 	}
 	// finishe the combo operation, we'll be able to undo all of this with a single operation
-	endUndoCombo("Reset structure");
+	endUndoCombo(i18n.str("structure.reset.all"));
 
     saveModelToUrl();
     treeUpdated();
@@ -801,6 +803,10 @@ function reLoadModelFromUrl(url) {
     // HACK, just select and delete all rooms
     selectAllRoomsLikeReallyAllOfThem();
     deleteSelectedRooms();
+
+    // clear errors/warnings, just in case some of them are lingering
+    // because we changed the language
+    clearNonCollisionWarnings();
 
     // load the model and view directly from the href
     loadModelFromUrl(url);
@@ -1110,4 +1116,5 @@ function initModel() {
     }
 
     redraw();
+    modelInitialized = true;
 }

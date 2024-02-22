@@ -6,7 +6,7 @@
 var maxVisibleFloors = 7;
 
 function getFloorName(floor) {
-	return floor < 0 ? ("B" + (-floor)) : (floor + 1)
+	return floor < 0 ? i18n.str("floor.name.basement", -floor) : i18n.str("floor.name", (floor + 1));
 }
 
 class FloorEntry {
