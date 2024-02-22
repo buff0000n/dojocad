@@ -258,5 +258,7 @@
     "category.interactive": "互动",
     "category.misc": "杂项",
     "category.utility": "实用程序",
-    "category.discontinued": "已停止"
+    "category.discontinued": "已停止",
+
+    "help.file": "help-zh.html"
 }
