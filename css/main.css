@@ -153,6 +153,11 @@ html::-webkit-scrollbar, body::-webkit-scrollbar {
     z-index: 10500;
 }
 
+#helpEmbed {
+    width: 70ex;
+    height: 100%;
+}
+
 /* absolutely position the help show/hide button in the upper right corner */
 #helpToggle {
     position: absolute;

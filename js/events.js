@@ -903,7 +903,7 @@ function setMultiselectEnabled(enabled) {
         // update the button
         var icon = multifloorEnabled ? "icon-multiselect-floors" : "icon-multiselect";
         button.className = "button";
-        button.innerHTML = `<img src="icons/${icon}.png" srcset="icons2x/${icon}.png 2x" alt="Disable Multiselect Mode"/>`;
+        button.innerHTML = `<img src="icons/${icon}.png" srcset="icons2x/${icon}.png 2x" alt="${i18n.str("main.page.alttext.multiselect.disable")}"/>`;
 
     // if we're ending multiselect
     } else {
@@ -912,7 +912,7 @@ function setMultiselectEnabled(enabled) {
         // update the button
         button.className = "button-disabled";
         var icon = "icon-multiselect";
-        button.innerHTML = `<img src="icons/${icon}.png" srcset="icons2x/${icon}.png 2x" alt="Enable Multiselect Mode"/>`;
+        button.innerHTML = `<img src="icons/${icon}.png" srcset="icons2x/${icon}.png 2x" alt="${i18n.str("main.page.alttext.multiselect.enable")}"/>`;
 
         // check if we actually had a multiselect box going
 		if (isMultiselecting()) {

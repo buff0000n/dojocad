@@ -15,6 +15,7 @@ class Settings {
         this.localStoreSort = "name";
         this.localStoreSortAsc = true;
         this.rulesEnabled = true;
+        this.language = null;
 
         // load from local storage
         this.load();
@@ -55,6 +56,9 @@ class Settings {
             if (props.rulesEnabled != null) {
                 this.rulesEnabled = props.rulesEnabled;
             }
+            if (props.language != null) {
+                this.language = props.language;
+            }
         }
     }
 
@@ -69,7 +73,8 @@ class Settings {
             "structureChecking": this.structureChecking,
             "localStoreSort": this.localStoreSort,
             "localStoreSortAsc": this.localStoreSortAsc,
-            "rulesEnabled": this.rulesEnabled
+            "rulesEnabled": this.rulesEnabled,
+            "language": this.language,
         }
         // format as JSON and save to local storage
         window.localStorage.setItem(this.key, JSON.stringify(props));

@@ -110,10 +110,10 @@ function buildBlank(colSpan = 1) {
 	return td;
 }
 
-function buildIconCell(icon) {
+function buildIconCell(icon, alttext) {
     var iconTd = document.createElement("td");
 	if (icon) {
-		iconTd.innerHTML = `<img src="icons/${icon}.png" srcset="icons2x/${icon}.png 2x"/>`;
+		iconTd.innerHTML = `<img src="icons/${icon}.png" srcset="icons2x/${icon}.png 2x" title="${alttext}"/>`;
 	}
 	// class="imgButton"
 	return iconTd;
@@ -121,7 +121,7 @@ function buildIconCell(icon) {
 
 function buildMenuHeaderLine(title, colSpan, icon = null, className = "menu-button") {
 	var tr = document.createElement("tr");
-    tr.appendChild(buildIconCell(icon));
+    tr.appendChild(buildIconCell(icon, title));
 	tr.appendChild(buildMenuLabel(title, colSpan - 2));
 	tr.appendChild(buildCloseMenuButton());
     return tr;
@@ -138,17 +138,17 @@ function buildCloseMenuButton() {
     // doesn't look dumb
     buttonDiv.style = "text-align: right";
 //    buttonDiv.className = "field";
-    buttonDiv.innerHTML = `<img class="imgButton closeMenuButton" src="icons/icon-close.png" srcset="icons2x/icon-close.png 2x" title="Close Menu"/>`;
+    buttonDiv.innerHTML = `<img class="imgButton closeMenuButton" src="icons/icon-close.png" srcset="icons2x/icon-close.png 2x" title="${i18n.str("menu.close")}"}"/>`;
     buttonDiv.onclick = doCloseMenu;
     buttonDiv.menuLevel = getCurrentMenuLevel();
     return buttonDiv;
 }
 
-function buildMenuButtonIcon(icon=null, callback=null) {
+function buildMenuButtonIcon(icon=null, alttext=null, callback=null) {
     var iconTd = document.createElement("td");
 	if (icon) {
         iconTd.className = "imgField";
-		iconTd.innerHTML = `<img class="${callback ? "imgButton" : ""}" " src="icons/${icon}.png" srcset="icons2x/${icon}.png 2x"/>`;
+		iconTd.innerHTML = `<img class="${callback ? "imgButton" : ""}" " src="icons/${icon}.png" srcset="icons2x/${icon}.png 2x" title="${alttext == null ? "" : alttext}"/>`;
         iconTd.onclick = callback;
         iconTd.menuLevel = getCurrentMenuLevel() + 1;
 	}
@@ -169,10 +169,10 @@ function configureButton(buttonDiv, label, callback, className) {
     return buttonDiv;
 }
 
-function buildMenuRow(icon = null, element, callback) {
+function buildMenuRow(icon = null, title = null, element, callback) {
     var tr = document.createElement("tr");
 
-    tr.appendChild(buildMenuButtonIcon(icon, callback));
+    tr.appendChild(buildMenuButtonIcon(icon, title, callback));
 
     tr.appendChild(element);
 
@@ -180,14 +180,20 @@ function buildMenuRow(icon = null, element, callback) {
 }
 
 function buildMenuButton(label, callback, icon = null, className = "menu-button", span=1) {
-    return buildMenuRow(icon, buildButton(label, callback, className, span), callback);
+    // ugh, extract just the leading text part of the label to use
+    // as the icon's alt-text
+    var alttext = label;
+    if (alttext.indexOf("<") > 0) {
+        alttext = alttext.substring(0, alttext.indexOf("<")).trim();
+    }
+    return buildMenuRow(icon, alttext, buildButton(label, callback, className, span), callback);
 }
 
 function buildMenuInfo(label, icon = null, className = "menu-line") {
     var labelDiv = document.createElement("td");
     labelDiv.className = className;
     labelDiv.innerHTML = label;
-    return buildMenuRow(icon, labelDiv);
+    return buildMenuRow(icon, label, labelDiv);
 }
 
 function buildLinkMenuButton(label, link, icon = null, error = false) {
@@ -196,7 +202,7 @@ function buildLinkMenuButton(label, link, icon = null, error = false) {
 	if (icon) {
 	    var iconTd = document.createElement("td");
         iconTd.className = "imgField";
-		iconTd.innerHTML = `<a class="imgButton" href="${link}"><img src="icons/${icon}.png" srcset="icons2x/${icon}.png 2x"/></a>`;
+		iconTd.innerHTML = `<a class="imgButton" href="${link}"><img src="icons/${icon}.png" srcset="icons2x/${icon}.png 2x" title="${label}"/></a>`;
         iconTd.menuLevel = getCurrentMenuLevel() + 1;
 	    tr.appendChild(iconTd);
 	}
@@ -214,9 +220,9 @@ function buildErrorPopup(errors, warns, span = true) {
     var buttonDiv = document.createElement(span ? "span" : "td");
     buttonDiv.className = "menu-button-clear";
     if (errors && errors.length > 0) {
-	    buttonDiv.innerHTML = `<img src="icons/icon-error.png" srcset="icons2x/icon-error.png 2x" title="Error"/>`
+	    buttonDiv.innerHTML = `<img src="icons/icon-error.png" srcset="icons2x/icon-error.png 2x" title="${i18n.str("menu.error")}"/>`
     } else {
-	    buttonDiv.innerHTML = `<img src="icons/icon-warn.png" srcset="icons2x/icon-warn.png 2x" title="Warning"/>`
+	    buttonDiv.innerHTML = `<img src="icons/icon-warn.png" srcset="icons2x/icon-warn.png 2x" title="${i18n.str("menu.warning")}"/>`
     }
     buttonDiv.roomMetadata = roomMetadata;
     buttonDiv.errors = errors;
@@ -259,8 +265,12 @@ function doPopupDialog(title, text, error, ...callbacks) {
     showMenu(menuDiv, button);
 }
 
-function buildMenuDivider(colspan) {
+function buildMenuDivider(colspan, contents=null) {
     var roomButtonDiv = document.createElement("td");
+    // optional contents because of reasons
+    if (contents) {
+        roomButtonDiv.innerHTML = contents;
+    }
     roomButtonDiv.className = "menu-divider";
     roomButtonDiv.colSpan = colspan;
     var tr = document.createElement("tr");
@@ -300,7 +310,27 @@ function showMenuAt(menuDiv, left, top) {
 
     menus.push(menuDiv);
 
+    // save a menu level property to the top-level element
+    menuDiv.menuLevel = getCurrentMenuLevel();
+    // set a click  handled on the top-level element
+    menuDiv.onclick = menuDivClick;
+
 	setTimeout(function() { menuPlacementHack1(menuDiv) }, 100);
+
+   // HACK: get the last event
+   var e = window.event;
+   // make sure this event doesn't trigger the parent menu's
+   // top-level click handler and close the menu we just opened
+   e.menuHandled = true;
+}
+
+function menuDivClick(e) {
+    // short circuit if the event caused a nested menu to open
+    if (!e.menuHandled) {
+        // otherwise, close any nested menus up to the level of the
+        // menu element that was clicked
+        clearMenus(e.currentTarget.menuLevel)
+    }
 }
 
 function menuPlacementHack1(menuDiv) {
@@ -355,23 +385,25 @@ function doBurgerMenu() {
 	menuDiv.appendChild(buildMenuHeaderLine("Menu", 3));
 
     // need to explicitly pass in the layout for a new dojo now that we can autoload from autosave
-    menuDiv.appendChild(buildLinkMenuButton("New", "index.html?v=2,0,0,0&mz=BYRgNADJ0UA", "icon-new"));
+    menuDiv.appendChild(buildLinkMenuButton(i18n.str("menu.new"), "./?v=2,0,0,0#BYRgNADJ1WcM5A", "icon-new"));
 
-    menuDiv.appendChild(buildMenuButton("Local Storage", doStorageMenu, "icon-save"));
+    menuDiv.appendChild(buildMenuButton(i18n.str("menu.local.storage"), doStorageMenu, "icon-save"));
 
-    menuDiv.appendChild(buildMenuButton("Share", doShare, "icon-link"));
+    menuDiv.appendChild(buildMenuButton(i18n.str("menu.share"), doShare, "icon-link"));
 
-    menuDiv.appendChild(buildMenuButton("PNG", doPngMenu, "icon-png"));
+    menuDiv.appendChild(buildMenuButton(i18n.str("menu.png"), doPngMenu, "icon-png"));
 
-    menuDiv.appendChild(buildMenuButton("Structure", doStructureMenu, "icon-structure"));
+    menuDiv.appendChild(buildMenuButton(i18n.str("menu.structure"), doStructureMenu, "icon-structure"));
 
-    menuDiv.appendChild(buildMenuButton("Settings", doSettingsMenu, "icon-settings"));
+    menuDiv.appendChild(buildMenuButton(i18n.str("menu.settings"), doSettingsMenu, "icon-settings"));
+
+    menuDiv.appendChild(buildMenuButton(i18n.str("menu.language"), doLanguageMenu, "icon-language"));
 
     if (debugEnabled) {
-	    menuDiv.appendChild(buildMenuButton("Collision Matrix", doCollisionMatrix));
-	    menuDiv.appendChild(buildMenuButton("Color Picker", doGenerateColorPicker));
-	    menuDiv.appendChild(buildMenuButton("Saturation Picker", doGenerateSatPicker));
-	    menuDiv.appendChild(buildMenuButton("Luminance Picker", doGenerateLumPicker));
+	    menuDiv.appendChild(buildMenuButton(i18n.str("menu.debug.collision.matrix"), doCollisionMatrix));
+	    menuDiv.appendChild(buildMenuButton(i18n.str("menu.debug.color.picker"), doGenerateColorPicker));
+	    menuDiv.appendChild(buildMenuButton(i18n.str("menu.debug.saturation.picker"), doGenerateSatPicker));
+	    menuDiv.appendChild(buildMenuButton(i18n.str("menu.debug.luminance.picker"), doGenerateLumPicker));
     }
 
     showMenu(menuDiv, element);
@@ -383,11 +415,11 @@ function doAddMenu() {
     var rmd = getRoomMenuData();
     var menuDiv = buildMenu();
 
-	menuDiv.appendChild(buildMenuHeaderLine("Categories", 6));
+	menuDiv.appendChild(buildMenuHeaderLine(i18n.str("menu.categories"), 6));
 
     for (var cat in rmd) {
         var catCount = roomCounter.getCategoryCount(cat);
-        var title = cat + (catCount > 0 ? (" (" + catCount + ")") : "");
+        var title = catCount > 0 ? i18n.str("menu.label.and.count", i18n.str(cat), catCount) : i18n.str(cat);
         var catButtonDiv = buildMenuButton(title, doAddCategoryMenu, icon="icon-room-" + rmd[cat][0].image);
         for (var i = 0; i < catButtonDiv.children.length; i++) {
 	        catButtonDiv.children[i].category = cat;
@@ -421,7 +453,7 @@ function doAddCategoryMenu() {
     var menuDiv = buildMenu();
 
     var catCount = roomCounter.getCategoryCount(catButton.category);
-    var menuTitle = catButton.category + (catCount > 0 ? (" (" + catCount + ")") : "");
+    var menuTitle = catCount > 0 ? i18n.str("menu.label.and.count", i18n.str(catButton.category), catCount) : i18n.str(catButton.category);
 	menuDiv.appendChild(buildMenuHeaderLine(menuTitle, 6));
 
     for (var r in roomList) {
@@ -449,21 +481,23 @@ function buildAddRoomButton(roomMetadata, rooms = null, errors = null) {
 
     // as the paste option under the + menu
     if (rooms && rooms == copiedRooms) {
-        var menuTitle = "Paste " + (copiedRooms.length > 1 ? (copiedRooms.length + " Rooms") : copiedRooms[0].metadata.name);
+        var menuTitle = copiedRooms.length > 1
+            ? i18n.str("menu.paste.rooms", copiedRooms.length)
+            : i18n.str("menu.paste.rooms", i18n.str(copiedRooms[0].metadata.name)); // todo: metadata
 
     // as the duplicate option under a single room menu or a multiselect rooms menu
     } else if (rooms) {
-        var menuTitle = "Duplicate";
+        var menuTitle = i18n.str("menu.duplicate");
 
     // as a new room option under the + menu
     } else {
         var count = roomCounter.getRoomCount(roomMetadata);
-        var menuTitle = roomMetadata.name + (count > 0 ? (" (" + count + ")") : "");
+        var menuTitle = count > 0 ? i18n.str("menu.label.and.count", i18n.str(roomMetadata.name), count) : i18n.str(roomMetadata.name);
         if (roomMetadata.spawn) {
-            menuTitle += ` <img src="icons/icon-spawn-supported.png" srcset="icons2x/icon-spawn-supported.png 2x" title="Can be used as a Spawn Room"/>`;
+            menuTitle += ` <img src="icons/icon-spawn-supported.png" srcset="icons2x/icon-spawn-supported.png 2x" title="${i18n.str("room.tag.spawn")}"/>`;
         }
         if (count == 0 && roomMetadata.xp) {
-            menuTitle += ` <img src="icons/icon-xp.png" srcset="icons2x/icon-xp.png 2x" title="Rooms providing Clan XP"/>`;
+            menuTitle += ` <img src="icons/icon-xp.png" srcset="icons2x/icon-xp.png 2x" title="${i18n.str("room.tag.xp")}"/>`;
         }
     }
 
@@ -512,7 +546,7 @@ function buildAddRoomButton(roomMetadata, rooms = null, errors = null) {
 	var tdenergy = document.createElement("td")
     if (roomMetadata.energy != 0) {
         tdenergy.className = hasError(errors, "energy") ? "field-error" : "field";
-        tdenergy.innerHTML = `${roomMetadata.energy}<img src="icons/icon-energy.png" srcset="icons2x/icon-energy.png 2x" title="Energy"/>`;
+        tdenergy.innerHTML = `${roomMetadata.energy}<img src="icons/icon-energy.png" srcset="icons2x/icon-energy.png 2x" title="${i18n.str("main.page.alttext.energyStatField")}"/>`;
     }
     roomButtonDiv.appendChild(tdenergy);
 
@@ -520,7 +554,7 @@ function buildAddRoomButton(roomMetadata, rooms = null, errors = null) {
 	var tdcapacity = document.createElement("td")
     if (roomMetadata.capacity != 0) {
         tdcapacity.className = hasError(errors, "capacity") ? "field-error" : "field";
-        tdcapacity.innerHTML = `${roomMetadata.capacity}<img src="icons/icon-capacity.png" srcset="icons2x/icon-capacity.png 2x" title="Capacity"/>`;
+        tdcapacity.innerHTML = `${roomMetadata.capacity}<img src="icons/icon-capacity.png" srcset="icons2x/icon-capacity.png 2x" title="${i18n.str("main.page.alttext.capacityStatField")}"/>`;
     }
     roomButtonDiv.appendChild(tdcapacity);
 
@@ -528,7 +562,7 @@ function buildAddRoomButton(roomMetadata, rooms = null, errors = null) {
 	var tdresources = document.createElement("td")
 	if (roomMetadata.resources.length > 0) {
         tdresources.className = "field clickable";
-        tdresources.innerHTML = `<img onclick="showResources()" src="icons/icon-resources.png" srcset="icons2x/icon-resources.png 2x" title="Resources"/>`;
+        tdresources.innerHTML = `<img onclick="showResources()" src="icons/icon-resources.png" srcset="icons2x/icon-resources.png 2x" title="${i18n.str("main.page.alttext.showResoucesStat")}"/>`;
         var resourcesButton = tdresources.firstElementChild
         resourcesButton.menuLevel = getCurrentMenuLevel() + 1;
         resourcesButton.metadata = roomMetadata;
@@ -612,10 +646,10 @@ function doRoomMenu(e, rooms) {
         // if we have a single room then the menu title is the room type plus a count of how many of that
         // type of room are in the dojo
         var roomCount = roomCounter.getRoomCount(room.metadata);
-        tr.appendChild(buildMenuLabel(room.metadata.name, 4, roomCount <= 1 ? null : `&nbsp;(${roomCount} built)`));
+        tr.appendChild(buildMenuLabel(i18n.str(room.metadata.name), 4, roomCount <= 1 ? null : ("&nbsp;" + i18n.str("room.tag.built", roomCount))));
     } else {
         // if there are multiple rooms then the lable is a count of the number of selected rooms
-        tr.appendChild(buildMenuLabel(`${rooms.length} rooms`, 4, null));
+        tr.appendChild(buildMenuLabel(i18n.str("room.name.multiple", rooms.length), 4, null));
     }
     tr.appendChild(buildCloseMenuButton());
 
@@ -624,21 +658,21 @@ function doRoomMenu(e, rooms) {
     var buttonSpan = 2;
     var buttonClass = "menu-button";
 
-    menuDiv.appendChild(buildMenuButton("Rotate", rotateSelectedRoom, "icon-rotate-cw", buttonClass, buttonSpan));
+    menuDiv.appendChild(buildMenuButton(i18n.str("menu.rotate"), rotateSelectedRoom, "icon-rotate-cw", buttonClass, buttonSpan));
 
     if (room && room.multifloor) {
         // change floor options is only available when a single room is selected
-        menuDiv.appendChild(buildMenuButton("Change Floor", rotateFloorSelectedRoom, "icon-change-floor", buttonClass, buttonSpan));
+        menuDiv.appendChild(buildMenuButton(i18n.str("menu.change.floor"), rotateFloorSelectedRoom, "icon-change-floor", buttonClass, buttonSpan));
     }
 
     // duplicate option
     menuDiv.appendChild(buildAddRoomButton(room ? room.metadata : null, rooms));
 
     // copy option
-    menuDiv.appendChild(buildMenuButton("Copy", copySelectedRooms, "icon-copy", buttonClass, buttonSpan));
+    menuDiv.appendChild(buildMenuButton(i18n.str("menu.copy"), copySelectedRooms, "icon-copy", buttonClass, buttonSpan));
 
     // cut option
-    menuDiv.appendChild(buildMenuButton("Cut", cutSelectedRooms, "icon-cut", buttonClass, buttonSpan));
+    menuDiv.appendChild(buildMenuButton(i18n.str("menu.cut"), cutSelectedRooms, "icon-cut", buttonClass, buttonSpan));
 
     // if a single room is selected, structure mode is enabled, and there aren't any loop warnings
     // then there are multiple select options
@@ -647,39 +681,39 @@ function doRoomMenu(e, rooms) {
         var selectDiv = document.createElement("td");
         // select all
         selectDiv.appendChild(configureButton(
-            document.createElement("span"), "Select All", selectAllRoomsOfSelectedTypes, buttonClass));
+            document.createElement("span"), i18n.str("menu.select.all"), selectAllRoomsOfSelectedTypes, buttonClass));
             // select branch
         selectDiv.appendChild(configureButton(
-            document.createElement("span"), `<img class="imgButton" src="icons/icon-select-branch.png" srcset="icons2x/icon-select-branch.png 2x"/>&nbsp;Branch`,
+            document.createElement("span"), `<img class="imgButton" src="icons/icon-select-branch.png" srcset="icons2x/icon-select-branch.png 2x" title="${i18n.str("menu.select.branch")}"/>&nbsp;${i18n.str("menu.select.branch")}`,
             selectBranch, buttonClass));
         // select root
         selectDiv.appendChild(configureButton(
-            document.createElement("span"), `<img class="imgButton" src="icons/icon-select-root.png" srcset="icons2x/icon-select-root.png 2x"/>&nbsp;Root`,
+            document.createElement("span"), `<img class="imgButton" src="icons/icon-select-root.png" srcset="icons2x/icon-select-root.png 2x" title="${i18n.str("menu.select.root")}"/>&nbsp;${i18n.str("menu.select.root")}`,
             selectRoot, buttonClass, buttonSpan));
 
         selectDiv.colSpan = 4;
 
-        menuDiv.appendChild(buildMenuRow("icon-multiselect", selectDiv, selectAllRoomsOfSelectedTypes));
+        menuDiv.appendChild(buildMenuRow("icon-multiselect", i18n.str("menu.select"), selectDiv, selectAllRoomsOfSelectedTypes));
 
     } else {
         // basic select all option
-        menuDiv.appendChild(buildMenuButton("Select All", selectAllRoomsOfSelectedTypes, "icon-multiselect", buttonClass, buttonSpan));
+        menuDiv.appendChild(buildMenuButton(i18n.str("menu.select.all"), selectAllRoomsOfSelectedTypes, "icon-multiselect", buttonClass, buttonSpan));
     }
 
     if (room) {
         if (room.isSpawnRoom()) {
-            menuDiv.appendChild(buildMenuButton("Remove spawn room", unsetSelectedRoomSpawn, "icon-spawn-delete", buttonClass, buttonSpan));
+            menuDiv.appendChild(buildMenuButton(i18n.str("menu.remove.spawn.room"), unsetSelectedRoomSpawn, "icon-spawn-delete", buttonClass, buttonSpan));
 
         } else {
             if (room.metadata.spawn) {
-                menuDiv.appendChild(buildMenuButton("Set spawn room", setSelectedRoomSpawn, "icon-spawn", buttonClass, buttonSpan));
+                menuDiv.appendChild(buildMenuButton(i18n.str("menu.set.spawn.room"), setSelectedRoomSpawn, "icon-spawn", buttonClass, buttonSpan));
             }
         }
         if (room.isArrivalRoom()) {
-            menuDiv.appendChild(buildMenuButton("Remove Arrival Gate", unsetSelectedRoomArrival, "icon-arrival-delete", buttonClass, buttonSpan));
+            menuDiv.appendChild(buildMenuButton(i18n.str("menu.remove.arrival.gate"), unsetSelectedRoomArrival, "icon-arrival-delete", buttonClass, buttonSpan));
 
         } else {
-            menuDiv.appendChild(buildMenuButton("Set Arrival Gate", setSelectedRoomArrival, "icon-arrival", buttonClass, buttonSpan));
+            menuDiv.appendChild(buildMenuButton(i18n.str("menu.set.arrival.gate"), setSelectedRoomArrival, "icon-arrival", buttonClass, buttonSpan));
         }
     }
 
@@ -687,18 +721,18 @@ function doRoomMenu(e, rooms) {
     menuDiv.appendChild(buildMenuDivider(6));
 
     // color option
-    menuDiv.appendChild(buildMenuButton("Color", doColorMenu, "icon-color", buttonClass, buttonSpan));
+    menuDiv.appendChild(buildMenuButton(i18n.str("menu.color"), doColorMenu, "icon-color", buttonClass, buttonSpan));
 
     if (room && settings.showLabels) {
         // label option is only available when a single room is selected, and when labels are being show
-        menuDiv.appendChild(buildMenuButton("Label", doLabelMenu, "icon-room-label", buttonClass, buttonSpan));
+        menuDiv.appendChild(buildMenuButton(i18n.str("menu.label"), doLabelMenu, "icon-room-label", buttonClass, buttonSpan));
     }
 
     // divider
     menuDiv.appendChild(buildMenuDivider(6));
 
     // delete option
-    menuDiv.appendChild(buildMenuButton("Delete", deleteSelectedRooms, "icon-delete", buttonClass, buttonSpan));
+    menuDiv.appendChild(buildMenuButton(i18n.str("menu.delete"), deleteSelectedRooms, "icon-delete", buttonClass, buttonSpan));
 
     showMenuAt(menuDiv, e.clientX, e.clientY);
 }
@@ -710,16 +744,16 @@ function doDoorMenu(e, door) {
     clearMenus();
 
     var menuDiv = buildMenu();
-    menuDiv.appendChild(buildMenuHeaderLine(door.looping ? "Looping Door" : door.crossBranch ? "Cross Branch Door" : "Door",
+    menuDiv.appendChild(buildMenuHeaderLine(door.looping ? i18n.str("menu.door.looping") : door.crossBranch ? i18n.str("menu.door.cross.branch") : i18n.str("menu.door"),
         3, door.looping ? "icon-warn" : door.crossBranch ? "icon-force-cross-branch" : null));
 
     // show the cross branch option if it's not already a cross branch
     if (!door.forceCrossBranch) {
-        menuDiv.appendChild(buildMenuButton("Cross Branch", () => { setDoorForceCrossBranch(door, true)}, "icon-force-cross-branch"));
+        menuDiv.appendChild(buildMenuButton(i18n.str("menu.cross.branch"), () => { setDoorForceCrossBranch(door, true)}, "icon-force-cross-branch"));
     }
     // show the reset option if it's already a cross branch
     if (door.forceCrossBranch) {
-        menuDiv.appendChild(buildMenuButton("Reset", () => { resetDoor(door)}, "icon-force-cross-branch-reset"));
+        menuDiv.appendChild(buildMenuButton(i18n.str("menu.reset"), () => { resetDoor(door)}, "icon-force-cross-branch-reset"));
     }
 
     showMenuAt(menuDiv, e.clientX, e.clientY);
@@ -734,7 +768,7 @@ function doShowErrors() {
 
     if (errorList && errorList.length > 0) {
 	    var menuDiv = buildMenu("menu-table-error");
-		menuDiv.appendChild(buildMenuHeaderLine("Errors", 3));
+		menuDiv.appendChild(buildMenuHeaderLine(i18n.str("menu.errors"), 3));
 	    for (var e = 0; e < errorList.length; e++) {
 		    var error = errorList[e].toString();
 		    var errorButton = buildMenuButton(error, null, "icon-error", "menu-button-error");
@@ -743,7 +777,7 @@ function doShowErrors() {
 
     } else if (warnList && warnList.length > 0) {
 	    var menuDiv = buildMenu("menu-table-warn");
-		menuDiv.appendChild(buildMenuHeaderLine("Warnings", 3));
+		menuDiv.appendChild(buildMenuHeaderLine(i18n.str("menu.warnings"), 3));
 	    for (var e = 0; e < warnList.length; e++) {
 		    var error = warnList[e].toString();
 		    var errorButton = buildMenuButton(error, null, "icon-warn", "menu-button-warn");
@@ -752,7 +786,7 @@ function doShowErrors() {
 
     } else {
 	    var menuDiv = buildMenu();
-		menuDiv.appendChild(buildMenuHeaderLine("No errors found", 3, "icon-ok"));
+		menuDiv.appendChild(buildMenuHeaderLine(i18n.str("menu.no.errors"), 3, "icon-ok"));
     }
 
     showMenu(menuDiv, errButton);
@@ -773,7 +807,7 @@ function doShare() {
 	var saveButton = getMenuTarget();
 
     var menuDiv = buildMenu();
-	menuDiv.appendChild(buildMenuHeaderLine("Share URL", 4, "icon-link"));
+	menuDiv.appendChild(buildMenuHeaderLine(i18n.str("menu.share.url"), 4, "icon-link"));
 
 	var url = buildQueryUrl(buildUrlParams());
 
@@ -789,7 +823,7 @@ function doShare() {
 	input.onblur = clearMenus;
     input.value = url;
 
-    var tr = buildMenuButton("Copy", doUrlCopy);
+    var tr = buildMenuButton(i18n.str("menu.copy"), doUrlCopy);
 
     var td = document.createElement("td");
     td.appendChild(input);
@@ -826,17 +860,20 @@ function showResources() {
 
     var menuDiv = buildMenu();
 
-    menuDiv.appendChild(buildMenuHeaderLine((metadata ? ("Resources for " + metadata.name) : "Total Resources"), 4, "icon-resources"));
+    menuDiv.appendChild(buildMenuHeaderLine((metadata
+        ? i18n.str("room.resources.single", i18n.str(metadata.name))
+        : i18n.str("room.resources.multiple")
+    ), 4, "icon-resources"));
 
     if (Object.keys(resources).length == 0) {
         var tr = document.createElement("tr");
-        tr.innerHTML = `<td/><td>(not applicable)</td><td/><td/>`
+        tr.innerHTML = `<td/><td>${i18n.str("room.resources.not.applicable")}</td><td/><td/>`
         menuDiv.appendChild(tr);
 
     } else {
         for (var resourceName in resources) {
             var tr = document.createElement("tr");
-            tr.innerHTML = `<td/><td>${resourceName}</td><td>${resources[resourceName]}</td><td/>`
+            tr.innerHTML = `<td/><td>${i18n.str(resourceName)}</td><td>${resources[resourceName]}</td><td/>`
 
             menuDiv.appendChild(tr);
         }
@@ -880,7 +917,7 @@ function doLabelMenu() {
     // just go ahead and commit whatever was done regardless of how the menu was closed.  That's what we have undo for.
     menuDiv.actionSuccess = true;
     // title
-    menuDiv.appendChild(buildMenuHeaderLine("Label", 3, "icon-room-label"));
+    menuDiv.appendChild(buildMenuHeaderLine(i18n.str("menu.label"), 3, "icon-room-label"));
 
     // row for the label editor text area
     var tr = document.createElement("tr");
@@ -920,7 +957,7 @@ function doLabelMenu() {
 
     // row for the scale slider
     var tr = document.createElement("tr");
-    tr.append(buildIconCell("icon-label-scale"));
+    tr.append(buildIconCell("icon-label-scale", i18n.str("menu.label.size")));
     var td = document.createElement("td");
     var picker = new ColorPicker("icons/scale-picker.png", sliderRange, scaleToSlider(1.0), 4, (room) => { return scaleToSlider(room.getLabelScale()); });
     td.appendChild(picker.container);
@@ -940,13 +977,13 @@ function doLabelMenu() {
     picker.setListener(listener);
 
     // clear option
-    menuDiv.appendChild(buildMenuButton("Clear", () => { menuDiv.undoAction = null ; clearSelectedRoomsLabels(action); }, "icon-delete" ));
+    menuDiv.appendChild(buildMenuButton(i18n.str("menu.clear"), () => { menuDiv.undoAction = null ; clearSelectedRoomsLabels(action); }, "icon-delete" ));
 
     // save option
-    menuDiv.appendChild(buildMenuButton("Save", () => { menuDiv.undoAction = null ; setSelectedRoomsLabels(textArea.value, action); }, "icon-save"));
+    menuDiv.appendChild(buildMenuButton(i18n.str("menu.save"), () => { menuDiv.undoAction = null ; setSelectedRoomsLabels(textArea.value, action); }, "icon-save"));
 
     // cancel option
-    menuDiv.appendChild(buildMenuButton("Cancel", () => { menuDiv.actionSuccess = false; clearLastMenu(); }, "icon-undo"));
+    menuDiv.appendChild(buildMenuButton(i18n.str("menu.cancel"), () => { menuDiv.actionSuccess = false; clearLastMenu(); }, "icon-undo"));
 
     showMenuAt(menuDiv, left, top);
 
@@ -1108,14 +1145,14 @@ function doColorMenu() {
     // just go ahead and commit whatever was done regardless of how the menu was closed.  That's what we have undo for.
     menuDiv.actionSuccess = true;
     // title
-    menuDiv.appendChild(buildMenuHeaderLine("Color", 3, "icon-color-preview-red"));
+    menuDiv.appendChild(buildMenuHeaderLine(i18n.str("menu.color"), 3, "icon-color-preview-red"));
     // whatevs
     var previewImg = menuDiv.firstChild.firstChild.firstChild;
 
-    function addSlider(icon, barImage, range, defaultVal, snapDistance, getRoomValFunc) {
+    function addSlider(icon, name, barImage, range, defaultVal, snapDistance, getRoomValFunc) {
         // row for the hue slider
         var tr = document.createElement("tr");
-        tr.append(buildIconCell(icon));
+        tr.append(buildIconCell(icon, name));
         var td = document.createElement("td");
         var picker = new ColorPicker(barImage, range, defaultVal, snapDistance, getRoomValFunc);
         td.appendChild(picker.container);
@@ -1125,19 +1162,19 @@ function doColorMenu() {
         return picker;
     }
 
-    var huePicker = addSlider("icon-color", "icons/color-picker.png", 360, 0, 10,
+    var huePicker = addSlider("icon-color", i18n.str("menu.color.hue"), "icons/color-picker.png", 360, 0, 10,
         (room) => {
             return room.hue == null ? null : room.hue[0];
         }
     );
 
-    var satPicker = addSlider("icon-sat", "icons/sat-picker.png", 200, 50, 5,
+    var satPicker = addSlider("icon-sat", i18n.str("menu.color.saturation"), "icons/sat-picker.png", 200, 50, 5,
         (room) => {
             return room.hue == null ? null : room.hue[1];
         }
     );
 
-    var lumPicker = addSlider("icon-lum", "icons/lum-picker.png", 200, 100, 5,
+    var lumPicker = addSlider("icon-lum", i18n.str("menu.color.luminance"), "icons/lum-picker.png", 200, 100, 5,
         (room) => {
             return room.hue == null ? null : room.hue[2];
         }
@@ -1185,10 +1222,10 @@ function doColorMenu() {
     updatePickers();
 
     // clear option
-    menuDiv.appendChild(buildMenuButton("Clear", () => { menuDiv.undoAction = null; clearSelectedRoomsColor(action); }, "icon-delete" ));
+    menuDiv.appendChild(buildMenuButton(i18n.str("menu.clear"), () => { menuDiv.undoAction = null; clearSelectedRoomsColor(action); }, "icon-delete" ));
 
     // save option
-    menuDiv.appendChild(buildMenuButton("Save", () => {
+    menuDiv.appendChild(buildMenuButton(i18n.str("menu.save"), () => {
         menuDiv.undoAction = null;
         setSelectedRoomsColor([
                 huePicker.slider.value,
@@ -1202,7 +1239,7 @@ function doColorMenu() {
     }, "icon-save"));
 
     // cancel option
-    menuDiv.appendChild(buildMenuButton("Cancel", () => { menuDiv.actionSuccess = false; clearLastMenu(); }, "icon-undo"));
+    menuDiv.appendChild(buildMenuButton(i18n.str("menu.cancel"), () => { menuDiv.actionSuccess = false; clearLastMenu(); }, "icon-undo"));
 
     // "select all" menu line is very custom
     {
@@ -1211,7 +1248,7 @@ function doColorMenu() {
 
         var iconTd = document.createElement("td");
         iconTd.className = "imgField";
-        iconTd.innerHTML = `<img src="icons/${icon}.png" srcset="icons2x/${icon}.png 2x"/>`;
+        iconTd.innerHTML = `<img src="icons/${icon}.png" srcset="icons2x/${icon}.png 2x" title="${i18n.str("menu.select.multi")}"/>`;
         iconTd.menuLevel = getCurrentMenuLevel() + 1;
         tr.appendChild(iconTd);
 
@@ -1228,7 +1265,7 @@ function doColorMenu() {
         }
 
         addSelectButton(
-            `Select Exact`,
+            i18n.str("menu.select.exact"),
             () => {
                 menuDiv.undoAction = null;
                 clearLastMenu();
@@ -1237,7 +1274,7 @@ function doColorMenu() {
 
         icon = "icon-color";
         addSelectButton(
-            `<img class="imgButton" src="icons/${icon}.png" srcset="icons2x/${icon}.png 2x"/>`,
+            `<img class="imgButton" src="icons/${icon}.png" srcset="icons2x/${icon}.png 2x" title="${i18n.str("menu.select.by.hue")}"/>`,
             () => {
                 menuDiv.undoAction = null;
                 clearLastMenu();
@@ -1246,7 +1283,7 @@ function doColorMenu() {
 
         icon = "icon-sat";
         addSelectButton(
-            `<img class="imgButton" src="icons/${icon}.png" srcset="icons2x/${icon}.png 2x"/>`,
+            `<img class="imgButton" src="icons/${icon}.png" srcset="icons2x/${icon}.png 2x" title="${i18n.str("menu.select.by.saturation")}"/>`,
             () => {
                 menuDiv.undoAction = null;
                 clearLastMenu();
@@ -1255,7 +1292,7 @@ function doColorMenu() {
 
         icon = "icon-lum";
         addSelectButton(
-            `<img class="imgButton" src="icons/${icon}.png" srcset="icons2x/${icon}.png 2x"/>`,
+            `<img class="imgButton" src="icons/${icon}.png" srcset="icons2x/${icon}.png 2x" title="${i18n.str("menu.select.by.luminance")}"/>`,
             () => {
                 menuDiv.undoAction = null;
                 clearLastMenu();
@@ -1308,10 +1345,10 @@ function pngScaleChanged() {
 
 	var sizeElement = document.getElementById("png-size");
 	if (scale < 1 || scale > 10) {
-		sizeElement.innerHTML = "Invalid";
+		sizeElement.innerHTML = i18n.str("misc.invalid");
 
 	} else {
-		sizeElement.innerHTML = ((db.width() + 64) * scale) + " x " + ((db.height() + 64) * scale);
+		sizeElement.innerHTML = i18n.str("menu.size.format", (db.width() + 64) * scale, (db.height() + 64) * scale);
 	}
 }
 
@@ -1320,7 +1357,7 @@ function doPngMenu() {
 
     var menuDiv = buildMenu();
 
-	menuDiv.appendChild(buildMenuHeaderLine("PNG", 4, "icon-png"));
+	menuDiv.appendChild(buildMenuHeaderLine(i18n.str("menu.png"), 4, "icon-png"));
 
     var db = getDojoBounds();
 
@@ -1334,14 +1371,14 @@ function doPngMenu() {
     scaleInput.value = 1;
     scaleInput.onchange = pngScaleChanged;
     scaleInput.dojoBounds = db;
-    menuDiv.appendChild(buildMenuInput("Scale", scaleInput, "pixels/meter"));
+    menuDiv.appendChild(buildMenuInput(i18n.str("menu.scale"), scaleInput, i18n.str("menu.scale.units")));
 
 	var sizeDisplay = document.createElement("div");
     sizeDisplay.id = "png-size";
     sizeDisplay.class = "field";
-    menuDiv.appendChild(buildMenuInput("Size", sizeDisplay, "pixels"));
+    menuDiv.appendChild(buildMenuInput(i18n.str("menu.size"), sizeDisplay, i18n.str("menu.size.units")));
 
-    menuDiv.appendChild(buildMenuButton("Create", doPngLinkMenu));
+    menuDiv.appendChild(buildMenuButton(i18n.str("menu.create"), doPngLinkMenu));
 
     showMenu(menuDiv, pngButton);
 	pngScaleChanged();
@@ -1353,7 +1390,7 @@ function doPngLinkMenu() {
     var e = e || window.event;
 
     var menuDiv = buildMenu();
-	menuDiv.appendChild(buildMenuHeaderLine("Download", 3));
+	menuDiv.appendChild(buildMenuHeaderLine(i18n.str("menu.download"), 3));
 
     var pngButton = e.currentTarget;
     var bcr = pngButton.getBoundingClientRect();
@@ -1415,6 +1452,7 @@ function buildStorageListingHeader(menuDiv) {
     function buildHeaderColumn(name, enabled, asc, onchange) {
         // build the header cell with the right content for sorting and a callback
         var div = document.createElement("td");
+        // todo: i18n?
         div.innerHTML = name + (enabled ? asc ? "&nbsp;↑" : "&nbsp;↓" : "");
         div.class = "menu-header";
         div.onclick = onchange;
@@ -1422,7 +1460,7 @@ function buildStorageListingHeader(menuDiv) {
     }
 
     // name column header
-    tr.appendChild(buildHeaderColumn("Name", storage.isSortByName(), storage.isSortAscending(), () => {
+    tr.appendChild(buildHeaderColumn(i18n.str("storage.column.name"), storage.isSortByName(), storage.isSortAscending(), () => {
         if (!storage.isSortByName()) {
             storage.setSortByName();
         } else {
@@ -1432,7 +1470,7 @@ function buildStorageListingHeader(menuDiv) {
     }));
 
     // date column header
-    tr.appendChild(buildHeaderColumn("Date", storage.isSortByDate(), storage.isSortAscending(), () => {
+    tr.appendChild(buildHeaderColumn(i18n.str("storage.column.date"), storage.isSortByDate(), storage.isSortAscending(), () => {
         if (!storage.isSortByDate()) {
             storage.setSortByDate();
         } else {
@@ -1446,7 +1484,7 @@ function buildStorageListingHeader(menuDiv) {
 
 function truncateName(name) {
     // limit local storage names to 30 characters
-    return name.length > 30 ? (name.substring(0, 47) + "...") : name;
+    return name.length > 30 ? i18n.str("storage.name.truncated", name.substring(0, 27)) : name;
 }
 
 function buildStorageListingLine(entry, menuDiv) {
@@ -1461,11 +1499,11 @@ function buildStorageListingLine(entry, menuDiv) {
 
     } else {
         // add an overwrite button with a confirmation popup
-        var iconTd = buildMenuButtonIcon("icon-save", () => {
-            doPopupDialog("Local Storage", "Overwrite " + truncateName(name) + "?", false,
+        var iconTd = buildMenuButtonIcon("icon-save", i18n.str("menu.save"), () => {
+            doPopupDialog(i18n.str("menu.local.storage"), i18n.str("dialog.overwrite", truncateName(name)), false,
                 // only go through with the save if they click Yes
-                { "text": "Yes", "callback": () => { doStorageSave(name); } },
-                { "text": "No" }
+                { "text": i18n.str("dialog.yes"), "callback": () => { doStorageSave(name); } },
+                { "text": i18n.str("dialog.no") }
             );
         });
     }
@@ -1476,7 +1514,8 @@ function buildStorageListingLine(entry, menuDiv) {
     nameDiv.className = "field";
     var link = document.createElement("a");
     link.href = "?" + entry.item;
-    link.innerHTML = truncateName(name);
+    // translate the autosave entry's name here
+    link.innerHTML = truncateName(name == storage.autosaveName ? i18n.str("menu.settings.autosave") : name);
     link.addEventListener("click", storageLinkClicked);
     nameDiv.appendChild(link);
 //    nameDiv.innerHTML = `<a href="?${entry.item}">${truncateName(name)}</href>`;
@@ -1489,16 +1528,16 @@ function buildStorageListingLine(entry, menuDiv) {
     tr.appendChild(dateDiv);
 
     // add a delete button with a confirmation popup
-    var iconTd = buildMenuButtonIcon("icon-delete", () => {
-        doPopupDialog("Local Storage", "Delete " + truncateName(name) + "?", false,
+    var iconTd = buildMenuButtonIcon("icon-delete", i18n.str("menu.delete"), () => {
+        doPopupDialog(i18n.str("menu.local.storage"), i18n.str("dialog.delete", truncateName(name)), false,
             // only go through with the delete if they click Yes
-            { "text": "Yes", "callback": () => {
+            { "text": i18n.str("dialog.yes"), "callback": () => {
                 storage.removeItem(entry.name);
                 // rebuild the listing in place
                 clearLastMenu();
                 rebuildStorageListing(menuDiv);
             } },
-            { "text": "No" }
+            { "text": i18n.str("dialog.no") }
         );
     });
     tr.appendChild(iconTd);
@@ -1537,9 +1576,9 @@ function doStorageMenu() {
 
     var menuDiv = buildMenu();
     // menu bar
-    menuDiv.appendChild(buildMenuHeaderLine("Local Storage", 4));
+    menuDiv.appendChild(buildMenuHeaderLine(i18n.str("menu.local.storage"), 4));
     // add button
-    menuDiv.appendChild(buildMenuButton("Add", doStorageAdd, "icon-add"));
+    menuDiv.appendChild(buildMenuButton(i18n.str("menu.add"), doStorageAdd, "icon-add"));
 
     // add the actual storage listing
     rebuildStorageListing(menuDiv);
@@ -1554,7 +1593,7 @@ function doStorageAdd() {
     // build a short menu to enter the name
     var menuDiv = buildMenu();
 
-	menuDiv.appendChild(buildMenuHeaderLine("Save to Local Storage", 3));
+	menuDiv.appendChild(buildMenuHeaderLine(i18n.str("menu.local.storage.save"), 3));
 
 	var input = document.createElement("input");
     input.id = "storage-save-name";
@@ -1565,10 +1604,10 @@ function doStorageAdd() {
     input.maxLength = 30;
     // add keyboard listeners for escape to cancel and enter to save
     addEscapeListener(input, doStorageAddSave);
-    menuDiv.appendChild(buildMenuInput("Name", input));
+    menuDiv.appendChild(buildMenuInput(i18n.str("menu.name"), input));
 
     // explicit add button
-    menuDiv.appendChild(buildMenuButton("Add", doStorageAddSave));
+    menuDiv.appendChild(buildMenuButton(i18n.str("menu.add"), doStorageAddSave));
 
     showMenu(menuDiv, button);
 
@@ -1586,28 +1625,28 @@ function doStorageAddSave() {
     // check for blank
     if (!name || name.length == 0) {
         // only option is cancel
-        doPopupDialog("Save", "Enter a name", true,
-            { "text": "Okay" },
+        doPopupDialog(i18n.str("menu.save"), i18n.str("dialog.enter.name"), true,
+            { "text": i18n.str("dialog.okay") },
         );
         return;
     }
 
     // check for autosave
     if (name == storage.autosaveName) {
-        doPopupDialog("Save", "Are you sure?  This will be overwritten if Autosave is enabled", true,
+        doPopupDialog(i18n.str("menu.save"), i18n.str("dialog.overwrite.autosave"), true,
             // we'll allow it
-            { "text": "Yes", "callback": () => { doStorageSave(name); } },
-            { "text": "No" }
+            { "text": i18n.str("dialog.yes"), "callback": () => { doStorageSave(name); } },
+            { "text": i18n.str("dialog.no") }
         );
         return;
     }
 
     // check for existing name
     if (storage.containsItem(name)) {
-        doPopupDialog("Save", "Name already exists, overwrite?", true,
+        doPopupDialog(i18n.str("menu.save"), i18n.str("dialog.overwrite.name.exists"), true,
             // we'll allow it
-            { "text": "Yes", "callback": () => { doStorageSave(name); } },
-            { "text": "No" }
+            { "text": i18n.str("dialog.yes"), "callback": () => { doStorageSave(name); } },
+            { "text": i18n.str("dialog.no") }
         );
         return;
     }
@@ -1623,7 +1662,7 @@ function doStorageSave(name) {
     // get the layout parameter
     var layout = buildCompressedModelParam();
     // build a URL snippet and save that directly
-    storage.addItem(name, `v=${view}&mz=${layout}`);
+    storage.addItem(name, `v=${view}#${layout}`);
 
     // let's go ahead and rebuild the whole menu because we may need to change the sizing/placement
     // also because I'm not quite sure how many menus deep we are
@@ -1672,23 +1711,67 @@ function doSettingsMenu() {
 
     var menuDiv = buildMenu();
 
-	menuDiv.appendChild(buildMenuHeaderLine("Settings", 4, "icon-settings"));
+	menuDiv.appendChild(buildMenuHeaderLine(i18n.str("menu.settings"), 4, "icon-settings"));
 
     // checkbox settings
 
-    menuDiv.appendChild(buildCheckbox("showAllFloors", "Show All Floors", settings.showAllFloors, (value) => { setShowAllFloors(value); }));
+    menuDiv.appendChild(buildCheckbox("showAllFloors", i18n.str("menu.settings.all.floors"), settings.showAllFloors, (value) => { setShowAllFloors(value); }));
 
-    menuDiv.appendChild(buildCheckbox("showMapMarkers", "Show Map Markers", settings.showMapMarkers, (value) => { setShowMapMarkers(value); }));
+    menuDiv.appendChild(buildCheckbox("showMapMarkers", i18n.str("menu.settings.map.markers."), settings.showMapMarkers, (value) => { setShowMapMarkers(value); }));
 
-    menuDiv.appendChild(buildCheckbox("showLabels", "Show Labels", settings.showLabels, (value) => { setShowLabels(value); }));
+    menuDiv.appendChild(buildCheckbox("showLabels", i18n.str("menu.settings.labels"), settings.showLabels, (value) => { setShowLabels(value); }));
 
-    menuDiv.appendChild(buildCheckbox("dimRooms", "Dim Rooms", settings.dimRooms, (value) => { setDimRooms(value); }));
+    menuDiv.appendChild(buildCheckbox("dimRooms", i18n.str("menu.settings.dim"), settings.dimRooms, (value) => { setDimRooms(value); }));
 
-    menuDiv.appendChild(buildCheckbox("rulesEnabled", "Enable Rules", settings.rulesEnabled, (value) => { setRulesEnabled(value); }));
+    menuDiv.appendChild(buildCheckbox("rulesEnabled", i18n.str("menu.settings.rules"), settings.rulesEnabled, (value) => { setRulesEnabled(value); }));
 
     menuDiv.appendChild(buildMenuDivider(4));
 
-    menuDiv.appendChild(buildCheckbox("autosave", "Autosave", settings.autosave, (value) => { setAutosave(value); }));
+    menuDiv.appendChild(buildCheckbox("autosave", i18n.str("menu.settings.autosave"), settings.autosave, (value) => { setAutosave(value); }));
+
+    showMenu(menuDiv, button);
+}
+
+function doLanguageMenu() {
+	var button = getMenuTarget();
+
+    var menuDiv = buildMenu();
+
+	menuDiv.appendChild(buildMenuHeaderLine(i18n.str("menu.language"), 4, "icon-language"));
+
+	function insertLanguageEntry(key, name) {
+        menuDiv.appendChild(buildMenuButton(name, () => {
+            // save language setting to settings
+            settings.language = key;
+            settings.save();
+            // refresh language/UI and close the menu
+            i18n.refreshLanguage();
+            doCloseMenu();
+        }, key == settings.language ? "icon-language" : null));
+	}
+
+    // add entries for all the supported languages
+	var languageList = i18n.getLanguageList();
+	for (var i = 0; i < languageList.length; i++) {
+	    var entry = languageList[i];
+	    insertLanguageEntry(entry.key, entry.name);
+	}
+
+    // divider
+    menuDiv.appendChild(buildMenuDivider(4));
+
+    // option to reset to default
+    insertLanguageEntry(null, i18n.str("menu.language.reset"));
+
+    // help blurb, because I obviously need help
+    var helpBlurb = buildMenuDivider(4, `
+        <p>${i18n.str("menu.language.help")}</p>
+        <p><a target="_blank" href="${i18n.getBundleFile()}">${i18n.str("menu.language.help.link")}</a></p>
+    `);
+    // meh
+    helpBlurb.children[0].style.width = "0px";
+    helpBlurb.children[0].style.textAlign = "center";
+    menuDiv.appendChild(helpBlurb);
 
     showMenu(menuDiv, button);
 }
@@ -1713,11 +1796,11 @@ function doStructureMenu() {
         }
     }
 
-	menuDiv.appendChild(buildMenuHeaderLine("Structure", 4, "icon-structure"));
+	menuDiv.appendChild(buildMenuHeaderLine(i18n.str("menu.structure"), 4, "icon-structure"));
 
     // the checkbox is not affected by the enable/disable function because
     // it has different class names
-    menuDiv.appendChild(buildCheckbox("structureChecking", "Enabled", settings.structureChecking, (value) => {
+    menuDiv.appendChild(buildCheckbox("structureChecking", i18n.str("menu.enabled"), settings.structureChecking, (value) => {
         setStructureChecking(value);
         refreshEnabled();
     }));
@@ -1726,18 +1809,18 @@ function doStructureMenu() {
 
     // show a warning if the spawn room is not present
     if (!analysisResult.spawn) {
-        menuDiv.appendChild(buildMenuInfo("Spawn Room Missing", "icon-warn"));
+        menuDiv.appendChild(buildMenuInfo(i18n.str("structure.spawn.missing"), "icon-warn"));
 
     } else {
         // find spawn room option
-        menuDiv.appendChild(buildMenuButton("Find Spawn Room", selectSpawnRoom, "icon-spawn"));
+        menuDiv.appendChild(buildMenuButton(i18n.str("structure.find.spawn"), selectSpawnRoom, "icon-spawn"));
     }
 
     // auto-fix option
-    menuDiv.appendChild(buildMenuButton("Auto-fix Structure", doAutoSetCrossBranches, "icon-structure-fix"));
+    menuDiv.appendChild(buildMenuButton(i18n.str("structure.auto.fix"), doAutoSetCrossBranches, "icon-structure-fix"));
 
     // reset all function
-    menuDiv.appendChild(buildMenuButton("Reset All Structure", doResetAllStructure, "icon-force-cross-branch-reset"));
+    menuDiv.appendChild(buildMenuButton(i18n.str("structure.reset.all"), doResetAllStructure, "icon-force-cross-branch-reset"));
 
     // set the initial enabled/disabed state of the menu
     refreshEnabled();
@@ -1818,13 +1901,13 @@ function clearNonCollisionWarnings() {
 
 function updateErrorIcon(element) {
 	if (element.errorList && element.errorList.length > 0) {
-		element.innerHTML = `<img src="icons/icon-error.png" srcset="icons2x/icon-error.png 2x" title="Errors"/>`;
+		element.innerHTML = `<img src="icons/icon-error.png" srcset="icons2x/icon-error.png 2x" title="${i18n.str("menu.errors")}"/>`;
 
 	} else if (element.warnList && element.warnList.length > 0) {
-		element.innerHTML = `<img src="icons/icon-warn.png" srcset="icons2x/icon-warn.png 2x" title="Warnings"/>`;
+		element.innerHTML = `<img src="icons/icon-warn.png" srcset="icons2x/icon-warn.png 2x" title="${i18n.str("menu.warnings")}"/>`;
 
 	} else {
-		element.innerHTML = `<img src="icons/icon-ok.png" srcset="icons2x/icon-ok.png 2x" title="OK"/>`;
+		element.innerHTML = `<img src="icons/icon-ok.png" srcset="icons2x/icon-ok.png 2x" title="${i18n.str("menu.ok")}"/>`;
 	}
 }
 
@@ -1887,7 +1970,7 @@ function doCollisionMatrix() {
 
 function doGenerateColorPicker() {
     doGeneratePicker(
-        "Color Picker",
+        i18n.str("menu.debug.color.picker"),
         (width, height, name, margin) => { return generateColorPickerPNGLink(width, height, name, margin); },
         "color-picker",
         "icon-color"
@@ -1896,7 +1979,7 @@ function doGenerateColorPicker() {
 
 function doGenerateSatPicker() {
     doGeneratePicker(
-        "Saturation Picker",
+        i18n.str("menu.debug.saturation.picker"),
         (width, height, name, margin) => { return generateSatPickerPNGLink(width, height, name, margin); },
         "sat-picker",
         "icon-sat"
@@ -1905,7 +1988,7 @@ function doGenerateSatPicker() {
 
 function doGenerateLumPicker() {
     doGeneratePicker(
-        "Luminance Picker",
+        i18n.str("menu.debug.luminance.picker"),
         (width, height, name, margin) => { return generateLumPickerPNGLink(width, height, name, margin); },
         "lum-picker",
         "icon-lum"

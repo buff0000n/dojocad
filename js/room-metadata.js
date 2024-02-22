@@ -2,7 +2,7 @@ var roomMetadata =
 {"general": {"floor_distance": 66, "max_rooms": 128 },
 "rooms": [
 
-{"id": "cc", "image": "cross-connector", "name": "Cross Connector", "category": "Connectors", "prereq": null, "capacity": -10, "energy": -3, "maxnum": null, "floor": 0, "ceil": 8,
+{"id": "cc", "image": "cross-connector", "name": "room.cross.connector", "category": "category.connectors", "prereq": null, "capacity": -10, "energy": -3, "maxnum": null, "floor": 0, "ceil": 8,
 	"bounds": [
 		{"x1": -16, "y1": -7, "x2": 16, "y2": 7, "floor": 0, "ceil": 8},
 		{"x1": -7, "y1": -16, "x2": 7, "y2": 16, "floor": 0, "ceil": 8}],
@@ -12,45 +12,45 @@ var roomMetadata =
 		{"x": 0, "y": -16, "floor": 0, "outx": 0, "outy": -1},
 		{"x": -16, "y": 0, "floor": 0, "outx": -1, "outy": 0}],
 	"resources": [
-		{"resource": "Credits", "costs": [500, 1500, 5000, 15000, 50000]},
-		{"resource": "Salvage", "costs": [650, 1950, 6500, 19500, 65000]},
-		{"resource": "Ferrite", "costs": [350, 1050, 3500, 10500, 35000]},
-		{"resource": "Nano Spores", "costs": [1200, 3600, 12000, 36000, 120000]},
-		{"resource": "Forma", "costs": [1, 1, 1, 1, 5]}],
+		{"resource": "resource.credits", "costs": [500, 1500, 5000, 15000, 50000]},
+		{"resource": "resource.salvage", "costs": [650, 1950, 6500, 19500, 65000]},
+		{"resource": "resource.ferrite", "costs": [350, 1050, 3500, 10500, 35000]},
+		{"resource": "resource.nano.spores", "costs": [1200, 3600, 12000, 36000, 120000]},
+		{"resource": "resource.forma", "costs": [1, 1, 1, 1, 5]}],
     "treetype": "32-4",
 	"blockedFromAboveBy": [
 	    ]},
-{"id": "cs", "image": "straight-hallway", "name": "Straight Hallway", "category": "Connectors", "prereq": null, "capacity": -1, "energy": -1, "maxnum": null, "floor": 0, "ceil": 8,
+{"id": "cs", "image": "straight-hallway", "name": "room.straight.hallway", "category": "category.connectors", "prereq": null, "capacity": -1, "energy": -1, "maxnum": null, "floor": 0, "ceil": 8,
 	"bounds": [
 		{"x1": -7, "y1": -8, "x2": 7, "y2": 8, "floor": 0, "ceil": 8}],
 	"doors": [
 		{"x": 0, "y": 8, "floor": 0, "outx": 0, "outy": 1},
 		{"x": 0, "y": -8, "floor": 0, "outx": 0, "outy": -1}],
 	"resources": [
-		{"resource": "Credits", "costs": [500, 1500, 5000, 15000, 50000]},
-		{"resource": "Salvage", "costs": [650, 1950, 6500, 19500, 65000]},
-		{"resource": "Ferrite", "costs": [350, 1050, 3500, 10500, 35000]},
-		{"resource": "Nano Spores", "costs": [1200, 3600, 12000, 36000, 120000]},
-		{"resource": "Forma", "costs": [1, 1, 1, 1, 5]}],
+		{"resource": "resource.credits", "costs": [500, 1500, 5000, 15000, 50000]},
+		{"resource": "resource.salvage", "costs": [650, 1950, 6500, 19500, 65000]},
+		{"resource": "resource.ferrite", "costs": [350, 1050, 3500, 10500, 35000]},
+		{"resource": "resource.nano.spores", "costs": [1200, 3600, 12000, 36000, 120000]},
+		{"resource": "resource.forma", "costs": [1, 1, 1, 1, 5]}],
     "treetype": "16-2",
 	"blockedFromAboveBy": [
 	    ]},
-{"id": "cx", "image": "extended-straight-hallway", "name": "Extended Straight Hallway", "category": "Connectors", "prereq": null, "capacity": -2, "energy": -2, "maxnum": null, "floor": 0, "ceil": 8,
+{"id": "cx", "image": "extended-straight-hallway", "name": "room.extended.straight.hallway", "category": "category.connectors", "prereq": null, "capacity": -2, "energy": -2, "maxnum": null, "floor": 0, "ceil": 8,
 	"bounds": [
 		{"x1": -7, "y1": -16, "x2": 7, "y2": 16, "floor": 0, "ceil": 8}],
 	"doors": [
 		{"x": 0, "y": 16, "floor": 0, "outx": 0, "outy": 1},
 		{"x": 0, "y": -16, "floor": 0, "outx": 0, "outy": -1}],
 	"resources": [
-		{"resource": "Credits", "costs": [500, 1500, 5000, 15000, 50000]},
-		{"resource": "Salvage", "costs": [650, 1950, 6500, 19500, 65000]},
-		{"resource": "Ferrite", "costs": [350, 1050, 3500, 10500, 35000]},
-		{"resource": "Nano Spores", "costs": [1200, 3600, 12000, 36000, 120000]},
-		{"resource": "Forma", "costs": [1, 1, 1, 1, 5]}],
+		{"resource": "resource.credits", "costs": [500, 1500, 5000, 15000, 50000]},
+		{"resource": "resource.salvage", "costs": [650, 1950, 6500, 19500, 65000]},
+		{"resource": "resource.ferrite", "costs": [350, 1050, 3500, 10500, 35000]},
+		{"resource": "resource.nano.spores", "costs": [1200, 3600, 12000, 36000, 120000]},
+		{"resource": "resource.forma", "costs": [1, 1, 1, 1, 5]}],
     "treetype": "32-2",
 	"blockedFromAboveBy": [
 	    ]},
-{"id": "ct", "image": "t-shaped-connector", "name": "T-shaped Connector", "category": "Connectors", "prereq": null, "capacity": -5, "energy": -2, "maxnum": null, "floor": 0, "ceil": 8,
+{"id": "ct", "image": "t-shaped-connector", "name": "room.t.shaped.connector", "category": "category.connectors", "prereq": null, "capacity": -5, "energy": -2, "maxnum": null, "floor": 0, "ceil": 8,
 	"bounds": [
 		{"x1": -7, "y1": -16, "x2": 7, "y2": 16, "floor": 0, "ceil": 8},
 		{"x1": -7, "y1": -7, "x2": 16, "y2": 7, "floor": 0, "ceil": 8}],
@@ -59,15 +59,15 @@ var roomMetadata =
 		{"x": 16, "y": 0, "floor": 0, "outx": 1, "outy": 0},
 		{"x": 0, "y": -16, "floor": 0, "outx": 0, "outy": -1}],
 	"resources": [
-		{"resource": "Credits", "costs": [500, 1500, 5000, 15000, 50000]},
-		{"resource": "Salvage", "costs": [650, 1950, 6500, 19500, 65000]},
-		{"resource": "Ferrite", "costs": [350, 1050, 3500, 10500, 35000]},
-		{"resource": "Nano Spores", "costs": [1200, 3600, 12000, 36000, 120000]},
-		{"resource": "Forma", "costs": [1, 1, 1, 1, 5]}],
+		{"resource": "resource.credits", "costs": [500, 1500, 5000, 15000, 50000]},
+		{"resource": "resource.salvage", "costs": [650, 1950, 6500, 19500, 65000]},
+		{"resource": "resource.ferrite", "costs": [350, 1050, 3500, 10500, 35000]},
+		{"resource": "resource.nano.spores", "costs": [1200, 3600, 12000, 36000, 120000]},
+		{"resource": "resource.forma", "costs": [1, 1, 1, 1, 5]}],
     "treetype": "32-3",
 	"blockedFromAboveBy": [
 	    ]},
-{"id": "cb", "image": "elbow-connector", "name": "Elbow Connector", "category": "Connectors", "prereq": null, "capacity": -1, "energy": -1, "maxnum": null, "floor": 0, "ceil": 8,
+{"id": "cb", "image": "elbow-connector", "name": "room.elbow.connector", "category": "category.connectors", "prereq": null, "capacity": -1, "energy": -1, "maxnum": null, "floor": 0, "ceil": 8,
 	"bounds": [
 		{"x1": -4, "y1": -4, "x2": 16, "y2": 7, "floor": 0, "ceil": 8},
 		{"x1": -4, "y1": -4, "x2": 7, "y2": 16, "floor": 0, "ceil": 8}],
@@ -75,15 +75,15 @@ var roomMetadata =
 		{"x": 0, "y": 16, "floor": 0, "outx": 0, "outy": 1},
 		{"x": 16, "y": 0, "floor": 0, "outx": 1, "outy": 0}],
 	"resources": [
-		{"resource": "Credits", "costs": [500, 1500, 5000, 15000, 50000]},
-		{"resource": "Salvage", "costs": [650, 1950, 6500, 19500, 65000]},
-		{"resource": "Ferrite", "costs": [350, 1050, 3500, 10500, 35000]},
-		{"resource": "Nano Spores", "costs": [1200, 3600, 12000, 36000, 120000]},
-		{"resource": "Forma", "costs": [1, 1, 1, 1, 5]}],
+		{"resource": "resource.credits", "costs": [500, 1500, 5000, 15000, 50000]},
+		{"resource": "resource.salvage", "costs": [650, 1950, 6500, 19500, 65000]},
+		{"resource": "resource.ferrite", "costs": [350, 1050, 3500, 10500, 35000]},
+		{"resource": "resource.nano.spores", "costs": [1200, 3600, 12000, 36000, 120000]},
+		{"resource": "resource.forma", "costs": [1, 1, 1, 1, 5]}],
     "treetype": "32-2e",
 	"blockedFromAboveBy": [
 	    ]},
-{"id": "ce", "image": "elevator-bottom", "name": "Elevator", "category": "Connectors", "prereq": null, "capacity": -2, "energy": -2, "maxnum": null, "floor": -24, "ceil": 16, "multifloor": true,
+{"id": "ce", "image": "elevator-bottom", "name": "room.elevator", "category": "category.connectors", "prereq": null, "capacity": -2, "energy": -2, "maxnum": null, "floor": -24, "ceil": 16, "multifloor": true,
 	"bounds": [
 		{"x1": -7, "y1": -10, "x2": 7, "y2": 12, "floor": -24, "ceil": 80}],
 	"doors": [
@@ -93,16 +93,16 @@ var roomMetadata =
 		{"floor": 0, "image": "elevator-bottom", "marker_images": [{"image": "marker-elevator-bottom", "x": 0, "y": 0}]},
 		{"floor": 1, "image": "elevator-bottom", "marker_images": [{"image": "marker-elevator-top", "x": 0, "y": 0}]}],
 	"resources": [
-		{"resource": "Credits", "costs": [500, 1500, 5000, 15000, 50000]},
-		{"resource": "Salvage", "costs": [650, 1950, 6500, 19500, 65000]},
-		{"resource": "Ferrite", "costs": [350, 1050, 3500, 10500, 35000]},
-		{"resource": "Nano Spores", "costs": [1200, 3600, 12000, 36000, 120000]},
-		{"resource": "Forma", "costs": [1, 1, 1, 1, 5]}],
+		{"resource": "resource.credits", "costs": [500, 1500, 5000, 15000, 50000]},
+		{"resource": "resource.salvage", "costs": [650, 1950, 6500, 19500, 65000]},
+		{"resource": "resource.ferrite", "costs": [350, 1050, 3500, 10500, 35000]},
+		{"resource": "resource.nano.spores", "costs": [1200, 3600, 12000, 36000, 120000]},
+		{"resource": "resource.forma", "costs": [1, 1, 1, 1, 5]}],
     "treetype": "el-2",
 	"blockedFromAboveBy": [
 	    ]},
 
-{"id": "h1", "image": "clan-hall", "name": "Clan Hall", "category": "Classic Halls", "prereq": null, "capacity": 100, "energy": 5, "maxnum": 1, "spawn": true, "floor": -12, "ceil": 24,
+{"id": "h1", "image": "clan-hall", "name": "room.clan.hall", "category": "category.classic.halls", "prereq": null, "capacity": 100, "energy": 5, "maxnum": 1, "spawn": true, "floor": -12, "ceil": 24,
 	"bounds": [
 		{"x1": -8, "y1": -32, "x2": 8, "y2": 32, "floor": -12, "ceil": 24},
 		{"x1": -17, "y1": -16, "x2": 17, "y2": 16, "floor": -12, "ceil": 24}],
@@ -115,7 +115,7 @@ var roomMetadata =
     "treetype": "64-2",
 	"blockedFromAboveBy": [
 	    ]},
-{"id": "h2", "image": "clan-great-hall", "name": "Clan Great Hall", "category": "Classic Halls", "prereq": null, "capacity": 200, "energy": -2, "maxnum": 1, "spawn": true, "floor": -12, "ceil": 24,
+{"id": "h2", "image": "clan-great-hall", "name": "room.clan.great.hall", "category": "category.classic.halls", "prereq": null, "capacity": 200, "energy": -2, "maxnum": 1, "spawn": true, "floor": -12, "ceil": 24,
 	"bounds": [
 		{"x1": -17, "y1": -32, "x2": 17, "y2": 32, "floor": -12, "ceil": 24}],
 	"doors": [
@@ -124,15 +124,15 @@ var roomMetadata =
 	"floor_images": [
 		{"floor": 0, "image": "clan-great-hall", "marker_images": [{"image": "marker-console", "x": -1, "y": 28, "rot": 0}]}],
 	"resources": [
-		{"resource": "Credits", "costs": [1000, 3000, 10000, 30000, 100000]},
-		{"resource": "Salvage", "costs": [150, 450, 1500, 4500, 15000]},
-		{"resource": "Ferrite", "costs": [600, 1800, 6000, 18000, 60000]},
-		{"resource": "Nano Spores", "costs": [300, 900, 3000, 9000, 30000]},
-		{"resource": "Forma", "costs": [1, 1, 3, 8, 25]}],
+		{"resource": "resource.credits", "costs": [1000, 3000, 10000, 30000, 100000]},
+		{"resource": "resource.salvage", "costs": [150, 450, 1500, 4500, 15000]},
+		{"resource": "resource.ferrite", "costs": [600, 1800, 6000, 18000, 60000]},
+		{"resource": "resource.nano.spores", "costs": [300, 900, 3000, 9000, 30000]},
+		{"resource": "resource.forma", "costs": [1, 1, 3, 8, 25]}],
     "treetype": "64-2",
 	"blockedFromAboveBy": [
 	    ]},
-{"id": "h3", "image": "clan-greater-hall", "name": "Clan Greater Hall", "category": "Classic Halls", "prereq": null, "capacity": 200, "energy": -2, "maxnum": 1, "spawn": true, "floor": -12, "ceil": 24,
+{"id": "h3", "image": "clan-greater-hall", "name": "room.clan.greater.hall", "category": "category.classic.halls", "prereq": null, "capacity": 200, "energy": -2, "maxnum": 1, "spawn": true, "floor": -12, "ceil": 24,
 	"bounds": [
 		{"x1": -24, "y1": -32, "x2": 24, "y2": 32, "floor": -12, "ceil": 24},
 		{"x1": -40, "y1": -12, "x2": 40, "y2": 12, "floor": -12, "ceil": 24}],
@@ -142,15 +142,15 @@ var roomMetadata =
 	"floor_images": [
 		{"floor": 0, "image": "clan-greater-hall", "marker_images": [{"image": "marker-console", "x": -1, "y": 28, "rot": 0}]}],
 	"resources": [
-		{"resource": "Credits", "costs": [1000, 3000, 10000, 30000, 100000]},
-		{"resource": "Salvage", "costs": [150, 450, 1500, 4500, 15000]},
-		{"resource": "Ferrite", "costs": [600, 1800, 6000, 18000, 60000]},
-		{"resource": "Nano Spores", "costs": [300, 900, 3000, 9000, 30000]},
-		{"resource": "Forma", "costs": [1, 1, 3, 8, 25]}],
+		{"resource": "resource.credits", "costs": [1000, 3000, 10000, 30000, 100000]},
+		{"resource": "resource.salvage", "costs": [150, 450, 1500, 4500, 15000]},
+		{"resource": "resource.ferrite", "costs": [600, 1800, 6000, 18000, 60000]},
+		{"resource": "resource.nano.spores", "costs": [300, 900, 3000, 9000, 30000]},
+		{"resource": "resource.forma", "costs": [1, 1, 3, 8, 25]}],
     "treetype": "64-2",
 	"blockedFromAboveBy": [
 	    ]},
-{"id": "h4", "image": "clan-grand-hall", "name": "Clan Grand Hall", "category": "Classic Halls", "prereq": null, "capacity": 200, "energy": -2, "maxnum": 1, "spawn": true, "floor": -12, "ceil": 30,
+{"id": "h4", "image": "clan-grand-hall", "name": "room.clan.grand.hall", "category": "category.classic.halls", "prereq": null, "capacity": 200, "energy": -2, "maxnum": 1, "spawn": true, "floor": -12, "ceil": 30,
 	"bounds": [
 		{"x1": -31.5, "y1": -31.5, "x2": 31.5, "y2": 31.5, "floor": -8, "ceil": 32},
 		{"x1": -32, "y1": -24, "x2": 32, "y2": -8, "floor": 0, "ceil": 8},
@@ -166,15 +166,15 @@ var roomMetadata =
 	"floor_images": [
 		{"floor": 0, "image": "clan-grand-hall", "marker_images": [{"image": "marker-console", "x": -1, "y": 28, "rot": 0}]}],
 	"resources": [
-		{"resource": "Credits", "costs": [1000, 3000, 10000, 30000, 100000]},
-		{"resource": "Salvage", "costs": [150, 450, 1500, 4500, 15000]},
-		{"resource": "Ferrite", "costs": [600, 1800, 6000, 18000, 60000]},
-		{"resource": "Nano Spores", "costs": [300, 900, 3000, 9000, 30000]},
-		{"resource": "Forma", "costs": [1, 1, 3, 8, 25]}],
+		{"resource": "resource.credits", "costs": [1000, 3000, 10000, 30000, 100000]},
+		{"resource": "resource.salvage", "costs": [150, 450, 1500, 4500, 15000]},
+		{"resource": "resource.ferrite", "costs": [600, 1800, 6000, 18000, 60000]},
+		{"resource": "resource.nano.spores", "costs": [300, 900, 3000, 9000, 30000]},
+		{"resource": "resource.forma", "costs": [1, 1, 3, 8, 25]}],
     "treetype": "h-6",
 	"blockedFromAboveBy": [
 	    ]},
-{"id": "h5", "image": "clan-grandest-hall", "name": "Clan Grandest Hall", "category": "Classic Halls", "prereq": null, "capacity": 200, "energy": -2, "maxnum": 1, "spawn": true, "floor": -12, "ceil": 30,
+{"id": "h5", "image": "clan-grandest-hall", "name": "room.clan.grandest.hall", "category": "category.classic.halls", "prereq": null, "capacity": 200, "energy": -2, "maxnum": 1, "spawn": true, "floor": -12, "ceil": 30,
 	"bounds": [
 		{"x1": -31.5, "y1": -31.5, "x2": 31.5, "y2": 31.5, "floor": -8, "ceil": 32},
 		{"x1": -32, "y1": -24, "x2": 32, "y2": -8, "floor": 0, "ceil": 8},
@@ -190,15 +190,15 @@ var roomMetadata =
 	"floor_images": [
 		{"floor": 0, "image": "clan-grandest-hall", "marker_images": [{"image": "marker-console", "x": -1, "y": 28, "rot": 0}]}],
 	"resources": [
-		{"resource": "Credits", "costs": [1000, 3000, 10000, 30000, 100000]},
-		{"resource": "Salvage", "costs": [150, 450, 1500, 4500, 15000]},
-		{"resource": "Ferrite", "costs": [600, 1800, 6000, 18000, 60000]},
-		{"resource": "Nano Spores", "costs": [300, 900, 3000, 9000, 30000]},
-		{"resource": "Forma", "costs": [1, 1, 3, 8, 25]}],
+		{"resource": "resource.credits", "costs": [1000, 3000, 10000, 30000, 100000]},
+		{"resource": "resource.salvage", "costs": [150, 450, 1500, 4500, 15000]},
+		{"resource": "resource.ferrite", "costs": [600, 1800, 6000, 18000, 60000]},
+		{"resource": "resource.nano.spores", "costs": [300, 900, 3000, 9000, 30000]},
+		{"resource": "resource.forma", "costs": [1, 1, 3, 8, 25]}],
     "treetype": "h-6",
 	"blockedFromAboveBy": [
 	    ]},
-{"id": "hi", "image": "inspiration-hall", "name": "Inspiration Hall", "category": "Classic Halls", "prereq": null, "capacity": 100, "energy": -1, "maxnum": 3, "spawn": true, "floor": -12, "ceil": 46,
+{"id": "hi", "image": "inspiration-hall", "name": "room.inspiration.hall", "category": "category.classic.halls", "prereq": null, "capacity": 100, "energy": -1, "maxnum": 3, "spawn": true, "floor": -12, "ceil": 46,
 	"bounds": [
 		{"x1": -32, "y1": -32, "x2": 32, "y2": 32, "floor": -12, "ceil": 46}],
 	"doors": [
@@ -212,17 +212,17 @@ var roomMetadata =
 		{"floor": 0, "image": "inspiration-hall", "marker_images": [{"image": "marker-console", "x": -1, "y": 28, "rot": 0}]},
 		{"floor": 1, "image": "inspiration-hall-other"}],
 	"resources": [
-		{"resource": "Credits", "costs": [1000, 3000, 10000, 30000, 100000]},
-		{"resource": "Alloy Plate", "costs": [150, 450, 1500, 4500, 15000]},
-		{"resource": "Ferrite", "costs": [600, 1800, 6000, 18000, 60000]},
-		{"resource": "Rubedo", "costs": [300, 900, 3000, 9000, 30000]},
-		{"resource": "Forma", "costs": [1, 1, 3, 8, 25]}],
+		{"resource": "resource.credits", "costs": [1000, 3000, 10000, 30000, 100000]},
+		{"resource": "resource.alloy.plate", "costs": [150, 450, 1500, 4500, 15000]},
+		{"resource": "resource.ferrite", "costs": [600, 1800, 6000, 18000, 60000]},
+		{"resource": "resource.rubedo", "costs": [300, 900, 3000, 9000, 30000]},
+		{"resource": "resource.forma", "costs": [1, 1, 3, 8, 25]}],
     "treetype": "h-6",
 	"blockedFromAboveBy": [
 		"ce","ob","oc","re","ef", "ot", "gc", "dc"]},
 
 
-{"id": "dc", "image": "duviri-cave", "name": "Duviri Cave", "category": "Theme Halls A-J", "spawn": false, "prereq": null, "capacity": 200, "energy": -5, "maxnum": null, "floor": -22, "ceil": 36,
+{"id": "dc", "image": "duviri-cave", "name": "room.duviri.cave", "category": "category.theme.halls.1", "spawn": false, "prereq": null, "capacity": 200, "energy": -5, "maxnum": null, "floor": -22, "ceil": 36,
 	"bounds": [
 		{"x1": -31.5, "y1": -31.5, "x2": 31.5, "y2": 31.5, "floor": -22, "ceil": 32},
 		{"x1": -32, "y1": -24, "x2": 32, "y2": -8, "floor": 0, "ceil": 8},
@@ -238,14 +238,14 @@ var roomMetadata =
 	"floor_images": [
 		{"floor": 0, "image": "duviri-cave", "marker_images": [{"image": "marker-console", "x": -1, "y": 28, "rot": 0}]}],
 	"resources": [
-		{"resource": "Credits", "costs": [1000, 3000, 10000, 30000, 100000]},
-		{"resource": "Ferrite", "costs": [800, 2400, 8000, 24000, 80000]},
-		{"resource": "Circuits", "costs": [200, 600, 2000, 6000, 20000]},
-		{"resource": "Salvage", "costs": [500, 1500, 5000, 15000, 50000]},
-		{"resource": "Forma", "costs": [1, 1, 1, 3, 10]}], "unverified": true,
+		{"resource": "resource.credits", "costs": [1000, 3000, 10000, 30000, 100000]},
+		{"resource": "resource.ferrite", "costs": [800, 2400, 8000, 24000, 80000]},
+		{"resource": "resource.circuits", "costs": [200, 600, 2000, 6000, 20000]},
+		{"resource": "resource.salvage", "costs": [500, 1500, 5000, 15000, 50000]},
+		{"resource": "resource.forma", "costs": [1, 1, 1, 3, 10]}], "unverified": true,
     "treetype": "h-6",
 	"blockedFromAboveBy": ["ob"]},
-{"id": "ef", "image": "earth-forest", "name": "Earth Forest Chamber", "category": "Theme Halls A-J", "spawn": false, "prereq": null, "capacity": 200, "energy": -5, "maxnum": null, "floor": -22, "ceil": 68,
+{"id": "ef", "image": "earth-forest", "name": "room.earth.forest.chamber", "category": "category.theme.halls.1", "spawn": false, "prereq": null, "capacity": 200, "energy": -5, "maxnum": null, "floor": -22, "ceil": 68,
 	"bounds": [
 		{"x1": -31.5, "y1": -63.5, "x2": 31.5, "y2": 63.5, "floor": -22, "ceil": 68},
 		{"x1": -32, "y1": -40, "x2": 32, "y2": -56, "floor": 0, "ceil": 8},
@@ -268,14 +268,14 @@ var roomMetadata =
 		{"floor": 0, "image": "earth-forest", "marker_images": [{"image": "marker-console", "x": 1, "y": -60, "rot": 180}]},
 		{"floor": 1, "image": "earth-forest-other"}],
 	"resources": [
-		{"resource": "Credits", "costs": [1000, 3000, 10000, 30000, 100000]},
-		{"resource": "Ferrite", "costs": [800, 2400, 8000, 24000, 80000]},
-		{"resource": "Circuits", "costs": [200, 600, 2000, 6000, 20000]},
-		{"resource": "Salvage", "costs": [500, 1500, 5000, 15000, 50000]},
-		{"resource": "Forma", "costs": [1, 1, 1, 3, 10]}], "unverified": true,
+		{"resource": "resource.credits", "costs": [1000, 3000, 10000, 30000, 100000]},
+		{"resource": "resource.ferrite", "costs": [800, 2400, 8000, 24000, 80000]},
+		{"resource": "resource.circuits", "costs": [200, 600, 2000, 6000, 20000]},
+		{"resource": "resource.salvage", "costs": [500, 1500, 5000, 15000, 50000]},
+		{"resource": "resource.forma", "costs": [1, 1, 1, 3, 10]}], "unverified": true,
     "treetype": "h-10",
 	"blockedFromAboveBy": []},
-{"id": "he", "image": "entrati-hall", "name": "Entrati Audience Chamber", "category": "Theme Halls A-J", "spawn": true, "prereq": null, "capacity": 200, "energy": -2, "maxnum": null, "floor": -12, "ceil": 32,
+{"id": "he", "image": "entrati-hall", "name": "room.entrati.audience.chamber", "category": "category.theme.halls.1", "spawn": true, "prereq": null, "capacity": 200, "energy": -2, "maxnum": null, "floor": -12, "ceil": 32,
 	"bounds": [
 		{"x1": -31.5, "y1": -31.5, "x2": 31.5, "y2": 31.5, "floor": -12, "ceil": 32},
 		{"x1": -32, "y1": -24, "x2": 32, "y2": -8, "floor": 0, "ceil": 8},
@@ -291,15 +291,15 @@ var roomMetadata =
 	"floor_images": [
 		{"floor": 0, "image": "entrati-hall", "marker_images": [{"image": "marker-console", "x": -1, "y": 28, "rot": 0}]}],
 	"resources": [
-		{"resource": "Credits", "costs": [1000, 3000, 10000, 30000, 100000]},
-		{"resource": "Ferrite", "costs": [800, 2400, 8000, 24000, 80000]},
-		{"resource": "Circuits", "costs": [200, 600, 2000, 6000, 20000]},
-		{"resource": "Salvage", "costs": [500, 1500, 5000, 15000, 50000]},
-		{"resource": "Forma", "costs": [1, 1, 1, 3, 10]}], "unverified": true,
+		{"resource": "resource.credits", "costs": [1000, 3000, 10000, 30000, 100000]},
+		{"resource": "resource.ferrite", "costs": [800, 2400, 8000, 24000, 80000]},
+		{"resource": "resource.circuits", "costs": [200, 600, 2000, 6000, 20000]},
+		{"resource": "resource.salvage", "costs": [500, 1500, 5000, 15000, 50000]},
+		{"resource": "resource.forma", "costs": [1, 1, 1, 3, 10]}], "unverified": true,
     "treetype": "h-6",
 	"blockedFromAboveBy": [
 		"ob"]},
-{"id": "gc", "image": "galleon-chamber", "name": "Galleon Chamber", "category": "Theme Halls A-J", "spawn": false, "prereq": null, "capacity": 200, "energy": -5, "maxnum": null, "floor": -26, "ceil": 34,
+{"id": "gc", "image": "galleon-chamber", "name": "room.galleon.chamber", "category": "category.theme.halls.1", "spawn": false, "prereq": null, "capacity": 200, "energy": -5, "maxnum": null, "floor": -26, "ceil": 34,
 	"bounds": [
 		{"x1": -31.5, "y1": -31.5, "x2": 31.5, "y2": 31.5, "floor": -26, "ceil": 34},
 		{"x1": -32, "y1": -24, "x2": 32, "y2": -8, "floor": 0, "ceil": 8},
@@ -315,15 +315,15 @@ var roomMetadata =
 	"floor_images": [
 		{"floor": 0, "image": "galleon-chamber", "marker_images": [{"image": "marker-console", "x": -1, "y": 28, "rot": 0}]}],
 	"resources": [
-		{"resource": "Credits", "costs": [1000, 3000, 10000, 30000, 100000]},
-		{"resource": "Ferrite", "costs": [800, 2400, 8000, 24000, 80000]},
-		{"resource": "Circuits", "costs": [200, 600, 2000, 6000, 20000]},
-		{"resource": "Salvage", "costs": [500, 1500, 5000, 15000, 50000]},
-		{"resource": "Forma", "costs": [1, 1, 1, 3, 10]}], "unverified": true,
+		{"resource": "resource.credits", "costs": [1000, 3000, 10000, 30000, 100000]},
+		{"resource": "resource.ferrite", "costs": [800, 2400, 8000, 24000, 80000]},
+		{"resource": "resource.circuits", "costs": [200, 600, 2000, 6000, 20000]},
+		{"resource": "resource.salvage", "costs": [500, 1500, 5000, 15000, 50000]},
+		{"resource": "resource.forma", "costs": [1, 1, 1, 3, 10]}], "unverified": true,
     "treetype": "h-6",
 	"blockedFromAboveBy": [
 		"ob"]},
-{"id": "hf", "image": "infested-hall", "name": "Infested Chamber", "category": "Theme Halls A-J", "spawn": true, "prereq": null, "capacity": 200, "energy": -5, "maxnum": null, "floor": -12, "ceil": 32,
+{"id": "hf", "image": "infested-hall", "name": "room.infested.chamber", "category": "category.theme.halls.1", "spawn": true, "prereq": null, "capacity": 200, "energy": -5, "maxnum": null, "floor": -12, "ceil": 32,
 	"bounds": [
 		{"x1": -31.5, "y1": -31.5, "x2": 31.5, "y2": 31.5, "floor": -12, "ceil": 32},
 		{"x1": -32, "y1": -24, "x2": 32, "y2": -8, "floor": 0, "ceil": 8},
@@ -339,16 +339,16 @@ var roomMetadata =
 	"floor_images": [
 		{"floor": 0, "image": "infested-hall", "marker_images": [{"image": "marker-console", "x": 1, "y": -28, "rot": 180}]}],
 	"resources": [
-		{"resource": "Credits", "costs": [1000, 3000, 10000, 30000, 100000]},
-		{"resource": "Ferrite", "costs": [800, 2400, 8000, 24000, 80000]},
-		{"resource": "Circuits", "costs": [200, 600, 2000, 6000, 20000]},
-		{"resource": "Salvage", "costs": [500, 1500, 5000, 15000, 50000]},
-		{"resource": "Forma", "costs": [1, 1, 1, 3, 10]}], "unverified": true,
+		{"resource": "resource.credits", "costs": [1000, 3000, 10000, 30000, 100000]},
+		{"resource": "resource.ferrite", "costs": [800, 2400, 8000, 24000, 80000]},
+		{"resource": "resource.circuits", "costs": [200, 600, 2000, 6000, 20000]},
+		{"resource": "resource.salvage", "costs": [500, 1500, 5000, 15000, 50000]},
+		{"resource": "resource.forma", "costs": [1, 1, 1, 3, 10]}], "unverified": true,
     "treetype": "h-6",
 	"blockedFromAboveBy": [
 		"ob"]},
 
-{"id": "ka", "image": "kuva-asteroid", "name": "Kuva Asteroid", "category": "Theme Halls K-Z", "spawn": false, "prereq": null, "capacity": 200, "energy": -5, "maxnum": null, "floor": -4, "ceil": 32,
+{"id": "ka", "image": "kuva-asteroid", "name": "room.kuva.asteroid", "category": "category.theme.halls.2", "spawn": false, "prereq": null, "capacity": 200, "energy": -5, "maxnum": null, "floor": -4, "ceil": 32,
 	"bounds": [
 		{"x1": -31.5, "y1": -31.5, "x2": 31.5, "y2": 31.5, "floor": -8, "ceil": 32},
 		{"x1": -32, "y1": -24, "x2": 32, "y2": -8, "floor": 0, "ceil": 8},
@@ -364,15 +364,15 @@ var roomMetadata =
 	"floor_images": [
 		{"floor": 0, "image": "kuva-asteroid", "marker_images": [{"image": "marker-console", "x": -1, "y": 28, "rot": 0}]}],
 	"resources": [
-		{"resource": "Credits", "costs": [1000, 3000, 10000, 30000, 100000]},
-		{"resource": "Ferrite", "costs": [800, 2400, 8000, 24000, 80000]},
-		{"resource": "Circuits", "costs": [200, 600, 2000, 6000, 20000]},
-		{"resource": "Salvage", "costs": [500, 1500, 5000, 15000, 50000]},
-		{"resource": "Forma", "costs": [1, 1, 1, 3, 10]}], "unverified": true,
+		{"resource": "resource.credits", "costs": [1000, 3000, 10000, 30000, 100000]},
+		{"resource": "resource.ferrite", "costs": [800, 2400, 8000, 24000, 80000]},
+		{"resource": "resource.circuits", "costs": [200, 600, 2000, 6000, 20000]},
+		{"resource": "resource.salvage", "costs": [500, 1500, 5000, 15000, 50000]},
+		{"resource": "resource.forma", "costs": [1, 1, 1, 3, 10]}], "unverified": true,
     "treetype": "h-6",
 	"blockedFromAboveBy": [
 		"ob"]},
-{"id": "ot", "image": "orokin-tower", "name": "Orokin Tower Chamber", "category": "Theme Halls K-Z", "spawn": false, "prereq": null, "capacity": 200, "energy": -5, "maxnum": null, "floor": -32, "ceil": 70,
+{"id": "ot", "image": "orokin-tower", "name": "room.orokin.tower.chamber", "category": "category.theme.halls.2", "spawn": false, "prereq": null, "capacity": 200, "energy": -5, "maxnum": null, "floor": -32, "ceil": 70,
 	"bounds": [
 		{"x1": -31.5, "y1": -31.5, "x2": 31.5, "y2": 31.5, "floor": -32, "ceil": 70},
 		{"x1": -32, "y1": -24, "x2": 32, "y2": -8, "floor": 0, "ceil": 8},
@@ -389,14 +389,14 @@ var roomMetadata =
 		{"floor": 0, "image": "orokin-tower", "marker_images": [{"image": "marker-console", "x": -1, "y": 28, "rot": 0}]},
 		{"floor": 1, "image": "orokin-tower-other"}],
 	"resources": [
-		{"resource": "Credits", "costs": [1000, 3000, 10000, 30000, 100000]},
-		{"resource": "Ferrite", "costs": [800, 2400, 8000, 24000, 80000]},
-		{"resource": "Circuits", "costs": [200, 600, 2000, 6000, 20000]},
-		{"resource": "Salvage", "costs": [500, 1500, 5000, 15000, 50000]},
-		{"resource": "Forma", "costs": [1, 1, 1, 3, 10]}], "unverified": true,
+		{"resource": "resource.credits", "costs": [1000, 3000, 10000, 30000, 100000]},
+		{"resource": "resource.ferrite", "costs": [800, 2400, 8000, 24000, 80000]},
+		{"resource": "resource.circuits", "costs": [200, 600, 2000, 6000, 20000]},
+		{"resource": "resource.salvage", "costs": [500, 1500, 5000, 15000, 50000]},
+		{"resource": "resource.forma", "costs": [1, 1, 1, 3, 10]}], "unverified": true,
     "treetype": "h-6",
 	"blockedFromAboveBy": []},
-{"id": "co", "image": "ostron-cove", "name": "Ostron Cove", "category": "Theme Halls K-Z", "spawn": false, "prereq": null, "capacity": 200, "energy": -5, "maxnum": null, "floor": -12, "ceil": 32,
+{"id": "co", "image": "ostron-cove", "name": "room.ostron.cove", "category": "category.theme.halls.2", "spawn": false, "prereq": null, "capacity": 200, "energy": -5, "maxnum": null, "floor": -12, "ceil": 32,
 	"bounds": [
 		{"x1": -31.5, "y1": -38, "x2": 31.5, "y2": 31.5, "floor": -12, "ceil": 32},
 		{"x1": -31, "y1": -86, "x2": 31, "y2": -38, "floor": -12, "ceil": 32},
@@ -412,14 +412,14 @@ var roomMetadata =
 	"floor_images": [
 		{"floor": 0, "image": "ostron-cove", "marker_images": [{"image": "marker-console", "x": -1, "y": 28, "rot": 0}]}],
 	"resources": [
-		{"resource": "Credits", "costs": [1000, 3000, 10000, 30000, 100000]},
-		{"resource": "Ferrite", "costs": [800, 2400, 8000, 24000, 80000]},
-		{"resource": "Circuits", "costs": [200, 600, 2000, 6000, 20000]},
-		{"resource": "Salvage", "costs": [500, 1500, 5000, 15000, 50000]},
-		{"resource": "Forma", "costs": [1, 1, 1, 3, 10]}], "unverified": true,
+		{"resource": "resource.credits", "costs": [1000, 3000, 10000, 30000, 100000]},
+		{"resource": "resource.ferrite", "costs": [800, 2400, 8000, 24000, 80000]},
+		{"resource": "resource.circuits", "costs": [200, 600, 2000, 6000, 20000]},
+		{"resource": "resource.salvage", "costs": [500, 1500, 5000, 15000, 50000]},
+		{"resource": "resource.forma", "costs": [1, 1, 1, 3, 10]}], "unverified": true,
     "treetype": "h-5",
 	"blockedFromAboveBy": []},
-{"id": "sm", "image": "starlight-market", "name": "Starlight Market", "category": "Theme Halls K-Z", "spawn": false, "prereq": null, "capacity": 200, "energy": -5, "maxnum": null, "floor": -12, "ceil": 32,
+{"id": "sm", "image": "starlight-market", "name": "room.starlight.market", "category": "category.theme.halls.2", "spawn": false, "prereq": null, "capacity": 200, "energy": -5, "maxnum": null, "floor": -12, "ceil": 32,
 	"bounds": [
 		{"x1": -31.5, "y1": -31.5, "x2": 31.5, "y2": 31.5, "floor": -12, "ceil": 32},
 		{"x1": -32, "y1": -24, "x2": 32, "y2": -8, "floor": 0, "ceil": 8},
@@ -435,15 +435,15 @@ var roomMetadata =
 	"floor_images": [
 		{"floor": 0, "image": "starlight-market", "marker_images": [{"image": "marker-console", "x": -1, "y": 28, "rot": 0}]}],
 	"resources": [
-		{"resource": "Credits", "costs": [1000, 3000, 10000, 30000, 100000]},
-		{"resource": "Ferrite", "costs": [800, 2400, 8000, 24000, 80000]},
-		{"resource": "Circuits", "costs": [200, 600, 2000, 6000, 20000]},
-		{"resource": "Salvage", "costs": [500, 1500, 5000, 15000, 50000]},
-		{"resource": "Forma", "costs": [1, 1, 1, 3, 10]}], "unverified": true,
+		{"resource": "resource.credits", "costs": [1000, 3000, 10000, 30000, 100000]},
+		{"resource": "resource.ferrite", "costs": [800, 2400, 8000, 24000, 80000]},
+		{"resource": "resource.circuits", "costs": [200, 600, 2000, 6000, 20000]},
+		{"resource": "resource.salvage", "costs": [500, 1500, 5000, 15000, 50000]},
+		{"resource": "resource.forma", "costs": [1, 1, 1, 3, 10]}], "unverified": true,
     "treetype": "h-6",
 	"blockedFromAboveBy": [
 		"ob"]},
-{"id": "uc", "image": "uranus-chamber", "name": "Uranus Chamber", "category": "Theme Halls K-Z", "spawn": false, "prereq": null, "capacity": 200, "energy": -5, "maxnum": null, "floor": -20, "ceil": 32,
+{"id": "uc", "image": "uranus-chamber", "name": "room.uranus.chamber", "category": "category.theme.halls.2", "spawn": false, "prereq": null, "capacity": 200, "energy": -5, "maxnum": null, "floor": -20, "ceil": 32,
 	"bounds": [
 		{"x1": -31.5, "y1": -31.5, "x2": 31.5, "y2": 31.5, "floor": -20, "ceil": 32},
 		{"x1": -32, "y1": -24, "x2": 32, "y2": -8, "floor": 0, "ceil": 8},
@@ -459,30 +459,30 @@ var roomMetadata =
 	"floor_images": [
 		{"floor": 0, "image": "uranus-chamber", "marker_images": [{"image": "marker-console", "x": -1, "y": 28, "rot": 0}]}],
 	"resources": [
-		{"resource": "Credits", "costs": [1000, 3000, 10000, 30000, 100000]},
-		{"resource": "Ferrite", "costs": [800, 2400, 8000, 24000, 80000]},
-		{"resource": "Circuits", "costs": [200, 600, 2000, 6000, 20000]},
-		{"resource": "Salvage", "costs": [500, 1500, 5000, 15000, 50000]},
-		{"resource": "Forma", "costs": [1, 1, 1, 3, 10]}], "unverified": true,
+		{"resource": "resource.credits", "costs": [1000, 3000, 10000, 30000, 100000]},
+		{"resource": "resource.ferrite", "costs": [800, 2400, 8000, 24000, 80000]},
+		{"resource": "resource.circuits", "costs": [200, 600, 2000, 6000, 20000]},
+		{"resource": "resource.salvage", "costs": [500, 1500, 5000, 15000, 50000]},
+		{"resource": "resource.forma", "costs": [1, 1, 1, 3, 10]}], "unverified": true,
     "treetype": "h-6",
 	"blockedFromAboveBy": [
 		"ob"]},
 
-{"id": "or", "image": "oracle2", "name": "Oracle", "category": "Labs", "prereq": null, "capacity": -2, "energy": -5, "maxnum": null, "floor": -8, "ceil": 12, "xp": 10000,
+{"id": "or", "image": "oracle2", "name": "room.oracle", "category": "category.labs", "prereq": null, "capacity": -2, "energy": -5, "maxnum": null, "floor": -8, "ceil": 12, "xp": 10000,
 	"bounds": [
 		{"x1": -14, "y1": -14, "x2": 14, "y2": 15, "floor": -8, "ceil": 12}],
 	"doors": [
 		{"x": 0, "y": 15, "floor": 0, "outx": 0, "outy": 1}],
 	"resources": [
-		{"resource": "Credits", "costs": [1000, 3000, 10000, 30000, 100000]},
-		{"resource": "Salvage", "costs": [650, 1950, 6500, 19500, 65000]},
-		{"resource": "Circuits", "costs": [350, 1050, 3500, 10500, 35000]},
-		{"resource": "Polymer Bundle", "costs": [350, 1050, 3500, 10500, 35000]},
-		{"resource": "Forma", "costs": [1, 1, 2, 5, 15]}],
+		{"resource": "resource.credits", "costs": [1000, 3000, 10000, 30000, 100000]},
+		{"resource": "resource.salvage", "costs": [650, 1950, 6500, 19500, 65000]},
+		{"resource": "resource.circuits", "costs": [350, 1050, 3500, 10500, 35000]},
+		{"resource": "resource.polymer.bundle", "costs": [350, 1050, 3500, 10500, 35000]},
+		{"resource": "resource.forma", "costs": [1, 1, 2, 5, 15]}],
     "treetype": "32-1",
 	"blockedFromAboveBy": [
 	    ]},
-{"id": "lt", "image": "tenno-lab2", "name": "Tenno Lab", "category": "Labs", "prereq": "or", "capacity": -2, "energy": -5, "maxnum": null, "floor": 0, "ceil": 8, "xp": 10000,
+{"id": "lt", "image": "tenno-lab2", "name": "room.tenno.lab", "category": "category.labs", "prereq": "or", "capacity": -2, "energy": -5, "maxnum": null, "floor": 0, "ceil": 8, "xp": 10000,
 	"bounds": [
 		{"x1": -11, "y1": -10, "x2": 11, "y2": 9, "floor": 0, "ceil": 8}],
 	"doors": [
@@ -490,15 +490,15 @@ var roomMetadata =
 	"floor_images": [
 		{"floor": 0, "image": "tenno-lab2", "marker_images": [{"image": "marker-lab-tenno", "x": 0, "y": 8}]}],
 	"resources": [
-		{"resource": "Credits", "costs": [1000, 3000, 10000, 30000, 100000]},
-		{"resource": "Salvage", "costs": [650, 1950, 6500, 19500, 65000]},
-		{"resource": "Circuits", "costs": [350, 1050, 3500, 10500, 35000]},
-		{"resource": "Polymer Bundle", "costs": [350, 1050, 3500, 10500, 35000]},
-		{"resource": "Forma", "costs": [1, 1, 2, 5, 15]}],
+		{"resource": "resource.credits", "costs": [1000, 3000, 10000, 30000, 100000]},
+		{"resource": "resource.salvage", "costs": [650, 1950, 6500, 19500, 65000]},
+		{"resource": "resource.circuits", "costs": [350, 1050, 3500, 10500, 35000]},
+		{"resource": "resource.polymer.bundle", "costs": [350, 1050, 3500, 10500, 35000]},
+		{"resource": "resource.forma", "costs": [1, 1, 2, 5, 15]}],
     "treetype": "16-1",
 	"blockedFromAboveBy": [
 	    ]},
-{"id": "le", "image": "energy-lab", "name": "Energy Lab", "category": "Labs", "prereq": "or", "capacity": -2, "energy": -5, "maxnum": null, "floor": 0, "ceil": 16, "xp": 10000,
+{"id": "le", "image": "energy-lab", "name": "room.energy.lab", "category": "category.labs", "prereq": "or", "capacity": -2, "energy": -5, "maxnum": null, "floor": 0, "ceil": 16, "xp": 10000,
 	"bounds": [
 		{"x1": -14, "y1": -15, "x2": 14, "y2": 14, "floor": 0, "ceil": 16}],
 	"doors": [
@@ -506,15 +506,15 @@ var roomMetadata =
 	"floor_images": [
 		{"floor": 0, "image": "energy-lab", "marker_images": [{"image": "marker-lab-energy", "x": 0, "y": 13}]}],
 	"resources": [
-		{"resource": "Credits", "costs": [1000, 3000, 10000, 30000, 100000]},
-		{"resource": "Salvage", "costs": [650, 1950, 6500, 19500, 65000]},
-		{"resource": "Circuits", "costs": [350, 1050, 3500, 10500, 35000]},
-		{"resource": "Polymer Bundle", "costs": [350, 1050, 3500, 10500, 35000]},
-		{"resource": "Forma", "costs": [1, 1, 2, 5, 15]}],
+		{"resource": "resource.credits", "costs": [1000, 3000, 10000, 30000, 100000]},
+		{"resource": "resource.salvage", "costs": [650, 1950, 6500, 19500, 65000]},
+		{"resource": "resource.circuits", "costs": [350, 1050, 3500, 10500, 35000]},
+		{"resource": "resource.polymer.bundle", "costs": [350, 1050, 3500, 10500, 35000]},
+		{"resource": "resource.forma", "costs": [1, 1, 2, 5, 15]}],
     "treetype": "32-1",
 	"blockedFromAboveBy": [
 	    ]},
-{"id": "lc", "image": "chem-lab", "name": "Chem Lab", "category": "Labs", "prereq": "or", "capacity": -2, "energy": -5, "maxnum": null, "floor": -16, "ceil": 16, "xp": 10000,
+{"id": "lc", "image": "chem-lab", "name": "room.chem.lab", "category": "category.labs", "prereq": "or", "capacity": -2, "energy": -5, "maxnum": null, "floor": -16, "ceil": 16, "xp": 10000,
 	"bounds": [
 		{"x1": -14, "y1": -15, "x2": 14, "y2": 16, "floor": -16, "ceil": 16}],
 	"doors": [
@@ -522,15 +522,15 @@ var roomMetadata =
 	"floor_images": [
 		{"floor": 0, "image": "chem-lab", "marker_images": [{"image": "marker-lab-chem", "x": 0, "y": 15}]}],
 	"resources": [
-		{"resource": "Credits", "costs": [1000, 3000, 10000, 30000, 100000]},
-		{"resource": "Salvage", "costs": [650, 1950, 6500, 19500, 65000]},
-		{"resource": "Circuits", "costs": [350, 1050, 3500, 10500, 35000]},
-		{"resource": "Polymer Bundle", "costs": [350, 1050, 3500, 10500, 35000]},
-		{"resource": "Forma", "costs": [1, 1, 2, 5, 15]}],
+		{"resource": "resource.credits", "costs": [1000, 3000, 10000, 30000, 100000]},
+		{"resource": "resource.salvage", "costs": [650, 1950, 6500, 19500, 65000]},
+		{"resource": "resource.circuits", "costs": [350, 1050, 3500, 10500, 35000]},
+		{"resource": "resource.polymer.bundle", "costs": [350, 1050, 3500, 10500, 35000]},
+		{"resource": "resource.forma", "costs": [1, 1, 2, 5, 15]}],
     "treetype": "32-1",
 	"blockedFromAboveBy": [
 	    ]},
-{"id": "lb", "image": "bio-lab", "name": "Bio Lab", "category": "Labs", "prereq": "or", "capacity": -2, "energy": -5, "maxnum": null, "floor": 0, "ceil": 12, "xp": 10000,
+{"id": "lb", "image": "bio-lab", "name": "room.bio.lab", "category": "category.labs", "prereq": "or", "capacity": -2, "energy": -5, "maxnum": null, "floor": 0, "ceil": 12, "xp": 10000,
 	"bounds": [
 		{"x1": -14, "y1": -15, "x2": 14, "y2": 14, "floor": 0, "ceil": 12}],
 	"doors": [
@@ -538,15 +538,15 @@ var roomMetadata =
 	"floor_images": [
 		{"floor": 0, "image": "bio-lab", "marker_images": [{"image": "marker-lab-bio", "x": 0, "y": 13}]}],
 	"resources": [
-		{"resource": "Credits", "costs": [1000, 3000, 10000, 30000, 100000]},
-		{"resource": "Salvage", "costs": [650, 1950, 6500, 19500, 65000]},
-		{"resource": "Circuits", "costs": [350, 1050, 3500, 10500, 35000]},
-		{"resource": "Polymer Bundle", "costs": [350, 1050, 3500, 10500, 35000]},
-		{"resource": "Forma", "costs": [1, 1, 2, 5, 15]}],
+		{"resource": "resource.credits", "costs": [1000, 3000, 10000, 30000, 100000]},
+		{"resource": "resource.salvage", "costs": [650, 1950, 6500, 19500, 65000]},
+		{"resource": "resource.circuits", "costs": [350, 1050, 3500, 10500, 35000]},
+		{"resource": "resource.polymer.bundle", "costs": [350, 1050, 3500, 10500, 35000]},
+		{"resource": "resource.forma", "costs": [1, 1, 2, 5, 15]}],
     "treetype": "32-1",
 	"blockedFromAboveBy": [
 	    ]},
-{"id": "lo", "image": "orokin-lab", "name": "Orokin Lab", "category": "Labs", "prereq": "or", "capacity": -2, "energy": -5, "maxnum": null, "floor": -16, "ceil": 28, "xp": 10000,
+{"id": "lo", "image": "orokin-lab", "name": "room.orokin.lab", "category": "category.labs", "prereq": "or", "capacity": -2, "energy": -5, "maxnum": null, "floor": -16, "ceil": 28, "xp": 10000,
 	"bounds": [
 		{"x1": -16, "y1": -28, "x2": 16, "y2": 26, "floor": -16, "ceil": 28}],
 	"doors": [
@@ -554,15 +554,15 @@ var roomMetadata =
 	"floor_images": [
 		{"floor": 0, "image": "orokin-lab", "marker_images": [{"image": "marker-lab-orokin", "x": 0, "y": 25}]}],
 	"resources": [
-		{"resource": "Credits", "costs": [1000, 3000, 10000, 30000, 100000]},
-		{"resource": "Ferrite", "costs": [800, 2400, 8000, 24000, 80000]},
-		{"resource": "Circuits", "costs": [350, 1050, 3500, 10500, 35000]},
-		{"resource": "Polymer Bundle", "costs": [350, 1050, 3500, 10500, 35000]},
-		{"resource": "Forma", "costs": [1, 1, 2, 5, 20]}],
+		{"resource": "resource.credits", "costs": [1000, 3000, 10000, 30000, 100000]},
+		{"resource": "resource.ferrite", "costs": [800, 2400, 8000, 24000, 80000]},
+		{"resource": "resource.circuits", "costs": [350, 1050, 3500, 10500, 35000]},
+		{"resource": "resource.polymer.bundle", "costs": [350, 1050, 3500, 10500, 35000]},
+		{"resource": "resource.forma", "costs": [1, 1, 2, 5, 20]}],
     "treetype": "64-1",
 	"blockedFromAboveBy": [
 	    ]},
-{"id": "lv", "image": "ventkid-lab", "name": "Ventkids' Bash Lab", "category": "Labs", "prereq": "lt", "capacity": -2, "energy": -5, "maxnum": null, "floor": 0, "ceil": 8, "xp": 10000,
+{"id": "lv", "image": "ventkid-lab", "name": "room.ventkids.bash.lab", "category": "category.labs", "prereq": "lt", "capacity": -2, "energy": -5, "maxnum": null, "floor": 0, "ceil": 8, "xp": 10000,
 	"bounds": [
 		{"x1": -8, "y1": -10, "x2": 8, "y2": 8, "floor": 0, "ceil": 8},
 		{"x1": -2, "y1": -15, "x2": 2, "y2": -10, "floor": 0, "ceil": 8}],
@@ -571,15 +571,15 @@ var roomMetadata =
 	"floor_images": [
 		{"floor": 0, "image": "ventkid-lab", "marker_images": [{"image": "marker-ventkid-lab", "x": 0, "y": 8}]}],
 	"resources": [
-		{"resource": "Credits", "costs": [1000, 3000, 10000, 30000, 100000]},
-		{"resource": "Ferrite", "costs": [450, 1350, 4500, 13500, 45000]},
-		{"resource": "Circuits", "costs": [250, 750, 2500, 7500, 25000]},
-		{"resource": "Thermal Sludge", "costs": [100, 300, 1000, 3000, 10000]},
-		{"resource": "Forma", "costs": [1, 1, 2, 5, 15]}],
+		{"resource": "resource.credits", "costs": [1000, 3000, 10000, 30000, 100000]},
+		{"resource": "resource.ferrite", "costs": [450, 1350, 4500, 13500, 45000]},
+		{"resource": "resource.circuits", "costs": [250, 750, 2500, 7500, 25000]},
+		{"resource": "resource.thermal.sludge", "costs": [100, 300, 1000, 3000, 10000]},
+		{"resource": "resource.forma", "costs": [1, 1, 2, 5, 15]}],
     "treetype": "16-1",
 	"blockedFromAboveBy": [
 	    ]},
-{"id": "ld", "image": "dagath-lab", "name": "Dagath's Hollow", "category": "Labs", "prereq": "lt", "capacity": -2, "energy": -5, "maxnum": null, "floor": -8, "ceil": 30, "xp": 10000,
+{"id": "ld", "image": "dagath-lab", "name": "room.dagaths.hollow", "category": "category.labs", "prereq": "lt", "capacity": -2, "energy": -5, "maxnum": null, "floor": -8, "ceil": 30, "xp": 10000,
 	"bounds": [
 		{"x1": -5, "y1": 19, "x2": 5, "y2": 27, "floor": 0, "ceil": 8},
 		{"x1": -23, "y1": -28, "x2": 23, "y2": 19, "floor": -8, "ceil": 30}],
@@ -588,16 +588,16 @@ var roomMetadata =
 	"floor_images": [
 		{"floor": 0, "image": "dagath-lab", "marker_images": [{"image": "marker-dagath-lab", "x": 0, "y": 27}]}],
 	"resources": [
-		{"resource": "Credits", "costs": [1000, 3000, 10000, 30000, 100000]},
-		{"resource": "Alloy Plate", "costs": [500, 1500, 5000, 15000, 50000]},
-		{"resource": "Circuits", "costs": [200, 600, 2000, 6000, 20000]},
-		{"resource": "Cryotic", "costs": [100, 300, 1000, 3000, 10000]},
-		{"resource": "Forma", "costs": [1, 1, 2, 5, 15]}],
+		{"resource": "resource.credits", "costs": [1000, 3000, 10000, 30000, 100000]},
+		{"resource": "resource.alloy.plate", "costs": [500, 1500, 5000, 15000, 50000]},
+		{"resource": "resource.circuits", "costs": [200, 600, 2000, 6000, 20000]},
+		{"resource": "resource.cryotic", "costs": [100, 300, 1000, 3000, 10000]},
+		{"resource": "resource.forma", "costs": [1, 1, 2, 5, 15]}],
     "treetype": "64-1",
 	"blockedFromAboveBy": [
 	    ]},
 
-{"id": "dd", "image": "dry-dock", "name": "Dry Dock", "category": "Interactive", "prereq": null, "capacity": -20, "energy": -6, "maxnum": 1, "floor": -80, "ceil": 200,
+{"id": "dd", "image": "dry-dock", "name": "room.dry.dock", "category": "category.interactive", "prereq": null, "capacity": -20, "energy": -6, "maxnum": 1, "floor": -80, "ceil": 200,
 	"bounds": [
 //		{"x1": -128, "y1":  -128, "x2": 128, "y2":  128, "floor": -80, "ceil": 200},
 		{"x1": -127.5, "y1":  -128,   "x2": 127.5, "y2":  127.5, "floor": -80,  "ceil": 200},
@@ -621,30 +621,30 @@ var roomMetadata =
 		{"floor": 2, "image": "dry-dock-wall"},
 		{"floor": 3, "image": "dry-dock-wall"}],
 	"resources": [
-		{"resource": "Credits", "costs": [100000, 300000, 1000000, 3000000, 10000000]},
-		{"resource": "Salvage", "costs": [25000, 75000, 250000, 750000, 2500000]},
-		{"resource": "Circuits", "costs": [850, 2550, 8500, 25500, 85000]},
-		{"resource": "Tellurium", "costs": [15, 45, 150, 450, 1500]},
-		{"resource": "Forma", "costs": [1, 1, 2, 5, 15]}],
+		{"resource": "resource.credits", "costs": [100000, 300000, 1000000, 3000000, 10000000]},
+		{"resource": "resource.salvage", "costs": [25000, 75000, 250000, 750000, 2500000]},
+		{"resource": "resource.circuits", "costs": [850, 2550, 8500, 25500, 85000]},
+		{"resource": "resource.tellurium", "costs": [15, 45, 150, 450, 1500]},
+		{"resource": "resource.forma", "costs": [1, 1, 2, 5, 15]}],
     "treetype": "dd",
 	"blockedFromAboveBy": [
 	    ]},
-{"id": "cr", "image": "crimson-branch", "name": "Crimson Branch", "category": "Interactive", "prereq": null, "capacity": -2, "energy": -4, "maxnum": null, "floor": 0, "ceil": 12,
+{"id": "cr", "image": "crimson-branch", "name": "room.crimson.branch", "category": "category.interactive", "prereq": null, "capacity": -2, "energy": -4, "maxnum": null, "floor": 0, "ceil": 12,
 	"bounds": [
 		{"x1": -30, "y1":  1, "x2": 30, "y2": -28, "floor": 0, "ceil": 12},
 		{"x1": -16, "y1": 16, "x2": 16, "y2": -28, "floor": 0, "ceil": 12}],
 	"doors": [
 		{"x": 0, "y": 16, "floor": 0, "outx": 0, "outy": 1}],
 	"resources": [
-		{"resource": "Credits", "costs": [100000, 300000, 1000000, 3000000, 10000000]},
-		{"resource": "Hexenon", "costs": [250, 750, 2500, 7500, 25000]},
-		{"resource": "Alloy Plate", "costs": [8500, 25500, 85000, 255000, 850000]},
-		{"resource": "Orokin Cell", "costs": [25, 75, 250, 750, 2500]},
-		{"resource": "Forma", "costs": [1, 1, 1, 3, 10]}],
+		{"resource": "resource.credits", "costs": [100000, 300000, 1000000, 3000000, 10000000]},
+		{"resource": "resource.hexenon", "costs": [250, 750, 2500, 7500, 25000]},
+		{"resource": "resource.alloy.plate", "costs": [8500, 25500, 85000, 255000, 850000]},
+		{"resource": "resource.orokin.cell", "costs": [25, 75, 250, 750, 2500]},
+		{"resource": "resource.forma", "costs": [1, 1, 1, 3, 10]}],
     "treetype": "32-1",
 	"blockedFromAboveBy": [
 	    ]},
-{"id": "du", "image": "dueling-room", "name": "Dueling Room", "category": "Interactive", "prereq": null, "capacity": -10, "energy": -10, "maxnum": null, "floor": 0, "ceil": 20, "xp": 15000,
+{"id": "du", "image": "dueling-room", "name": "room.dueling.room", "category": "category.interactive", "prereq": null, "capacity": -10, "energy": -10, "maxnum": null, "floor": 0, "ceil": 20, "xp": 15000,
 	"bounds": [
 		{"x1": -16, "y1": -15.5, "x2": 16, "y2": 16, "floor": 0, "ceil": 20}],
 	"doors": [
@@ -652,15 +652,15 @@ var roomMetadata =
 	"floor_images": [
 		{"floor": 0, "image": "dueling-room", "marker_images": [{"image": "marker-duel", "x": 0, "y": 14}]}],
 	"resources": [
-		{"resource": "Credits", "costs": [750, 2250, 7500, 22500, 75000]},
-		{"resource": "Salvage", "costs": [650, 1950, 6500, 19500, 65000]},
-		{"resource": "Ferrite", "costs": [350, 1050, 3500, 10500, 35000]},
-		{"resource": "Nano Spores", "costs": [1200, 3600, 12000, 36000, 120000]},
-		{"resource": "Forma", "costs": [1, 1, 1, 3, 10]}],
+		{"resource": "resource.credits", "costs": [750, 2250, 7500, 22500, 75000]},
+		{"resource": "resource.salvage", "costs": [650, 1950, 6500, 19500, 65000]},
+		{"resource": "resource.ferrite", "costs": [350, 1050, 3500, 10500, 35000]},
+		{"resource": "resource.nano.spores", "costs": [1200, 3600, 12000, 36000, 120000]},
+		{"resource": "resource.forma", "costs": [1, 1, 1, 3, 10]}],
     "treetype": "32-1",
 	"blockedFromAboveBy": [
 	    ]},
-{"id": "oc", "image": "obstacle-course", "name": "Obstacle Course", "category": "Interactive", "prereq": null, "capacity": -10, "energy": -10, "maxnum": null, "floor": -24, "ceil": 24, "xp": 15000,
+{"id": "oc", "image": "obstacle-course", "name": "room.obstacle.course", "category": "category.interactive", "prereq": null, "capacity": -10, "energy": -10, "maxnum": null, "floor": -24, "ceil": 24, "xp": 15000,
 	"bounds": [
 		{"x1": -82, "y1": -98, "x2": 82, "y2": 94, "floor": -24, "ceil": 24},
 		{"x1": -8, "y1": 94, "x2": 8, "y2": 98, "floor": -24, "ceil": 24}],
@@ -672,14 +672,14 @@ var roomMetadata =
 		    {"image": "marker-obstacle-course-fog-plane", "x": 0, "y": -8, "z": -5, "rot": 0, "nonclickable": true}
         ]}],
 	"resources": [
-		{"resource": "Credits", "costs": [1000, 3000, 10000, 30000, 100000]},
-		{"resource": "Alloy Plate", "costs": [650, 1950, 6500, 19500, 65000]},
-		{"resource": "Ferrite", "costs": [400, 1200, 4000, 12000, 40000]},
-		{"resource": "Rubedo", "costs": [1200, 3600, 12000, 36000, 120000]},
-		{"resource": "Forma", "costs": [1, 1, 2, 5, 15]}],
+		{"resource": "resource.credits", "costs": [1000, 3000, 10000, 30000, 100000]},
+		{"resource": "resource.alloy.plate", "costs": [650, 1950, 6500, 19500, 65000]},
+		{"resource": "resource.ferrite", "costs": [400, 1200, 4000, 12000, 40000]},
+		{"resource": "resource.rubedo", "costs": [1200, 3600, 12000, 36000, 120000]},
+		{"resource": "resource.forma", "costs": [1, 1, 2, 5, 15]}],
     "treetype": "oc-1",
 	"blockedFromAboveBy": []},
-{"id": "oa", "image": "obstacle-course-architect", "name": "Obstacle Course Architect", "category": "Interactive", "prereq": null, "capacity": 0, "energy": -2, "maxnum": 5, "floor": 0, "ceil": 50, "xp": 15000,
+{"id": "oa", "image": "obstacle-course-architect", "name": "room.obstacle.course.architect", "category": "category.interactive", "prereq": null, "capacity": 0, "energy": -2, "maxnum": 5, "floor": 0, "ceil": 50, "xp": 15000,
 	"bounds": [
 		{"x1": -76, "y1": -78, "x2": 76, "y2": 72, "floor": 0, "ceil": 50},
 		{"x1": -6, "y1": 72, "x2": 6, "y2": 82, "floor": 0, "ceil": 12}],
@@ -688,31 +688,31 @@ var roomMetadata =
 	"floor_images": [
 		{"floor": 0, "image": "obstacle-course-architect", "marker_images": [{"image": "marker-obstacle", "x": 0, "y": 72}]}],
 	"resources": [
-		{"resource": "Credits", "costs": [1000, 3000, 10000, 30000, 100000]},
-		{"resource": "Salvage", "costs": [150, 450, 1500, 4500, 15000]},
-		{"resource": "Ferrite", "costs": [600, 1800, 6000, 18000, 60000]},
-		{"resource": "Nano Spores", "costs": [300, 900, 3000, 9000, 30000]},
-		{"resource": "Forma", "costs": [1, 1, 2, 5, 15]}], "unverified": true,
+		{"resource": "resource.credits", "costs": [1000, 3000, 10000, 30000, 100000]},
+		{"resource": "resource.salvage", "costs": [150, 450, 1500, 4500, 15000]},
+		{"resource": "resource.ferrite", "costs": [600, 1800, 6000, 18000, 60000]},
+		{"resource": "resource.nano.spores", "costs": [300, 900, 3000, 9000, 30000]},
+		{"resource": "resource.forma", "costs": [1, 1, 2, 5, 15]}], "unverified": true,
     "treetype": "os-1",
 	"blockedFromAboveBy": [
 		"ob","oc","re","ce","ef","uc","t4","ot","gc","dc"]},
 
-{"id": "ob", "image": "observatory", "name": "Observatory", "category": "Misc", "prereq": null, "capacity": -2, "energy": -5, "maxnum": null, "floor": -36, "ceil": 52,
+{"id": "ob", "image": "observatory", "name": "room.observatory", "category": "category.misc", "prereq": null, "capacity": -2, "energy": -5, "maxnum": null, "floor": -36, "ceil": 52,
 	"bounds": [
 		{"x1": -50, "y1": -74, "x2": 50, "y2": 73, "floor": -36, "ceil": 52},
 		{"x1": -6, "y1": 72, "x2": 6, "y2": 80, "floor": -32, "ceil": 52}],
 	"doors": [
 		{"x": 0, "y": 80, "floor": 0, "outx": 0, "outy": 1}],
 	"resources": [
-		{"resource": "Credits", "costs": [1000, 3000, 10000, 30000, 100000]},
-		{"resource": "Ferrite", "costs": [800, 2400, 8000, 24000, 80000]},
-		{"resource": "Circuits", "costs": [200, 600, 2000, 6000, 20000]},
-		{"resource": "Salvage", "costs": [500, 1500, 5000, 15000, 50000]},
-		{"resource": "Forma", "costs": [1, 1, 2, 5, 15]}], "unverified": true,
+		{"resource": "resource.credits", "costs": [1000, 3000, 10000, 30000, 100000]},
+		{"resource": "resource.ferrite", "costs": [800, 2400, 8000, 24000, 80000]},
+		{"resource": "resource.circuits", "costs": [200, 600, 2000, 6000, 20000]},
+		{"resource": "resource.salvage", "costs": [500, 1500, 5000, 15000, 50000]},
+		{"resource": "resource.forma", "costs": [1, 1, 2, 5, 15]}], "unverified": true,
     "treetype": "ob-1",
 	"blockedFromAboveBy": [
 		"lc","ce","ob","oc","lo","re","uc","ef","t4","ot","gc","dc"]},
-{"id": "gs", "image": "small-garden", "name": "Small Garden", "category": "Misc", "prereq": null, "capacity": -10, "energy": -6, "maxnum": null, "floor": 0, "ceil": 20,
+{"id": "gs", "image": "small-garden", "name": "room.small.garden", "category": "category.misc", "prereq": null, "capacity": -10, "energy": -6, "maxnum": null, "floor": 0, "ceil": 20,
 	"bounds": [
 		{"x1": -16, "y1": -16, "x2": 16, "y2": 16, "floor": 0, "ceil": 20}],
 	"doors": [
@@ -721,15 +721,15 @@ var roomMetadata =
 		{"x": 0, "y": -16, "floor": 0, "outx": 0, "outy": -1},
 		{"x": -16, "y": 0, "floor": 0, "outx": -1, "outy": 0}],
 	"resources": [
-		{"resource": "Credits", "costs": [750, 2250, 7500, 22500, 75000]},
-		{"resource": "Salvage", "costs": [650, 1950, 6500, 19500, 65000]},
-		{"resource": "Ferrite", "costs": [550, 1650, 5500, 16500, 55000]},
-		{"resource": "Nano Spores", "costs": [2000, 6000, 20000, 60000, 200000]},
-		{"resource": "Forma", "costs": [1, 1, 1, 2, 8]}],
+		{"resource": "resource.credits", "costs": [750, 2250, 7500, 22500, 75000]},
+		{"resource": "resource.salvage", "costs": [650, 1950, 6500, 19500, 65000]},
+		{"resource": "resource.ferrite", "costs": [550, 1650, 5500, 16500, 55000]},
+		{"resource": "resource.nano.spores", "costs": [2000, 6000, 20000, 60000, 200000]},
+		{"resource": "resource.forma", "costs": [1, 1, 1, 2, 8]}],
     "treetype": "32-4",
 	"blockedFromAboveBy": [
 	    ]},
-{"id": "gl", "image": "large-garden", "name": "Large Garden", "category": "Misc", "prereq": null, "capacity": -15, "energy": -8, "maxnum": null, "floor": 0, "ceil": 20,
+{"id": "gl", "image": "large-garden", "name": "room.large.garden", "category": "category.misc", "prereq": null, "capacity": -15, "energy": -8, "maxnum": null, "floor": 0, "ceil": 20,
 	"bounds": [
 		{"x1": -32, "y1": -4, "x2": 32, "y2": 4, "floor": 0, "ceil": 20},
 		{"x1": -4, "y1": -32, "x2": 4, "y2": 32, "floor": 0, "ceil": 20},
@@ -740,15 +740,15 @@ var roomMetadata =
 		{"x": 0, "y": -32, "floor": 0, "outx": 0, "outy": -1},
 		{"x": -32, "y": 0, "floor": 0, "outx": -1, "outy": 0}],
 	"resources": [
-		{"resource": "Credits", "costs": [1000, 3000, 10000, 30000, 100000]},
-		{"resource": "Salvage", "costs": [850, 2550, 8500, 25500, 85000]},
-		{"resource": "Polymer Bundle", "costs": [750, 2250, 7500, 22500, 75000]},
-		{"resource": "Nano Spores", "costs": [2500, 7500, 25000, 75000, 250000]},
-		{"resource": "Forma", "costs": [1, 1, 1, 3, 10]}], "unverified": true,
+		{"resource": "resource.credits", "costs": [1000, 3000, 10000, 30000, 100000]},
+		{"resource": "resource.salvage", "costs": [850, 2550, 8500, 25500, 85000]},
+		{"resource": "resource.polymer.bundle", "costs": [750, 2250, 7500, 22500, 75000]},
+		{"resource": "resource.nano.spores", "costs": [2500, 7500, 25000, 75000, 250000]},
+		{"resource": "resource.forma", "costs": [1, 1, 1, 3, 10]}], "unverified": true,
     "treetype": "64-4",
 	"blockedFromAboveBy": [
 	    ]},
-{"id": "th", "image": "temple-of-honor", "name": "Temple Of Honor", "category": "Misc", "prereq": null, "capacity": -2, "energy": -5, "maxnum": null, "floor": 0, "ceil": 20, "xp": 15000,
+{"id": "th", "image": "temple-of-honor", "name": "room.temple.of.honor", "category": "category.misc", "prereq": null, "capacity": -2, "energy": -5, "maxnum": null, "floor": 0, "ceil": 20, "xp": 15000,
 	"bounds": [
 		{"x1": -32, "y1": -8, "x2": 32, "y2": 8, "floor": 0, "ceil": 20},
 		{"x1": -8, "y1": -32, "x2": 8, "y2": 32, "floor": 0, "ceil": 20},
@@ -760,15 +760,15 @@ var roomMetadata =
 		{"x": 0, "y": -32, "floor": 0, "outx": 0, "outy": -1},
 		{"x": -32, "y": 0, "floor": 0, "outx": -1, "outy": 0}],
 	"resources": [
-		{"resource": "Credits", "costs": [1000, 3000, 10000, 30000, 100000]},
-		{"resource": "Ferrite", "costs": [800, 2400, 8000, 24000, 80000]},
-		{"resource": "Circuits", "costs": [200, 600, 2000, 6000, 20000]},
-		{"resource": "Alloy Plate", "costs": [150, 450, 1500, 4500, 15000]},
-		{"resource": "Forma", "costs": [1, 1, 1, 3, 10]}], "unverified": true,
+		{"resource": "resource.credits", "costs": [1000, 3000, 10000, 30000, 100000]},
+		{"resource": "resource.ferrite", "costs": [800, 2400, 8000, 24000, 80000]},
+		{"resource": "resource.circuits", "costs": [200, 600, 2000, 6000, 20000]},
+		{"resource": "resource.alloy.plate", "costs": [150, 450, 1500, 4500, 15000]},
+		{"resource": "resource.forma", "costs": [1, 1, 1, 3, 10]}], "unverified": true,
     "treetype": "64-4",
 	"blockedFromAboveBy": [
 	    ]},
-{"id": "os", "image": "open-space", "name": "Open Space", "category": "Misc", "prereq": null, "capacity": -2, "energy": -5, "maxnum": null, "floor": -60, "ceil": 80,
+{"id": "os", "image": "open-space", "name": "room.open.space", "category": "category.misc", "prereq": null, "capacity": -2, "energy": -5, "maxnum": null, "floor": -60, "ceil": 80,
 	"bounds": [
 		{"x1": -76, "y1": -80, "x2": 76, "y2": 73, "floor": -64, "ceil": 80},
 		{"x1": -6, "y1": 73, "x2": 6, "y2": 82, "floor": 0, "ceil": 12}],
@@ -781,15 +781,15 @@ var roomMetadata =
 	"doors": [
 		{"x": 0, "y": 82, "floor": 0, "outx": 0, "outy": 1}],
 	"resources": [
-		{"resource": "Credits", "costs": [1000, 3000, 10000, 30000, 100000]},
-		{"resource": "Ferrite", "costs": [800, 2400, 8000, 24000, 80000]},
-		{"resource": "Circuits", "costs": [200, 600, 2000, 6000, 20000]},
-		{"resource": "Salvage", "costs": [500, 1500, 5000, 15000, 50000]},
-		{"resource": "Forma", "costs": [1, 1, 1, 3, 10]}], "unverified": true,
+		{"resource": "resource.credits", "costs": [1000, 3000, 10000, 30000, 100000]},
+		{"resource": "resource.ferrite", "costs": [800, 2400, 8000, 24000, 80000]},
+		{"resource": "resource.circuits", "costs": [200, 600, 2000, 6000, 20000]},
+		{"resource": "resource.salvage", "costs": [500, 1500, 5000, 15000, 50000]},
+		{"resource": "resource.forma", "costs": [1, 1, 1, 3, 10]}], "unverified": true,
     "treetype": "os-1",
 	"blockedFromAboveBy": [
 	    ]},
-{"id": "du1", "image": "duviri-courtier", "name": "Courtier's Bliss", "category": "Misc", "prereq": null, "capacity": 200, "energy": -5, "maxnum": 1, "floor": -12, "ceil": 18,
+{"id": "du1", "image": "duviri-courtier", "name": "room.courtiers.bliss", "category": "category.misc", "prereq": null, "capacity": 200, "energy": -5, "maxnum": 1, "floor": -12, "ceil": 18,
 	"bounds": [
 		{"x1": -16, "y1": -14, "x2": 16.5, "y2": 16, "floor": -12, "ceil": 18}
 		// I can't find a cleaner way to express how this room does not fit directly against any room on the left
@@ -799,15 +799,15 @@ var roomMetadata =
 	"doors": [
 		{"x": 0, "y": 16, "floor": 0, "outx": 0, "outy": 1}],
 	"resources": [
-		{"resource": "Credits", "costs": [1000, 3000, 10000, 30000, 100000]},
-		{"resource": "Ferrite", "costs": [800, 2400, 8000, 24000, 80000]},
-		{"resource": "Circuits", "costs": [200, 600, 2000, 6000, 20000]},
-		{"resource": "Salvage", "costs": [500, 1500, 5000, 15000, 50000]},
-		{"resource": "Forma", "costs": [1, 1, 1, 3, 10]}], "unverified": true,
+		{"resource": "resource.credits", "costs": [1000, 3000, 10000, 30000, 100000]},
+		{"resource": "resource.ferrite", "costs": [800, 2400, 8000, 24000, 80000]},
+		{"resource": "resource.circuits", "costs": [200, 600, 2000, 6000, 20000]},
+		{"resource": "resource.salvage", "costs": [500, 1500, 5000, 15000, 50000]},
+		{"resource": "resource.forma", "costs": [1, 1, 1, 3, 10]}], "unverified": true,
     "treetype": "32-1",
 	"blockedFromAboveBy": [
     ]},
-{"id": "du2", "image": "duviri-harbinger", "name": "Harbinger's Pass", "category": "Misc", "prereq": null, "capacity": 200, "energy": -5, "maxnum": 1, "floor": -12, "ceil": 18,
+{"id": "du2", "image": "duviri-harbinger", "name": "room.harbingers.pass", "category": "category.misc", "prereq": null, "capacity": 200, "energy": -5, "maxnum": 1, "floor": -12, "ceil": 18,
 	"bounds": [
 		{"x1": -16, "y1": -32, "x2": 16.5, "y2": 16, "floor": -12, "ceil": 18}
 		// I can't find a cleaner way to express how this room does not fit directly against any room on the left
@@ -817,30 +817,30 @@ var roomMetadata =
 	"doors": [
 		{"x": 0, "y": 16, "floor": 0, "outx": 0, "outy": 1}],
 	"resources": [
-		{"resource": "Credits", "costs": [1000, 3000, 10000, 30000, 100000]},
-		{"resource": "Ferrite", "costs": [800, 2400, 8000, 24000, 80000]},
-		{"resource": "Circuits", "costs": [200, 600, 2000, 6000, 20000]},
-		{"resource": "Salvage", "costs": [500, 1500, 5000, 15000, 50000]},
-		{"resource": "Forma", "costs": [1, 1, 1, 3, 10]}], "unverified": true,
+		{"resource": "resource.credits", "costs": [1000, 3000, 10000, 30000, 100000]},
+		{"resource": "resource.ferrite", "costs": [800, 2400, 8000, 24000, 80000]},
+		{"resource": "resource.circuits", "costs": [200, 600, 2000, 6000, 20000]},
+		{"resource": "resource.salvage", "costs": [500, 1500, 5000, 15000, 50000]},
+		{"resource": "resource.forma", "costs": [1, 1, 1, 3, 10]}], "unverified": true,
     "treetype": "32-1",
 	"blockedFromAboveBy": [
     ]},
 
-{"id": "re", "image": "reactor", "name": "Reactor", "category": "Utility", "prereq": null, "capacity": -5, "energy": 25, "maxnum": null, "floor": -28, "ceil": 36,
+{"id": "re", "image": "reactor", "name": "room.reactor", "category": "category.utility", "prereq": null, "capacity": -5, "energy": 25, "maxnum": null, "floor": -28, "ceil": 36,
 	"bounds": [
 		{"x1": -16, "y1": -16, "x2": 16, "y2": 16, "floor": -28, "ceil": 36}],
 	"doors": [
 		{"x": 0, "y": 16, "floor": 0, "outx": 0, "outy": 1}],
 	"resources": [
-		{"resource": "Credits", "costs": [500, 1500, 5000, 15000, 50000]},
-		{"resource": "Salvage", "costs": [650, 1950, 6500, 19500, 65000]},
-		{"resource": "Circuits", "costs": [350, 1050, 3500, 10500, 35000]},
-		{"resource": "Alloy Plate", "costs": [150, 450, 1500, 4500, 15000]},
-		{"resource": "Forma", "costs": [1, 1, 1, 1, 5]}],
+		{"resource": "resource.credits", "costs": [500, 1500, 5000, 15000, 50000]},
+		{"resource": "resource.salvage", "costs": [650, 1950, 6500, 19500, 65000]},
+		{"resource": "resource.circuits", "costs": [350, 1050, 3500, 10500, 35000]},
+		{"resource": "resource.alloy.plate", "costs": [150, 450, 1500, 4500, 15000]},
+		{"resource": "resource.forma", "costs": [1, 1, 1, 1, 5]}],
     "treetype": "32-1",
 	"blockedFromAboveBy": [
 		"ob","ot"]},
-{"id": "t1", "image": "barracks", "iconImage": "barracks1", "name": "Shadow Barracks", "category": "Utility", "prereq": null, "capacity": -1, "energy": -1, "maxnum": 1, "floor": -6, "ceil": 12, "tier": 1,
+{"id": "t1", "image": "barracks", "iconImage": "barracks1", "name": "room.shadow.barracks", "category": "category.utility", "prereq": null, "capacity": -1, "energy": -1, "maxnum": 1, "floor": -6, "ceil": 12, "tier": 1,
 	"bounds": [
 		{"x1": -16, "y1": -18, "x2": 16, "y2": 18, "floor": -6, "ceil": 8}],
 	"doors": [
@@ -848,15 +848,15 @@ var roomMetadata =
 	"floor_images": [
 		{"floor": 0, "image": "barracks", "marker_images": [{"image": "marker-barracks-1", "x": 0, "y": 6}]}],
 	"resources": [
-		{"resource": "Credits", "costs": [1000, 1000, 1000, 1000, 1000]},
-		{"resource": "Alloy Plate", "costs": [150, 150, 150, 150, 150]},
-		{"resource": "Ferrite", "costs": [600, 600, 600, 600, 600]},
-		{"resource": "Rubedo", "costs": [300, 300, 300, 300, 300]},
-		{"resource": "Forma", "costs": [1, 1, 1, 1, 1]}],
+		{"resource": "resource.credits", "costs": [1000, 1000, 1000, 1000, 1000]},
+		{"resource": "resource.alloy.plate", "costs": [150, 150, 150, 150, 150]},
+		{"resource": "resource.ferrite", "costs": [600, 600, 600, 600, 600]},
+		{"resource": "resource.rubedo", "costs": [300, 300, 300, 300, 300]},
+		{"resource": "resource.forma", "costs": [1, 1, 1, 1, 1]}],
     "treetype": "32-1",
 	"blockedFromAboveBy": [
 	    ]},
-{"id": "t2", "image": "barracks", "iconImage": "barracks2", "name": "Storm Barracks", "category": "Utility", "prereq": "t1", "capacity": -1, "energy": -1, "maxnum": 1, "floor": -6, "ceil": 12, "tier": 2,
+{"id": "t2", "image": "barracks", "iconImage": "barracks2", "name": "room.storm.barracks", "category": "category.utility", "prereq": "t1", "capacity": -1, "energy": -1, "maxnum": 1, "floor": -6, "ceil": 12, "tier": 2,
 	"bounds": [
 		{"x1": -16, "y1": -18, "x2": 16, "y2": 18, "floor": -6, "ceil": 8}],
 	"doors": [
@@ -864,15 +864,15 @@ var roomMetadata =
 	"floor_images": [
 		{"floor": 0, "image": "barracks", "marker_images": [{"image": "marker-barracks-2", "x": 0, "y": 6}]}],
 	"resources": [
-		{"resource": "Credits", "costs": [3000, 3000, 3000, 3000, 3000]},
-		{"resource": "Alloy Plate", "costs": [450, 450, 450, 450, 450]},
-		{"resource": "Ferrite", "costs": [1800, 1800, 1800, 1800, 1800]},
-		{"resource": "Rubedo", "costs": [900, 900, 900, 900, 900]},
-		{"resource": "Forma", "costs": [1, 1, 1, 1, 1]}], "unverified": true,
+		{"resource": "resource.credits", "costs": [3000, 3000, 3000, 3000, 3000]},
+		{"resource": "resource.alloy.plate", "costs": [450, 450, 450, 450, 450]},
+		{"resource": "resource.ferrite", "costs": [1800, 1800, 1800, 1800, 1800]},
+		{"resource": "resource.rubedo", "costs": [900, 900, 900, 900, 900]},
+		{"resource": "resource.forma", "costs": [1, 1, 1, 1, 1]}], "unverified": true,
     "treetype": "32-1",
 	"blockedFromAboveBy": [
 	    ]},
-{"id": "t3", "image": "barracks", "iconImage": "barracks3", "name": "Mountain Barracks", "category": "Utility", "prereq": "t2", "capacity": -1, "energy": -1, "maxnum": 1, "floor": -12, "ceil": 12, "tier": 3,
+{"id": "t3", "image": "barracks", "iconImage": "barracks3", "name": "room.mountain.barracks", "category": "category.utility", "prereq": "t2", "capacity": -1, "energy": -1, "maxnum": 1, "floor": -12, "ceil": 12, "tier": 3,
 	"bounds": [
 		{"x1": -16, "y1": -18, "x2": 16, "y2": 18, "floor": -12, "ceil": 8}],
 	"doors": [
@@ -880,15 +880,15 @@ var roomMetadata =
 	"floor_images": [
 		{"floor": 0, "image": "barracks", "marker_images": [{"image": "marker-barracks-3", "x": 0, "y": 6}]}],
 	"resources": [
-		{"resource": "Credits", "costs": [10000, 10000, 10000, 10000, 10000]},
-		{"resource": "Alloy Plate", "costs": [1500, 1500, 1500, 1500, 1500]},
-		{"resource": "Ferrite", "costs": [6000, 6000, 6000, 6000, 6000]},
-		{"resource": "Rubedo", "costs": [3000, 3000, 3000, 3000, 3000]},
-		{"resource": "Forma", "costs": [3, 3, 3, 3, 3]}], "unverified": true,
+		{"resource": "resource.credits", "costs": [10000, 10000, 10000, 10000, 10000]},
+		{"resource": "resource.alloy.plate", "costs": [1500, 1500, 1500, 1500, 1500]},
+		{"resource": "resource.ferrite", "costs": [6000, 6000, 6000, 6000, 6000]},
+		{"resource": "resource.rubedo", "costs": [3000, 3000, 3000, 3000, 3000]},
+		{"resource": "resource.forma", "costs": [3, 3, 3, 3, 3]}], "unverified": true,
     "treetype": "32-1",
 	"blockedFromAboveBy": [
 	    ]},
-{"id": "t4", "image": "barracks", "iconImage": "barracks4", "name": "Moon Barracks", "category": "Utility", "prereq": "t3", "capacity": -1, "energy": -1, "maxnum": 1, "floor": -18, "ceil": 12, "tier": 4,
+{"id": "t4", "image": "barracks", "iconImage": "barracks4", "name": "room.moon.barracks", "category": "category.utility", "prereq": "t3", "capacity": -1, "energy": -1, "maxnum": 1, "floor": -18, "ceil": 12, "tier": 4,
 	"bounds": [
 		{"x1": -16, "y1": -18, "x2": 16, "y2": 18, "floor": -18, "ceil": 8}],
 	"doors": [
@@ -896,15 +896,15 @@ var roomMetadata =
 	"floor_images": [
 		{"floor": 0, "image": "barracks", "marker_images": [{"image": "marker-barracks-4", "x": 0, "y": 6}]}],
 	"resources": [
-		{"resource": "Credits", "costs": [100000, 100000, 100000, 100000, 100000, 100000, ]},
-		{"resource": "Alloy Plate", "costs": [15000, 15000, 15000, 15000, 15000]},
-		{"resource": "Ferrite", "costs": [60000, 60000, 60000, 60000, 60000]},
-		{"resource": "Rubedo", "costs": [3000, 3000, 3000, 3000, 3000]},
-		{"resource": "Forma", "costs": [25, 25, 25, 25, 25]}], "unverified": true,
+		{"resource": "resource.credits", "costs": [100000, 100000, 100000, 100000, 100000, 100000, ]},
+		{"resource": "resource.alloy.plate", "costs": [15000, 15000, 15000, 15000, 15000]},
+		{"resource": "resource.ferrite", "costs": [60000, 60000, 60000, 60000, 60000]},
+		{"resource": "resource.rubedo", "costs": [3000, 3000, 3000, 3000, 3000]},
+		{"resource": "resource.forma", "costs": [25, 25, 25, 25, 25]}], "unverified": true,
     "treetype": "32-1",
 	"blockedFromAboveBy": [
 	    ]},
-{"id": "la", "image": "label", "name": "Label", "category": "Utility", "prereq": null, "capacity": 0, "energy": 0, "maxnum": null, "floor": 0, "ceil": 0, "num": 0, "defaultLabel": "Label",
+{"id": "la", "image": "label", "name": "room.label", "category": "category.utility", "prereq": null, "capacity": 0, "energy": 0, "maxnum": null, "floor": 0, "ceil": 0, "num": 0, "defaultLabel": "room.label",
 	"bounds": [
 		{"x1": -16, "y1": -16, "x2": 16, "y2": 16, "floor": 0, "ceil": 20, "ignore": true}],
 	"doors": [
@@ -915,7 +915,7 @@ var roomMetadata =
 	"resources": [],
 	"blockedFromAboveBy": []},
 
-{"id": "oh1", "image": "old-hall", "name": "(Old) Clan Hall", "category": "Discontinued", "discontinued": true, "spawn": true, "prereq": null, "capacity": 100, "energy": 5, "maxnum": null, "floor": -8, "ceil": 24,
+{"id": "oh1", "image": "old-hall", "name": "room.old.clan.hall", "category": "category.discontinued", "category.discontinued": true, "spawn": true, "prereq": null, "capacity": 100, "energy": 5, "maxnum": null, "floor": -8, "ceil": 24,
 	"bounds": [
 		{"x1": -18.25, "y1": -32.25, "x2": 18.25, "y2": 1.75, "floor": -8, "ceil": 24},
 		{"x1": -26, "y1": 1.75, "x2": 26, "y2": 32.25, "floor": -8, "ceil": 24}],
@@ -926,7 +926,7 @@ var roomMetadata =
     "treetype": "64-2",
 	"blockedFromAboveBy": [
 	    ]},
-{"id": "oh2", "image": "old-great-hall", "name": "(Old) Clan Great Hall", "category": "Discontinued", "discontinued": true, "spawn": true, "prereq": null, "capacity": 0, "energy": 0, "maxnum": null, "floor": -8, "ceil": 24,
+{"id": "oh2", "image": "old-great-hall", "name": "room.old.clan.great.hall", "category": "category.discontinued", "category.discontinued": true, "spawn": true, "prereq": null, "capacity": 0, "energy": 0, "maxnum": null, "floor": -8, "ceil": 24,
 	"bounds": [
 		{"x1": -35, "y1": -32, "x2": 35, "y2": 32, "floor": -8, "ceil": 24}],
 	"doors": [
@@ -936,7 +936,7 @@ var roomMetadata =
     "treetype": "64-2",
 	"blockedFromAboveBy": [
 	    ]},
-{"id": "occ", "image": "old-cross-connector", "name": "(Old) Cross Connector", "category": "Discontinued", "discontinued": true, "prereq": null, "capacity": 0, "energy": 0, "maxnum": null, "floor": -8, "ceil": 24,
+{"id": "occ", "image": "old-cross-connector", "name": "room.old.cross.connector", "category": "category.discontinued", "category.discontinued": true, "prereq": null, "capacity": 0, "energy": 0, "maxnum": null, "floor": -8, "ceil": 24,
 	"bounds": [
 		{"x1": -18.25, "y1": -18.25, "x2": 18.25, "y2": 18.25, "floor": -8, "ceil": 24}],
 	"doors": [
@@ -948,7 +948,7 @@ var roomMetadata =
     "treetype": "32-4",
 	"blockedFromAboveBy": [
 	    ]},
-{"id": "oct", "image": "old-t-connector", "name": "(Old) T-shaped Connector", "category": "Discontinued", "discontinued": true, "prereq": null, "capacity": 0, "energy": 0, "maxnum": null, "floor": -8, "ceil": 24,
+{"id": "oct", "image": "old-t-connector", "name": "room.old.t.shaped.connector", "category": "category.discontinued", "category.discontinued": true, "prereq": null, "capacity": 0, "energy": 0, "maxnum": null, "floor": -8, "ceil": 24,
 	"bounds": [
 		{"x1": -8.25, "y1": -18.25, "x2": 18.25, "y2": 18.25, "floor": -8, "ceil": 24}],
 	"doors": [
@@ -959,7 +959,7 @@ var roomMetadata =
     "treetype": "32-3",
 	"blockedFromAboveBy": [
 	    ]},
-{"id": "osh", "image": "old-straight-hallway", "name": "(Old) Straight Hallway", "category": "Discontinued", "discontinued": true, "prereq": null, "capacity": 0, "energy": 0, "maxnum": null, "floor": -8, "ceil": 24,
+{"id": "osh", "image": "old-straight-hallway", "name": "room.old.straight.hallway", "category": "category.discontinued", "category.discontinued": true, "prereq": null, "capacity": 0, "energy": 0, "maxnum": null, "floor": -8, "ceil": 24,
 	"bounds": [
 		{"x1": -6, "y1": -6.25, "x2": 6, "y2": 6.25, "floor": -8, "ceil": 24}],
 	"doors": [
@@ -969,7 +969,7 @@ var roomMetadata =
     "treetype": "16-2",
 	"blockedFromAboveBy": [
 	    ]},
-{"id": "oce", "image": "old-elbow-connector", "name": "(Old) Elbow Connector", "category": "Discontinued", "discontinued": true, "prereq": null, "capacity": 0, "energy": 0, "maxnum": null, "floor": -8, "ceil": 24,
+{"id": "oce", "image": "old-elbow-connector", "name": "room.old.elbow.connector", "category": "category.discontinued", "category.discontinued": true, "prereq": null, "capacity": 0, "energy": 0, "maxnum": null, "floor": -8, "ceil": 24,
 	"bounds": [
 		{"x1": -8.25, "y1": -8.25, "x2": 18.25, "y2": 18.25, "floor": -8, "ceil": 24}],
 	"doors": [
@@ -980,7 +980,7 @@ var roomMetadata =
     "treetype": "32-2e",
 	"blockedFromAboveBy": [
 	    ]},
-{"id": "ore", "image": "old-reactor", "name": "(Old) Reactor", "category": "Discontinued", "discontinued": true, "prereq": null, "capacity": 0, "energy": 25, "maxnum": null, "floor": -8, "ceil": 24,
+{"id": "ore", "image": "old-reactor", "name": "room.old.reactor", "category": "category.discontinued", "category.discontinued": true, "prereq": null, "capacity": 0, "energy": 25, "maxnum": null, "floor": -8, "ceil": 24,
 	"bounds": [
 		{"x1": -10, "y1": -15, "x2": 10, "y2": 15, "floor": -8, "ceil": 24}],
 	"doors": [

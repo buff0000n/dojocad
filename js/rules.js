@@ -25,7 +25,7 @@ class RoomRule {
 	}
 
 	toString() {
-		return "Rule";
+		return i18n.str("rule.generic");
 	}
 }
 
@@ -42,7 +42,7 @@ function updateStat(id, value, error, rule) {
 
 function updateTierStat(tier, name) {
 	var node = document.getElementById("tierStat")
-	node.innerHTML = `<img src="icons/icon-tier-${tier}.png" srcset="icons2x/icon-tier-${tier}.png 2x" title="${name} Tier"/>`;
+	node.innerHTML = `<img src="icons/icon-tier-${tier}.png" srcset="icons2x/icon-tier-${tier}.png 2x" title="${i18n.str("main.page.alttext.tierStat", name)}"/>`;
 }
 
 class RoomCountRule extends RoomRule {
@@ -50,7 +50,6 @@ class RoomCountRule extends RoomRule {
 		super();
 		this.maxRooms = maxRooms;
 		this.numRooms = 0;
-		this.errorMessage = "Limit " + maxRooms + " rooms";
 	}
 
 	roomAdded(room) {
@@ -89,7 +88,7 @@ class RoomCountRule extends RoomRule {
 	}
 
 	toString() {
-		return this.errorMessage;
+		return i18n.str("rule.max.rooms", this.maxRooms);
 	}
 }
 
@@ -119,7 +118,7 @@ class EnergyRule extends RoomRule {
 	}
 
 	toString() {
-		return "Energy required";
+		return i18n.str("rule.energy");
 	}
 }
 
@@ -149,17 +148,16 @@ class CapacityRule extends RoomRule {
 	}
 
 	toString() {
-		return "Capacity required";
+		return i18n.str("rule.capacity");
 	}
 }
 
 class MaxNumRule extends RoomRule {
 	constructor(roomMetadata, maxnum) {
 		super();
-		this.id = roomMetadata.id;
+		this.md = roomMetadata;
 		this.maxnum = maxnum;
 		this.list = Array();
-		this.errorMessage = "Limit " + maxnum + " " + roomMetadata.name + (maxnum == 1 ? "" : " rooms");
 	}
 
 	roomAdded(room) {
@@ -171,7 +169,7 @@ class MaxNumRule extends RoomRule {
 	}
 
 	roomChanged(room, added) {
-		if (room.metadata.id == this.id) {
+		if (room.metadata.id == this.md.id) {
 			var prevLength = this.list.length;
 			if (added) {
 				addToListIfNotPresent(this.list, room);
@@ -196,7 +194,7 @@ class MaxNumRule extends RoomRule {
 
 	getNewRoomError(roomMetaData, num=1) {
 	    // does not apply metadata num override
-		if (roomMetaData.id == this.id && (this.list.length + num) > this.maxnum) {
+		if (roomMetaData.id == this.md.id && (this.list.length + num) > this.maxnum) {
 			return this.toString();
 		} else {
 			return null;
@@ -204,18 +202,19 @@ class MaxNumRule extends RoomRule {
 	}
 
 	toString() {
-		return this.errorMessage;
+        return this.maxnum == 1 
+            ? i18n.str("rule.room.limit.single", this.md.name)
+            : i18n.str("rule.room.limit", this.md.name, this.maxnum);
 	}
 }
 
 class PrereqRule extends RoomRule {
 	constructor(roomMetadata, prereqRoomMetadata) {
 		super();
-		this.room_id = roomMetadata.id;
-		this.prereq_id = prereqRoomMetadata.id;
+		this.md = roomMetadata;
+		this.prereq_md = prereqRoomMetadata;
 		this.room_list = Array();
 		this.prereq_list = Array();
-		this.errorMessage = prereqRoomMetadata.name + " required";
 	}
 
 	roomAdded(room) {
@@ -227,7 +226,7 @@ class PrereqRule extends RoomRule {
 	}
 
 	roomChanged(room, added) {
-		if (room.metadata.id == this.room_id) {
+		if (room.metadata.id == this.md.id) {
 			if (added) {
 				if (addToListIfNotPresent(this.room_list, room) && this.prereq_list.length == 0) {
 					room.addRuleError(this);
@@ -237,7 +236,7 @@ class PrereqRule extends RoomRule {
 			} else {
 				removeFromList(this.room_list, room);
 			}
-		} else if (room.metadata.id == this.prereq_id) {
+		} else if (room.metadata.id == this.prereq_md.id) {
 			var prevLength = this.prereq_list.length;
 			if (added) {
 				addToListIfNotPresent(this.prereq_list, room);
@@ -258,14 +257,14 @@ class PrereqRule extends RoomRule {
 	}
 
 	clearRoom(room) {
-		if (room.metadata.id == this.room_id) {
+		if (room.metadata.id == this.md.id) {
             room.removeRuleError(this);
 		}
 	}
 
 	getNewRoomError(roomMetaData, num=1) {
 	    // does not apply metadata num override
-		if (roomMetaData.id == this.room_id && this.prereq_list.length == 0) {
+		if (roomMetaData.id == this.md.id && this.prereq_list.length == 0) {
 			return this.toString();
 		} else {
 			return null;
@@ -273,7 +272,7 @@ class PrereqRule extends RoomRule {
 	}
 
 	toString() {
-		return this.errorMessage;
+		return i18n.str("rule.room.required", i18n.str(this.prereq_md.name));
 	}
 }
 
@@ -313,7 +312,7 @@ class SpawnRule extends RoomRule {
 	}
 
 	toString() {
-		return "Spawn room required";
+		return i18n.str("rule.spawn.required");
 	}
 }
 
@@ -342,10 +341,10 @@ class DiscontinuedRule extends RoomRule {
 			}
 			var newLength = this.room_list.length;
 			if (prevLength > 0 && newLength == 0) {
-				removeAllWarning("Discontinued rooms");
+				removeAllWarning(i18n.str("rule.discontinued.global"));
 
 			} else if (prevLength <= 0 && newLength > 0) {
-				addAllWarning("Discontinued rooms");
+				addAllWarning(i18n.str("rule.discontinued.global"));
 			}
 		}
 	}
@@ -360,7 +359,7 @@ class DiscontinuedRule extends RoomRule {
 	}
 
 	toString() {
-		return "Discontinued room";
+		return i18n.str("rule.discontinued");
 	}
 }
 
@@ -409,6 +408,7 @@ class RoomCounter extends RoomRule {
 	}
 
 	toString() {
+        // doesn't appear in UI
 		return "room counter";
 	}
 }
@@ -420,21 +420,29 @@ class ResourceCounter extends RoomRule {
 		this.tier = 0;
 		this.maxTier = 4;
 		// no point in building a general map
-		this.builtTiers = [1, 0, 0, 0, 0];
-		this.tierNames = ["Ghost", "Shadow", "Storm", "Mountain", "Moon"];
+		// starts at -1: empty tier, 0: ghost, etc.
+		this.builtTiers = [1, 0, 0, 0, 0, 0];
+		this.tierNames = [
+		    "tier.empty",
+		    "tier.ghost",
+		    "tier.shadow",
+		    "tier.storm",
+		    "tier.mountain",
+		    "tier.moon"
+        ];
 	}
 
     updateTier() {
         var newTier = this.getTier();
         if (newTier != this.tier) {
             this.tier = newTier;
-            updateTierStat(this.tier, this.tierNames[this.tier]);
+            updateTierStat(this.tier, i18n.str(this.tierNames[this.tier + 1]));
         }
     }
 
 	getTier() {
-	    for (var i = this.maxTier; i >= 0; i--) {
-	        if (this.builtTiers[i] > 0) {
+	    for (var i = this.maxTier; i >= -1; i--) {
+	        if (this.builtTiers[i + 1] > 0) {
 	            return i;
 	        }
 	    }
@@ -443,9 +451,11 @@ class ResourceCounter extends RoomRule {
 
 	roomAdded(room) {
 	    if (room.metadata.tier) {
-	        this.builtTiers[room.metadata.tier]++;
-	        this.updateTier();
+	        this.builtTiers[room.metadata.tier + 1]++;
+	    } else {
+	        this.builtTiers[1]++;
 	    }
+        this.updateTier();
 
 	    var tier = this.getTier();
 
@@ -469,9 +479,11 @@ class ResourceCounter extends RoomRule {
 
 	roomRemoved(room) {
 	    if (room.metadata.tier) {
-	        this.builtTiers[room.metadata.tier]--;
-	        this.updateTier();
+	        this.builtTiers[room.metadata.tier + 1]--;
+	    } else {
+	        this.builtTiers[1]--;
 	    }
+        this.updateTier();
 
 	    var tier = this.getTier();
 
@@ -513,6 +525,7 @@ class ResourceCounter extends RoomRule {
 	}
 
 	toString() {
+        // doesn't appear in UI
 		return "resource tracker";
 	}
 }
@@ -567,9 +580,14 @@ class XPCounter extends RoomRule {
             if (newXpRooms != this.currentXpRooms) {
                 // update the stat
                 this.currentXpRooms = newXpRooms;
-                updateStat("xpCountStat", this.currentXpRooms + "/" + this.totalXpRooms, null, this);
+                updateStat("xpCountStat", i18n.str("rule.xp.stat", this.currentXpRooms, this.totalXpRooms), null, this);
             }
 		}
+	}
+
+	toString() {
+        // doesn't appear in UI
+		return "xp counter";
 	}
 }
 

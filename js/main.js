@@ -2,6 +2,10 @@
 // view state
 //==============================================================
 
+// need a flag so we don't try to initialize the model twice
+// when loading the page and setting the language
+var modelInitialized = false;
+
 // Coordinate convention:
 //  - mx, my, mv = measured in in-game meters
 //  - px, py, pv = measured in pixels
@@ -528,7 +532,7 @@ function doResetAllStructure() {
         }
 	}
 	// finishe the combo operation, we'll be able to undo all of this with a single operation
-	endUndoCombo("Reset structure");
+	endUndoCombo(i18n.str("structure.reset.all"));
 
     saveModelToUrl();
     treeUpdated();
@@ -778,17 +782,17 @@ function saveModelToUrl() {
     }
 
 	if (debugEnabled) {
-		modifyUrlQueryParam("m", buildModelParam(true));
+		modifyUrlAnchor(buildModelParam(true));
 
 	} else {
 	    var modelString = buildCompressedModelParam();
-		modifyUrlQueryParam("mz", modelString);
+		modifyUrlAnchor(modelString);
 		// check for autosave
 		if (settings.autosave) {
 		    // the view is part of the autosave
             var view = buildViewParam();
             // schedule the autosave
-            storage.autosaveItem(`v=${view}&mz=${modelString}`);
+            storage.autosaveItem(`v=${view}#${modelString}`);
 		}
 	}
 }
@@ -801,6 +805,10 @@ function reLoadModelFromUrl(url) {
     // HACK, just select and delete all rooms
     selectAllRoomsLikeReallyAllOfThem();
     deleteSelectedRooms();
+
+    // clear errors/warnings, just in case some of them are lingering
+    // because we changed the language
+    clearNonCollisionWarnings();
 
     // load the model and view directly from the href
     loadModelFromUrl(url);
@@ -816,13 +824,37 @@ function reLoadModelFromUrl(url) {
 }
 
 function loadModelFromUrl(url) {
-	var modelString = LZString.decompressFromEncodedURIComponent(getQueryParam(url, "mz"));
+    // for backwards compatibility, there are a number of ways the model string can be embedded in the URL
+	var modelString = null;
+    // load the model from the URL anchor by default
+	if (getQueryParam(url, "debug")) {
+	    // if the debug parameter is set, load uncompressed
+    	modelString = getAnchor(url);
+	} else {
+	    // otherwise, load compressed
+    	modelString = LZString.decompressFromEncodedURIComponent(getAnchor(url));
+	}
+
+	// otherwise, try the 'mz' parameter
 	if (!modelString) {
-		// backwards compatible with the, uh, like maybe couple of dozen old URLs floating around.
+		// backwards compatible with old URLs floating around.
+		var modelStringCompressed = getQueryParam(url, "mz");
+
+		if (modelStringCompressed) {
+            modelString = LZString.decompressFromEncodedURIComponent(modelStringCompressed);
+            // make things easier and just remove the "mz=" section and replace it with an anchor
+			removeUrlQueryParam("mz");
+			modifyUrlAnchor(modelStringCompressed);
+		}
+    }
+	// otherwise, try the 'm' parameter
+	if (!modelString) {
+		// backwards compatible with the, uh, like maybe couple of dozen super old URLs floating around.
 		modelString = getQueryParam(url, "m");
-		// make things easier and just remove the "m=" section so we can replace it with "mz="
+        // make things easier and just remove the "m=" section and replace it with an anchor
 		if (modelString) {
 			removeUrlQueryParam("m");
+			modifyUrlAnchor(LZString.compressToEncodedURIComponent(modelString));
 		}
 	}
 	if (!modelString) {
@@ -894,8 +926,8 @@ function loadViewFromUrl(url) {
 function buildUrlParams() {
 	// this is called from the Save button
 	return "?v=" + buildViewParam() + (debugEnabled
-		? "&m=" + buildModelParam()
-		: "&mz=" + LZString.compressToEncodedURIComponent(buildModelParam()));
+		? ("&debug=true#" + buildModelParam())
+		: ("#" + LZString.compressToEncodedURIComponent(buildModelParam())));
 }
 
 function centerViewOn(mx, my, scale = null, floor = null) {
@@ -1083,7 +1115,11 @@ function initModel() {
         // I smell hax
         starterRoom.placed = true;
 	    addRoom(starterRoom);
+	    setSpawnRoom(starterRoom, false);
     }
 
     redraw();
+    // set the initialized flag, now changing the language
+    // will reload the model
+    modelInitialized = true;
 }

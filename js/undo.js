@@ -25,20 +25,22 @@ var redoStack = Array();
 var maxUndoStackSize = 250;
 var undoCombos = [];
 
-function updateUndoRedoButton(button, stack, prefix) {
+function updateUndoRedoButton(button, stack, str, strWithAction) {
 	if (stack.length > 0) {
 		button.className = "button";
-		button.children[0].title = prefix + " " + stack[stack.length - 1].toString();
+		button.children[0].title = i18n.str(strWithAction, stack[stack.length - 1].toString());
 
 	} else {
 		button.className = "button-disabled";
-		button.alt = prefix;
+		button.alt = i18n.str(str);
 	}
 }
 
 function updateButtons() {
-	updateUndoRedoButton(document.getElementById("undoButton"), undoStack, "Undo");
-	updateUndoRedoButton(document.getElementById("redoButton"), redoStack, "Redo");
+	updateUndoRedoButton(document.getElementById("undoButton"), undoStack, 
+	    "main.page.alttext.undoButton", "main.page.alttext.undoButton.with.action");
+	updateUndoRedoButton(document.getElementById("redoButton"), redoStack, 
+	    "main.page.alttext.redoButton", "main.page.alttext.redoButton.with.action");
 }
 
 function addUndoAction(action, fromViewCenter=null) {
@@ -183,7 +185,10 @@ class CompositeAction extends Action {
 	}
 
 	toString() {
-		return this.description ? this.description : this.actions.length + " action(s)";
+		return 
+		    this.description ? this.description :
+		    this.actions.length == 1 ? this.actions[0].toString() :
+		    i18n.str("action.multiple", this.actions.length);
 	}
 }
 
@@ -193,12 +198,12 @@ class CompositeAction extends Action {
 
 function describeRoomList(rooms) {
     if (!rooms || rooms.length == 0) {
-        return "nothing";
+        return i18n.str("action.no.rooms");
     }
     if (rooms.length == 1) {
-        return rooms[0].metadata.name;
+        return i18n.str(rooms[0].metadata.name);
     }
-    return rooms.length + " rooms";
+    return i18n.str("action.multiple.rooms", rooms.length);
 }
 
 // holder for door flagas
@@ -332,7 +337,7 @@ class MoveRoomAction extends Action {
 	}
 
 	toString() {
-		return "Move " + describeRoomList(this.rooms);
+		return i18n.str("action.move", describeRoomList(this.rooms));
 	}
 }
 
@@ -399,7 +404,9 @@ class AddDeleteRoomsAction extends Action {
 	}
 
 	toString() {
-		return (this.add ? "Add " : "Delete ") + describeRoomList(this.rooms);
+		return this.add
+		    ? i18n.str("action.add", describeRoomList(this.rooms))
+		    : i18n.str("action.delete", describeRoomList(this.rooms))
 	}
 }
 
@@ -427,8 +434,14 @@ class SelectionAction extends Action {
 	}
 
 	toString() {
-		return (this.oldSelections ? ("Deselect " + describeRoomList(this.oldSelections)) : "") + ", " +
-    		(this.newSelections ? ("Select " + describeRoomList(this.newSelections)) : "");
+	    if (this.oldSelections && this.newSelections)
+	        return i18n.str("action.select.and.deselect", describeRoomList(this.oldSelections), describeRoomList(this.newSelections));
+	    if (this.oldSelections)
+	        return i18n.str("action.deselect", describeRoomList(this.oldSelections));
+	    if (this.newSelections)
+	        return i18n.str("action.select", describeRoomList(this.newSelections));
+        // uh
+        return i18n.str("action.no.rooms");
 	}
 }
 
@@ -454,9 +467,14 @@ class ChangeSpawnRoomAction extends Action {
 	}
 
 	toString() {
-		return "Change spawn room from "
-		    + describeRoomList(this.from ? [this.from] : null) + " to "
-		    + describeRoomList(this.to ? [this.to] : null);
+	    if (this.from && this.to)
+	        return i18n.str("action.spawn.change", describeRoomList([this.from]), describeRoomList([this.to]));
+	    if (this.to)
+	        return i18n.str("action.spawn.set", describeRoomList([this.to]));
+	    if (this.from)
+	        return i18n.str("action.spawn.remove", describeRoomList([this.from]));
+        // uh
+        return i18n.str("action.no.rooms");
 	}
 }
 
@@ -482,9 +500,14 @@ class ChangeArrivalRoomAction extends Action {
 	}
 
 	toString() {
-		return "Change arrival room from "
-		    + describeRoomList(this.from ? [this.from] : null) + " to "
-		    + describeRoomList(this.to ? [this.to] : null);
+	    if (this.from && this.to)
+	        return i18n.str("action.arrival.change", describeRoomList([this.from]), describeRoomList([this.to]));
+	    if (this.to)
+	        return i18n.str("action.arrival.set", describeRoomList([this.to]));
+	    if (this.from)
+	        return i18n.str("action.arrival.remove", describeRoomList([this.from]));
+        // uh
+        return i18n.str("action.no.rooms");
 	}
 }
 
@@ -526,7 +549,7 @@ class ChangeDoorAction extends Action {
 
 	toString() {
 	    // good luck
-		return "State change on door(s) between " + describeRoomList([this.door.room]) + " and " + describeRoomList([this.door.otherDoor.room]);
+		return i18n.str("action.door.state", describeRoomList([this.door.room]), describeRoomList([this.door.otherDoor.room]));
 	}
 }
 
@@ -587,7 +610,7 @@ class ChangeHueAction extends Action {
 	}
 
 	toString() {
-		return "Change hue on " + describeRoomList(this.rooms);
+		return i18n.str("action.hue", describeRoomList(this.rooms));
 	}
 }
 
@@ -635,6 +658,6 @@ class ChangeLabelAction extends Action {
 	}
 
 	toString() {
-		return "Change label on " + describeRoomList(this.rooms);
+		return i18n.str("action.label", describeRoomList(this.rooms));
 	}
 }
