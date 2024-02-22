@@ -420,6 +420,7 @@ class ResourceCounter extends RoomRule {
 		this.tier = 0;
 		this.maxTier = 4;
 		// no point in building a general map
+		// starts at -1: empty tier, 0: ghost, etc.
 		this.builtTiers = [1, 0, 0, 0, 0, 0];
 		this.tierNames = [
 		    "tier.empty",

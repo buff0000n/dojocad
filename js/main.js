@@ -2,6 +2,8 @@
 // view state
 //==============================================================
 
+// need a flag so we don't try to initialize the model twice
+// when loading the page and setting the language
 var modelInitialized = false;
 
 // Coordinate convention:
@@ -1117,5 +1119,7 @@ function initModel() {
     }
 
     redraw();
+    // set the initialized flag, now changing the language
+    // will reload the model
     modelInitialized = true;
 }

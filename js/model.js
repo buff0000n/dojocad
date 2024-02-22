@@ -907,7 +907,8 @@ class Room {
 				}
 			}
 			for (var r = 0; r  < collidedRooms.length; r++) {
-			    // todo: how to i18n errors
+			    // don't need to worry about redoing these if the language changes,
+			    // the entire model is reloaded when that happens
 				errors2.push(i18n.str("rule.collision", i18n.str(collidedRooms[r].metadata.name)));
 			}
 			errors = errors2;
@@ -921,7 +922,8 @@ class Room {
 
     getSomeWarnings() {
 		if (this.ruleWarnings.length == 0) return null;
-        // todo: how to i18n errors
+        // don't need to worry about redoing these if the language changes,
+        // the entire model is reloaded when that happens
 		if (this.ruleWarnings.length == 1 && this.ruleWarnings[0] == i18n.str("rule.discontinued")) return null;
 		return this.ruleWarnings;
     }
@@ -2311,7 +2313,8 @@ function getErrorsWarningsAndCombinedMetadata(rooms) {
     // the lazy way: just remove any energy and capacity errors we got from checking individual room types
     // these could be erroneous if the room list includes room types with both positive and negative values for these
     // this error type will be checked by running the combined metadata
-    // todo: how to i18n errors
+    // don't need to worry about redoing these if the language changes,
+    // the entire model is reloaded when that happens
     removeError(errors, "energy");
     removeError(errors, "capacity");
 

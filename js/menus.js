@@ -180,6 +180,8 @@ function buildMenuRow(icon = null, title = null, element, callback) {
 }
 
 function buildMenuButton(label, callback, icon = null, className = "menu-button", span=1) {
+    // ugh, extract just the leading text part of the label to use
+    // as the icon's alt-text
     var alttext = label;
     if (alttext.indexOf("<") > 0) {
         alttext = alttext.substring(0, alttext.indexOf("<")).trim();
@@ -265,6 +267,7 @@ function doPopupDialog(title, text, error, ...callbacks) {
 
 function buildMenuDivider(colspan, contents=null) {
     var roomButtonDiv = document.createElement("td");
+    // optional contents because of reasons
     if (contents) {
         roomButtonDiv.innerHTML = contents;
     }
@@ -307,18 +310,25 @@ function showMenuAt(menuDiv, left, top) {
 
     menus.push(menuDiv);
 
+    // save a menu level property to the top-level element
     menuDiv.menuLevel = getCurrentMenuLevel();
+    // set a click  handled on the top-level element
     menuDiv.onclick = menuDivClick;
 
 	setTimeout(function() { menuPlacementHack1(menuDiv) }, 100);
 
+   // HACK: get the last event
    var e = window.event;
+   // make sure this event doesn't trigger the parent menu's
+   // top-level click handler and close the menu we just opened
    e.menuHandled = true;
 }
 
 function menuDivClick(e) {
+    // short circuit if the event caused a nested menu to open
     if (!e.menuHandled) {
-        // console.log("menudivclick: " + e.currentTarget.menuLevel);
+        // otherwise, close any nested menus up to the level of the
+        // menu element that was clicked
         clearMenus(e.currentTarget.menuLevel)
     }
 }
@@ -863,7 +873,6 @@ function showResources() {
     } else {
         for (var resourceName in resources) {
             var tr = document.createElement("tr");
-            // todo: i18n resources
             tr.innerHTML = `<td/><td>${i18n.str(resourceName)}</td><td>${resources[resourceName]}</td><td/>`
 
             menuDiv.appendChild(tr);
@@ -1263,7 +1272,6 @@ function doColorMenu() {
                 selectAllRoomsOfColor(selectedRooms);
             });
 
-        // todo: alttext?
         icon = "icon-color";
         addSelectButton(
             `<img class="imgButton" src="icons/${icon}.png" srcset="icons2x/${icon}.png 2x" title="${i18n.str("menu.select.by.hue")}"/>`,
@@ -1733,28 +1741,34 @@ function doLanguageMenu() {
 
 	function insertLanguageEntry(key, name) {
         menuDiv.appendChild(buildMenuButton(name, () => {
+            // save language setting to settings
             settings.language = key;
             settings.save();
+            // refresh language/UI and close the menu
             i18n.refreshLanguage();
             doCloseMenu();
         }, key == settings.language ? "icon-language" : null));
 	}
 
+    // add entries for all the supported languages
 	var languageList = i18n.getLanguageList();
-
 	for (var i = 0; i < languageList.length; i++) {
 	    var entry = languageList[i];
 	    insertLanguageEntry(entry.key, entry.name);
 	}
 
+    // divider
     menuDiv.appendChild(buildMenuDivider(4));
 
+    // option to reset to default
     insertLanguageEntry(null, i18n.str("menu.language.reset"));
 
+    // help blurb, because I obviously need help
     var helpBlurb = buildMenuDivider(4, `
         <p>${i18n.str("menu.language.help")}</p>
         <p><a target="_blank" href="${i18n.getBundleFile()}">${i18n.str("menu.language.help.link")}</a></p>
     `);
+    // meh
     helpBlurb.children[0].style.width = "0px";
     helpBlurb.children[0].style.textAlign = "center";
     menuDiv.appendChild(helpBlurb);
