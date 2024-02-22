@@ -1,6 +1,7 @@
 var i18n = (function() {
     var languageList = [
         { key: "en", name: "English" },
+        { key: "ch", name: "中文翻译得很糟糕" },
         { key: "pg", name: "Igpay Atinlay" }
     ];
 
