@@ -16,7 +16,7 @@
   "main.page.alttext.capacityStatField": "Apacitycay",
   "main.page.alttext.tierStat": "{0} Iertay",
   "main.page.alttext.xpCountStatField": "Oomsray ovidingpray Anclay XPWAY",
-  "main.page.alttext.showResoucesStat": "Esourcesray",
+  "main.page.alttext.showResourcesStat": "Esourcesray",
   "main.page.alttext.multiselect.enable": "Enableway Ultiselectmay Odemay",
   "main.page.alttext.multiselect.disable": "Isableday Ultiselectmay Odemay",
   "menu.close": "Oseclay Enumay",

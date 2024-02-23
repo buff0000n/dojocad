@@ -562,7 +562,7 @@ function buildAddRoomButton(roomMetadata, rooms = null, errors = null) {
 	var tdresources = document.createElement("td")
 	if (roomMetadata.resources.length > 0) {
         tdresources.className = "field clickable";
-        tdresources.innerHTML = `<img onclick="showResources()" src="icons/icon-resources.png" srcset="icons2x/icon-resources.png 2x" title="${i18n.str("main.page.alttext.showResoucesStat")}"/>`;
+        tdresources.innerHTML = `<img onclick="showResources()" src="icons/icon-resources.png" srcset="icons2x/icon-resources.png 2x" title="${i18n.str("main.page.alttext.showResourcesStat")}"/>`;
         var resourcesButton = tdresources.firstElementChild
         resourcesButton.menuLevel = getCurrentMenuLevel() + 1;
         resourcesButton.metadata = roomMetadata;

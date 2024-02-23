@@ -1,4 +1,15 @@
-{
+
+
+
+
+
+
+
+
+
+
+
+
     "main.page.alttext.burgerButton": "Menu",
     "main.page.alttext.addRoomButton": "Add Room",
     "main.page.alttext.undoButton": "Undo",
@@ -123,6 +134,20 @@
     "dialog.okay": "Okay",
     "dialog.enter.name": "Enter a name",
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     "analysis.rule.spawn.room.missing": "Spawn Room Missing",
     "analysis.rule.disconnected.global": "Disconnected rooms",
     "analysis.rule.disconnected": "Disconnected room",
@@ -193,6 +218,14 @@
     "resource.hexenon": "Hexenon",
     "resource.orokin.cell": "Orokin Cell",
 
+
+
+
+
+
+
+
+
     "room.cross.connector": "Cross Connector",
     "room.straight.hallway": "Straight Hallway",
     "room.extended.straight.hallway": "Extended Straight Hallway",
@@ -260,5 +293,23 @@
     "category.utility": "Utility",
     "category.discontinued": "Discontinued",
 
-    "help.file": "help-en.html"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    "help.file": "help-en-US.html"
 }

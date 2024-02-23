@@ -2,16 +2,21 @@ var i18n = (function() {
     // supported language list
     var languageList = [
         { key: "en", name: "English" },
-        { key: "zh", name: "中文翻译很差劲" },
+        { key: "es", name: "Español mal traducido" },
+        { key: "fr", name: "Français mal traduit" },
+        { key: "de", name: "Schlecht übersetztes Deutsch" },
+        { key: "pt", name: "Português mal traduzido" },
+        { key: "it", name: "Italiano mal tradotto" },
+        { key: "pl", name: "Słabo przetłumaczony na Polski" },
+        { key: "tr", name: "Kötü çevrilmiş Türkçe" },
+        { key: "ua", name: "Погано перекладена Yкраїнська" },
+        { key: "ru", name: "Плохо переведен на Русский" },
+        { key: "zh-CN", name: "简体中文翻译不好" },
+        // todo: zh-TW 繁體中文 ?
+        { key: "ja", name: "下手に翻訳された日本語" },
+        { key: "ko", name: "잘못 번역된 한국어" },
         { key: "pg", name: "Igpay Atinlay" }
     ];
-
-    // build a lookup set of language keys for convenience
-    var languageSet = {};
-    for (var i = 0; i < languageList.length; i++) {
-        var entry = languageList[i];
-        languageSet[entry.key] = entry.key;
-    }
 
     // default language, all missing i18n keys will fallback to this
     var defaultLanguage = "en";
@@ -42,22 +47,33 @@ var i18n = (function() {
             || defaultLanguage;
     }
 
+    function findLanguage(prefix) {
+        var entry = prefix ? languageList.find((e) => e.key.startsWith(prefix)) : null;
+        return entry ? entry.key : null;
+    }
+
     function refreshLanguage(callback = null) {
         // read current language from settings first
-        currentLanguage = settings.language;
+        var newLanguage = settings.language;
+        currentLanguage = findLanguage(newLanguage);
+
         // try the browser second
         if (!currentLanguage) {
-            currentLanguage = getLanguage();
+            newLanguage = getLanguage();
+            if (newLanguage) {
+                // just to be safe, make sure it's using a standard ISO-639-1 '-' instead of a '_'.
+                newLanguage = newLanguage.replaceAll("_", "-");
+                currentLanguage = findLanguage(newLanguage);
+            }
         }
 
-        // check if the language is supported
-        if (!languageSet[currentLanguage]) {
+        if (!currentLanguage) {
             // try without the country qualifier
-            currentLanguage = currentLanguage.substring(0, currentLanguage.indexOf("-"));
+            newLanguage = newLanguage.substring(0, newLanguage.indexOf("-"));
+            currentLanguage = findLanguage(newLanguage);
         }
 
-        // check if the language is supported
-        if (!languageSet[currentLanguage]) {
+        if (!currentLanguage) {
             // fall back the default language
             currentLanguage = defaultLanguage;
         }
@@ -285,6 +301,23 @@ var i18n = (function() {
         console.log(JSON.stringify(newBundle));
     }
 
+    function checkBundles() {
+        function runCheck(entry) {
+            loadBundle(entry.key, (json) => {
+                var result = "------------------------------------------------------------------------------\nBundle: " + entry.key;
+                for (var k in json) {
+                    if (!defaultBundle[k]) {
+                        result += "\n" + k;
+                    }
+                }
+                console.log(result);
+            });
+        }
+        for (var i = 0; i < languageList.length; i++) {
+            runCheck(languageList[i]);
+        }
+    }
+
     return {
         init: init, // (callback)
         str: str, // (key, ...subs)
@@ -293,6 +326,7 @@ var i18n = (function() {
         getLanguageList: getLanguageList, // (): { {"key", "description",
         getBundleFile: () => { return "https://raw.githubusercontent.com/buff0000n/dojocad/master/" + getBundleFile(currentLanguage); },
         genPig: genPig, // ()
+        checkBundles: checkBundles, // ()
     }
 
 })();
