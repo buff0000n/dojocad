@@ -2,7 +2,7 @@ var i18n = (function() {
     // supported language list
     var languageList = [
         { key: "en", name: "English" },
-        { key: "zh", name: "中文翻译得很糟糕" },
+        { key: "zh", name: "中文翻译很差劲" },
         { key: "pg", name: "Igpay Atinlay" }
     ];
 
