@@ -288,6 +288,13 @@ function getMenuTarget() {
 }
 
 function showMenuAt(menuDiv, left, top) {
+    if (menuDiv.nodeName != "DIV") {
+        var container = document.createElement("div");
+        container.className = "menu-container";
+        container.appendChild(menuDiv);
+        menuDiv = container;
+    }
+
     document.body.appendChild(menuDiv);
 
     var bcr = menuDiv.getBoundingClientRect();
@@ -333,29 +340,90 @@ function menuDivClick(e) {
     }
 }
 
-function menuPlacementHack1(menuDiv) {
-    var bcr = menuDiv.getBoundingClientRect();
-    // pulled from events.js
-//	var windowWidth;
-//	var windowHeight;
+//function menuPlacementHack1(menuDiv) {
+//    var bcr = menuDiv.getBoundingClientRect();
+//    // pulled from events.js
+////	var windowWidth;
+////	var windowHeight;
+//
+//    if (bcr.right > windowWidth) {
+//        menuDiv.style.left = "";
+//        menuDiv.style.right = "0px";
+//    }
+//
+//	setTimeout(function() { menuPlacementHack2(menuDiv) }, 100);
+//}
+//
+//function menuPlacementHack2(menuDiv) {
+//    var bcr = menuDiv.getBoundingClientRect();
+//    // pulled from events.js
+////	var windowWidth;
+////	var windowHeight;
+//
+//    if (bcr.bottom > windowHeight) {
+//        menuDiv.style.top = "";
+//        menuDiv.style.bottom = "0px";
+//    }
+//}
 
-    if (bcr.right > windowWidth) {
-        menuDiv.style.left = "";
-        menuDiv.style.right = "0px";
+// arbitrary margin between the window border and the menu container
+var placementMargin = 10;
+
+function menuPlacementHack1(menuDiv) {
+    // we're gong to need the scroll status of the main document
+    var se = document.scrollingElement;
+
+    // get the menu position
+    var bcr = menuDiv.getBoundingClientRect();
+    // getBoundingClientRect is in terms of the visible window, convert to absolute global position using the scroll state
+    var mTop = bcr.top + se.scrollTop;
+    var mLeft = bcr.left + se.scrollLeft;
+    var mHeight = bcr.height;
+    var mWidth = bcr.width;
+
+    // get a bounds for the currently viewable page portion, minus a margin
+    var seTop = se.scrollTop + placementMargin;
+    var seLeft = se.scrollLeft + placementMargin;
+    // todo: why x5?
+    var seHeight = window.innerHeight - (placementMargin * 5);
+    var seWidth = window.innerWidth - (placementMargin * 5);
+
+    // trim the width if its too wide for the screen
+    if (mHeight > seHeight) mHeight = seHeight;
+
+    // trim the height if its too tall for the screen
+    if (mWidth > seWidth) mWidth = seWidth;
+
+    // snap to the top, if it's overlapping
+    if (mTop < seTop) {
+        mTop = seTop;
+
+    // otherwise snap to the bottom, if it's overlapping
+    } else if (mTop + mHeight > seTop + seHeight) {
+        mTop = seTop + seHeight - mHeight;
     }
 
-	setTimeout(function() { menuPlacementHack2(menuDiv) }, 100);
-}
+    // snap to the left, if it's overlapping
+    if (mLeft < seLeft) {
+        mLeft = seLeft;
 
-function menuPlacementHack2(menuDiv) {
-    var bcr = menuDiv.getBoundingClientRect();
-    // pulled from events.js
-//	var windowWidth;
-//	var windowHeight;
+    // otherwise, snap to the right, if it's overlapping
+    } else if (mLeft + mWidth > seLeft + seWidth) {
+        mLeft = seLeft + seWidth - mWidth;
+    }
 
-    if (bcr.bottom > windowHeight) {
-        menuDiv.style.top = "";
-        menuDiv.style.bottom = "0px";
+    // check if we have to make changes
+    if (mTop != bcr.top || mLeft != bcr.left || mHeight != bcr.height || mWidth != bcr.width) {
+        //console.log(`Moved menu from ${bcr.left + se.scrollLeft}, ${bcr.top + se.scrollTop} (${bcr.width} x ${bcr.height}) to ${mLeft}, ${mTop} (${mWidth} x ${mHeight})`);
+        // apply position changes
+        menuDiv.style.top = mTop + "px";
+        menuDiv.style.left = mLeft + "px";
+        menuDiv.style.height = mHeight + "px";
+        menuDiv.style.width = mWidth + "px";
+        // If we're reducing the dimensions of the element, add scrollbars
+        if (mHeight < bcr.height || mWidth < bcr.width) {
+            menuDiv.style.overflow = "auto";
+        }
     }
 }
 

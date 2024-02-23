@@ -151,6 +151,7 @@ html::-webkit-scrollbar, body::-webkit-scrollbar {
     border-radius: 1ex;
     visibility: hidden;
     z-index: 10500;
+    box-shadow: 0 0 3px 3px #000000;
 }
 
 #helpEmbed {
@@ -384,6 +385,13 @@ td.imgField, td.imgField-disabled {
     border-radius: 1ex;
 }
 
+.menu-container {
+    position: absolute;
+    z-index: 10400;
+    box-shadow: 0 0 3px 3px #000000;
+    border-radius: 1ex;
+}
+
 .menu-table, .menu-table-error, .menu-table-warn {
     margin: 1ex 1ex 1ex 1ex;
     color: #FFFFFF;
@@ -395,10 +403,10 @@ td.imgField, td.imgField-disabled {
     text-decoration: none;
     font-size: 100%;
     border-radius: 1ex;
-    position: absolute;
+    /*position: absolute;*/
     user-select: none;
-    z-index: 10400;
-    box-shadow: 0 0 3px 3px #000000;
+    /*z-index: 10400*/;
+    /*box-shadow: 0 0 3px 3px #000000;*/
 }
 
 .menu-table {
