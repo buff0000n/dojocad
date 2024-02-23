@@ -12,7 +12,7 @@ var i18n = (function() {
         { key: "ua", name: "Погано перекладена Yкраїнська" },
         { key: "ru", name: "Плохо переведен на Русский" },
         { key: "zh-CN", name: "简体中文翻译不好" },
-        // todo: zh-TW 繁體中文 ?
+        { key: "zh-TW", name: "繁體中文翻譯不佳" },
         { key: "ja", name: "下手に翻訳された日本語" },
         { key: "ko", name: "잘못 번역된 한국어" },
         { key: "pg", name: "Igpay Atinlay" }

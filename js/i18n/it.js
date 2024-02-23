@@ -216,7 +216,7 @@
     "room.starlight.market": "Mercato Starlight",
     "room.uranus.chamber": "Camera di Urano",
     "room.oracle": "Oracolo",
-    "room.tenno.lab": "Tenno Lab",
+    "room.tenno.lab": "Laboratoire tenno",
     "room.energy.lab": "Laboratorio energetico",
     "room.chem.lab": "Laboratorio chimico",
     "room.bio.lab": "Biolaboratorio",

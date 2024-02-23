@@ -203,8 +203,8 @@ class MaxNumRule extends RoomRule {
 
 	toString() {
         return this.maxnum == 1 
-            ? i18n.str("rule.room.limit.single", this.md.name)
-            : i18n.str("rule.room.limit", this.md.name, this.maxnum);
+            ? i18n.str("rule.room.limit.single", i18n.str(this.md.name))
+            : i18n.str("rule.room.limit", i18n.str(this.md.name), this.maxnum);
 	}
 }
 

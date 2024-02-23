@@ -233,7 +233,7 @@
     "room.large.garden": "큰 정원",
     "room.temple.of.honor": "명예의 사원",
     "room.open.space": "열린 공간",
-    "room.courtiers.bliss": "Courtier의 행복",
+    "room.courtiers.bliss": "왕실의 행복",
     "room.harbingers.pass": "선구자의 통행증",
     "room.reactor": "리액터",
     "room.shadow.barracks": "그림자 병영",

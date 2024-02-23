@@ -215,7 +215,7 @@
     "room.ostron.cove": "Cala Ostron",
     "room.starlight.market": "Mercado Starlight",
     "room.uranus.chamber": "Cámara de Urano",
-    "room.oracle": "Oracle",
+    "room.oracle": "Oráculo",
     "room.tenno.lab": "Laboratorio Tenno",
     "room.energy.lab": "Laboratorio de Energía",
     "room.chem.lab": "Laboratorio de química",
@@ -246,7 +246,7 @@
     "room.old.cross.connector": "Conector cruzado (antiguo)",
     "room.old.t.shaped.connector": "(Antiguo) Conector en forma de T",
     "room.old.straight.hallway": "(Antiguo) Pasillo Recto",
-    "room.old.elbow.connector": "Conector acodado (antiguo)",
+    "room.old.elbow.connector": "(Antiguo) Conector acodado",
     "room.old.reactor": "(Antiguo) Reactor",
 
     "category.connectors": "Conectores",

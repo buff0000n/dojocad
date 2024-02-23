@@ -67,7 +67,7 @@
     "menu.select": "Wybierz",
     "menu.select.all": "Wybierz wszystko",
     "menu.select.branch": "Oddział",
-    "menu.select.root": "Root",
+    "menu.select.root": "Korzeń",
     "menu.select.exact": "Wybierz dokładnie",
     "menu.select.multi": "Wybór wielokrotny",
     "menu.select.by.hue": "Wybierz według odcienia",
