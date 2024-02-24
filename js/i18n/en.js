@@ -16,7 +16,7 @@
     "main.page.alttext.capacityStatField": "Capacity",
     "main.page.alttext.tierStat": "{0} Tier",
     "main.page.alttext.xpCountStatField": "Rooms providing Clan XP",
-    "main.page.alttext.showResoucesStat": "Resources",
+    "main.page.alttext.showResourcesStat": "Resources",
     "main.page.alttext.multiselect.enable": "Enable Multiselect Mode",
     "main.page.alttext.multiselect.disable": "Disable Multiselect Mode",
 
@@ -52,6 +52,7 @@
     "menu.language.reset": "Reset to default",
     "menu.language.help": "If you'd like to help with translation, here's the full language bundle for DojoCAD:",
     "menu.language.help.link": "Language bundle link",
+    "menu.language.help.link.english": "English for comparison",
     "menu.debug.collision.matrix": "Collision Matrix",
     "menu.debug.color.picker": "Color Picker",
     "menu.debug.saturation.picker": "Saturation Picker",

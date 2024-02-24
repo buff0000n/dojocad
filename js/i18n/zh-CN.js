@@ -16,7 +16,7 @@
     "main.page.alttext.capacityStatField": "容量",
     "main.page.alttext.tierStat": "{0} 层",
     "main.page.alttext.xpCountStatField": "提供氏族 XP 的房间",
-    "main.page.alttext.showResoucesStat": "资源",
+    "main.page.alttext.showResourcesStat": "资源",
     "main.page.alttext.multiselect.enable": "启用多选模式",
     "main.page.alttext.multiselect.disable": "禁用多选模式",
 
@@ -52,6 +52,7 @@
     "menu.language.reset": "重置为默认值",
     "menu.language.help": "如果您想帮助翻译，这里有 DojoCAD 的完整语言包",
     "menu.language.help.link": "语言包链接",
+    "menu.language.help.link.english": "比较用英语",
     "menu.debug.collision.matrix": "碰撞矩阵",
     "menu.debug.color.picker": "颜色选择器",
     "menu.debug.saturation.picker": "饱和度选择器",
@@ -260,5 +261,5 @@
     "category.utility": "实用程序",
     "category.discontinued": "已停止",
 
-    "help.file": "help-zh.html"
+    "help.file": "help-zh-CN.html"
 }
