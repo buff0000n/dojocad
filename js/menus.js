@@ -1834,7 +1834,8 @@ function doLanguageMenu() {
     // help blurb, because I obviously need help
     var helpBlurb = buildMenuDivider(4, `
         <p>${i18n.str("menu.language.help")}</p>
-        <p><a target="_blank" href="${i18n.getBundleFile()}">${i18n.str("menu.language.help.link")}</a></p>
+        <p><a target="_blank" href="${i18n.getBundleLink()}">${i18n.str("menu.language.help.link")}</a></p>
+        <p><a target="_blank" href="${i18n.getBundleLink("en")}">${i18n.str("menu.language.help.link.english")}</a></p>
     `);
     // meh
     helpBlurb.children[0].style.width = "0px";

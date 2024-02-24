@@ -52,6 +52,7 @@
     "menu.language.reset": "기본값으로 재설정",
     "menu.language.help": "번역에 도움을 주고 싶다면 여기 DojoCAD용 전체 언어 번들이 있습니다:",
     "menu.language.help.link": "언어 번들 링크",
+    "menu.language.help.link.english": "비교를 위한 영어",
     "menu.debug.collision.matrix": "충돌 매트릭스",
     "menu.debug.color.picker": "색상 선택기",
     "menu.debug.saturation.picker": "채도 선택기",

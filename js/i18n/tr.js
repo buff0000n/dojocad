@@ -52,6 +52,7 @@
     "menu.language.reset": "Varsayılana sıfırla",
     "menu.language.help": "Çeviri konusunda yardımcı olmak istiyorsanız işte DojoCAD için tam dil paketi:",
     "menu.language.help.link": "Dil paketi bağlantısı",
+    "menu.language.help.link.english": "Karşılaştırma için İngilizce",
     "menu.debug.collision.matrix": "Çarpışma Matrisi",
     "menu.debug.color.picker": "Renk Seçici",
     "menu.debug.saturation.picker": "Doygunluk Seçici",

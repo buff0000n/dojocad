@@ -52,6 +52,7 @@
     "menu.language.reset": "デフォルトにリセット",
     "menu.language.help": "翻訳を手助けしたい場合は、DojoCAD の完全な言語バンドルを次に示します:",
     "menu.language.help.link": "言語バンドル リンク",
+    "menu.language.help.link.english": "比較のための英語",
     "menu.debug.collision.matrix": "衝突マトリックス",
     "menu.debug.color.picker": "カラーピッカー",
     "menu.debug.saturation.picker": "彩度ピッカー",

@@ -52,6 +52,7 @@
     "menu.language.reset": "重置为默认值",
     "menu.language.help": "如果您想帮助翻译，这里有 DojoCAD 的完整语言包",
     "menu.language.help.link": "语言包链接",
+    "menu.language.help.link.english": "比较用英语",
     "menu.debug.collision.matrix": "碰撞矩阵",
     "menu.debug.color.picker": "颜色选择器",
     "menu.debug.saturation.picker": "饱和度选择器",

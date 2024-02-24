@@ -2,18 +2,18 @@ var i18n = (function() {
     // supported language list
     var languageList = [
         { key: "en", name: "English" },
-        { key: "es", name: "Español mal traducido" },
         { key: "fr", name: "Français mal traduit" },
-        { key: "de", name: "Schlecht übersetztes Deutsch" },
-        { key: "pt", name: "Português mal traduzido" },
         { key: "it", name: "Italiano mal tradotto" },
-        { key: "pl", name: "Słabo przetłumaczony na Polski" },
-        { key: "tr", name: "Kötü çevrilmiş Türkçe" },
-        { key: "ua", name: "Погано перекладена Yкраїнська" },
+        { key: "de", name: "Schlecht übersetztes Deutsch" },
+        { key: "es", name: "Español mal traducido" },
+        { key: "pt", name: "Português mal traduzido" },
         { key: "ru", name: "Плохо переведен на Русский" },
+        { key: "pl", name: "Słabo przetłumaczony na Polski" },
+        { key: "ua", name: "Погано перекладена Yкраїнська" },
+        { key: "tr", name: "Kötü çevrilmiş Türkçe" },
+        { key: "ja", name: "下手に翻訳された日本語" },
         { key: "zh-CN", name: "简体中文翻译不好" },
         { key: "zh-TW", name: "繁體中文翻譯不佳" },
-        { key: "ja", name: "下手に翻訳された日本語" },
         { key: "ko", name: "잘못 번역된 한국어" },
         { key: "pg", name: "Igpay Atinlay" }
     ];
@@ -318,13 +318,17 @@ var i18n = (function() {
         }
     }
 
+    function getBundleLink(language=null) {
+        return "https://raw.githubusercontent.com/buff0000n/dojocad/master/" + getBundleFile(language ? language : currentLanguage);
+    }
+
     return {
         init: init, // (callback)
         str: str, // (key, ...subs)
         getHelpUrl: getHelpUrl, // ()
         refreshLanguage: refreshLanguage, // ()
         getLanguageList: getLanguageList, // (): { {"key", "description",
-        getBundleFile: () => { return "https://raw.githubusercontent.com/buff0000n/dojocad/master/" + getBundleFile(currentLanguage); },
+        getBundleLink: getBundleLink, // (language = null)
         genPig: genPig, // ()
         checkBundles: checkBundles, // ()
     }

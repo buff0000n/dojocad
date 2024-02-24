@@ -52,6 +52,7 @@
     "menu.language.reset": "Скинути до замовчування",
     "menu.language.help": "Якщо ви хочете допомогти з перекладом, ось повний пакет мов для DojoCAD:",
     "menu.language.help.link": "Посилання на пакет мов",
+    "menu.language.help.link.english": "Англійська для порівняння",
     "menu.debug.collision.matrix": "Матриця зіткнень",
     "menu.debug.color.picker": "Вибір кольору",
     "menu.debug.saturation.picker": "Вибір насиченості",

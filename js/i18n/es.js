@@ -52,6 +52,7 @@
     "menu.language.reset": "Restablecer valores predeterminados",
     "menu.language.help": "Si desea ayudar con la traducción, aquí tiene el paquete de idiomas completo para DojoCAD:",
     "menu.language.help.link": "Enlace del paquete de idiomas",
+    "menu.language.help.link.english": "Ingles para comparar",
     "menu.debug.collision.matrix": "Matriz de colisiones",
     "menu.debug.color.picker": "Selector de color",
     "menu.debug.saturation.picker": "Selector de saturación",
