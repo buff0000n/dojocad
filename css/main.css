@@ -589,7 +589,7 @@ td .menu-button {
     left: 0px;
     right: 0px;
     height: 32px;
-    z-index: -100;
+    /*z-index: -100;*/
 }
 
 .colorPickerPreset {
