@@ -253,8 +253,6 @@
     "category.connectors": "커넥터",
     "category.classic.halls": "클래식 홀",
     "category.theme.halls": "테마 홀",
-    "category.theme.halls.1": "테마 홀 A-J",
-    "category.theme.halls.2": "테마 홀 K-Z",
     "category.labs": "실험실",
     "category.interactive": "대화형",
     "category.misc": "기타",

@@ -239,8 +239,6 @@
   "category.connectors": "Onnectorscay",
   "category.classic.halls": "Assicclay Allshay",
   "category.theme.halls": "Emethay Allshay",
-  "category.theme.halls.1": "Emethay Allshay AWAY-JWAY",
-  "category.theme.halls.2": "Emethay Allshay KWAY-ZWAY",
   "category.labs": "Abslay",
   "category.interactive": "Interactiveway",
   "category.misc": "Iscmay",

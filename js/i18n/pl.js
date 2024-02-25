@@ -253,8 +253,6 @@
     "category.connectors": "Złącza",
     "category.classic.halls": "Sale klasyczne",
     "category.theme.halls": "Sale tematyczne",
-    "category.theme.halls.1": "Sale tematyczne A-J",
-    "category.theme.halls.2": "Sale tematyczne K-Z",
     "category.labs": "Laboratoria",
     "category.interactive": "Interaktywny",
     "category.misc": "Różne",

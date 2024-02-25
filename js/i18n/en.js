@@ -253,8 +253,6 @@
     "category.connectors": "Connectors",
     "category.classic.halls": "Classic Halls",
     "category.theme.halls": "Theme Halls",
-    "category.theme.halls.1": "Theme Halls A-J",
-    "category.theme.halls.2": "Theme Halls K-Z",
     "category.labs": "Labs",
     "category.interactive": "Interactive",
     "category.misc": "Misc",

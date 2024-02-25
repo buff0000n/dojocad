@@ -253,8 +253,6 @@
     "category.connectors": "Bağlayıcılar",
     "category.classic.halls": "Klasik Salonlar",
     "category.theme.halls": "Temalı Salonlar",
-    "category.theme.halls.1": "Tema Salonları A-J",
-    "category.theme.halls.2": "K-Z Tema Salonları",
     "category.labs": "Labs",
     "category.interactive": "Etkileşimli",
     "category.misc": "Çeşitli",

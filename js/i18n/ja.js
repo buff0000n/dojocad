@@ -253,8 +253,6 @@
     "category.connectors": "コネクタ",
     "category.classic.halls": "クラシック ホール",
     "category.theme.halls": "テーマホール",
-    "category.theme.halls.1": "テーマホール A ～ J",
-    "category.theme.halls.2": "テーマ ホール K ～ Z",
     "category.labs": "ラボ",
     "category.interactive": "インタラクティブ",
     "category.misc": "その他",

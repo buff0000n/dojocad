@@ -253,8 +253,6 @@
     "category.connectors": "Conectores",
     "category.classic.halls": "Salões Clássicos",
     "category.theme.halls": "Salões Temáticos",
-    "category.theme.halls.1": "Salas Temáticas AJ",
-    "category.theme.halls.2": "Salões Temáticos K-Z",
     "category.labs": "Laboratórios",
     "category.interactive": "Interativo",
     "category.misc": "Diversos",

@@ -253,8 +253,6 @@
     "category.connectors": "Соединители",
     "category.classic.halls": "Классические залы",
     "category.theme.halls": "Тематические залы",
-    "category.theme.halls.1": "Тематические залы A-J",
-    "category.theme.halls.2": "Тематические залы K-Z",
     "category.labs": "Лаборатории",
     "category.interactive": "Интерактивный",
     "category.misc": "Разное",

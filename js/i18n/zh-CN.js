@@ -253,8 +253,6 @@
     "category.connectors": "连接器",
     "category.classic.halls": "经典大厅",
     "category.theme.halls": "主题大厅",
-    "category.theme.halls.1": "主题厅 1",
-    "category.theme.halls.2": "主题厅 2",
     "category.labs": "实验室",
     "category.interactive": "互动",
     "category.misc": "杂项",

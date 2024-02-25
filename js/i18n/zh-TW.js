@@ -253,8 +253,6 @@
     "category.connectors": "連接器",
     "category.classic.halls": "經典大廳",
     "category.theme.halls": "主題大廳",
-    "category.theme.halls.1": "主題廳 A-J",
-    "category.theme.halls.2": "主題廳 K-Z",
     "category.labs": "實驗室",
     "category.interactive": "互動",
     "category.misc": "雜項",

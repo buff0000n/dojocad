@@ -253,8 +253,6 @@
     "category.connectors": "З'єднувачі",
     "category.classic.halls": "Класичні зали",
     "category.theme.halls": "Тематичні зали",
-    "category.theme.halls.1": "Тематичні зали A-J",
-    "category.theme.halls.2": "Тематичні зали K-Z",
     "category.labs": "Лабораторії",
     "category.interactive": "Інтерактивний",
     "category.misc": "Різне",
