@@ -251,13 +251,13 @@ function adjustFloorWindow() {
 
 	// preventing the sidebar from popping is worth the extra headache
 	if (topWindowFloorEntry == topFloorEntry) {
-		document.getElementById("floorUpButtonImg").src = "icons/icon-up.png";
-		document.getElementById("floorUpButtonImg").srcset = "icons2x/icon-up.png 2x";
+		document.getElementById("i18n.main.page.alttext.floorUpButtonImg").src = "icons/icon-up.png";
+		document.getElementById("i18n.main.page.alttext.floorUpButtonImg").srcset = "icons2x/icon-up.png 2x";
 		document.getElementById("floorUpButton").className = selectedFloorEntry == topFloorEntry ? "button-disabled" : "button";
 
 	} else {
-		document.getElementById("floorUpButtonImg").src = "icons/icon-up-more.png";
-		document.getElementById("floorUpButtonImg").srcset = "icons2x/icon-up-more.png 2x";
+		document.getElementById("i18n.main.page.alttext.floorUpButtonImg").src = "icons/icon-up-more.png";
+		document.getElementById("i18n.main.page.alttext.floorUpButtonImg").srcset = "icons2x/icon-up-more.png 2x";
 		var hasError = false;
 		for (var f = topWindowFloorEntry.floor + 1; f <= topFloorEntry.floor; f++) {
 			if (getFloorEntry(f).hasErrors()) {
@@ -269,13 +269,13 @@ function adjustFloorWindow() {
 	}
 
 	if (bottomWindowFloorEntry == bottomFloorEntry) {
-		document.getElementById("floorDownButtonImg").src = "icons/icon-down.png";
-		document.getElementById("floorDownButtonImg").srcset = "icons2x/icon-down.png 2x";
+		document.getElementById("i18n.main.page.alttext.floorDownButtonImg").src = "icons/icon-down.png";
+		document.getElementById("i18n.main.page.alttext.floorDownButtonImg").srcset = "icons2x/icon-down.png 2x";
 		document.getElementById("floorDownButton").className = selectedFloorEntry == bottomFloorEntry ? "button-disabled" : "button";
 
 	} else {
-		document.getElementById("floorDownButtonImg").src = "icons/icon-down-more.png";
-		document.getElementById("floorDownButtonImg").srcset = "icons2x/icon-down-more.png 2x";
+		document.getElementById("i18n.main.page.alttext.floorDownButtonImg").src = "icons/icon-down-more.png";
+		document.getElementById("i18n.main.page.alttext.floorDownButtonImg").srcset = "icons2x/icon-down-more.png 2x";
 		var hasError = false;
 		for (var f = bottomWindowFloorEntry.floor - 1; f >= bottomFloorEntry.floor; f--) {
 			if (getFloorEntry(f).hasErrors()) {

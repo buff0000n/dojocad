@@ -136,20 +136,38 @@ var i18n = (function() {
     }
 
     function initUIStrings() {
-        // loop over the static alt-text entries defined in index.html
-        for (var key in mainPageImageAltText) {
-            // lookup the i18n string
-            var alttext = str(mainPageImageAltText[key]);
-            // get the image container by ID
-            var container = document.getElementById(key);
-            // set the title somewhere under that container
-            setTitle(container, alttext);
+        // find all static document elements with ids that start with "i18n...".
+        var list = document.querySelectorAll('*[id^=i18n]')
+        // loop over them
+        for (var i = 0; i < list.length; i++) {
+            // get the element by id
+            var element = list[i];
+            var id = element.id;
+            // strip the first dot-delimited item from the id to get the i18n key
+            // there can be extra characters between "i18n" and the first dot, this is to allow multiple
+            // elements to share the same i18n key while still havng unique ids.
+            var key = id.substring(id.indexOf(".") + 1);
+
+            // what we do depends on the element type
+            switch (element.nodeName) {
+                case "IMG":
+                    // replace the alt text on images
+                    element.title = i18n.str(key); break;
+                case "INPUT":
+                    // replace the value on inputs
+                    element.value = i18n.str(key); break;
+                default:
+                    // otherwise, replace the inner text
+                    element.innerHTML = i18n.str(key);
+            }
         }
+
         // short circuit if we're still in the process of initializing the page
         if (modelInitialized) {
-            // okay, to make things much easier we're just going to reload the whole model
-            // start by going to floor 0.  If we're currently viewing a basement floor then it's
-            // not going to fully clear out all the floor names we might need to refresh
+            // okay, to make things much easier we're just going to reload the whole model.
+            // Start by going to floor 0.  Otherwise, if we're currently viewing a basement
+            // floor then it's not going to fully clear out all the floor names we might
+            // need to refresh
             doSetFloor(0);
             // reload the model from the current URL
             reLoadModelFromUrl(getHref());

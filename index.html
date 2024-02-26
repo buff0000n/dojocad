@@ -34,28 +34,6 @@
 <script type="text/javascript" language="javascript" src="js/storage.js"></script>
 <script type="text/javascript" language="javascript" src="js/settings.js"></script>
 <script type="text/javascript" language="javascript" src="js/init.js"></script>
-<script type="text/javascript" language="javascript">
-
-var mainPageImageAltText = {
-    "burgerButton": "main.page.alttext.burgerButton",
-    "addRoomButton": "main.page.alttext.addRoomButton",
-    "undoButton": "main.page.alttext.undoButton",                 // todo: refresh undo/redo state
-    "redoButton": "main.page.alttext.redoButton",                 // todo: refresh undo/redo state
-    "multiselectButton": "main.page.alttext.multiselectButton",
-    "allErrorsButton": "main.page.alttext.allErrorsButton",
-    "floorUpButtonImg": "main.page.alttext.floorUpButtonImg",
-    "floorDownButtonImg": "main.page.alttext.floorDownButtonImg",
-    "helpToggle": "main.page.alttext.helpToggle",
-    "numRoomsStatField": "main.page.alttext.numRoomsStatField",
-    "energyStatField": "main.page.alttext.energyStatField",
-    "capacityStatField": "main.page.alttext.capacityStatField",
-    // not a static alt text, set elsewhere
-    // "tierStat": "main.page.alttext.tierStat",
-    "xpCountStatField": "main.page.alttext.xpCountStatField",
-    "showResourcesStat": "main.page.alttext.showResourcesStat"
-};
-
-</script>
 
 <body onload="init()" onkeydown="keyDown()" onkeyup="keyUp()" onscroll="onScroll()" onresize="onresize()">
 
@@ -68,22 +46,22 @@ var mainPageImageAltText = {
 
 <!-- floating header bar -->
 <div id="header">
-    <span id="burgerButton" class="button" onclick="doBurgerMenu(this)"><img src="icons/icon-burger.png" srcset="icons2x/icon-burger.png 2x" title="Menu"/></span>
-    <span id="addRoomButton" class="button" onclick="doAddMenu(this)"><img src="icons/icon-add.png" srcset="icons2x/icon-add.png 2x" title="Add Room"/></span>
-    <span id="undoButton" class="button-disabled" onclick="doUndo(this)"><img src="icons/icon-undo.png" srcset="icons2x/icon-undo.png 2x" title="Undo"/></span>
-    <span id="redoButton" class="button-disabled" onclick="doRedo(this)"><img src="icons/icon-redo.png" srcset="icons2x/icon-redo.png 2x" title="Redo"/></span>
-    <span id="multiselectButton" class="button-disabled" onclick="doToggleMultiselect(this)"><img src="icons/icon-multiselect.png" srcset="icons2x/icon-multiselect.png 2x" title="Enable Multiselect Mode"/></span>
-    <span id="allErrorsButton" class="button-clear" onclick="doShowAllErrors(this)"><img src="icons/icon-ok.png" srcset="icons2x/icon-ok.png 2x" title="OK"/></span>
+    <span id="burgerButton" class="button" onclick="doBurgerMenu(this)"><img id="i18n.main.page.alttext.burgerButton" src="icons/icon-burger.png" srcset="icons2x/icon-burger.png 2x" title="Menu"/></span>
+    <span id="addRoomButton" class="button" onclick="doAddMenu(this)"><img id="i18n.main.page.alttext.addRoomButton" src="icons/icon-add.png" srcset="icons2x/icon-add.png 2x" title="Add Room"/></span>
+    <span id="undoButton" class="button-disabled" onclick="doUndo(this)"><img id="i18n.main.page.alttext.undoButton" src="icons/icon-undo.png" srcset="icons2x/icon-undo.png 2x" title="Undo"/></span>
+    <span id="redoButton" class="button-disabled" onclick="doRedo(this)"><img id="i18n.main.page.alttext.redoButton" src="icons/icon-redo.png" srcset="icons2x/icon-redo.png 2x" title="Redo"/></span>
+    <span id="multiselectButton" class="button-disabled" onclick="doToggleMultiselect(this)"><img id="i18n.main.page.alttext.multiselectButton" src="icons/icon-multiselect.png" srcset="icons2x/icon-multiselect.png 2x" title="Enable Multiselect Mode"/></span>
+    <span id="allErrorsButton" class="button-clear" onclick="doShowAllErrors(this)"><img id="i18n.main.page.alttext.allErrorsButton" src="icons/icon-ok.png" srcset="icons2x/icon-ok.png 2x" title="OK"/></span>
 </div>
 
 <!-- floating sidebar -->
 <div id="sidebar">
-    <div id="floorUpButton" class="button" onclick="doFloorUp(this)"><img id="floorUpButtonImg" src="icons/icon-up.png" srcset="icons2x/icon-up.png 2x" title="Up"/></div>
-    <div id="floorDownButton" class="button" onclick="doFloorDown(this)"><img id="floorDownButtonImg" src="icons/icon-down.png" srcset="icons2x/icon-down.png 2x" title="Down"/></div>
+    <div id="floorUpButton" class="button" onclick="doFloorUp(this)"><img id="i18n.main.page.alttext.floorUpButtonImg" src="icons/icon-up.png" srcset="icons2x/icon-up.png 2x" title="Up"/></div>
+    <div id="floorDownButton" class="button" onclick="doFloorDown(this)"><img id="i18n.main.page.alttext.floorDownButtonImg" src="icons/icon-down.png" srcset="icons2x/icon-down.png 2x" title="Down"/></div>
 </div>
 
 <!-- floating help button in the corner -->
-<div id="helpToggle" class="button" onclick="toggleHelp()"><img src="icons/icon-help.png" srcset="icons2x/icon-help.png 2x" title="Show Help"/></div>
+<div id="helpToggle" class="button" onclick="toggleHelp()"><img id="i18n.main.page.alttext.helpToggle" src="icons/icon-help.png" srcset="icons2x/icon-help.png 2x" title="Show Help"/></div>
 
 <!-- floating error bar -->
 <div id="errorBar">
@@ -100,14 +78,14 @@ var mainPageImageAltText = {
 <!-- floating stats bar -->
 <div id="statsBar">
     <div id="statsBarLine1" class="statsBarInline">
-        <span id="numRoomsStatField" class="field"><span id="numRoomsStat" class="stat">0</span><img src="icons/icon-count.png" srcset="icons2x/icon-count.png 2x" title="Room Count"/></span>
-        <span id="energyStatField" class="field"><span id="energyStat" class="stat">0</span><img src="icons/icon-energy.png" srcset="icons2x/icon-energy.png 2x" title="Energy"/></span>
-        <span id="capacityStatField" class="field"><span id="capacityStat" class="stat">0</span><img src="icons/icon-capacity.png" srcset="icons2x/icon-capacity.png 2x" title="Capacity"/></span>
+        <span id="numRoomsStatField" class="field"><span id="numRoomsStat" class="stat">0</span><img id="i18n.main.page.alttext.numRoomsStatField" src="icons/icon-count.png" srcset="icons2x/icon-count.png 2x" title="Room Count"/></span>
+        <span id="energyStatField" class="field"><span id="energyStat" class="stat">0</span><img id="i18n.main.page.alttext.energyStatField" src="icons/icon-energy.png" srcset="icons2x/icon-energy.png 2x" title="Energy"/></span>
+        <span id="capacityStatField" class="field"><span id="capacityStat" class="stat">0</span><img id="i18n.main.page.alttext.capacityStatField" src="icons/icon-capacity.png" srcset="icons2x/icon-capacity.png 2x" title="Capacity"/></span>
     </div>
     <div id="statsBarLine2" class="statsBarInline">
         <span id="tierStat" class="field"><img src="icons/icon-tier--1.png" srcset="icons2x/icon-tier--1.png 2x" title="Empty Tier"/></span>
-        <span id="xpCountStatField" class="field"><span id="xpCountStat" class="stat">0</span><img src="icons/icon-xp.png" srcset="icons2x/icon-xp.png 2x" title="Rooms providing Clan XP"/></span>
-        <span id="showResourcesStat" class="field clickable" onclick="showResources()"><img src="icons/icon-resources.png" srcset="icons2x/icon-resources.png 2x" title="Resources"/></span>
+        <span id="xpCountStatField" class="field"><span id="xpCountStat" class="stat">0</span><img id="i18n.main.page.alttext.xpCountStatField" src="icons/icon-xp.png" srcset="icons2x/icon-xp.png 2x" title="Rooms providing Clan XP"/></span>
+        <span id="showResourcesStat" class="field clickable" onclick="showResources()"><img id="i18n.main.page.alttext.showResourcesStat" src="icons/icon-resources.png" srcset="icons2x/icon-resources.png 2x" title="Resources"/></span>
     </div>
 </div>
 
