@@ -1581,7 +1581,8 @@ function buildStorageListingLine(entry, menuDiv) {
     var nameDiv = document.createElement("td");
     nameDiv.className = "field";
     var link = document.createElement("a");
-    link.href = "?" + entry.item;
+    var item = entry.item.replace("&mz=", "#");
+    link.href = "?" + item;
     // translate the autosave entry's name here
     link.innerHTML = truncateName(name == storage.autosaveName ? i18n.str("menu.settings.autosave") : name);
     link.addEventListener("click", storageLinkClicked);
