@@ -798,7 +798,7 @@ function saveModelToUrl() {
 }
 
 function loadModelFromHref() {
-    return loadModelFromUrl(window.location.href);
+    return loadModelFromUrl(getHref());
 }
 
 function reLoadModelFromUrl(url) {
@@ -902,7 +902,7 @@ function saveViewToUrl() {
 }
 
 function loadViewFromHref() {
-    return loadViewFromUrl(window.location.href);
+    return loadViewFromUrl(getHref());
 }
 
 function loadViewFromUrl(url) {

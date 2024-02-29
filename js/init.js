@@ -120,11 +120,19 @@
         // initialize language
         i18n.init(() => {
             // init the model and debug after i18n has been initialized
-            initModel();
-
             if (getQueryParam(window.location.href, "debug") == "true") {
                 toggleDebug();
             }
+
+            if (getQueryParam(window.location.href, "preset")) {
+                var presetUrl = Presets[getQueryParam(window.location.href, "preset")];
+                if (presetUrl) {
+                    updateHref(presetUrl);
+                }
+            }
+
+            initModel();
+
         });
 
         // we have to do this with addEventListener() instead of directly on the <div> so we can tell stupid Chrome that
