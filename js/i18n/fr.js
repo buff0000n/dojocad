@@ -14,7 +14,7 @@
     "main.page.alttext.numRoomsStatField": "Nombre de chambres",
     "main.page.alttext.energyStatField": "Énergie",
     "main.page.alttext.capacityStatField": "Capacité",
-    "main.page.alttext.tierStat": "{0} Niveau",
+    "main.page.alttext.tierStat": "Niveau {0}",
     "main.page.alttext.xpCountStatField": "Salle fournissant de l'XP de clan",
     "main.page.alttext.showResourcesStat": "Ressources",
     "main.page.alttext.multiselect.enable": "Activer le mode multisélection",

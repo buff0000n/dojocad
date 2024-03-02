@@ -336,6 +336,14 @@ var i18n = (function() {
         }
     }
 
+    function exportAsCsv() {
+        var csv = "Key,Text\n";
+        for (var key in bundle) {
+            csv += key + "," + bundle[key] + "\n";
+        }
+        console.log(csv);
+    }
+
     function getBundleLink(language=null) {
         return "https://raw.githubusercontent.com/buff0000n/dojocad/master/" + getBundleFile(language ? language : currentLanguage);
     }
@@ -349,6 +357,7 @@ var i18n = (function() {
         getBundleLink: getBundleLink, // (language = null)
         genPig: genPig, // ()
         checkBundles: checkBundles, // ()
+        exportAsCsv: exportAsCsv, // ()
     }
 
 })();

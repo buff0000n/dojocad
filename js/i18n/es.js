@@ -14,7 +14,7 @@
     "main.page.alttext.numRoomsStatField": "Recuento de habitaciones",
     "main.page.alttext.energyStatField": "Energía",
     "main.page.alttext.capacityStatField": "Capacidad",
-    "main.page.alttext.tierStat": "{0} Nivel",
+    "main.page.alttext.tierStat": "Nivel {0}",
     "main.page.alttext.xpCountStatField": "Habitaciones que proporcionan XP del Clan",
     "main.page.alttext.showResourcesStat": "Recursos",
     "main.page.alttext.multiselect.enable": "Habilitar modo de selección múltiple",
