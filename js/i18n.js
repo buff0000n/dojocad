@@ -14,7 +14,7 @@ var i18n = (function() {
         { key: "ja", name: "下手に翻訳された日本語" },
         { key: "zh-CN", name: "简体中文翻译不好" },
         { key: "zh-TW", name: "繁體中文翻譯不佳" },
-        { key: "ko", name: "잘못 번역된 한국어" },
+        { key: "ko", name: "반쯤 된 한국어 번역" },
         { key: "pg", name: "Igpay Atinlay" }
     ];
 
