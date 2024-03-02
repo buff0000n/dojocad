@@ -247,7 +247,7 @@
     "room.old.cross.connector": "(구) 십자형 연결 통로",
     "room.old.t.shaped.connector": "(구) T자형 연결 통로",
     "room.old.straight.hallway": "(구) 직선형 복도",
-    "room.old.elbow.connector": "(구) ㄱ자형 복도,
+    "room.old.elbow.connector": "(구) ㄱ자형 복도",
     "room.old.reactor": "(구) 원자로",
 
     "category.connectors": "연결 통로",

@@ -6,7 +6,7 @@ var i18n = (function() {
         { key: "it", name: "Italiano mal tradotto" },
         { key: "de", name: "Schlecht übersetztes Deutsch" },
         { key: "es", name: "Español mal traducido" },
-        { key: "pt", name: "Português mal traduzido" },
+        { key: "pt", name: "Tradução meia-boca para o Português" },
         { key: "ru", name: "Плохо переведен на Русский" },
         { key: "pl", name: "Słabo przetłumaczony na Polski" },
         { key: "ua", name: "Погано перекладена Yкраїнська" },
