@@ -4,7 +4,7 @@ var i18n = (function() {
         { key: "en", name: "English" },
         { key: "fr", name: "Français mal traduit" },
         { key: "it", name: "Italiano mal tradotto" },
-        { key: "de", name: "Schlecht übersetztes Deutsch" },
+        { key: "de", name: "Deutsch" },
         { key: "es", name: "Español mal traducido" },
         { key: "pt", name: "Tradução meia-boca para o Português" },
         { key: "ru", name: "Плохо переведен на Русский" },
@@ -14,7 +14,7 @@ var i18n = (function() {
         { key: "ja", name: "下手に翻訳された日本語" },
         { key: "zh-CN", name: "简体中文翻译不好" },
         { key: "zh-TW", name: "繁體中文翻譯不佳" },
-        { key: "ko", name: "반쯤 된 한국어 번역" },
+        { key: "ko", name: "한국어" },
         { key: "pg", name: "Igpay Atinlay" }
     ];
 
@@ -325,7 +325,12 @@ var i18n = (function() {
                 var result = "------------------------------------------------------------------------------\nBundle: " + entry.key;
                 for (var k in json) {
                     if (!defaultBundle[k]) {
-                        result += "\n" + k;
+                        result += "\nExtra: " + k;
+                    }
+                }
+                for (var k in defaultBundle) {
+                    if (!json[k] && k != "help.file") {
+                        result += "\nMissing: " + k;
                     }
                 }
                 console.log(result);
