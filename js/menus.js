@@ -453,7 +453,7 @@ function doBurgerMenu() {
 	menuDiv.appendChild(buildMenuHeaderLine("Menu", 3));
 
     // need to explicitly pass in the layout for a new dojo now that we can autoload from autosave
-    menuDiv.appendChild(buildLinkMenuButton(i18n.str("menu.new"), "./?v=2,0,0,0#BYRgNADJ1WcM5A", "icon-new"));
+    menuDiv.appendChild(buildLinkMenuButton(i18n.str("menu.new"), "./?preset=new", "icon-new"));
 
     menuDiv.appendChild(buildMenuButton(i18n.str("menu.local.storage"), doStorageMenu, "icon-save"));
 
