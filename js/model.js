@@ -173,6 +173,12 @@ function roomFromString(string, readRooms) {
             // layout has too many barracks, decrease the tier until we find a matching barracks we can add
             tier--;
         }
+    // migrate the generic large garden to a specific one
+    } else if (mid == "gl") {
+        // just pick the first one, three of them have the same resources but the other four
+        // are all different because of reasons
+        console.log("Migration: replacing room " + mid + " with room glc");
+        mid = "glc";
     }
     var room = new Room(getRoomMetadata(mid));
     // room coordinates may be fractional because of old dojo rooms, floor and rotation are still ints
