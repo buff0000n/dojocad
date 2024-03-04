@@ -915,7 +915,7 @@ var roomMetadata =
 	"resources": [],
 	"blockedFromAboveBy": []},
 
-{"id": "oh1", "image": "old-hall", "name": "room.old.clan.hall", "category": "category.discontinued", "category.discontinued": true, "spawn": true, "prereq": null, "capacity": 100, "energy": 5, "maxnum": null, "floor": -8, "ceil": 24,
+{"id": "oh1", "image": "old-hall", "name": "room.old.clan.hall", "category": "category.discontinued", "discontinued": true, "spawn": true, "prereq": null, "capacity": 100, "energy": 5, "maxnum": null, "floor": -8, "ceil": 24,
 	"bounds": [
 		{"x1": -18.25, "y1": -32.25, "x2": 18.25, "y2": 1.75, "floor": -8, "ceil": 24},
 		{"x1": -26, "y1": 1.75, "x2": 26, "y2": 32.25, "floor": -8, "ceil": 24}],
@@ -926,7 +926,7 @@ var roomMetadata =
     "treetype": "64-2",
 	"blockedFromAboveBy": [
 	    ]},
-{"id": "oh2", "image": "old-great-hall", "name": "room.old.clan.great.hall", "category": "category.discontinued", "category.discontinued": true, "spawn": true, "prereq": null, "capacity": 0, "energy": 0, "maxnum": null, "floor": -8, "ceil": 24,
+{"id": "oh2", "image": "old-great-hall", "name": "room.old.clan.great.hall", "category": "category.discontinued", "discontinued": true, "spawn": true, "prereq": null, "capacity": 0, "energy": 0, "maxnum": null, "floor": -8, "ceil": 24,
 	"bounds": [
 		{"x1": -35, "y1": -32, "x2": 35, "y2": 32, "floor": -8, "ceil": 24}],
 	"doors": [
@@ -936,7 +936,7 @@ var roomMetadata =
     "treetype": "64-2",
 	"blockedFromAboveBy": [
 	    ]},
-{"id": "occ", "image": "old-cross-connector", "name": "room.old.cross.connector", "category": "category.discontinued", "category.discontinued": true, "prereq": null, "capacity": 0, "energy": 0, "maxnum": null, "floor": -8, "ceil": 24,
+{"id": "occ", "image": "old-cross-connector", "name": "room.old.cross.connector", "category": "category.discontinued", "discontinued": true, "prereq": null, "capacity": 0, "energy": 0, "maxnum": null, "floor": -8, "ceil": 24,
 	"bounds": [
 		{"x1": -18.25, "y1": -18.25, "x2": 18.25, "y2": 18.25, "floor": -8, "ceil": 24}],
 	"doors": [
@@ -948,7 +948,7 @@ var roomMetadata =
     "treetype": "32-4",
 	"blockedFromAboveBy": [
 	    ]},
-{"id": "oct", "image": "old-t-connector", "name": "room.old.t.shaped.connector", "category": "category.discontinued", "category.discontinued": true, "prereq": null, "capacity": 0, "energy": 0, "maxnum": null, "floor": -8, "ceil": 24,
+{"id": "oct", "image": "old-t-connector", "name": "room.old.t.shaped.connector", "category": "category.discontinued", "discontinued": true, "prereq": null, "capacity": 0, "energy": 0, "maxnum": null, "floor": -8, "ceil": 24,
 	"bounds": [
 		{"x1": -8.25, "y1": -18.25, "x2": 18.25, "y2": 18.25, "floor": -8, "ceil": 24}],
 	"doors": [
@@ -959,7 +959,7 @@ var roomMetadata =
     "treetype": "32-3",
 	"blockedFromAboveBy": [
 	    ]},
-{"id": "osh", "image": "old-straight-hallway", "name": "room.old.straight.hallway", "category": "category.discontinued", "category.discontinued": true, "prereq": null, "capacity": 0, "energy": 0, "maxnum": null, "floor": -8, "ceil": 24,
+{"id": "osh", "image": "old-straight-hallway", "name": "room.old.straight.hallway", "category": "category.discontinued", "discontinued": true, "prereq": null, "capacity": 0, "energy": 0, "maxnum": null, "floor": -8, "ceil": 24,
 	"bounds": [
 		{"x1": -6, "y1": -6.25, "x2": 6, "y2": 6.25, "floor": -8, "ceil": 24}],
 	"doors": [
@@ -969,7 +969,7 @@ var roomMetadata =
     "treetype": "16-2",
 	"blockedFromAboveBy": [
 	    ]},
-{"id": "oce", "image": "old-elbow-connector", "name": "room.old.elbow.connector", "category": "category.discontinued", "category.discontinued": true, "prereq": null, "capacity": 0, "energy": 0, "maxnum": null, "floor": -8, "ceil": 24,
+{"id": "oce", "image": "old-elbow-connector", "name": "room.old.elbow.connector", "category": "category.discontinued", "discontinued": true, "prereq": null, "capacity": 0, "energy": 0, "maxnum": null, "floor": -8, "ceil": 24,
 	"bounds": [
 		{"x1": -8.25, "y1": -8.25, "x2": 18.25, "y2": 18.25, "floor": -8, "ceil": 24}],
 	"doors": [
@@ -980,7 +980,7 @@ var roomMetadata =
     "treetype": "32-2e",
 	"blockedFromAboveBy": [
 	    ]},
-{"id": "ore", "image": "old-reactor", "name": "room.old.reactor", "category": "category.discontinued", "category.discontinued": true, "prereq": null, "capacity": 0, "energy": 25, "maxnum": null, "floor": -8, "ceil": 24,
+{"id": "ore", "image": "old-reactor", "name": "room.old.reactor", "category": "category.discontinued", "discontinued": true, "prereq": null, "capacity": 0, "energy": 25, "maxnum": null, "floor": -8, "ceil": 24,
 	"bounds": [
 		{"x1": -10, "y1": -15, "x2": 10, "y2": 15, "floor": -8, "ceil": 24}],
 	"doors": [
