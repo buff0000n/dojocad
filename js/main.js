@@ -6,6 +6,11 @@
 // when loading the page and setting the language
 var modelInitialized = false;
 
+// If the page was loaded with a preset then operate in "preset mode"
+// until a structural change is made
+var preset = null;
+var presetModelString = null;
+
 // Coordinate convention:
 //  - mx, my, mv = measured in in-game meters
 //  - px, py, pv = measured in pixels
@@ -786,6 +791,25 @@ function saveModelToUrl() {
 
 	} else {
 	    var modelString = buildCompressedModelParam();
+
+        // check if we're in preset mode
+        if (preset) {
+            // check the model against the preset model
+            if (modelString == presetModelString) {
+                // if it's the same, don't do anything
+                return;
+
+            } else {
+                // otherwise, clear preset mode
+                preset = null;
+                presetModelString = null;
+                // remove the url parameter, if present
+                removeUrlQueryParam("preset");
+                // save the view
+                saveViewToUrl();
+            }
+        }
+
 		modifyUrlAnchor(modelString);
 		// check for autosave
 		if (settings.autosave) {
@@ -795,10 +819,6 @@ function saveModelToUrl() {
             storage.autosaveItem(`v=${view}#${modelString}`);
 		}
 	}
-}
-
-function loadModelFromHref() {
-    return loadModelFromUrl(getHref());
 }
 
 function reLoadModelFromUrl(url) {
@@ -897,12 +917,12 @@ function buildViewParam() {
 }
 
 function saveViewToUrl() {
+    // ignore if we're in preset mode
+    if (preset) {
+        return;
+    }
 	modifyUrlQueryParam("v", buildViewParam());
 	// no autosave just for view changes
-}
-
-function loadViewFromHref() {
-    return loadViewFromUrl(getHref());
 }
 
 function loadViewFromUrl(url) {
@@ -1086,11 +1106,30 @@ function setModelDebug(debug) {
 // State, initialization
 //==============================================================
 
-function initModel() {
+function initMain() {
+    if (getQueryParam(window.location.href, "debug") == "true") {
+        toggleDebug();
+    }
+
+    var href = null;
+    preset = getQueryParam(window.location.href, "preset")
+
+    if (preset) {
+        var href = Presets[getQueryParam(window.location.href, "preset")];
+    }
+
+    initModel(href);
+}
+
+function initModel(href = null) {
+    if (!href) {
+        href = getHref();
+    }
+
 	registerRoomRules(roomMetadata);
 
-    if (loadModelFromHref()) {
-		if (!loadViewFromHref()) {
+    if (loadModelFromUrl(href)) {
+		if (!loadViewFromUrl(href)) {
 			var room = roomList[0];
 			if (room) {
 		        centerViewOn(room.mv.x, room.mv.y, 5, room.floor);
@@ -1101,6 +1140,8 @@ function initModel() {
 
     // if there is no layout in the URL then check local storage for an autosve
     } else if (settings.autosave && storage.containsAutosaveItem()) {
+        // treat it as a preset
+        preset = "autosave";
         // load the autosave entry
         // we need to prefix it with "?" so the URL parser will work
         var url = "?" + storage.getAutosaveItem();
@@ -1108,18 +1149,19 @@ function initModel() {
         loadViewFromUrl(url);
 
     } else {
-        // set the view first so "v=" appears at the beginning of the URL
-        centerViewOn(0, 0, 2, 0);
-        var starterRoom = new Room(getRoomMetadata("h1"));
-        starterRoom.setPosition(0, 0, 0, 0);
-        // I smell hax
-        starterRoom.placed = true;
-	    addRoom(starterRoom);
-	    setSpawnRoom(starterRoom, false);
+        // load the starter preset
+        preset = "new";
+        var url = Presets[preset];
+        loadModelFromUrl(url);
+        loadViewFromUrl(url);
     }
 
     redraw();
     // set the initialized flag, now changing the language
     // will reload the model
     modelInitialized = true;
+    // init the preset model string, so we know when the model changes
+    if (preset) {
+	    presetModelString = buildCompressedModelParam();
+    }
 }

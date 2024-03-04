@@ -1,4 +1,6 @@
 var Presets = {
+    "new": "?v=2,0,0,0#BYRgNADJ1WcM5A",
+
     "minimal": "?v=1.6,97,-61,0#CbA0FoEYDYAZXvAzAfQDYBdQwgFkggugEbbSi7nwBM6AxhDuLgByGzoCmj5lhtAewBOoFvFwB2fijoiocRrlzsUQ7mLxtE6ARTYBWLaFprskanuloAbpeaIiAC24P4BUB4DOKTgDNQAJxUhJCq3JDmmipoYPJu+vr8QA",
 
     "minimal-affinity": "?v=1.5,74,160,0#PYJwNAtA7AnGAsAOMAGMBmA+gGwC5jgkTTQEYcBTSKZCU0gJlQxwGNJiOSXsAjMUvEj0mZHMEgwyANmZZsANzDJSssQBMArgNlJm5YO1IwhEBgFY1AzMACGkBvCZnLczLgAWkdM5-7MIFREZIxugToCoWLhwcrcWB5BfhAwVmhgGQDOmOrq3s4WaZis4LEQfmhY4apx-hQAZvlg0kIkOHkMUE1kQA",
