@@ -450,6 +450,10 @@ class ResourceCounter extends RoomRule {
 	    return 0;
 	}
 
+	getTierName() {
+	    return i18n.str(this.tierNames[this.getTier() + 1]);
+	}
+
 	roomAdded(room) {
 	    if (room.metadata.tier) {
 	        this.builtTiers[room.metadata.tier + 1]++;
