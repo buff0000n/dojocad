@@ -14,7 +14,7 @@
         <p style="text-align: center;">
             <span class="title">DojoCAD</span>
             <br/>
-            v3.0.0: 2024-02-22
+            v3.0.1: 2024-03-05
             <br/>
             <a target="_blank" href="https://github.com/buff0000n/dojoarch">Source</a>
             &bull;
@@ -694,8 +694,19 @@
                 <strong>Clan Halls</strong> or other Halls to get more capacity.</li>
         </ul>
         <p>
-            The current Room count, Energy, and Capacity of your dojo is displayed in the lower left.  When any
+            The current
+            <span class="docImgButton-clear"><img src="icons/icon-count.png" srcset="icons2x/icon-count.png 2x" title="Room Count"/></span>
+            Room count,
+            <span class="docImgButton-clear"><img src="icons/icon-energy.png" srcset="icons2x/icon-energy.png 2x" title="Energy"/></span>
+            Energy, and
+            <span class="docImgButton-clear"><img src="icons/icon-capacity.png" srcset="icons2x/icon-capacity.png 2x" title="Capacity"/></span>
+            Capacity of your dojo is displayed in the lower left.  When any
             of those resources is exceeded it will be highlighted in <span class="docButton-error">red</span>.
+        </p>
+        <p>
+            Click the
+            <span class="docImgButton-clear"><img src="icons/icon-energy.png" srcset="icons2x/icon-energy.png 2x" title="Energy"/></span>
+            Energy icon at the bottom to bring up a quick menu for adding a Reactor.
         </p>
 
         <h2 id="RoomBoundaries">Room Boundaries</h2>
@@ -822,7 +833,10 @@
             <li>3. Mountain <span class="docImgButton-clear"><img src="icons/icon-tier-3.png" srcset="icons2x/icon-tier-3.png 2x" title="Mountain"/></span></li>
             <li>4. Moon <span class="docImgButton-clear"><img src="icons/icon-tier-4.png" srcset="icons2x/icon-tier-4.png 2x" title="Moon"/></span></li>
         </ol>
-        <p>The current Clan Tier is displayed at the bottom of the screen next to Clan Affinity and Resources.</p>
+        <p>
+            The current Clan Tier is displayed at the bottom of the screen next to Clan Affinity and Resources.
+            Click this icon to get a quick list of the Barracks rooms missing from the current layout.
+        </p>
         <p>
             All resources displayed will be for the current Clan Tier of the layout.  <span class="warn">Note that
                 this will be an overestimate; you're going to build at least some of your dojo before building any
@@ -836,11 +850,11 @@
         </p>
         <h2 id="XPRooms">Clan Affinity Rooms</h2>
         <p>
-            The 11 rooms that currently provide <strong>Clan Affinity</strong> are:
+            The 12 rooms that currently provide <strong>Clan Affinity</strong> are:
         </p>
         <ul>
             <li>Oracle</li>
-            <li>All six labs</li>
+            <li>All seven labs</li>
             <li>Both obstacle courses</li>
             <li>Dueling Room</li>
             <li>Temple of Honor</li>
@@ -853,8 +867,18 @@
             count at the bottom of the screen.
         </p>
         <p>
-            If you delete the last of one of these rooms then you lose the Clan Affinity for that room until it is
-            built again.
+            Click the
+            <span class="docImgButton-clear"><img src="icons/icon-xp.png" srcset="icons2x/icon-xp.png 2x" title="Rooms providing Clan XP"/></span>
+            icon at the bottom of the screen to bring up a menu showing all the Clan Affinity rooms that are missing
+            from the current layout.
+        </p>
+        <p>
+            <strong class="info">Note: You do not get additional Clan Affinity for building more than one of any of
+            these rooms</strong>
+        </p>
+        <p>
+            <strong class="warn">Note: If you delete one these rooms from your actual dojo then you lose
+                the Clan Affinity for that room until it is built again.</strong>
         </p>
 
         <h1 id="SavingAndSharing">Saving And Sharing</h1>
@@ -1164,6 +1188,14 @@
             <li>
                 Pick a room in your dojo that has a looping warning in DojoCAD, and try to destroy it.  <strong>Not
                 your Spawn Room.</strong>
+                <ul>
+                    <li>
+                        Doing this with your Spawn Room <i>can</i> potentially find a lot of cross-branch doors
+                        quickly, but there are number of cases where this will not work.  Starting with a room
+                        other than the Spawn Room and following the rest of this method is the only way to know for
+                        sure in all cases.
+                    </li>
+                </ul>
             </li>
             <li>
                 If you get the prompt to queue it for destruction immediately, then pick any door along the loop and
@@ -1557,6 +1589,7 @@
                 <strong>glzhangzhi</strong>)</li>
             <li>Added bad translations for all the other languages officially supported by Warframe</li>
             <li>Added better sizing and scrollbar support to popup menus (backported from Shawzinscore)</li>
+            <li>Added quick menus to some of the bottom stat displays for adding related rooms</li>
         </ul>
 
         <h2 id="#TranslationHelp">Translation Help</h2>

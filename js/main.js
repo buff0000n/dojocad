@@ -187,7 +187,7 @@ function rotateSelectedRoom() {
             }
 
 	    } else {
-    	    if (getCurrentMenuLevel > 0 && lastClickedRoom) {
+    	    if (getCurrentMenuLevel() > 0 && lastClickedRoom) {
                 // for the rotate menu option, use the center of the room that was actually clicked as the rotation center
                 center = lastClickedRoom.mv;
 
