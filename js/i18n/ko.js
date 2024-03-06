@@ -69,7 +69,7 @@
     "menu.select.all": "모두 선택",
     "menu.select.branch": "이후",
     "menu.select.root": "이전",
-    "menu.select.exact": "정확한 항목 선택",
+    "menu.select.exact": "모든 항목 일치",
     "menu.select.multi": "다중 선택",
     "menu.select.by.hue": "색상으로 선택",
     "menu.select.by.saturation": "채도별로 선택",
