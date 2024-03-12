@@ -2,7 +2,7 @@ var i18n = (function() {
     // supported language list
     var languageList = [
         { key: "en", name: "English" },
-        { key: "fr", name: "Français mal traduit" },
+        { key: "fr", name: "Français" },
         { key: "it", name: "Italiano mal tradotto" },
         { key: "de", name: "Deutsch" },
         { key: "es", name: "Español mal traducido" },
