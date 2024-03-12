@@ -32,7 +32,13 @@ class RoomRule {
 function updateStat(id, value, error, rule) {
 	var node = document.getElementById(id)
 	node.innerHTML = value
-	node.parentElement.className = error ? "field-error" : "field";
+	if (error) {
+	    node.parentElement.classList.add("field-error");
+	    node.parentElement.classList.remove("field");
+	} else {
+	    node.parentElement.classList.add("field");
+	    node.parentElement.classList.remove("field-error");
+	}
 	if (error) {
 		addAllError(rule.toString());
 	} else {
@@ -448,6 +454,10 @@ class ResourceCounter extends RoomRule {
 	        }
 	    }
 	    return 0;
+	}
+
+	getTierName() {
+	    return i18n.str(this.tierNames[this.getTier() + 1]);
 	}
 
 	roomAdded(room) {

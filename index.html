@@ -80,12 +80,12 @@
 <div id="statsBar">
     <div id="statsBarLine1" class="statsBarInline">
         <span id="numRoomsStatField" class="field"><span id="numRoomsStat" class="stat">0</span><img id="i18n.main.page.alttext.numRoomsStatField" src="icons/icon-count.png" srcset="icons2x/icon-count.png 2x" title="Room Count"/></span>
-        <span id="energyStatField" class="field"><span id="energyStat" class="stat">0</span><img id="i18n.main.page.alttext.energyStatField" src="icons/icon-energy.png" srcset="icons2x/icon-energy.png 2x" title="Energy"/></span>
+        <span id="energyStatField" class="field clickable" onclick="doEnergyRoomMenu()"><span id="energyStat" class="stat">0</span><img id="i18n.main.page.alttext.energyStatField" src="icons/icon-energy.png" srcset="icons2x/icon-energy.png 2x" title="Energy"/></span>
         <span id="capacityStatField" class="field"><span id="capacityStat" class="stat">0</span><img id="i18n.main.page.alttext.capacityStatField" src="icons/icon-capacity.png" srcset="icons2x/icon-capacity.png 2x" title="Capacity"/></span>
     </div>
     <div id="statsBarLine2" class="statsBarInline">
-        <span id="tierStat" class="field"><img src="icons/icon-tier--1.png" srcset="icons2x/icon-tier--1.png 2x" title="Empty Tier"/></span>
-        <span id="xpCountStatField" class="field"><span id="xpCountStat" class="stat">0</span><img id="i18n.main.page.alttext.xpCountStatField" src="icons/icon-xp.png" srcset="icons2x/icon-xp.png 2x" title="Rooms providing Clan XP"/></span>
+        <span id="tierStat" class="field clickable" onclick="doTierRoomMenu()"><img src="icons/icon-tier--1.png" srcset="icons2x/icon-tier--1.png 2x" title="Empty Tier"/></span>
+        <span id="xpCountStatField" class="field clickable" onclick="doXpRoomMenu()"><span id="xpCountStat" class="stat">0</span><img id="i18n.main.page.alttext.xpCountStatField" src="icons/icon-xp.png" srcset="icons2x/icon-xp.png 2x" title="Rooms providing Clan XP"/></span>
         <span id="showResourcesStat" class="field clickable" onclick="showResources()"><img id="i18n.main.page.alttext.showResourcesStat" src="icons/icon-resources.png" srcset="icons2x/icon-resources.png 2x" title="Resources"/></span>
     </div>
 </div>

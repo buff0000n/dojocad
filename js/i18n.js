@@ -2,7 +2,7 @@ var i18n = (function() {
     // supported language list
     var languageList = [
         { key: "en", name: "English" },
-        { key: "fr", name: "Français mal traduit" },
+        { key: "fr", name: "Français" },
         { key: "it", name: "Italiano mal tradotto" },
         { key: "de", name: "Deutsch" },
         { key: "es", name: "Español mal traducido" },
@@ -352,6 +352,95 @@ var i18n = (function() {
     function getBundleLink(language=null) {
         return "https://raw.githubusercontent.com/buff0000n/dojocad/master/" + getBundleFile(language ? language : currentLanguage);
     }
+    
+    var ocrKeys = [
+        "resource.credits",
+        "resource.salvage",
+        "resource.ferrite",
+        "resource.nano.spores",
+        "resource.forma",
+        "resource.alloy.plate",
+        "resource.rubedo",
+        "resource.circuits",
+        "resource.polymer.bundle",
+        "resource.thermal.sludge",
+        "resource.cryotic",
+        "resource.tellurium",
+        "resource.hexenon",
+        "resource.orokin.cell",
+        "resource.plastids",
+
+        "room.cross.connector",
+        "room.straight.hallway",
+        "room.extended.straight.hallway",
+        "room.t.shaped.connector",
+        "room.elbow.connector",
+        "room.elevator",
+        "room.clan.hall",
+        "room.clan.great.hall",
+        "room.clan.greater.hall",
+        "room.clan.grand.hall",
+        "room.clan.grandest.hall",
+        "room.inspiration.hall",
+        "room.duviri.cave",
+        "room.earth.forest.chamber",
+        "room.entrati.audience.chamber",
+        "room.galleon.chamber",
+        "room.infested.chamber",
+        "room.kuva.asteroid",
+        "room.orokin.tower.chamber",
+        "room.ostron.cove",
+        "room.starlight.market",
+        "room.uranus.chamber",
+        "room.oracle",
+        "room.tenno.lab",
+        "room.energy.lab",
+        "room.chem.lab",
+        "room.bio.lab",
+        "room.orokin.lab",
+        "room.ventkids.bash.lab",
+        "room.dagaths.hollow",
+        "room.dry.dock",
+        "room.crimson.branch",
+        "room.dueling.room",
+        "room.obstacle.course",
+        "room.obstacle.course.architect",
+        "room.observatory",
+        "room.small.garden",
+        "room.small.garden.aestas",
+        "room.small.garden.autumn",
+        "room.small.garden.castitas",
+        "room.small.garden.equinox",
+        "room.small.garden.humilitias",
+        "room.small.garden.industria",
+        "room.small.garden.stone",
+        "room.small.garden.wooden",
+        "room.large.garden",
+        "room.large.garden.caritas",
+        "room.large.garden.junno",
+        "room.large.garden.leto",
+        "room.large.garden.mosaic",
+        "room.large.garden.soleto",
+        "room.large.garden.temperantia",
+        "room.large.garden.vosen",
+        "room.temple.of.honor",
+        "room.open.space",
+        "room.courtiers.bliss",
+        "room.harbingers.pass",
+        "room.reactor",
+        "room.shadow.barracks",
+        "room.storm.barracks",
+        "room.mountain.barracks",
+        "room.moon.barracks"
+    ];
+
+    function getOcrStrings() {
+        var text = "";
+        for (var i = 0; i < ocrKeys.length; i++) {
+            text = text + str(ocrKeys[i]) + "\n";
+        }
+        console.log(text);
+    }
 
     return {
         init: init, // (callback)
@@ -363,6 +452,7 @@ var i18n = (function() {
         genPig: genPig, // ()
         checkBundles: checkBundles, // ()
         exportAsCsv: exportAsCsv, // ()
+        getOcrStrings: getOcrStrings, // ()
     }
 
 })();

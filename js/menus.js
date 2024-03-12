@@ -515,13 +515,20 @@ function doAddMenu() {
 function doAddCategoryMenu() {
 	var catButton = getMenuTarget();
 
+    var catCount = roomCounter.getCategoryCount(catButton.category);
+    var menuTitle = catCount > 0 ? i18n.str("menu.label.and.count", i18n.str(catButton.category), catCount) : i18n.str(catButton.category);
     var roomList = catButton.roomList;
+
+    doAddRoomsMenu(menuTitle, roomList);
+}
+
+function doAddRoomsMenu(menuTitle, roomList) {
+	var catButton = getMenuTarget();
+
     var bcr = catButton.getBoundingClientRect();
 
     var menuDiv = buildMenu();
 
-    var catCount = roomCounter.getCategoryCount(catButton.category);
-    var menuTitle = catCount > 0 ? i18n.str("menu.label.and.count", i18n.str(catButton.category), catCount) : i18n.str(catButton.category);
 	menuDiv.appendChild(buildMenuHeaderLine(menuTitle, 6));
 
     for (var r in roomList) {
@@ -530,6 +537,53 @@ function doAddCategoryMenu() {
         menuDiv.appendChild(roomButtonDiv);
     }
     showMenu(menuDiv, catButton);
+}
+
+function doXpRoomMenu() {
+    var rooms = Array();
+    for (var r = 0; r < roomMetadata.rooms.length; r++) {
+        var rmd = roomMetadata.rooms[r];
+        if (rmd.xp) {
+            rooms.push(rmd);
+        }
+    }
+
+    for (var r = 0; r < roomList.length; r++) {
+        var rmd = roomList[r].metadata;
+        if (rmd.xp) {
+            removeFromList(rooms, rmd);
+        }
+    }
+
+    if (rooms.length > 0) {
+        doAddRoomsMenu(i18n.str("main.page.alttext.xpCountStatField"), rooms);
+    }
+}
+
+function doTierRoomMenu() {
+    var rooms = Array();
+    for (var r = 0; r < roomMetadata.rooms.length; r++) {
+        var rmd = roomMetadata.rooms[r];
+        if (rmd.tier) {
+            rooms.push(rmd);
+        }
+    }
+
+    for (var r = 0; r < roomList.length; r++) {
+        var rmd = roomList[r].metadata;
+        if (rmd.tier) {
+            removeFromList(rooms, rmd);
+        }
+    }
+
+    if (rooms.length > 0) {
+        doAddRoomsMenu(i18n.str("main.page.alttext.tierStat", resourceCounter.getTierName()), rooms);
+    }
+}
+
+function doEnergyRoomMenu() {
+    var rooms = Array(roomMetadata.rooms.find(rmd => rmd.id == "re"));
+    doAddRoomsMenu(i18n.str("main.page.alttext.energyStatField"), rooms);
 }
 
 function hasError(errors, error) {
