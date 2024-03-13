@@ -273,6 +273,7 @@
     "category.labs": "Лабораторії",
     "category.interactive": "Інтерактивний",
     "category.misc": "Різне",
+    "category.gardens": "Сади",
     "category.utility": "Утиліта",
     "category.discontinued": "Припинено"
 }

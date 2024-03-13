@@ -272,6 +272,7 @@
     "category.labs": "연구소",
     "category.interactive": "상호작용",
     "category.misc": "기타",
+    "category.gardens": "정원",
     "category.utility": "유틸리티",
     "category.discontinued": "단종"
 }

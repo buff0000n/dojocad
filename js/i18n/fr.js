@@ -272,6 +272,7 @@
     "category.labs": "Laboratoires",
     "category.interactive": "Interactif",
     "category.misc": "Divers",
+    "category.gardens": "Jardins",
     "category.utility": "Utilitaire",
     "category.discontinued": "Plus disponible"
 }

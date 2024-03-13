@@ -273,6 +273,7 @@
     "category.labs": "ラボ",
     "category.interactive": "インタラクティブ",
     "category.misc": "その他",
+    "category.gardens": "庭園",
     "category.utility": "ユーティリティ",
     "category.discontinued": "製造中止"
 }

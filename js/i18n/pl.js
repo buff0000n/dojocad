@@ -273,6 +273,7 @@
     "category.labs": "Laboratoria",
     "category.interactive": "Interaktywny",
     "category.misc": "Różne",
+    "category.gardens": "Ogród botaniczny",
     "category.utility": "Narzędzie",
     "category.discontinued": "Wycofane"
 }

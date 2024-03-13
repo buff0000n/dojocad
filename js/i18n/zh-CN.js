@@ -273,6 +273,7 @@
     "category.labs": "实验室",
     "category.interactive": "互动",
     "category.misc": "杂项",
+    "category.gardens": "花园",
     "category.utility": "实用程序",
     "category.discontinued": "已停止",
 

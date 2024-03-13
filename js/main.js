@@ -830,6 +830,12 @@ function reLoadModelFromUrl(url) {
     // because we changed the language
     clearNonCollisionWarnings();
 
+    preset = getQueryParam(url, "preset")
+
+    if (preset) {
+        url = Presets[preset];
+    }
+
     // load the model and view directly from the href
     loadModelFromUrl(url);
     loadViewFromUrl(url);
@@ -1115,7 +1121,7 @@ function initMain() {
     preset = getQueryParam(window.location.href, "preset")
 
     if (preset) {
-        var href = Presets[getQueryParam(window.location.href, "preset")];
+        var href = Presets[preset];
     }
 
     initModel(href);
