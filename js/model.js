@@ -176,8 +176,7 @@ function roomFromString(string, readRooms) {
 
     // migrate the generic small garden to a specific one
     } else if (mid == "gs") {
-        // just pick the first one, three of them have the same resources but the other four
-        // are all different because of reasons
+        // just pick the first one, they all have the same bounds and resources
         console.log("Migration: replacing room " + mid + " with room gsa");
         mid = "gsa";
 
