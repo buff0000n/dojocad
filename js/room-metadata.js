@@ -789,7 +789,8 @@ var roomMetadata =
     "treetype": "32-1",
 	"blockedFromAboveBy": [
     ]},
-{"id": "gs", "image": "small-garden", "name": "room.small.garden", "category": "category.misc", "prereq": null, "capacity": -10, "energy": -6, "maxnum": null, "floor": 0, "ceil": 20,
+
+{"id": "gsa", "image": "small-garden", "name": "room.small.garden.aestas", "category": "category.gardens", "prereq": null, "capacity": -10, "energy": -6, "maxnum": null, "floor": 0, "ceil": 20,
 	"bounds": [
 		{"x1": -16, "y1": -16, "x2": 16, "y2": 16, "floor": 0, "ceil": 20}],
 	"doors": [
@@ -806,7 +807,126 @@ var roomMetadata =
     "treetype": "32-4",
 	"blockedFromAboveBy": [
 	    ]},
-{"id": "glc", "image": "large-garden", "name": "room.large.garden.caritas", "category": "category.misc", "prereq": null, "capacity": -15, "energy": -8, "maxnum": null, "floor": 0, "ceil": 20,
+{"id": "gsu", "image": "small-garden", "name": "room.small.garden.autumn", "category": "category.gardens", "prereq": null, "capacity": -10, "energy": -6, "maxnum": null, "floor": 0, "ceil": 20,
+	"bounds": [
+		{"x1": -16, "y1": -16, "x2": 16, "y2": 16, "floor": 0, "ceil": 20}],
+	"doors": [
+		{"x": 0, "y": 16, "floor": 0, "outx": 0, "outy": 1},
+		{"x": 16, "y": 0, "floor": 0, "outx": 1, "outy": 0},
+		{"x": 0, "y": -16, "floor": 0, "outx": 0, "outy": -1},
+		{"x": -16, "y": 0, "floor": 0, "outx": -1, "outy": 0}],
+	"resources": [
+		{"resource": "resource.credits", "costs": [750, 2250, 7500, 22500, 75000]},
+		{"resource": "resource.salvage", "costs": [650, 1950, 6500, 19500, 65000]},
+		{"resource": "resource.ferrite", "costs": [550, 1650, 5500, 16500, 55000]},
+		{"resource": "resource.nano.spores", "costs": [2000, 6000, 20000, 60000, 200000]},
+		{"resource": "resource.forma", "costs": [1, 1, 1, 2, 8]}],
+    "treetype": "32-4",
+	"blockedFromAboveBy": [
+	    ]},
+{"id": "gsc", "image": "small-garden", "name": "room.small.garden.castitas", "category": "category.gardens", "prereq": null, "capacity": -10, "energy": -6, "maxnum": null, "floor": 0, "ceil": 20,
+	"bounds": [
+		{"x1": -16, "y1": -16, "x2": 16, "y2": 16, "floor": 0, "ceil": 20}],
+	"doors": [
+		{"x": 0, "y": 16, "floor": 0, "outx": 0, "outy": 1},
+		{"x": 16, "y": 0, "floor": 0, "outx": 1, "outy": 0},
+		{"x": 0, "y": -16, "floor": 0, "outx": 0, "outy": -1},
+		{"x": -16, "y": 0, "floor": 0, "outx": -1, "outy": 0}],
+	"resources": [
+		{"resource": "resource.credits", "costs": [750, 2250, 7500, 22500, 75000]},
+		{"resource": "resource.salvage", "costs": [650, 1950, 6500, 19500, 65000]},
+		{"resource": "resource.ferrite", "costs": [550, 1650, 5500, 16500, 55000]},
+		{"resource": "resource.nano.spores", "costs": [2000, 6000, 20000, 60000, 200000]},
+		{"resource": "resource.forma", "costs": [1, 1, 1, 2, 8]}],
+    "treetype": "32-4",
+	"blockedFromAboveBy": [
+	    ]},
+{"id": "gse", "image": "small-garden", "name": "room.small.garden.equinox", "category": "category.gardens", "prereq": null, "capacity": -10, "energy": -6, "maxnum": null, "floor": 0, "ceil": 20,
+	"bounds": [
+		{"x1": -16, "y1": -16, "x2": 16, "y2": 16, "floor": 0, "ceil": 20}],
+	"doors": [
+		{"x": 0, "y": 16, "floor": 0, "outx": 0, "outy": 1},
+		{"x": 16, "y": 0, "floor": 0, "outx": 1, "outy": 0},
+		{"x": 0, "y": -16, "floor": 0, "outx": 0, "outy": -1},
+		{"x": -16, "y": 0, "floor": 0, "outx": -1, "outy": 0}],
+	"resources": [
+		{"resource": "resource.credits", "costs": [750, 2250, 7500, 22500, 75000]},
+		{"resource": "resource.salvage", "costs": [650, 1950, 6500, 19500, 65000]},
+		{"resource": "resource.ferrite", "costs": [550, 1650, 5500, 16500, 55000]},
+		{"resource": "resource.nano.spores", "costs": [2000, 6000, 20000, 60000, 200000]},
+		{"resource": "resource.forma", "costs": [1, 1, 1, 2, 8]}],
+    "treetype": "32-4",
+	"blockedFromAboveBy": [
+	    ]},
+{"id": "gsh", "image": "small-garden", "name": "room.small.garden.humilitias", "category": "category.gardens", "prereq": null, "capacity": -10, "energy": -6, "maxnum": null, "floor": 0, "ceil": 20,
+	"bounds": [
+		{"x1": -16, "y1": -16, "x2": 16, "y2": 16, "floor": 0, "ceil": 20}],
+	"doors": [
+		{"x": 0, "y": 16, "floor": 0, "outx": 0, "outy": 1},
+		{"x": 16, "y": 0, "floor": 0, "outx": 1, "outy": 0},
+		{"x": 0, "y": -16, "floor": 0, "outx": 0, "outy": -1},
+		{"x": -16, "y": 0, "floor": 0, "outx": -1, "outy": 0}],
+	"resources": [
+		{"resource": "resource.credits", "costs": [750, 2250, 7500, 22500, 75000]},
+		{"resource": "resource.salvage", "costs": [650, 1950, 6500, 19500, 65000]},
+		{"resource": "resource.ferrite", "costs": [550, 1650, 5500, 16500, 55000]},
+		{"resource": "resource.nano.spores", "costs": [2000, 6000, 20000, 60000, 200000]},
+		{"resource": "resource.forma", "costs": [1, 1, 1, 2, 8]}],
+    "treetype": "32-4",
+	"blockedFromAboveBy": [
+	    ]},
+{"id": "gsi", "image": "small-garden", "name": "room.small.garden.industria", "category": "category.gardens", "prereq": null, "capacity": -10, "energy": -6, "maxnum": null, "floor": 0, "ceil": 20,
+	"bounds": [
+		{"x1": -16, "y1": -16, "x2": 16, "y2": 16, "floor": 0, "ceil": 20}],
+	"doors": [
+		{"x": 0, "y": 16, "floor": 0, "outx": 0, "outy": 1},
+		{"x": 16, "y": 0, "floor": 0, "outx": 1, "outy": 0},
+		{"x": 0, "y": -16, "floor": 0, "outx": 0, "outy": -1},
+		{"x": -16, "y": 0, "floor": 0, "outx": -1, "outy": 0}],
+	"resources": [
+		{"resource": "resource.credits", "costs": [750, 2250, 7500, 22500, 75000]},
+		{"resource": "resource.salvage", "costs": [650, 1950, 6500, 19500, 65000]},
+		{"resource": "resource.ferrite", "costs": [550, 1650, 5500, 16500, 55000]},
+		{"resource": "resource.nano.spores", "costs": [2000, 6000, 20000, 60000, 200000]},
+		{"resource": "resource.forma", "costs": [1, 1, 1, 2, 8]}],
+    "treetype": "32-4",
+	"blockedFromAboveBy": [
+	    ]},
+{"id": "gss", "image": "small-garden", "name": "room.small.garden.stone", "category": "category.gardens", "prereq": null, "capacity": -10, "energy": -6, "maxnum": null, "floor": 0, "ceil": 20,
+	"bounds": [
+		{"x1": -16, "y1": -16, "x2": 16, "y2": 16, "floor": 0, "ceil": 20}],
+	"doors": [
+		{"x": 0, "y": 16, "floor": 0, "outx": 0, "outy": 1},
+		{"x": 16, "y": 0, "floor": 0, "outx": 1, "outy": 0},
+		{"x": 0, "y": -16, "floor": 0, "outx": 0, "outy": -1},
+		{"x": -16, "y": 0, "floor": 0, "outx": -1, "outy": 0}],
+	"resources": [
+		{"resource": "resource.credits", "costs": [750, 2250, 7500, 22500, 75000]},
+		{"resource": "resource.salvage", "costs": [650, 1950, 6500, 19500, 65000]},
+		{"resource": "resource.ferrite", "costs": [550, 1650, 5500, 16500, 55000]},
+		{"resource": "resource.nano.spores", "costs": [2000, 6000, 20000, 60000, 200000]},
+		{"resource": "resource.forma", "costs": [1, 1, 1, 2, 8]}],
+    "treetype": "32-4",
+	"blockedFromAboveBy": [
+	    ]},
+{"id": "gsw", "image": "small-garden", "name": "room.small.garden.wooden", "category": "category.gardens", "prereq": null, "capacity": -10, "energy": -6, "maxnum": null, "floor": 0, "ceil": 20,
+	"bounds": [
+		{"x1": -16, "y1": -16, "x2": 16, "y2": 16, "floor": 0, "ceil": 20}],
+	"doors": [
+		{"x": 0, "y": 16, "floor": 0, "outx": 0, "outy": 1},
+		{"x": 16, "y": 0, "floor": 0, "outx": 1, "outy": 0},
+		{"x": 0, "y": -16, "floor": 0, "outx": 0, "outy": -1},
+		{"x": -16, "y": 0, "floor": 0, "outx": -1, "outy": 0}],
+	"resources": [
+		{"resource": "resource.credits", "costs": [750, 2250, 7500, 22500, 75000]},
+		{"resource": "resource.salvage", "costs": [650, 1950, 6500, 19500, 65000]},
+		{"resource": "resource.ferrite", "costs": [550, 1650, 5500, 16500, 55000]},
+		{"resource": "resource.nano.spores", "costs": [2000, 6000, 20000, 60000, 200000]},
+		{"resource": "resource.forma", "costs": [1, 1, 1, 2, 8]}],
+    "treetype": "32-4",
+	"blockedFromAboveBy": [
+	    ]},
+{"id": "glc", "image": "large-garden", "name": "room.large.garden.caritas", "category": "category.gardens", "prereq": null, "capacity": -15, "energy": -8, "maxnum": null, "floor": 0, "ceil": 20,
 	"bounds": [
 		{"x1": -32, "y1": -4, "x2": 32, "y2": 4, "floor": 0, "ceil": 20},
 		{"x1": -4, "y1": -32, "x2": 4, "y2": 32, "floor": 0, "ceil": 20},
@@ -825,7 +945,7 @@ var roomMetadata =
     "treetype": "64-4",
 	"blockedFromAboveBy": [
 	    ]},
-{"id": "glj", "image": "large-garden", "name": "room.large.garden.junno", "category": "category.misc", "prereq": null, "capacity": -15, "energy": -8, "maxnum": null, "floor": 0, "ceil": 20,
+{"id": "glj", "image": "large-garden", "name": "room.large.garden.junno", "category": "category.gardens", "prereq": null, "capacity": -15, "energy": -8, "maxnum": null, "floor": 0, "ceil": 20,
 	"bounds": [
 		{"x1": -32, "y1": -4, "x2": 32, "y2": 4, "floor": 0, "ceil": 20},
 		{"x1": -4, "y1": -32, "x2": 4, "y2": 32, "floor": 0, "ceil": 20},
@@ -844,7 +964,7 @@ var roomMetadata =
     "treetype": "64-4",
 	"blockedFromAboveBy": [
 	    ]},
-{"id": "gll", "image": "large-garden", "name": "room.large.garden.leto", "category": "category.misc", "prereq": null, "capacity": -15, "energy": -8, "maxnum": null, "floor": 0, "ceil": 20,
+{"id": "gll", "image": "large-garden", "name": "room.large.garden.leto", "category": "category.gardens", "prereq": null, "capacity": -15, "energy": -8, "maxnum": null, "floor": 0, "ceil": 20,
 	"bounds": [
 		{"x1": -32, "y1": -4, "x2": 32, "y2": 4, "floor": 0, "ceil": 20},
 		{"x1": -4, "y1": -32, "x2": 4, "y2": 32, "floor": 0, "ceil": 20},
@@ -863,7 +983,7 @@ var roomMetadata =
     "treetype": "64-4",
 	"blockedFromAboveBy": [
 	    ]},
-{"id": "glm", "image": "large-garden", "name": "room.large.garden.mosaic", "category": "category.misc", "prereq": null, "capacity": -15, "energy": -8, "maxnum": null, "floor": 0, "ceil": 20,
+{"id": "glm", "image": "large-garden", "name": "room.large.garden.mosaic", "category": "category.gardens", "prereq": null, "capacity": -15, "energy": -8, "maxnum": null, "floor": 0, "ceil": 20,
 	"bounds": [
 		{"x1": -32, "y1": -4, "x2": 32, "y2": 4, "floor": 0, "ceil": 20},
 		{"x1": -4, "y1": -32, "x2": 4, "y2": 32, "floor": 0, "ceil": 20},
@@ -882,7 +1002,7 @@ var roomMetadata =
     "treetype": "64-4",
 	"blockedFromAboveBy": [
 	    ]},
-{"id": "gls", "image": "large-garden", "name": "room.large.garden.soleto", "category": "category.misc", "prereq": null, "capacity": -15, "energy": -8, "maxnum": null, "floor": 0, "ceil": 20,
+{"id": "gls", "image": "large-garden", "name": "room.large.garden.soleto", "category": "category.gardens", "prereq": null, "capacity": -15, "energy": -8, "maxnum": null, "floor": 0, "ceil": 20,
 	"bounds": [
 		{"x1": -32, "y1": -4, "x2": 32, "y2": 4, "floor": 0, "ceil": 20},
 		{"x1": -4, "y1": -32, "x2": 4, "y2": 32, "floor": 0, "ceil": 20},
@@ -901,7 +1021,7 @@ var roomMetadata =
     "treetype": "64-4",
 	"blockedFromAboveBy": [
 	    ]},
-{"id": "glt", "image": "large-garden", "name": "room.large.garden.temperantia", "category": "category.misc", "prereq": null, "capacity": -15, "energy": -8, "maxnum": null, "floor": 0, "ceil": 20,
+{"id": "glt", "image": "large-garden", "name": "room.large.garden.temperantia", "category": "category.gardens", "prereq": null, "capacity": -15, "energy": -8, "maxnum": null, "floor": 0, "ceil": 20,
 	"bounds": [
 		{"x1": -32, "y1": -4, "x2": 32, "y2": 4, "floor": 0, "ceil": 20},
 		{"x1": -4, "y1": -32, "x2": 4, "y2": 32, "floor": 0, "ceil": 20},
@@ -920,7 +1040,7 @@ var roomMetadata =
     "treetype": "64-4",
 	"blockedFromAboveBy": [
 	    ]},
-{"id": "glv", "image": "large-garden", "name": "room.large.garden.vosen", "category": "category.misc", "prereq": null, "capacity": -15, "energy": -8, "maxnum": null, "floor": 0, "ceil": 20,
+{"id": "glv", "image": "large-garden", "name": "room.large.garden.vosen", "category": "category.gardens", "prereq": null, "capacity": -15, "energy": -8, "maxnum": null, "floor": 0, "ceil": 20,
 	"bounds": [
 		{"x1": -32, "y1": -4, "x2": 32, "y2": 4, "floor": 0, "ceil": 20},
 		{"x1": -4, "y1": -32, "x2": 4, "y2": 32, "floor": 0, "ceil": 20},

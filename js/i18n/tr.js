@@ -273,6 +273,7 @@
     "category.labs": "Labs",
     "category.interactive": "Etkileşimli",
     "category.misc": "Çeşitli",
+    "category.gardens": "Bahçeler",
     "category.utility": "Yardımcı Program",
     "category.discontinued": "Üretilmiyor"
 }

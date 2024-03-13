@@ -185,7 +185,7 @@
     "resource.nano.spores": "奈米胞子",
     "resource.forma": "Forma",
     "resource.alloy.plate": "合金板",
-    "resource.rubedo": "",
+    "resource.rubedo": "紅化结晶",
     "resource.circuits": "電路",
     "resource.polymer.bundle": "聚合物束",
     "resource.thermal.sludge": "熱能軟泥",
@@ -273,6 +273,7 @@
     "category.labs": "實驗室",
     "category.interactive": "互動",
     "category.misc": "雜項",
+    "category.gardens": "花園",
     "category.utility": "實用程式",
     "category.discontinued": "已停止",
 

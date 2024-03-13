@@ -258,6 +258,7 @@
   "category.labs": "Abslay",
   "category.interactive": "Interactiveway",
   "category.misc": "Iscmay",
+  "category.gardens": "Ardensgay",
   "category.utility": "Utilityway",
   "category.discontinued": "Iscontinuedday"
 }

@@ -273,6 +273,7 @@
     "category.labs": "Labore",
     "category.interactive": "Interaktiv",
     "category.misc": "Verschiedene",
+    "category.gardens": "Gardens",
     "category.utility": "Funktions-Räume",
     "category.discontinued": "Eingestellt"
 }

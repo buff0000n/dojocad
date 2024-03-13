@@ -273,6 +273,7 @@
     "category.labs": "Лаборатории",
     "category.interactive": "Интерактивный",
     "category.misc": "Разное",
+    "category.gardens": "Сады",
     "category.utility": "Утилита",
     "category.discontinued": "Снято с производства"
 }
