@@ -274,5 +274,7 @@
     "category.misc": "기타",
     "category.gardens": "정원",
     "category.utility": "유틸리티",
-    "category.discontinued": "단종"
+    "category.discontinued": "단종",
+
+    "help.file": "help-ko.html"
 }
