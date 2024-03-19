@@ -207,7 +207,7 @@
     "room.clan.grand.hall": "Grande Salão Do Clã",
     "room.clan.grandest.hall": "Salão Grandioso Do Clã",
     "room.inspiration.hall": "Salão De Inspiração",
-    "room.duviri.cave": "Gruta De Duvir!",
+    "room.duviri.cave": "Gruta De Duviri",
     "room.earth.forest.chamber": "Câmara Da Floresta Da Terra",
     "room.entrati.audience.chamber": "Assembleia De Conferência Entrati Orokin",
     "room.galleon.chamber": "Câmara Do Galeão",
