@@ -140,7 +140,7 @@ var roomMetadata =
 		{"x": 0, "y": 32, "floor": 0, "outx": 0, "outy": 1},
 		{"x": 0, "y": -32, "floor": 0, "outx": 0, "outy": -1}],
 	"floor_images": [
-		{"floor": 0, "image": "clan-greater-hall", "marker_images": [{"image": "marker-console", "x": -1, "y": 28, "rot": 0}]}],
+		{"floor": 0, "image": "clan-greater-hall", "marker_images": [{"image": "marker-console", "x": 1, "y": -28, "rot": 180}]}],
 	"resources": [
 		{"resource": "resource.credits", "costs": [1000, 3000, 10000, 30000, 100000]},
 		{"resource": "resource.salvage", "costs": [150, 450, 1500, 4500, 15000]},
@@ -164,7 +164,7 @@ var roomMetadata =
 		{"x": -32, "y": -16, "floor": 0, "outx": -1, "outy": 0},
 		{"x": -32, "y": 16, "floor": 0, "outx": -1, "outy": 0}],
 	"floor_images": [
-		{"floor": 0, "image": "clan-grand-hall", "marker_images": [{"image": "marker-console", "x": -1, "y": 28, "rot": 0}]}],
+		{"floor": 0, "image": "clan-grand-hall", "marker_images": [{"image": "marker-console", "x": 1, "y": -28, "rot": 180}]}],
 	"resources": [
 		{"resource": "resource.credits", "costs": [1000, 3000, 10000, 30000, 100000]},
 		{"resource": "resource.salvage", "costs": [150, 450, 1500, 4500, 15000]},
