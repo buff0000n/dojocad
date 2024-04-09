@@ -849,6 +849,11 @@ function reLoadModelFromUrl(url) {
     treeUpdated();
 }
 
+function fixCompressedString(string) {
+    // ugh, something out there is replacing "+" with "%20" because of course it is.
+    return string ? string.replaceAll("%20", "+") : string;
+}
+
 function loadModelFromUrl(url) {
     // for backwards compatibility, there are a number of ways the model string can be embedded in the URL
 	var modelString = null;
@@ -858,7 +863,7 @@ function loadModelFromUrl(url) {
     	modelString = getAnchor(url);
 	} else {
 	    // otherwise, load compressed
-    	modelString = LZString.decompressFromEncodedURIComponent(getAnchor(url));
+    	modelString = LZString.decompressFromEncodedURIComponent(fixCompressedString(getAnchor(url)));
 	}
 
 	// otherwise, try the 'mz' parameter
@@ -867,7 +872,7 @@ function loadModelFromUrl(url) {
 		var modelStringCompressed = getQueryParam(url, "mz");
 
 		if (modelStringCompressed) {
-            modelString = LZString.decompressFromEncodedURIComponent(modelStringCompressed);
+            modelString = LZString.decompressFromEncodedURIComponent(fixCompressedString(modelStringCompressed));
             // make things easier and just remove the "mz=" section and replace it with an anchor
 			removeUrlQueryParam("mz");
 			modifyUrlAnchor(modelStringCompressed);
