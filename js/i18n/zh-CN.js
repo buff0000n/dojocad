@@ -194,6 +194,7 @@
     "resource.hexenon": "六醇燃剂",
     "resource.orokin.cell": "Orokin电池",
     "resource.plastids": "生物质",
+    "resource.decocap": "装修能力",
 
     "room.cross.connector": "十字接连件",
     "room.straight.hallway": "笔直长廊",
