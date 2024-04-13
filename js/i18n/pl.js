@@ -194,6 +194,7 @@
     "resource.hexenon": "Heksenon",
     "resource.orokin.cell": "Ogniwo Orokin",
     "resource.plastids": "Plastydy",
+    "resource.decocap": "Pojemność Dekoracyjna",
 
     "room.cross.connector": "Złącze (Krzyżowe)",
     "room.straight.hallway": "Korytarz (Prosty)",

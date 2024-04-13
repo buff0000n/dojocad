@@ -2,7 +2,7 @@ var roomMetadata =
 {"general": {"floor_distance": 66, "max_rooms": 128 },
 "rooms": [
 
-{"id": "cc", "image": "cross-connector", "name": "room.cross.connector", "category": "category.connectors", "prereq": null, "capacity": -10, "energy": -3, "maxnum": null, "floor": 0, "ceil": 8,
+{"id": "cc", "image": "cross-connector", "name": "room.cross.connector", "category": "category.connectors", "prereq": null, "capacity": -10, "energy": -3, "decocap": 200, "time": 12, "maxnum": null, "floor": 0, "ceil": 8,
 	"bounds": [
 		{"x1": -16, "y1": -7, "x2": 16, "y2": 7, "floor": 0, "ceil": 8},
 		{"x1": -7, "y1": -16, "x2": 7, "y2": 16, "floor": 0, "ceil": 8}],
@@ -20,7 +20,7 @@ var roomMetadata =
     "treetype": "32-4",
 	"blockedFromAboveBy": [
 	    ]},
-{"id": "cs", "image": "straight-hallway", "name": "room.straight.hallway", "category": "category.connectors", "prereq": null, "capacity": -1, "energy": -1, "maxnum": null, "floor": 0, "ceil": 8,
+{"id": "cs", "image": "straight-hallway", "name": "room.straight.hallway", "category": "category.connectors", "prereq": null, "capacity": -1, "energy": -1, "decocap": 200, "time": 12, "maxnum": null, "floor": 0, "ceil": 8,
 	"bounds": [
 		{"x1": -7, "y1": -8, "x2": 7, "y2": 8, "floor": 0, "ceil": 8}],
 	"doors": [
@@ -35,7 +35,7 @@ var roomMetadata =
     "treetype": "16-2",
 	"blockedFromAboveBy": [
 	    ]},
-{"id": "cx", "image": "extended-straight-hallway", "name": "room.extended.straight.hallway", "category": "category.connectors", "prereq": null, "capacity": -2, "energy": -2, "maxnum": null, "floor": 0, "ceil": 8,
+{"id": "cx", "image": "extended-straight-hallway", "name": "room.extended.straight.hallway", "category": "category.connectors", "prereq": null, "capacity": -2, "energy": -2, "decocap": 200, "time": 12, "maxnum": null, "floor": 0, "ceil": 8,
 	"bounds": [
 		{"x1": -7, "y1": -16, "x2": 7, "y2": 16, "floor": 0, "ceil": 8}],
 	"doors": [
@@ -50,7 +50,7 @@ var roomMetadata =
     "treetype": "32-2",
 	"blockedFromAboveBy": [
 	    ]},
-{"id": "ct", "image": "t-shaped-connector", "name": "room.t.shaped.connector", "category": "category.connectors", "prereq": null, "capacity": -5, "energy": -2, "maxnum": null, "floor": 0, "ceil": 8,
+{"id": "ct", "image": "t-shaped-connector", "name": "room.t.shaped.connector", "category": "category.connectors", "prereq": null, "capacity": -5, "energy": -2, "decocap": 200, "time": 12, "maxnum": null, "floor": 0, "ceil": 8,
 	"bounds": [
 		{"x1": -7, "y1": -16, "x2": 7, "y2": 16, "floor": 0, "ceil": 8},
 		{"x1": -7, "y1": -7, "x2": 16, "y2": 7, "floor": 0, "ceil": 8}],
@@ -67,7 +67,7 @@ var roomMetadata =
     "treetype": "32-3",
 	"blockedFromAboveBy": [
 	    ]},
-{"id": "cb", "image": "elbow-connector", "name": "room.elbow.connector", "category": "category.connectors", "prereq": null, "capacity": -1, "energy": -1, "maxnum": null, "floor": 0, "ceil": 8,
+{"id": "cb", "image": "elbow-connector", "name": "room.elbow.connector", "category": "category.connectors", "prereq": null, "capacity": -1, "energy": -1, "decocap": 200, "time": 12, "maxnum": null, "floor": 0, "ceil": 8,
 	"bounds": [
 		{"x1": -4, "y1": -4, "x2": 16, "y2": 7, "floor": 0, "ceil": 8},
 		{"x1": -4, "y1": -4, "x2": 7, "y2": 16, "floor": 0, "ceil": 8}],
@@ -83,7 +83,7 @@ var roomMetadata =
     "treetype": "32-2e",
 	"blockedFromAboveBy": [
 	    ]},
-{"id": "ce", "image": "elevator-bottom", "name": "room.elevator", "category": "category.connectors", "prereq": null, "capacity": -2, "energy": -2, "maxnum": null, "floor": -24, "ceil": 16, "multifloor": true,
+{"id": "ce", "image": "elevator-bottom", "name": "room.elevator", "category": "category.connectors", "prereq": null, "capacity": -2, "energy": -2, "decocap": 200, "time": 12, "maxnum": null, "floor": -24, "ceil": 16, "multifloor": true,
 	"bounds": [
 		{"x1": -7, "y1": -10, "x2": 7, "y2": 12, "floor": -24, "ceil": 80}],
 	"doors": [
@@ -102,7 +102,7 @@ var roomMetadata =
 	"blockedFromAboveBy": [
 	    ]},
 
-{"id": "h1", "image": "clan-hall", "name": "room.clan.hall", "category": "category.classic.halls", "prereq": null, "capacity": 100, "energy": 5, "maxnum": 1, "spawn": true, "floor": -12, "ceil": 24,
+{"id": "h1", "image": "clan-hall", "name": "room.clan.hall", "category": "category.classic.halls", "prereq": null, "capacity": 100, "energy": 5, "decocap": 600, "time": 24, "maxnum": 1, "spawn": true, "floor": -12, "ceil": 24,
 	"bounds": [
 		{"x1": -8, "y1": -32, "x2": 8, "y2": 32, "floor": -12, "ceil": 24},
 		{"x1": -17, "y1": -16, "x2": 17, "y2": 16, "floor": -12, "ceil": 24}],
@@ -115,7 +115,7 @@ var roomMetadata =
     "treetype": "64-2",
 	"blockedFromAboveBy": [
 	    ]},
-{"id": "h2", "image": "clan-great-hall", "name": "room.clan.great.hall", "category": "category.classic.halls", "prereq": null, "capacity": 200, "energy": -2, "maxnum": 1, "spawn": true, "floor": -12, "ceil": 24,
+{"id": "h2", "image": "clan-great-hall", "name": "room.clan.great.hall", "category": "category.classic.halls", "prereq": null, "capacity": 200, "energy": -2, "decocap": 700, "time": 24, "maxnum": 1, "spawn": true, "floor": -12, "ceil": 24,
 	"bounds": [
 		{"x1": -17, "y1": -32, "x2": 17, "y2": 32, "floor": -12, "ceil": 24}],
 	"doors": [
@@ -132,7 +132,7 @@ var roomMetadata =
     "treetype": "64-2",
 	"blockedFromAboveBy": [
 	    ]},
-{"id": "h3", "image": "clan-greater-hall", "name": "room.clan.greater.hall", "category": "category.classic.halls", "prereq": null, "capacity": 200, "energy": -2, "maxnum": 1, "spawn": true, "floor": -12, "ceil": 24,
+{"id": "h3", "image": "clan-greater-hall", "name": "room.clan.greater.hall", "category": "category.classic.halls", "prereq": null, "capacity": 200, "energy": -2, "decocap": 800, "time": 24, "maxnum": 1, "spawn": true, "floor": -12, "ceil": 24,
 	"bounds": [
 		{"x1": -24, "y1": -32, "x2": 24, "y2": 32, "floor": -12, "ceil": 24},
 		{"x1": -40, "y1": -12, "x2": 40, "y2": 12, "floor": -12, "ceil": 24}],
@@ -150,7 +150,7 @@ var roomMetadata =
     "treetype": "64-2",
 	"blockedFromAboveBy": [
 	    ]},
-{"id": "h4", "image": "clan-grand-hall", "name": "room.clan.grand.hall", "category": "category.classic.halls", "prereq": null, "capacity": 200, "energy": -2, "maxnum": 1, "spawn": true, "floor": -12, "ceil": 30,
+{"id": "h4", "image": "clan-grand-hall", "name": "room.clan.grand.hall", "category": "category.classic.halls", "prereq": null, "capacity": 200, "energy": -2, "decocap": 900, "time": 24, "maxnum": 1, "spawn": true, "floor": -12, "ceil": 30,
 	"bounds": [
 		{"x1": -31.5, "y1": -31.5, "x2": 31.5, "y2": 31.5, "floor": -8, "ceil": 32},
 		{"x1": -32, "y1": -24, "x2": 32, "y2": -8, "floor": 0, "ceil": 8},
@@ -174,7 +174,7 @@ var roomMetadata =
     "treetype": "h-6",
 	"blockedFromAboveBy": [
 	    ]},
-{"id": "h5", "image": "clan-grandest-hall", "name": "room.clan.grandest.hall", "category": "category.classic.halls", "prereq": null, "capacity": 200, "energy": -2, "maxnum": 1, "spawn": true, "floor": -12, "ceil": 30,
+{"id": "h5", "image": "clan-grandest-hall", "name": "room.clan.grandest.hall", "category": "category.classic.halls", "prereq": null, "capacity": 200, "energy": -2, "decocap": 1000, "time": 24, "maxnum": 1, "spawn": true, "floor": -12, "ceil": 30,
 	"bounds": [
 		{"x1": -31.5, "y1": -31.5, "x2": 31.5, "y2": 31.5, "floor": -8, "ceil": 32},
 		{"x1": -32, "y1": -24, "x2": 32, "y2": -8, "floor": 0, "ceil": 8},
@@ -198,7 +198,7 @@ var roomMetadata =
     "treetype": "h-6",
 	"blockedFromAboveBy": [
 	    ]},
-{"id": "hi", "image": "inspiration-hall", "name": "room.inspiration.hall", "category": "category.classic.halls", "prereq": null, "capacity": 100, "energy": -1, "maxnum": 3, "spawn": true, "floor": -12, "ceil": 46,
+{"id": "hi", "image": "inspiration-hall", "name": "room.inspiration.hall", "category": "category.classic.halls", "prereq": null, "capacity": 100, "energy": -1, "decocap": 1400, "time": 24, "maxnum": 3, "spawn": true, "floor": -12, "ceil": 46,
 	"bounds": [
 		{"x1": -32, "y1": -32, "x2": 32, "y2": 32, "floor": -12, "ceil": 46}],
 	"doors": [
@@ -222,7 +222,7 @@ var roomMetadata =
 		"ce","ob","oc","re","ef", "ot", "gc", "dc"]},
 
 
-{"id": "dc", "image": "duviri-cave", "name": "room.duviri.cave", "category": "category.theme.halls", "spawn": false, "prereq": null, "capacity": 200, "energy": -5, "maxnum": null, "floor": -22, "ceil": 36,
+{"id": "dc", "image": "duviri-cave", "name": "room.duviri.cave", "category": "category.theme.halls", "spawn": false, "prereq": null, "capacity": 200, "energy": -5, "decocap": 1600, "time": 24, "maxnum": null, "floor": -22, "ceil": 36,
 	"bounds": [
 		{"x1": -31.5, "y1": -31.5, "x2": 31.5, "y2": 31.5, "floor": -22, "ceil": 32},
 		{"x1": -32, "y1": -24, "x2": 32, "y2": -8, "floor": 0, "ceil": 8},
@@ -245,7 +245,7 @@ var roomMetadata =
 		{"resource": "resource.forma", "costs": [1, 1, 1, 3, 10]}], "unverified": true,
     "treetype": "h-6",
 	"blockedFromAboveBy": ["ob"]},
-{"id": "ef", "image": "earth-forest", "name": "room.earth.forest.chamber", "category": "category.theme.halls", "spawn": false, "prereq": null, "capacity": 200, "energy": -5, "maxnum": null, "floor": -22, "ceil": 68,
+{"id": "ef", "image": "earth-forest", "name": "room.earth.forest.chamber", "category": "category.theme.halls", "spawn": false, "prereq": null, "capacity": 200, "energy": -5, "decocap": 1600, "time": 24, "maxnum": null, "floor": -22, "ceil": 68,
 	"bounds": [
 		{"x1": -31.5, "y1": -63.5, "x2": 31.5, "y2": 63.5, "floor": -22, "ceil": 68},
 		{"x1": -32, "y1": -40, "x2": 32, "y2": -56, "floor": 0, "ceil": 8},
@@ -275,7 +275,7 @@ var roomMetadata =
 		{"resource": "resource.forma", "costs": [1, 1, 1, 3, 10]}], "unverified": true,
     "treetype": "h-10",
 	"blockedFromAboveBy": []},
-{"id": "he", "image": "entrati-hall", "name": "room.entrati.audience.chamber", "category": "category.theme.halls", "spawn": true, "prereq": null, "capacity": 200, "energy": -2, "maxnum": null, "floor": -12, "ceil": 32,
+{"id": "he", "image": "entrati-hall", "name": "room.entrati.audience.chamber", "category": "category.theme.halls", "spawn": true, "prereq": null, "capacity": 200, "energy": -2, "decocap": 1600, "time": 24, "maxnum": null, "floor": -12, "ceil": 32,
 	"bounds": [
 		{"x1": -31.5, "y1": -31.5, "x2": 31.5, "y2": 31.5, "floor": -12, "ceil": 32},
 		{"x1": -32, "y1": -24, "x2": 32, "y2": -8, "floor": 0, "ceil": 8},
@@ -299,7 +299,7 @@ var roomMetadata =
     "treetype": "h-6",
 	"blockedFromAboveBy": [
 		"ob"]},
-{"id": "gc", "image": "galleon-chamber", "name": "room.galleon.chamber", "category": "category.theme.halls", "spawn": false, "prereq": null, "capacity": 200, "energy": -5, "maxnum": null, "floor": -26, "ceil": 34,
+{"id": "gc", "image": "galleon-chamber", "name": "room.galleon.chamber", "category": "category.theme.halls", "spawn": false, "prereq": null, "capacity": 200, "energy": -5, "decocap": 1600, "time": 24, "maxnum": null, "floor": -26, "ceil": 34,
 	"bounds": [
 		{"x1": -31.5, "y1": -31.5, "x2": 31.5, "y2": 31.5, "floor": -26, "ceil": 34},
 		{"x1": -32, "y1": -24, "x2": 32, "y2": -8, "floor": 0, "ceil": 8},
@@ -323,7 +323,7 @@ var roomMetadata =
     "treetype": "h-6",
 	"blockedFromAboveBy": [
 		"ob"]},
-{"id": "hf", "image": "infested-hall", "name": "room.infested.chamber", "category": "category.theme.halls", "spawn": true, "prereq": null, "capacity": 200, "energy": -5, "maxnum": null, "floor": -12, "ceil": 32,
+{"id": "hf", "image": "infested-hall", "name": "room.infested.chamber", "category": "category.theme.halls", "spawn": true, "prereq": null, "capacity": 200, "energy": -5, "decocap": 1600, "time": 24, "maxnum": null, "floor": -12, "ceil": 32,
 	"bounds": [
 		{"x1": -31.5, "y1": -31.5, "x2": 31.5, "y2": 31.5, "floor": -12, "ceil": 32},
 		{"x1": -32, "y1": -24, "x2": 32, "y2": -8, "floor": 0, "ceil": 8},
@@ -348,7 +348,7 @@ var roomMetadata =
 	"blockedFromAboveBy": [
 		"ob"]},
 
-{"id": "ka", "image": "kuva-asteroid", "name": "room.kuva.asteroid", "category": "category.theme.halls", "spawn": false, "prereq": null, "capacity": 200, "energy": -5, "maxnum": null, "floor": -4, "ceil": 32,
+{"id": "ka", "image": "kuva-asteroid", "name": "room.kuva.asteroid", "category": "category.theme.halls", "spawn": false, "prereq": null, "capacity": 200, "energy": -5, "decocap": 1600, "time": 24, "maxnum": null, "floor": -4, "ceil": 32,
 	"bounds": [
 		{"x1": -31.5, "y1": -31.5, "x2": 31.5, "y2": 31.5, "floor": -8, "ceil": 32},
 		{"x1": -32, "y1": -24, "x2": 32, "y2": -8, "floor": 0, "ceil": 8},
@@ -372,7 +372,7 @@ var roomMetadata =
     "treetype": "h-6",
 	"blockedFromAboveBy": [
 		"ob"]},
-{"id": "ot", "image": "orokin-tower", "name": "room.orokin.tower.chamber", "category": "category.theme.halls", "spawn": false, "prereq": null, "capacity": 200, "energy": -5, "maxnum": null, "floor": -32, "ceil": 70,
+{"id": "ot", "image": "orokin-tower", "name": "room.orokin.tower.chamber", "category": "category.theme.halls", "spawn": false, "prereq": null, "capacity": 200, "energy": -5, "decocap": 1600, "time": 24, "maxnum": null, "floor": -32, "ceil": 70,
 	"bounds": [
 		{"x1": -31.5, "y1": -31.5, "x2": 31.5, "y2": 31.5, "floor": -32, "ceil": 70},
 		{"x1": -32, "y1": -24, "x2": 32, "y2": -8, "floor": 0, "ceil": 8},
@@ -396,7 +396,7 @@ var roomMetadata =
 		{"resource": "resource.forma", "costs": [1, 1, 1, 3, 10]}], "unverified": true,
     "treetype": "h-6",
 	"blockedFromAboveBy": []},
-{"id": "co", "image": "ostron-cove", "name": "room.ostron.cove", "category": "category.theme.halls", "spawn": false, "prereq": null, "capacity": 200, "energy": -5, "maxnum": null, "floor": -12, "ceil": 32,
+{"id": "co", "image": "ostron-cove", "name": "room.ostron.cove", "category": "category.theme.halls", "spawn": false, "prereq": null, "capacity": 200, "energy": -5, "decocap": 1600, "time": 24, "maxnum": null, "floor": -12, "ceil": 32,
 	"bounds": [
 		{"x1": -31.5, "y1": -38, "x2": 31.5, "y2": 31.5, "floor": -12, "ceil": 32},
 		{"x1": -31, "y1": -86, "x2": 31, "y2": -38, "floor": -12, "ceil": 32},
@@ -419,7 +419,7 @@ var roomMetadata =
 		{"resource": "resource.forma", "costs": [1, 1, 1, 3, 10]}], "unverified": true,
     "treetype": "h-5",
 	"blockedFromAboveBy": []},
-{"id": "sm", "image": "starlight-market", "name": "room.starlight.market", "category": "category.theme.halls", "spawn": false, "prereq": null, "capacity": 200, "energy": -5, "maxnum": null, "floor": -12, "ceil": 32,
+{"id": "sm", "image": "starlight-market", "name": "room.starlight.market", "category": "category.theme.halls", "spawn": false, "prereq": null, "capacity": 200, "energy": -5, "decocap": 1600, "time": 24, "maxnum": null, "floor": -12, "ceil": 32,
 	"bounds": [
 		{"x1": -31.5, "y1": -31.5, "x2": 31.5, "y2": 31.5, "floor": -12, "ceil": 32},
 		{"x1": -32, "y1": -24, "x2": 32, "y2": -8, "floor": 0, "ceil": 8},
@@ -443,7 +443,7 @@ var roomMetadata =
     "treetype": "h-6",
 	"blockedFromAboveBy": [
 		"ob"]},
-{"id": "uc", "image": "uranus-chamber", "name": "room.uranus.chamber", "category": "category.theme.halls", "spawn": false, "prereq": null, "capacity": 200, "energy": -5, "maxnum": null, "floor": -20, "ceil": 32,
+{"id": "uc", "image": "uranus-chamber", "name": "room.uranus.chamber", "category": "category.theme.halls", "spawn": false, "prereq": null, "capacity": 200, "energy": -5, "decocap": 1600, "time": 24, "maxnum": null, "floor": -20, "ceil": 32,
 	"bounds": [
 		{"x1": -31.5, "y1": -31.5, "x2": 31.5, "y2": 31.5, "floor": -20, "ceil": 32},
 		{"x1": -32, "y1": -24, "x2": 32, "y2": -8, "floor": 0, "ceil": 8},
@@ -468,7 +468,7 @@ var roomMetadata =
 	"blockedFromAboveBy": [
 		"ob"]},
 
-{"id": "or", "image": "oracle2", "name": "room.oracle", "category": "category.labs", "prereq": null, "capacity": -2, "energy": -5, "maxnum": null, "floor": -8, "ceil": 12, "xp": 10000,
+{"id": "or", "image": "oracle2", "name": "room.oracle", "category": "category.labs", "prereq": null, "capacity": -2, "energy": -5, "decocap": 300, "time": 24, "maxnum": null, "floor": -8, "ceil": 12, "xp": 10000,
 	"bounds": [
 		{"x1": -14, "y1": -14, "x2": 14, "y2": 15, "floor": -8, "ceil": 12}],
 	"doors": [
@@ -482,7 +482,7 @@ var roomMetadata =
     "treetype": "32-1",
 	"blockedFromAboveBy": [
 	    ]},
-{"id": "lt", "image": "tenno-lab2", "name": "room.tenno.lab", "category": "category.labs", "prereq": "or", "capacity": -2, "energy": -5, "maxnum": null, "floor": 0, "ceil": 8, "xp": 10000,
+{"id": "lt", "image": "tenno-lab2", "name": "room.tenno.lab", "category": "category.labs", "prereq": "or", "capacity": -2, "energy": -5, "decocap": 300, "time": 24, "maxnum": null, "floor": 0, "ceil": 8, "xp": 10000,
 	"bounds": [
 		{"x1": -11, "y1": -10, "x2": 11, "y2": 9, "floor": 0, "ceil": 8}],
 	"doors": [
@@ -498,7 +498,7 @@ var roomMetadata =
     "treetype": "16-1",
 	"blockedFromAboveBy": [
 	    ]},
-{"id": "le", "image": "energy-lab", "name": "room.energy.lab", "category": "category.labs", "prereq": "or", "capacity": -2, "energy": -5, "maxnum": null, "floor": 0, "ceil": 16, "xp": 10000,
+{"id": "le", "image": "energy-lab", "name": "room.energy.lab", "category": "category.labs", "prereq": "or", "capacity": -2, "energy": -5, "decocap": 300, "time": 24, "maxnum": null, "floor": 0, "ceil": 16, "xp": 10000,
 	"bounds": [
 		{"x1": -14, "y1": -15, "x2": 14, "y2": 14, "floor": 0, "ceil": 16}],
 	"doors": [
@@ -514,7 +514,7 @@ var roomMetadata =
     "treetype": "32-1",
 	"blockedFromAboveBy": [
 	    ]},
-{"id": "lc", "image": "chem-lab", "name": "room.chem.lab", "category": "category.labs", "prereq": "or", "capacity": -2, "energy": -5, "maxnum": null, "floor": -16, "ceil": 16, "xp": 10000,
+{"id": "lc", "image": "chem-lab", "name": "room.chem.lab", "category": "category.labs", "prereq": "or", "capacity": -2, "energy": -5, "decocap": 300, "time": 24, "maxnum": null, "floor": -16, "ceil": 16, "xp": 10000,
 	"bounds": [
 		{"x1": -14, "y1": -15, "x2": 14, "y2": 16, "floor": -16, "ceil": 16}],
 	"doors": [
@@ -530,7 +530,7 @@ var roomMetadata =
     "treetype": "32-1",
 	"blockedFromAboveBy": [
 	    ]},
-{"id": "lb", "image": "bio-lab", "name": "room.bio.lab", "category": "category.labs", "prereq": "or", "capacity": -2, "energy": -5, "maxnum": null, "floor": 0, "ceil": 12, "xp": 10000,
+{"id": "lb", "image": "bio-lab", "name": "room.bio.lab", "category": "category.labs", "prereq": "or", "capacity": -2, "energy": -5, "decocap": 300, "time": 24, "maxnum": null, "floor": 0, "ceil": 12, "xp": 10000,
 	"bounds": [
 		{"x1": -14, "y1": -15, "x2": 14, "y2": 14, "floor": 0, "ceil": 12}],
 	"doors": [
@@ -546,7 +546,7 @@ var roomMetadata =
     "treetype": "32-1",
 	"blockedFromAboveBy": [
 	    ]},
-{"id": "lo", "image": "orokin-lab", "name": "room.orokin.lab", "category": "category.labs", "prereq": "or", "capacity": -2, "energy": -5, "maxnum": null, "floor": -16, "ceil": 28, "xp": 10000,
+{"id": "lo", "image": "orokin-lab", "name": "room.orokin.lab", "category": "category.labs", "prereq": "or", "capacity": -2, "energy": -5, "decocap": 300, "time": 24, "maxnum": null, "floor": -16, "ceil": 28, "xp": 10000,
 	"bounds": [
 		{"x1": -16, "y1": -28, "x2": 16, "y2": 26, "floor": -16, "ceil": 28}],
 	"doors": [
@@ -562,7 +562,7 @@ var roomMetadata =
     "treetype": "64-1",
 	"blockedFromAboveBy": [
 	    ]},
-{"id": "lv", "image": "ventkid-lab", "name": "room.ventkids.bash.lab", "category": "category.labs", "prereq": "lt", "capacity": -2, "energy": -5, "maxnum": null, "floor": 0, "ceil": 8, "xp": 10000,
+{"id": "lv", "image": "ventkid-lab", "name": "room.ventkids.bash.lab", "category": "category.labs", "prereq": "lt", "capacity": -2, "energy": -5, "decocap": 300, "time": 24, "maxnum": null, "floor": 0, "ceil": 8, "xp": 10000,
 	"bounds": [
 		{"x1": -8, "y1": -10, "x2": 8, "y2": 8, "floor": 0, "ceil": 8},
 		{"x1": -2, "y1": -15, "x2": 2, "y2": -10, "floor": 0, "ceil": 8}],
@@ -579,7 +579,7 @@ var roomMetadata =
     "treetype": "16-1",
 	"blockedFromAboveBy": [
 	    ]},
-{"id": "ld", "image": "dagath-lab", "name": "room.dagaths.hollow", "category": "category.labs", "prereq": "lt", "capacity": -2, "energy": -5, "maxnum": null, "floor": -8, "ceil": 30, "xp": 10000,
+{"id": "ld", "image": "dagath-lab", "name": "room.dagaths.hollow", "category": "category.labs", "prereq": "lt", "capacity": -2, "energy": -5, "decocap": 300, "time": 24, "maxnum": null, "floor": -8, "ceil": 30, "xp": 10000,
 	"bounds": [
 		{"x1": -5, "y1": 19, "x2": 5, "y2": 27, "floor": 0, "ceil": 8},
 		{"x1": -23, "y1": -28, "x2": 23, "y2": 19, "floor": -8, "ceil": 30}],
@@ -597,7 +597,7 @@ var roomMetadata =
 	"blockedFromAboveBy": [
 	    ]},
 
-{"id": "dd", "image": "dry-dock", "name": "room.dry.dock", "category": "category.interactive", "prereq": null, "capacity": -20, "energy": -6, "maxnum": 1, "floor": -80, "ceil": 200,
+{"id": "dd", "image": "dry-dock", "name": "room.dry.dock", "category": "category.interactive", "prereq": null, "capacity": -20, "energy": -6, "decocap": 400, "time": 24, "maxnum": 1, "floor": -80, "ceil": 200,
 	"bounds": [
 //		{"x1": -128, "y1":  -128, "x2": 128, "y2":  128, "floor": -80, "ceil": 200},
 		{"x1": -127.5, "y1":  -128,   "x2": 127.5, "y2":  127.5, "floor": -80,  "ceil": 200},
@@ -629,7 +629,7 @@ var roomMetadata =
     "treetype": "dd",
 	"blockedFromAboveBy": [
 	    ]},
-{"id": "cr", "image": "crimson-branch", "name": "room.crimson.branch", "category": "category.interactive", "prereq": null, "capacity": -2, "energy": -4, "maxnum": null, "floor": 0, "ceil": 12,
+{"id": "cr", "image": "crimson-branch", "name": "room.crimson.branch", "category": "category.interactive", "prereq": null, "capacity": -2, "energy": -4, "decocap": 400, "time": 24, "maxnum": null, "floor": 0, "ceil": 12,
 	"bounds": [
 		{"x1": -30, "y1":  1, "x2": 30, "y2": -28, "floor": 0, "ceil": 12},
 		{"x1": -16, "y1": 16, "x2": 16, "y2": -28, "floor": 0, "ceil": 12}],
@@ -644,7 +644,7 @@ var roomMetadata =
     "treetype": "32-1",
 	"blockedFromAboveBy": [
 	    ]},
-{"id": "du", "image": "dueling-room", "name": "room.dueling.room", "category": "category.interactive", "prereq": null, "capacity": -10, "energy": -10, "maxnum": null, "floor": 0, "ceil": 20, "xp": 15000,
+{"id": "du", "image": "dueling-room", "name": "room.dueling.room", "category": "category.interactive", "prereq": null, "capacity": -10, "energy": -10, "decocap": 300, "time": 24, "maxnum": null, "floor": 0, "ceil": 20, "xp": 15000,
 	"bounds": [
 		{"x1": -16, "y1": -15.5, "x2": 16, "y2": 16, "floor": 0, "ceil": 20}],
 	"doors": [
@@ -660,7 +660,7 @@ var roomMetadata =
     "treetype": "32-1",
 	"blockedFromAboveBy": [
 	    ]},
-{"id": "oc", "image": "obstacle-course", "name": "room.obstacle.course", "category": "category.interactive", "prereq": null, "capacity": -10, "energy": -10, "maxnum": null, "floor": -24, "ceil": 24, "xp": 15000,
+{"id": "oc", "image": "obstacle-course", "name": "room.obstacle.course", "category": "category.interactive", "prereq": null, "capacity": -10, "energy": -10, "decocap": 0, "time": 24, "maxnum": null, "floor": -24, "ceil": 24, "xp": 15000,
 	"bounds": [
 		{"x1": -82, "y1": -98, "x2": 82, "y2": 94, "floor": -24, "ceil": 24},
 		{"x1": -8, "y1": 94, "x2": 8, "y2": 98, "floor": -24, "ceil": 24}],
@@ -679,7 +679,7 @@ var roomMetadata =
 		{"resource": "resource.forma", "costs": [1, 1, 2, 5, 15]}],
     "treetype": "oc-1",
 	"blockedFromAboveBy": []},
-{"id": "oa", "image": "obstacle-course-architect", "name": "room.obstacle.course.architect", "category": "category.interactive", "prereq": null, "capacity": 0, "energy": -2, "maxnum": 5, "floor": 0, "ceil": 50, "xp": 15000,
+{"id": "oa", "image": "obstacle-course-architect", "name": "room.obstacle.course.architect", "category": "category.interactive", "prereq": null, "capacity": 0, "energy": -2, "decocap": 640, "time": 24, "maxnum": 5, "floor": 0, "ceil": 50, "xp": 15000,
 	"bounds": [
 		{"x1": -76, "y1": -78, "x2": 76, "y2": 72, "floor": 0, "ceil": 50},
 		{"x1": -6, "y1": 72, "x2": 6, "y2": 82, "floor": 0, "ceil": 12}],
@@ -697,7 +697,7 @@ var roomMetadata =
 	"blockedFromAboveBy": [
 		"ob","oc","re","ce","ef","uc","t4","ot","gc","dc"]},
 
-{"id": "ob", "image": "observatory", "name": "room.observatory", "category": "category.misc", "prereq": null, "capacity": -2, "energy": -5, "maxnum": null, "floor": -36, "ceil": 52,
+{"id": "ob", "image": "observatory", "name": "room.observatory", "category": "category.misc", "prereq": null, "capacity": -2, "energy": -5, "decocap": 800, "time": 24, "maxnum": null, "floor": -36, "ceil": 52,
 	"bounds": [
 		{"x1": -50, "y1": -74, "x2": 50, "y2": 73, "floor": -36, "ceil": 52},
 		{"x1": -6, "y1": 72, "x2": 6, "y2": 80, "floor": -32, "ceil": 52}],
@@ -712,7 +712,7 @@ var roomMetadata =
     "treetype": "ob-1",
 	"blockedFromAboveBy": [
 		"lc","ce","ob","oc","lo","re","uc","ef","t4","ot","gc","dc"]},
-{"id": "th", "image": "temple-of-honor", "name": "room.temple.of.honor", "category": "category.misc", "prereq": null, "capacity": -2, "energy": -5, "maxnum": null, "floor": 0, "ceil": 20, "xp": 15000,
+{"id": "th", "image": "temple-of-honor", "name": "room.temple.of.honor", "category": "category.misc", "prereq": null, "capacity": -2, "energy": -5, "decocap": 800, "time": 24, "maxnum": null, "floor": 0, "ceil": 20, "xp": 15000,
 	"bounds": [
 		{"x1": -32, "y1": -8, "x2": 32, "y2": 8, "floor": 0, "ceil": 20},
 		{"x1": -8, "y1": -32, "x2": 8, "y2": 32, "floor": 0, "ceil": 20},
@@ -732,7 +732,7 @@ var roomMetadata =
     "treetype": "64-4",
 	"blockedFromAboveBy": [
 	    ]},
-{"id": "os", "image": "open-space", "name": "room.open.space", "category": "category.misc", "prereq": null, "capacity": -2, "energy": -5, "maxnum": null, "floor": -60, "ceil": 80,
+{"id": "os", "image": "open-space", "name": "room.open.space", "category": "category.misc", "prereq": null, "capacity": -2, "energy": -5, "decocap": 1600, "time": 24, "maxnum": null, "floor": -60, "ceil": 80,
 	"bounds": [
 		{"x1": -76, "y1": -80, "x2": 76, "y2": 73, "floor": -64, "ceil": 80},
 		{"x1": -6, "y1": 73, "x2": 6, "y2": 82, "floor": 0, "ceil": 12}],
@@ -753,7 +753,7 @@ var roomMetadata =
     "treetype": "os-1",
 	"blockedFromAboveBy": [
 	    ]},
-{"id": "du1", "image": "duviri-courtier", "name": "room.courtiers.bliss", "category": "category.misc", "prereq": null, "capacity": 200, "energy": -5, "maxnum": 1, "floor": -12, "ceil": 18,
+{"id": "du1", "image": "duviri-courtier", "name": "room.courtiers.bliss", "category": "category.misc", "prereq": null, "capacity": 200, "energy": -5, "decocap": 1600, "time": 24, "maxnum": 1, "floor": -12, "ceil": 18,
 	"bounds": [
 		{"x1": -16, "y1": -14, "x2": 16.5, "y2": 16, "floor": -12, "ceil": 18}
 		// I can't find a cleaner way to express how this room does not fit directly against any room on the left
@@ -771,7 +771,7 @@ var roomMetadata =
     "treetype": "32-1",
 	"blockedFromAboveBy": [
     ]},
-{"id": "du2", "image": "duviri-harbinger", "name": "room.harbingers.pass", "category": "category.misc", "prereq": null, "capacity": 200, "energy": -5, "maxnum": 1, "floor": -12, "ceil": 18,
+{"id": "du2", "image": "duviri-harbinger", "name": "room.harbingers.pass", "category": "category.misc", "prereq": null, "capacity": 200, "energy": -5, "decocap": 1600, "time": 24, "maxnum": 1, "floor": -12, "ceil": 18,
 	"bounds": [
 		{"x1": -16, "y1": -32, "x2": 16.5, "y2": 16, "floor": -12, "ceil": 18}
 		// I can't find a cleaner way to express how this room does not fit directly against any room on the left
@@ -790,7 +790,7 @@ var roomMetadata =
 	"blockedFromAboveBy": [
     ]},
 
-{"id": "gsa", "image": "small-garden", "name": "room.small.garden.aestas", "category": "category.gardens", "prereq": null, "capacity": -10, "energy": -6, "maxnum": null, "floor": 0, "ceil": 20,
+{"id": "gsa", "image": "small-garden", "name": "room.small.garden.aestas", "category": "category.gardens", "prereq": null, "capacity": -10, "energy": -6, "decocap": 400, "time": 12, "maxnum": null, "floor": 0, "ceil": 20,
 	"bounds": [
 		{"x1": -16, "y1": -16, "x2": 16, "y2": 16, "floor": 0, "ceil": 20}],
 	"doors": [
@@ -807,7 +807,7 @@ var roomMetadata =
     "treetype": "32-4",
 	"blockedFromAboveBy": [
 	    ]},
-{"id": "gsu", "image": "small-garden", "name": "room.small.garden.autumn", "category": "category.gardens", "prereq": null, "capacity": -10, "energy": -6, "maxnum": null, "floor": 0, "ceil": 20,
+{"id": "gsu", "image": "small-garden", "name": "room.small.garden.autumn", "category": "category.gardens", "prereq": null, "capacity": -10, "energy": -6, "decocap": 400, "time": 12, "maxnum": null, "floor": 0, "ceil": 20,
 	"bounds": [
 		{"x1": -16, "y1": -16, "x2": 16, "y2": 16, "floor": 0, "ceil": 20}],
 	"doors": [
@@ -824,7 +824,7 @@ var roomMetadata =
     "treetype": "32-4",
 	"blockedFromAboveBy": [
 	    ]},
-{"id": "gsc", "image": "small-garden", "name": "room.small.garden.castitas", "category": "category.gardens", "prereq": null, "capacity": -10, "energy": -6, "maxnum": null, "floor": 0, "ceil": 20,
+{"id": "gsc", "image": "small-garden", "name": "room.small.garden.castitas", "category": "category.gardens", "prereq": null, "capacity": -10, "energy": -6, "decocap": 400, "time": 12, "maxnum": null, "floor": 0, "ceil": 20,
 	"bounds": [
 		{"x1": -16, "y1": -16, "x2": 16, "y2": 16, "floor": 0, "ceil": 20}],
 	"doors": [
@@ -841,7 +841,7 @@ var roomMetadata =
     "treetype": "32-4",
 	"blockedFromAboveBy": [
 	    ]},
-{"id": "gse", "image": "small-garden", "name": "room.small.garden.equinox", "category": "category.gardens", "prereq": null, "capacity": -10, "energy": -6, "maxnum": null, "floor": 0, "ceil": 20,
+{"id": "gse", "image": "small-garden", "name": "room.small.garden.equinox", "category": "category.gardens", "prereq": null, "capacity": -10, "energy": -6, "decocap": 400, "time": 12, "maxnum": null, "floor": 0, "ceil": 20,
 	"bounds": [
 		{"x1": -16, "y1": -16, "x2": 16, "y2": 16, "floor": 0, "ceil": 20}],
 	"doors": [
@@ -858,7 +858,7 @@ var roomMetadata =
     "treetype": "32-4",
 	"blockedFromAboveBy": [
 	    ]},
-{"id": "gsh", "image": "small-garden", "name": "room.small.garden.humilitias", "category": "category.gardens", "prereq": null, "capacity": -10, "energy": -6, "maxnum": null, "floor": 0, "ceil": 20,
+{"id": "gsh", "image": "small-garden", "name": "room.small.garden.humilitias", "category": "category.gardens", "prereq": null, "capacity": -10, "energy": -6, "decocap": 400, "time": 12, "maxnum": null, "floor": 0, "ceil": 20,
 	"bounds": [
 		{"x1": -16, "y1": -16, "x2": 16, "y2": 16, "floor": 0, "ceil": 20}],
 	"doors": [
@@ -875,7 +875,7 @@ var roomMetadata =
     "treetype": "32-4",
 	"blockedFromAboveBy": [
 	    ]},
-{"id": "gsi", "image": "small-garden", "name": "room.small.garden.industria", "category": "category.gardens", "prereq": null, "capacity": -10, "energy": -6, "maxnum": null, "floor": 0, "ceil": 20,
+{"id": "gsi", "image": "small-garden", "name": "room.small.garden.industria", "category": "category.gardens", "prereq": null, "capacity": -10, "energy": -6, "decocap": 400, "time": 12, "maxnum": null, "floor": 0, "ceil": 20,
 	"bounds": [
 		{"x1": -16, "y1": -16, "x2": 16, "y2": 16, "floor": 0, "ceil": 20}],
 	"doors": [
@@ -892,7 +892,7 @@ var roomMetadata =
     "treetype": "32-4",
 	"blockedFromAboveBy": [
 	    ]},
-{"id": "gss", "image": "small-garden", "name": "room.small.garden.stone", "category": "category.gardens", "prereq": null, "capacity": -10, "energy": -6, "maxnum": null, "floor": 0, "ceil": 20,
+{"id": "gss", "image": "small-garden", "name": "room.small.garden.stone", "category": "category.gardens", "prereq": null, "capacity": -10, "energy": -6, "decocap": 400, "time": 12, "maxnum": null, "floor": 0, "ceil": 20,
 	"bounds": [
 		{"x1": -16, "y1": -16, "x2": 16, "y2": 16, "floor": 0, "ceil": 20}],
 	"doors": [
@@ -909,7 +909,7 @@ var roomMetadata =
     "treetype": "32-4",
 	"blockedFromAboveBy": [
 	    ]},
-{"id": "gsw", "image": "small-garden", "name": "room.small.garden.wooden", "category": "category.gardens", "prereq": null, "capacity": -10, "energy": -6, "maxnum": null, "floor": 0, "ceil": 20,
+{"id": "gsw", "image": "small-garden", "name": "room.small.garden.wooden", "category": "category.gardens", "prereq": null, "capacity": -10, "energy": -6, "decocap": 400, "time": 12, "maxnum": null, "floor": 0, "ceil": 20,
 	"bounds": [
 		{"x1": -16, "y1": -16, "x2": 16, "y2": 16, "floor": 0, "ceil": 20}],
 	"doors": [
@@ -926,7 +926,7 @@ var roomMetadata =
     "treetype": "32-4",
 	"blockedFromAboveBy": [
 	    ]},
-{"id": "glc", "image": "large-garden", "name": "room.large.garden.caritas", "category": "category.gardens", "prereq": null, "capacity": -15, "energy": -8, "maxnum": null, "floor": 0, "ceil": 20,
+{"id": "glc", "image": "large-garden", "name": "room.large.garden.caritas", "category": "category.gardens", "prereq": null, "capacity": -15, "energy": -8, "decocap": 500, "time": 12, "maxnum": null, "floor": 0, "ceil": 20,
 	"bounds": [
 		{"x1": -32, "y1": -4, "x2": 32, "y2": 4, "floor": 0, "ceil": 20},
 		{"x1": -4, "y1": -32, "x2": 4, "y2": 32, "floor": 0, "ceil": 20},
@@ -945,7 +945,7 @@ var roomMetadata =
     "treetype": "64-4",
 	"blockedFromAboveBy": [
 	    ]},
-{"id": "glj", "image": "large-garden", "name": "room.large.garden.junno", "category": "category.gardens", "prereq": null, "capacity": -15, "energy": -8, "maxnum": null, "floor": 0, "ceil": 20,
+{"id": "glj", "image": "large-garden", "name": "room.large.garden.junno", "category": "category.gardens", "prereq": null, "capacity": -15, "energy": -8, "decocap": 500, "time": 12, "maxnum": null, "floor": 0, "ceil": 20,
 	"bounds": [
 		{"x1": -32, "y1": -4, "x2": 32, "y2": 4, "floor": 0, "ceil": 20},
 		{"x1": -4, "y1": -32, "x2": 4, "y2": 32, "floor": 0, "ceil": 20},
@@ -964,7 +964,7 @@ var roomMetadata =
     "treetype": "64-4",
 	"blockedFromAboveBy": [
 	    ]},
-{"id": "gll", "image": "large-garden", "name": "room.large.garden.leto", "category": "category.gardens", "prereq": null, "capacity": -15, "energy": -8, "maxnum": null, "floor": 0, "ceil": 20,
+{"id": "gll", "image": "large-garden", "name": "room.large.garden.leto", "category": "category.gardens", "prereq": null, "capacity": -15, "energy": -8, "decocap": 500, "time": 12, "maxnum": null, "floor": 0, "ceil": 20,
 	"bounds": [
 		{"x1": -32, "y1": -4, "x2": 32, "y2": 4, "floor": 0, "ceil": 20},
 		{"x1": -4, "y1": -32, "x2": 4, "y2": 32, "floor": 0, "ceil": 20},
@@ -983,7 +983,7 @@ var roomMetadata =
     "treetype": "64-4",
 	"blockedFromAboveBy": [
 	    ]},
-{"id": "glm", "image": "large-garden", "name": "room.large.garden.mosaic", "category": "category.gardens", "prereq": null, "capacity": -15, "energy": -8, "maxnum": null, "floor": 0, "ceil": 20,
+{"id": "glm", "image": "large-garden", "name": "room.large.garden.mosaic", "category": "category.gardens", "prereq": null, "capacity": -15, "energy": -8, "decocap": 500, "time": 12, "maxnum": null, "floor": 0, "ceil": 20,
 	"bounds": [
 		{"x1": -32, "y1": -4, "x2": 32, "y2": 4, "floor": 0, "ceil": 20},
 		{"x1": -4, "y1": -32, "x2": 4, "y2": 32, "floor": 0, "ceil": 20},
@@ -1002,7 +1002,7 @@ var roomMetadata =
     "treetype": "64-4",
 	"blockedFromAboveBy": [
 	    ]},
-{"id": "gls", "image": "large-garden", "name": "room.large.garden.soleto", "category": "category.gardens", "prereq": null, "capacity": -15, "energy": -8, "maxnum": null, "floor": 0, "ceil": 20,
+{"id": "gls", "image": "large-garden", "name": "room.large.garden.soleto", "category": "category.gardens", "prereq": null, "capacity": -15, "energy": -8, "decocap": 500, "time": 12, "maxnum": null, "floor": 0, "ceil": 20,
 	"bounds": [
 		{"x1": -32, "y1": -4, "x2": 32, "y2": 4, "floor": 0, "ceil": 20},
 		{"x1": -4, "y1": -32, "x2": 4, "y2": 32, "floor": 0, "ceil": 20},
@@ -1021,7 +1021,7 @@ var roomMetadata =
     "treetype": "64-4",
 	"blockedFromAboveBy": [
 	    ]},
-{"id": "glt", "image": "large-garden", "name": "room.large.garden.temperantia", "category": "category.gardens", "prereq": null, "capacity": -15, "energy": -8, "maxnum": null, "floor": 0, "ceil": 20,
+{"id": "glt", "image": "large-garden", "name": "room.large.garden.temperantia", "category": "category.gardens", "prereq": null, "capacity": -15, "energy": -8, "decocap": 500, "time": 12, "maxnum": null, "floor": 0, "ceil": 20,
 	"bounds": [
 		{"x1": -32, "y1": -4, "x2": 32, "y2": 4, "floor": 0, "ceil": 20},
 		{"x1": -4, "y1": -32, "x2": 4, "y2": 32, "floor": 0, "ceil": 20},
@@ -1040,7 +1040,7 @@ var roomMetadata =
     "treetype": "64-4",
 	"blockedFromAboveBy": [
 	    ]},
-{"id": "glv", "image": "large-garden", "name": "room.large.garden.vosen", "category": "category.gardens", "prereq": null, "capacity": -15, "energy": -8, "maxnum": null, "floor": 0, "ceil": 20,
+{"id": "glv", "image": "large-garden", "name": "room.large.garden.vosen", "category": "category.gardens", "prereq": null, "capacity": -15, "energy": -8, "decocap": 500, "time": 12, "maxnum": null, "floor": 0, "ceil": 20,
 	"bounds": [
 		{"x1": -32, "y1": -4, "x2": 32, "y2": 4, "floor": 0, "ceil": 20},
 		{"x1": -4, "y1": -32, "x2": 4, "y2": 32, "floor": 0, "ceil": 20},
@@ -1060,7 +1060,7 @@ var roomMetadata =
 	"blockedFromAboveBy": [
 	    ]},
 
-{"id": "re", "image": "reactor", "name": "room.reactor", "category": "category.utility", "prereq": null, "capacity": -5, "energy": 25, "maxnum": null, "floor": -28, "ceil": 36,
+{"id": "re", "image": "reactor", "name": "room.reactor", "category": "category.utility", "prereq": null, "capacity": -5, "energy": 25, "decocap": 300, "time": 12, "maxnum": null, "floor": -28, "ceil": 36,
 	"bounds": [
 		{"x1": -16, "y1": -16, "x2": 16, "y2": 16, "floor": -28, "ceil": 36}],
 	"doors": [
@@ -1074,7 +1074,7 @@ var roomMetadata =
     "treetype": "32-1",
 	"blockedFromAboveBy": [
 		"ob","ot"]},
-{"id": "t1", "image": "barracks", "iconImage": "barracks1", "name": "room.shadow.barracks", "category": "category.utility", "prereq": null, "capacity": -1, "energy": -1, "maxnum": 1, "floor": -6, "ceil": 12, "tier": 1,
+{"id": "t1", "image": "barracks", "iconImage": "barracks1", "name": "room.shadow.barracks", "category": "category.utility", "prereq": null, "capacity": -1, "energy": -1, "decocap": 300, "time": 24, "maxnum": 1, "floor": -6, "ceil": 12, "tier": 1,
 	"bounds": [
 		{"x1": -16, "y1": -18, "x2": 16, "y2": 18, "floor": -6, "ceil": 8}],
 	"doors": [
@@ -1090,7 +1090,7 @@ var roomMetadata =
     "treetype": "32-1",
 	"blockedFromAboveBy": [
 	    ]},
-{"id": "t2", "image": "barracks", "iconImage": "barracks2", "name": "room.storm.barracks", "category": "category.utility", "prereq": "t1", "capacity": -1, "energy": -1, "maxnum": 1, "floor": -6, "ceil": 12, "tier": 2,
+{"id": "t2", "image": "barracks", "iconImage": "barracks2", "name": "room.storm.barracks", "category": "category.utility", "prereq": "t1", "capacity": -1, "energy": -1, "decocap": 300, "time": 24, "maxnum": 1, "floor": -6, "ceil": 12, "tier": 2,
 	"bounds": [
 		{"x1": -16, "y1": -18, "x2": 16, "y2": 18, "floor": -6, "ceil": 8}],
 	"doors": [
@@ -1106,7 +1106,7 @@ var roomMetadata =
     "treetype": "32-1",
 	"blockedFromAboveBy": [
 	    ]},
-{"id": "t3", "image": "barracks", "iconImage": "barracks3", "name": "room.mountain.barracks", "category": "category.utility", "prereq": "t2", "capacity": -1, "energy": -1, "maxnum": 1, "floor": -12, "ceil": 12, "tier": 3,
+{"id": "t3", "image": "barracks", "iconImage": "barracks3", "name": "room.mountain.barracks", "category": "category.utility", "prereq": "t2", "capacity": -1, "energy": -1, "decocap": 300, "time": 24, "maxnum": 1, "floor": -12, "ceil": 12, "tier": 3,
 	"bounds": [
 		{"x1": -16, "y1": -18, "x2": 16, "y2": 18, "floor": -12, "ceil": 8}],
 	"doors": [
@@ -1122,7 +1122,7 @@ var roomMetadata =
     "treetype": "32-1",
 	"blockedFromAboveBy": [
 	    ]},
-{"id": "t4", "image": "barracks", "iconImage": "barracks4", "name": "room.moon.barracks", "category": "category.utility", "prereq": "t3", "capacity": -1, "energy": -1, "maxnum": 1, "floor": -18, "ceil": 12, "tier": 4,
+{"id": "t4", "image": "barracks", "iconImage": "barracks4", "name": "room.moon.barracks", "category": "category.utility", "prereq": "t3", "capacity": -1, "energy": -1, "decocap": 300, "time": 24, "maxnum": 1, "floor": -18, "ceil": 12, "tier": 4,
 	"bounds": [
 		{"x1": -16, "y1": -18, "x2": 16, "y2": 18, "floor": -18, "ceil": 8}],
 	"doors": [
@@ -1138,7 +1138,7 @@ var roomMetadata =
     "treetype": "32-1",
 	"blockedFromAboveBy": [
 	    ]},
-{"id": "la", "image": "label", "name": "room.label", "category": "category.utility", "prereq": null, "capacity": 0, "energy": 0, "maxnum": null, "floor": 0, "ceil": 0, "num": 0, "defaultLabel": "room.label",
+{"id": "la", "image": "label", "name": "room.label", "category": "category.utility", "prereq": null, "capacity": 0, "energy": 0, "decocap": 0, "time": 0, "maxnum": null, "floor": 0, "ceil": 0, "num": 0, "defaultLabel": "room.label",
 	"bounds": [
 		{"x1": -16, "y1": -16, "x2": 16, "y2": 16, "floor": 0, "ceil": 20, "ignore": true}],
 	"doors": [
@@ -1149,7 +1149,7 @@ var roomMetadata =
 	"resources": [],
 	"blockedFromAboveBy": []},
 
-{"id": "oh1", "image": "old-hall", "name": "room.old.clan.hall", "category": "category.discontinued", "discontinued": true, "spawn": true, "prereq": null, "capacity": 100, "energy": 5, "maxnum": null, "floor": -8, "ceil": 24,
+{"id": "oh1", "image": "old-hall", "name": "room.old.clan.hall", "category": "category.discontinued", "discontinued": true, "spawn": true, "prereq": null, "capacity": 100, "energy": 5, "decocap": 0, "time": 0, "maxnum": null, "floor": -8, "ceil": 24,
 	"bounds": [
 		{"x1": -18.25, "y1": -32.25, "x2": 18.25, "y2": 1.75, "floor": -8, "ceil": 24},
 		{"x1": -26, "y1": 1.75, "x2": 26, "y2": 32.25, "floor": -8, "ceil": 24}],
@@ -1160,7 +1160,7 @@ var roomMetadata =
     "treetype": "64-2",
 	"blockedFromAboveBy": [
 	    ]},
-{"id": "oh2", "image": "old-great-hall", "name": "room.old.clan.great.hall", "category": "category.discontinued", "discontinued": true, "spawn": true, "prereq": null, "capacity": 0, "energy": 0, "maxnum": null, "floor": -8, "ceil": 24,
+{"id": "oh2", "image": "old-great-hall", "name": "room.old.clan.great.hall", "category": "category.discontinued", "discontinued": true, "spawn": true, "prereq": null, "capacity": 0, "energy": 0, "decocap": 0, "time": 0, "maxnum": null, "floor": -8, "ceil": 24,
 	"bounds": [
 		{"x1": -35, "y1": -32, "x2": 35, "y2": 32, "floor": -8, "ceil": 24}],
 	"doors": [
@@ -1170,7 +1170,7 @@ var roomMetadata =
     "treetype": "64-2",
 	"blockedFromAboveBy": [
 	    ]},
-{"id": "occ", "image": "old-cross-connector", "name": "room.old.cross.connector", "category": "category.discontinued", "discontinued": true, "prereq": null, "capacity": 0, "energy": 0, "maxnum": null, "floor": -8, "ceil": 24,
+{"id": "occ", "image": "old-cross-connector", "name": "room.old.cross.connector", "category": "category.discontinued", "discontinued": true, "prereq": null, "capacity": 0, "energy": 0, "decocap": 0, "time": 0, "maxnum": null, "floor": -8, "ceil": 24,
 	"bounds": [
 		{"x1": -18.25, "y1": -18.25, "x2": 18.25, "y2": 18.25, "floor": -8, "ceil": 24}],
 	"doors": [
@@ -1182,7 +1182,7 @@ var roomMetadata =
     "treetype": "32-4",
 	"blockedFromAboveBy": [
 	    ]},
-{"id": "oct", "image": "old-t-connector", "name": "room.old.t.shaped.connector", "category": "category.discontinued", "discontinued": true, "prereq": null, "capacity": 0, "energy": 0, "maxnum": null, "floor": -8, "ceil": 24,
+{"id": "oct", "image": "old-t-connector", "name": "room.old.t.shaped.connector", "category": "category.discontinued", "discontinued": true, "prereq": null, "capacity": 0, "energy": 0, "decocap": 0, "time": 0, "maxnum": null, "floor": -8, "ceil": 24,
 	"bounds": [
 		{"x1": -8.25, "y1": -18.25, "x2": 18.25, "y2": 18.25, "floor": -8, "ceil": 24}],
 	"doors": [
@@ -1193,7 +1193,7 @@ var roomMetadata =
     "treetype": "32-3",
 	"blockedFromAboveBy": [
 	    ]},
-{"id": "osh", "image": "old-straight-hallway", "name": "room.old.straight.hallway", "category": "category.discontinued", "discontinued": true, "prereq": null, "capacity": 0, "energy": 0, "maxnum": null, "floor": -8, "ceil": 24,
+{"id": "osh", "image": "old-straight-hallway", "name": "room.old.straight.hallway", "category": "category.discontinued", "discontinued": true, "prereq": null, "capacity": 0, "energy": 0, "decocap": 0, "time": 0, "maxnum": null, "floor": -8, "ceil": 24,
 	"bounds": [
 		{"x1": -6, "y1": -6.25, "x2": 6, "y2": 6.25, "floor": -8, "ceil": 24}],
 	"doors": [
@@ -1203,7 +1203,7 @@ var roomMetadata =
     "treetype": "16-2",
 	"blockedFromAboveBy": [
 	    ]},
-{"id": "oce", "image": "old-elbow-connector", "name": "room.old.elbow.connector", "category": "category.discontinued", "discontinued": true, "prereq": null, "capacity": 0, "energy": 0, "maxnum": null, "floor": -8, "ceil": 24,
+{"id": "oce", "image": "old-elbow-connector", "name": "room.old.elbow.connector", "category": "category.discontinued", "discontinued": true, "prereq": null, "capacity": 0, "energy": 0, "decocap": 0, "time": 0, "maxnum": null, "floor": -8, "ceil": 24,
 	"bounds": [
 		{"x1": -8.25, "y1": -8.25, "x2": 18.25, "y2": 18.25, "floor": -8, "ceil": 24}],
 	"doors": [
@@ -1214,7 +1214,7 @@ var roomMetadata =
     "treetype": "32-2e",
 	"blockedFromAboveBy": [
 	    ]},
-{"id": "ore", "image": "old-reactor", "name": "room.old.reactor", "category": "category.discontinued", "discontinued": true, "prereq": null, "capacity": 0, "energy": 25, "maxnum": null, "floor": -8, "ceil": 24,
+{"id": "ore", "image": "old-reactor", "name": "room.old.reactor", "category": "category.discontinued", "discontinued": true, "prereq": null, "capacity": 0, "energy": 25, "decocap": 0, "time": 0, "maxnum": null, "floor": -8, "ceil": 24,
 	"bounds": [
 		{"x1": -10, "y1": -15, "x2": 10, "y2": 15, "floor": -8, "ceil": 24}],
 	"doors": [

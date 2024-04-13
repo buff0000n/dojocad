@@ -182,6 +182,7 @@
   "resource.hexenon": "Exenonhay",
   "resource.orokin.cell": "Orokinway Ellcay",
   "resource.plastids": "Astidsplay",
+  "resource.decocap": "Ecorationday Apacitycay",
   "room.cross.connector": "Osscray Onnectorcay",
   "room.straight.hallway": "Aightstray Allwayhay",
   "room.extended.straight.hallway": "Extendedway Aightstray Allwayhay",

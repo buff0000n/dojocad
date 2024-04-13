@@ -194,6 +194,7 @@
     "resource.hexenon": "Гексенон",
     "resource.orokin.cell": "Орокінський акумулятор",
     "resource.plastids": "Пластиди",
+    "resource.decocap": "Ємність для прикраси",
 
     "room.cross.connector": "Перехресний Коридор",
     "room.straight.hallway": "Прямий Коридор",

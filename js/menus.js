@@ -682,7 +682,7 @@ function buildAddRoomButton(roomMetadata, rooms = null, errors = null) {
 
     // show required resources
 	var tdresources = document.createElement("td")
-	if (roomMetadata.resources.length > 0) {
+	if (roomMetadata.resources.length > 0 || roomMetadata.decocap > 0) {
         tdresources.className = "field clickable";
         tdresources.innerHTML = `<img onclick="showResources()" src="icons/icon-resources.png" srcset="icons2x/icon-resources.png 2x" title="${i18n.str("main.page.alttext.showResourcesStat")}"/>`;
         var resourcesButton = tdresources.firstElementChild
@@ -974,10 +974,16 @@ function showResources() {
 	var resourcesButton = getMenuTarget();
 
     var metadata = resourcesButton.metadata;
+    var resources;
+    var decocap;
+
 	if (metadata) {
-	    resources = resourceCounter.getResourcesForRoomMetadata(resourcesButton.metadata);
+	    resources = resourceCounter.getResourcesForRoomMetadata(metadata);
+	    decocap = metadata.decocap;
+
 	} else {
     	resources = resourceCounter.getTotalResources();
+    	decocap = resourceCounter.getTotalDecoCap();
 	}
 
     var menuDiv = buildMenu();
@@ -999,6 +1005,13 @@ function showResources() {
 
             menuDiv.appendChild(tr);
         }
+    }
+
+    if (decocap > 0) {
+        menuDiv.appendChild(buildMenuDivider(6));
+        var tr = document.createElement("tr");
+        tr.innerHTML = `<td/><td>${i18n.str("resource.decocap")}</td><td>${decocap}</td><td/>`
+        menuDiv.appendChild(tr);
     }
 
     showMenuAt(menuDiv, e.clientX, e.clientY);

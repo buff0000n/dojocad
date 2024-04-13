@@ -194,6 +194,7 @@
     "resource.hexenon": "ヘキセノン",
     "resource.orokin.cell": "オロキンセル",
     "resource.plastids": "プラスチド",
+    "resource.decocap": "装飾容量",
 
     "room.cross.connector": "十字コネクタ-ー",
     "room.straight.hallway": "ストレートコネクター",

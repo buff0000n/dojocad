@@ -194,6 +194,7 @@
     "resource.hexenon": "헥세논",
     "resource.orokin.cell": "오로킨 셀",
     "resource.plastids": "플라스티드",
+    "resource.decocap": "장식 용량",
 
     "room.cross.connector": "십자형 연결 통로",
     "room.straight.hallway": "직선형 복도",

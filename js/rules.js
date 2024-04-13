@@ -423,6 +423,7 @@ class ResourceCounter extends RoomRule {
 	constructor() {
 		super();
 		this.resources = {};
+		this.decoCap = 0;
 		// start with the empty tier
 		this.tier = -1;
 		this.maxTier = 4;
@@ -471,6 +472,7 @@ class ResourceCounter extends RoomRule {
 	    var tier = this.getTier();
 
 	    this.addResources(this.resources, room.metadata);
+	    this.decoCap += room.metadata.decocap;
 	}
 
 	addResources(resourceMap, metadata) {
@@ -504,6 +506,7 @@ class ResourceCounter extends RoomRule {
                 this.resources[rr[i].resource][j] -= rr[i].costs[j];
             }
 	    }
+	    this.decoCap -= room.metadata.decocap;
 	}
 
 	getResourcesForRoomMetadata(metadata) {
@@ -533,6 +536,10 @@ class ResourceCounter extends RoomRule {
 	    }
 
 	    return costs;
+	}
+
+	getTotalDecoCap() {
+	    return this.decoCap;
 	}
 
 	toString() {

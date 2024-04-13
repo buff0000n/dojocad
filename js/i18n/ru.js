@@ -194,6 +194,7 @@
     "resource.hexenon": "Гексенон",
     "resource.orokin.cell": "Элемент питания Орокин",
     "resource.plastids": "Пластиды",
+    "resource.decocap": "декоративная способность",
 
     "room.cross.connector": "Перекресток",
     "room.straight.hallway": "Прямой Коридор",

@@ -194,6 +194,7 @@
     "resource.hexenon": "Hexeno",
     "resource.orokin.cell": "Célula Orokin",
     "resource.plastids": "Plastídeos",
+    "resource.decocap": "Capacidade de Decoração",
 
     "room.cross.connector": "Conector Cruzado",
     "room.straight.hallway": "Corredor Reto",

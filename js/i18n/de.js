@@ -194,6 +194,7 @@
     "resource.hexenon": "Hexenon",
     "resource.orokin.cell": "Orokin-Zelle",
     "resource.plastids": "Plastide",
+    "resource.decocap": "Dekorationskapazität",
 
     "room.cross.connector": "Kreuz-Verbindung",
     "room.straight.hallway": "Gerader Flur",

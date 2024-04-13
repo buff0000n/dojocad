@@ -194,6 +194,7 @@
     "resource.hexenon": "Hexenon",
     "resource.orokin.cell": "Orokin Hücresi",
     "resource.plastids": "Plastid",
+    "resource.decocap": "Dekorasyon Kapasitesi",
 
     "room.cross.connector": "Çapraz Bağlantı",
     "room.straight.hallway": "Düz Koridor",
