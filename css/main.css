@@ -155,7 +155,8 @@ html::-webkit-scrollbar, body::-webkit-scrollbar {
 }
 
 #helpEmbed {
-    width: 70ex;
+    /* set the help section width to either 70ex or 80% of the screen width, whichever is smaller */
+    width: min(70ex, 80vw);
     height: 100%;
 }
 
