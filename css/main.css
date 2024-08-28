@@ -669,7 +669,7 @@ td .menu-button {
     top: -16px;
 }
 
-.debugBounds, .debugOverlapBounds, .debugDoorBounds, .debugOverlapDoorBounds {
+.debugBounds, .debugOverlapBounds, .debugDoorBounds, .debugOverlapDoorBounds, .debugClickDoorBounds {
     position: absolute;
     border-style: solid;
     border-width: 1px;
@@ -687,6 +687,9 @@ td .menu-button {
 }
 .debugOverlapDoorBounds {
     border-color: #FFFF0080;
+}
+.debugClickDoorBounds {
+    border-color: #FF00FF80;
 }
 
 .matrix-table {

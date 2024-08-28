@@ -308,11 +308,14 @@ function downEvent(e) {
 
             } else {
                 mouseDownTarget = e.currentTarget;
-                mouseDownTarget.room.setClickPoint(mouseDownTargetStartPX, mouseDownTargetStartPY);
+                mouseDownTarget.room.setClickPoint(mouseDownTargetStartPX, mouseDownTargetStartPY, true);
                 // If a selected room was clicked then make sure all selected rooms have a click point
                 if (selectedRooms.includes(mouseDownTarget.room)) {
                     for (var r = 0; r < selectedRooms.length; r++) {
-                        selectedRooms[r].setClickPoint(mouseDownTargetStartPX, mouseDownTargetStartPY);
+                        // don't set the clickk point twice on the clicked room
+                        if (selectedRooms[r] != mouseDownTarget.room) {
+                            selectedRooms[r].setClickPoint(mouseDownTargetStartPX, mouseDownTargetStartPY, false);
+                        }
                     }
                 }
                 // clear the new room flag before we start dragging
@@ -337,8 +340,14 @@ function startNewRoomDrag(e, rooms, target) {
     selectRooms(rooms, false, false);
 
     // make sure all the new rooms have a click point
-    for (var r = 0; r < rooms.length; r++) {
-        rooms[r].setClickPoint(e.clientX, e.clientY);
+    if (rooms.length == 1) {
+        // if there's just a single room then enable a click door
+        rooms[0].setClickPoint(e.clientX, e.clientY, true);
+    } else {
+        // todo: for multiple rooms, figure out which room is actually under the cursor
+        for (var r = 0; r < rooms.length; r++) {
+            rooms[r].setClickPoint(e.clientX, e.clientY, false);
+        }
     }
 
     // set the new room flag before we start dragging

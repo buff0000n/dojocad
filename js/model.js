@@ -421,6 +421,9 @@ class Door {
         // looping flag
         this.looping = false;
 
+        // closest clicked door flag when dragging, this door will snap to any other door regardless of direction
+        this.isClickDoor = false;
+
         this.marker = null;
     }
 
@@ -444,8 +447,8 @@ class Door {
 	setDebug(debug) {
 		if (debug) {
 	        this.debugBorder = document.createElement("div");
-	        this.debugBorder.className = this.collisions.length ==  0 ? "debugDoorBounds" : "debugOverlapDoorBounds";
 			this.debugBorder.style.position = "absolute";
+			this.updateDebugBorder();
 			if (!this.otherDoor && viewFloor == this.floor) {
 				getRoomContainer().appendChild(this.debugBorder);
 			}
@@ -468,21 +471,22 @@ class Door {
 	    }
 	}
 
+	setIsClickDoor(newIsClickDoor) {
+	    this.isClickDoor = newIsClickDoor;
+        this.updateDebugBorder();
+	}
+
 	addCollision(otherDoor) {
 		if (addToListIfNotPresent(this.collisions, otherDoor)) {
 			otherDoor.addCollision(this);
-			if (this.debugBorder && this.collisions.length == 1) {
-				this.debugBorder.className = "debugOverlapDoorBounds";
-			}
+			this.updateDebugBorder();
 		}
 	}
 
 	removeCollision(otherDoor) {
 		if (removeFromList(this.collisions, otherDoor)) {
 			otherDoor.removeCollision(this);
-			if (this.debugBorder && this.collisions.length == 0) {
-				this.debugBorder.className = "debugDoorBounds";
-			}
+			this.updateDebugBorder();
 		}
 	}
 
@@ -490,6 +494,15 @@ class Door {
 		while (this.collisions.length > 0) {
 			this.removeCollision(this.collisions[this.collisions.length - 1]);
 		}
+	}
+
+	updateDebugBorder() {
+        if (this.debugBorder) {
+            this.debugBorder.className =
+                this.collisions.length == 1 ? "debugOverlapDoorBounds" :
+                this.isClickDoor ? "debugClickDoorBounds" :
+                "debugDoorBounds";
+        }
 	}
 
 	autoConnect() {
@@ -1101,6 +1114,7 @@ class Room {
 			}
         }
 
+        // todo: handle isClickDoor
 		// regenerate door collisions
 		// loop over the four possible angles
 		for (var a = 0; a < 4; a++) {
@@ -1420,8 +1434,12 @@ class Room {
         }
     }
 
-    setClickPoint(clickPX, clickPY) {
+    setClickPoint(clickPX, clickPY, isClickTarget = false) {
         this.clickP = new Vect(((clickPX - viewPX) / viewScale), ((clickPY - viewPY) / viewScale));
+        this.isClickTarget = isClickTarget;
+        if (!isClickTarget) {
+            console.log(this.id + ": " + this.isClickTarget);
+        }
     }
 
     disconnectAllDoors() {
@@ -1497,8 +1515,13 @@ class Room {
     setDragOffset(offsetMX, offsetMY, offsetRotation, commit = true) {
 		if (offsetMX != null && (offsetMX != 0 || offsetMY != 0) || (offsetRotation != null && offsetRotation != 0)) {
 			// We've actually been dragged.  Set the flag and disconnect doors.
-			this.dragging = true;
-			this.disconnectAllDoors();
+		    if (!this.dragging) {
+                this.dragging = true;
+                this.disconnectAllDoors();
+                if (this.isClickTarget) {
+                    this.setClickDoor();
+                }
+		    }
 		}
 
         // update display
@@ -1534,6 +1557,30 @@ class Room {
         this.mrotationOffset = null;
         // go through the normal method to reset everything else
         this.setDragOffset(0, 0, 0, true);
+    }
+
+    clearClickDoor() {
+        if (this.clickDoor) {
+            this.clickDoor.setIsClickDoor(false);
+            this.clickDoor = null;
+        }
+    }
+
+    setClickDoor() {
+        this.clearClickDoor();
+        var clickDoorDist = null;
+        for (var d = 0; d < this.doors.length; d++) {
+            // todo: filter connected doors?
+            var door = this.doors[d];
+            var doorDist = door.mv.distanceSquared(this.clickP);
+            if (this.clickDoor == null || doorDist < clickDoorDist) {
+                this.clickDoor = door;
+                clickDoorDist = doorDist;
+            }
+        }
+        if (this.clickDoor) {
+            this.clickDoor.setIsClickDoor(true);
+        }
     }
 
     // get the closest door pair to smap together, if there is one
@@ -1604,6 +1651,8 @@ class Room {
         } else {
             this.reconnectAllDoors();
         }
+
+        this.clearClickDoor();
 
 		// dragging is finished.
         this.dragging = false;
