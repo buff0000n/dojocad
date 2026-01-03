@@ -1162,7 +1162,8 @@ var roomMetadata =
 	    ]},
 {"id": "oh2", "image": "old-great-hall", "name": "room.old.clan.great.hall", "category": "category.discontinued", "discontinued": true, "spawn": true, "prereq": null, "capacity": 0, "energy": 0, "decocap": 0, "time": 0, "maxnum": null, "floor": -8, "ceil": 24,
 	"bounds": [
-		{"x1": -35, "y1": -32, "x2": 35, "y2": 32, "floor": -8, "ceil": 24}],
+		{"x1": -24, "y1": -32, "x2": 24, "y2": 32, "floor": -8, "ceil": 24},
+		{"x1": -35, "y1": -24, "x2": 35, "y2": 24, "floor": -8, "ceil": 24}],
 	"doors": [
 		{"x": 0, "y": 32, "floor": 0, "outx": 0, "outy": 1},
 		{"x": 0, "y": -32, "floor": 0, "outx": 0, "outy": -1}],
