@@ -242,7 +242,8 @@ function wheel(e) {
     var deltaY = e.deltaY;
 
 	// Firefox actually uses "lines" mode instead of "pixels" mode.
-    if (e.deltaMode == 1) {
+	// also account for mouse wheels somehow sending whole page deltas
+    if (e.deltaMode == 1 || e.deltaMode == 2) {
 		// Just make it similar to what Chrome puts out, because I'm not spinning up an iFrame with no CSS just to
 		// measure the system default line size.
 		deltaY *= 33;
