@@ -248,12 +248,17 @@ function wheel(e) {
 		// measure the system default line size.
 		deltaY *= 33;
     }
+    // okay, fine, just put a ceiling on the zoom amount
+    if (deltaY > 100) deltaY = 100;
+    else if (deltaY < -100) deltaY = -100;
 
-	var factor = Math.pow(2, -deltaY / wheel2xZoomScale)
+    doEventZoom(e.clientX, e.clientY, deltaY);
+}
 
+function doEventZoom(clientX, clientY, delta) {
+	var factor = Math.pow(2, - delta/ wheel2xZoomScale);
     clearMenus(0);
-
-	zoom(e.clientX, e.clientY, factor);
+	zoom(clientX, clientY, factor);
 }
 
 //==============================================================
@@ -841,7 +846,7 @@ function cancelRoomDrag() {
 	    // no mor doors
         hideDoorMarkers();
 
-        // unregister grad listeners
+        // unregister drag listeners
 	    document.onmouseup = null;
 	    document.onmousemove = null;
 	    document.ontouchend = null;
@@ -1104,6 +1109,27 @@ function keyDown(e) {
 				    e.preventDefault();
 				}
             }
+		    break;
+		// both plus keys zoom in
+		// (shift-equals is plus, just allow without the shift, too)
+        case 'Equal' :
+        case 'NumpadAdd' :
+            // todo: use the last mouse event to get the zoom center
+            // is what I'd like to do, but we only keep the last mouse event when a click or drag is taking place
+            // doEventZoom(lastMTEvent.clientX, lastMTEvent.clientY, 100);
+            // For now, just zoom into the center of the screen
+            doEventZoom(window.innerWidth / 2, window.innerHeight / 2, -100);
+            e.preventDefault();
+		    break;
+        // both minus keys zoom out
+        case 'Minus' :
+        case 'NumpadSubtract' :
+            // todo: use the last mouse event to get the zoom center
+            // is what I'd like to do, but we only keep the last mouse event when a click or drag is taking place
+            // doEventZoom(lastMTEvent.clientX, lastMTEvent.clientY, -100);
+            // For now, just zoom out from the center of the screen
+            doEventZoom(window.innerWidth / 2, window.innerHeight / 2, 100);
+            e.preventDefault();
 		    break;
 	}
 }
