@@ -165,6 +165,8 @@
     "action.door.state": "{0} 與 {1} 之間閘的狀態變化",
     "action.hue": "更改 {0} 上的色調",
     "action.label": "更改 {0} 上的標籤",
+    "action.new": "新版面配置",
+    "action.load": "載入佈局",
 
     "misc.not.implemented": "未實施",
     "misc.invalid": "無效",

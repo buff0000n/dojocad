@@ -165,6 +165,8 @@
     "action.door.state": "{0} ile {1} arasında kapı(lar)da durum değişikliği",
     "action.hue": "{0} üzerinde renk tonunu değiştir",
     "action.label": "{0} üzerindeki etiketi değiştir",
+    "action.new": "Yeni Düzen",
+    "action.load": "Düzen Yükle",
 
     "misc.not.implemented": "Uygulanmadı",
     "misc.invalid": "Geçersiz",

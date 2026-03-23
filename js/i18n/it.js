@@ -165,6 +165,8 @@
     "action.door.state": "Cambio di stato sulle porte tra {0} e {1}",
     "action.hue": "Cambia tonalità su {0}",
     "action.label": "Cambia etichetta su {0}",
+    "action.new": "Nuovo layout",
+    "action.load": "Carica layout",
 
     "misc.not.implemented": "Non implementato",
     "misc.invalid": "Non valido",

@@ -165,6 +165,8 @@
     "action.door.state": "Zustandsänderung an Tür(en) zwischen {0} und {1}",
     "action.hue": "Farbton auf {0} ändern",
     "action.label": "Label für {0} ändern",
+    "action.new": "Neues Layout",
+    "action.load": "Layout laden",
 
     "misc.not.implemented": "Nicht implementiert",
     "misc.invalid": "Ungültig",

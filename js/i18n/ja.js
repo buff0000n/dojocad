@@ -165,6 +165,8 @@
     "action.door.state": "{0} と {1} の間のドアの状態変化",
     "action.hue": "{0} の色相を変更します",
     "action.label": "{0} のラベルを変更します",
+    "action.new": "新しいレイアウト",
+    "action.load": "レイアウトを読み込む",
 
     "misc.not.implemented": "実装されていません",
     "misc.invalid": "無効です",
