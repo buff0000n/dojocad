@@ -821,32 +821,72 @@ function saveModelToUrl() {
 	}
 }
 
-function reLoadModelFromUrl(url) {
-    // HACK, just select and delete all rooms
-    selectAllRoomsLikeReallyAllOfThem();
-    deleteSelectedRooms();
+function reLoadModelFromUrl(url, label, undoable = true) {
+    // do it through an action
+    var action = new ReLoadModelFromUrlAction(getHref(),  url, label);
+    action.redoAction();
 
-    // clear errors/warnings, just in case some of them are lingering
-    // because we changed the language
-    clearNonCollisionWarnings();
+    // add to the undo stack if it should be undoable
+	if (undoable) {
+	    addUndoAction(action);
+	}
+}
 
-    preset = getQueryParam(url, "preset")
-
-    if (preset) {
-        url = Presets[preset];
+class ReLoadModelFromUrlAction extends Action {
+    constructor(fromUrl, toUrl, label) {
+        super();
+        this.fromUrl = fromUrl;
+        this.toUrl = toUrl;
+        this.label = label;
     }
 
-    // load the model and view directly from the href
-    loadModelFromUrl(url);
-    loadViewFromUrl(url);
+	undoAction() {
+	    this.doAction(this.fromUrl);
+	}
 
-    // HACK, select everything again and de-select to clear out some glitches
-    selectAllRoomsLikeReallyAllOfThem();
-    selectRooms([]);
+	redoAction() {
+	    this.doAction(this.toUrl);
+	}
 
-    // update the URL and tree
-    saveModelToUrl();
-    treeUpdated();
+	doAction(url) {
+        // start an undo combo because some of these function calls will add undo actions
+        // we don't want to confuse things, so collect those other undo actions and then discard them at the end
+        // this one undo action will take care of everything
+        startUndoCombo();
+
+        // HACK, just select and delete all rooms
+        selectAllRoomsLikeReallyAllOfThem();
+        deleteSelectedRooms();
+
+        // clear errors/warnings, just in case some of them are lingering
+        // because we changed the language
+        clearNonCollisionWarnings();
+
+        // check for preset URL
+        preset = getQueryParam(url, "preset")
+        if (preset) {
+            url = Presets[preset];
+        }
+
+        // load the model and view directly from the href
+        loadModelFromUrl(url);
+        loadViewFromUrl(url);
+
+        // HACK, select everything again and de-select to clear out some glitches
+        selectAllRoomsLikeReallyAllOfThem();
+        selectRooms([]);
+
+        // update the URL and tree
+        saveModelToUrl();
+        treeUpdated();
+
+        // discard the other undo actions
+        discardUndoCombo();
+	}
+
+	toString() {
+		return this.label;
+	}
 }
 
 function fixCompressedString(string) {

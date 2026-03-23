@@ -170,7 +170,8 @@ var i18n = (function() {
             // need to refresh
             doSetFloor(0);
             // reload the model from the current URL
-            reLoadModelFromUrl(getHref());
+            // don't add an undo action for this
+            reLoadModelFromUrl(getHref(), null, false);
         }
     }
 

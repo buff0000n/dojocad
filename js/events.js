@@ -2,8 +2,6 @@
 // wrapper for handling both mouse and touch events
 //==============================================================
 
-var lastMTEvent = null;
-
 class MTEvent {
 	constructor(isTouch, currentTarget, clientX, clientY, altKey, shiftKey, ctrlKey) {
 		this.isTouch = isTouch;
@@ -16,6 +14,9 @@ class MTEvent {
 		lastMTEvent = this;
 	}
 }
+
+// initialize with *something*
+var lastMTEvent = new MTEvent(false, null, document.documentElement.clientWidth / 2, document.documentElement.clientHeight / 2, false, false, false);
 
 //==============================================================
 // Touch event wrapper layer

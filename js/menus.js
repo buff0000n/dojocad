@@ -196,7 +196,7 @@ function buildMenuInfo(label, icon = null, className = "menu-line") {
     return buildMenuRow(icon, label, labelDiv);
 }
 
-function buildLinkMenuButton(label, link, icon = null, error = false) {
+function buildLinkMenuButton(label, link, icon = null, error = false, onclick = null) {
     var tr = document.createElement("tr");
 
 	if (icon) {
@@ -205,6 +205,10 @@ function buildLinkMenuButton(label, link, icon = null, error = false) {
 		iconTd.innerHTML = `<a class="imgButton" href="${link}"><img src="icons/${icon}.png" srcset="icons2x/${icon}.png 2x" title="${label}"/></a>`;
         iconTd.menuLevel = getCurrentMenuLevel() + 1;
 	    tr.appendChild(iconTd);
+
+	    if (onclick) {
+	        iconTd.children[0].addEventListener("click", onclick);
+	    }
 	}
 
     var buttonDiv = document.createElement("td");
@@ -212,6 +216,10 @@ function buildLinkMenuButton(label, link, icon = null, error = false) {
     buttonDiv.innerHTML = `<a class="link-button" href="${link}">${label}</a>`;
     buttonDiv.menuLevel = getCurrentMenuLevel() + 1;
     tr.appendChild(buttonDiv);
+
+    if (onclick) {
+        buttonDiv.children[0].addEventListener("click", onclick);
+    }
 
     return tr;
 }
@@ -453,7 +461,7 @@ function doBurgerMenu() {
 	menuDiv.appendChild(buildMenuHeaderLine("Menu", 3));
 
     // need to explicitly pass in the layout for a new dojo now that we can autoload from autosave
-    menuDiv.appendChild(buildLinkMenuButton(i18n.str("menu.new"), "./?preset=new", "icon-new"));
+    menuDiv.appendChild(buildLinkMenuButton(i18n.str("menu.new"), "./?preset=new", "icon-new", false, newLinkClicked));
 
     menuDiv.appendChild(buildMenuButton(i18n.str("menu.local.storage"), doStorageMenu, "icon-save"));
 
@@ -1681,9 +1689,25 @@ function buildStorageListingLine(entry, menuDiv) {
     return tr;
 }
 
+function newLinkClicked(e) {
+    directLinkClicked(e, i18n.str("action.new"));
+}
+
 function storageLinkClicked(e) {
-    directLoadLink(e);
+    directLinkClicked(e, i18n.str("action.load"));
+}
+
+function directLinkClicked(e, label) {
+    // prevent normal handling of a link being clicked
+    e.preventDefault();
+    // load the link href
+    var url = e.currentTarget.href;
+    // reload from the URL, adding an undo action
+    reLoadModelFromUrl(url, label, true);
+    // clear the menus
     clearMenus();
+    // for good measure
+    return false;
 }
 
 function rebuildStorageListing(menuDiv) {

@@ -73,7 +73,7 @@ function startUndoCombo() {
 }
 
 function endUndoCombo(description=null) {
-    var undoList = undoCombos.pop()
+    var undoList = undoCombos.pop();
     var action = null;
     if (undoList.length >1) {
         action = new CompositeAction(undoList, description);
@@ -83,12 +83,12 @@ function endUndoCombo(description=null) {
     }
 
     if (action) {
-        if (undoCombos.length > 0) {
-            undoCombos.push(action);
-        } else {
-            addUndoAction(action)
-        }
+        addUndoAction(action)
     }
+}
+
+function discardUndoCombo() {
+    undoCombos.pop();
 }
 
 function endAllUndoCombos() {
