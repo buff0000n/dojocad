@@ -165,6 +165,8 @@
     "action.door.state": "Zmiana stanu drzwi pomiędzy {0} a {1}",
     "action.hue": "Zmień odcień na {0}",
     "action.label": "Zmień etykietę na {0}",
+    "action.new": "Nowy układ",
+    "action.load": "Wczytaj układ",
 
     "misc.not.implemented": "Nie zaimplementowano",
     "misc.invalid": "Nieprawidłowy",

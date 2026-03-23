@@ -165,6 +165,8 @@
     "action.door.state": "Changement d'état sur la ou les portes entre {0} et {1}",
     "action.hue": "Changer la teinte de {0}",
     "action.label": "Changer l'annotation de {0}",
+    "action.new": "Nouveau plan",
+    "action.load": "Charger un plan",
 
     "misc.not.implemented": "Non implémenté",
     "misc.invalid": "Invalide",

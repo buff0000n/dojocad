@@ -165,6 +165,8 @@
     "action.door.state": "Mudança de estado na(s) porta(s) entre {0} e {1}",
     "action.hue": "Alterar matiz em {0}",
     "action.label": "Alterar rótulo em {0}",
+    "action.new": "Novo Layout",
+    "action.load": "Carregar Layout",
 
     "misc.not.implemented": "Não implementado",
     "misc.invalid": "Inválido",

@@ -165,6 +165,8 @@
     "action.door.state": "Зміна стану дверей(ів) між {0} і {1}",
     "action.hue": "Змінити відтінок на {0}",
     "action.label": "Змінити мітку на {0}",
+    "action.new": "Новий макет",
+    "action.load": "Завантажити макет",
 
     "misc.not.implemented": "Не реалізовано",
     "misc.invalid": "Недійсний",

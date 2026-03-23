@@ -165,6 +165,8 @@
     "action.door.state": "{0} 和 {1} 之间门的状态变化",
     "action.hue": "更改 {0} 上的色调",
     "action.label": "更改 {0} 上的标签",
+    "action.new": "新建布局",
+    "action.load": "加载布局",
 
     "misc.not.implemented": "未实施",
     "misc.invalid": "无效",

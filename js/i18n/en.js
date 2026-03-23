@@ -165,6 +165,8 @@
     "action.door.state": "State change on door(s) between {0} and {1}",
     "action.hue": "Change hue on {0}",
     "action.label": "Change label on {0}",
+    "action.new": "New Layout",
+    "action.load": "Load Layout",
 
     "misc.not.implemented": "Not implemented",
     "misc.invalid": "Invalid",

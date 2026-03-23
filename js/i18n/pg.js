@@ -156,6 +156,8 @@
   "action.door.state": "Atestay angechay onway oorday(sway) etweenbay {0} andway {1}",
   "action.hue": "Angechay uehay onway {0}",
   "action.label": "Angechay abellay onway {0}",
+  "action.new": "Ewnay AyoutLay",
+  "action.load": "OadLay AyoutLay",
   "misc.not.implemented": "Otnay implementedway",
   "misc.invalid": "Invalidway",
   "misc.debug.on": "Ebugday onway",

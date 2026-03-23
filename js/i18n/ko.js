@@ -165,6 +165,8 @@
     "action.door.state": "{0}과(와) {1} 사이의 문 상태 변경",
     "action.hue": "{0}의 색상 변경",
     "action.label": "{0}의 라벨 변경",
+    "action.new": "새 레이아웃",
+    "action.load": "레이아웃 불러오기",
 
     "misc.not.implemented": "구현되지 않음",
     "misc.invalid": "잘못됨",
