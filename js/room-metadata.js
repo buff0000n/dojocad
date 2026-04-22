@@ -470,7 +470,7 @@ var roomMetadata =
 
 {"id": "or", "image": "oracle2", "name": "room.oracle", "category": "category.labs", "prereq": null, "capacity": -2, "energy": -5, "decocap": 300, "time": 24, "maxnum": null, "floor": -8, "ceil": 12, "xp": 10000,
 	"bounds": [
-		{"x1": -14, "y1": -14, "x2": 14, "y2": 15, "floor": -8, "ceil": 12}],
+		{"x1": -14, "y1": -14, "x2": 14, "y2": 15, "floor": -16, "ceil": 12}],
 	"doors": [
 		{"x": 0, "y": 15, "floor": 0, "outx": 0, "outy": 1}],
 	"resources": [
@@ -599,11 +599,11 @@ var roomMetadata =
 
 {"id": "dd", "image": "dry-dock", "name": "room.dry.dock", "category": "category.interactive", "prereq": null, "capacity": -20, "energy": -6, "decocap": 400, "time": 24, "maxnum": 1, "floor": -80, "ceil": 200,
 	"bounds": [
-//		{"x1": -128, "y1":  -128, "x2": 128, "y2":  128, "floor": -80, "ceil": 200},
-		{"x1": -127.5, "y1":  -128,   "x2": 127.5, "y2":  127.5, "floor": -80,  "ceil": 200},
-		{"x1": -128,   "y1":   -16,   "x2": 128,   "y2":   16,   "floor":  0,   "ceil": 32},
-		{"x1":  -16,   "y1":   128,   "x2":  16,   "y2":   96,   "floor":  0,   "ceil": 32},
-		{"x1": -127.5, "y1": -1279.5, "x2": 127.5, "y2":  -95.5, "floor": -200, "ceil": 200, "invis": "true"}],
+		{"x1": -127.5, "y1":  -128,   "x2": 127.5, "y2":  127.5, "floor":  -80, "ceil":  200}, // main area, slightly less than full width and depth
+		{"x1": -128,   "y1":   -16,   "x2": 128,   "y2":   16,   "floor":    0, "ceil":   32}, // full width around the side doors
+		{"x1":  -16,   "y1":   128,   "x2":  16,   "y2":   96,   "floor":    0, "ceil":   32}, // full depth around the middle door
+		{"x1":  -32,   "y1":   -96,   "x2":  32,   "y2":  -35,   "floor": -200, "ceil": -144}, // sky box under the main area, outside the open space area
+		{"x1": -127.5, "y1": -1279.5, "x2": 127.5, "y2":  -95.5, "floor": -200, "ceil":  200, "invis": "true"}], // open space area
 	"doors": [
 		{"x": 0, "y": 128, "floor": 0, "outx": 0, "outy": 1},
 		{"x": 128, "y": 0, "floor": 0, "outx": 1, "outy": 0},
