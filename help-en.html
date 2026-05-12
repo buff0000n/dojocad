@@ -1,4 +1,4 @@
-<html>
+<html xmlns="http://www.w3.org/1999/html">
 <head></head>
 <link rel="stylesheet" type="text/css" href="css/main.css"/>
 <link rel="stylesheet" type="text/css" href="css/slider.css"/>
@@ -14,7 +14,7 @@
         <p style="text-align: center;">
             <span class="title">DojoCAD</span>
             <br/>
-            v3.1.6: 2026-04-22
+            v3.2.0: 2026-05-12
             <br/>
             <a target="_blank" href="https://github.com/buff0000n/dojoarch">Source</a>
             &bull;
@@ -139,7 +139,16 @@
                             <li><a href="#SelectAll">Select All</a></li>
                         </ul>
                     </li>
-                    <li><a href="#AddingARoom">Adding Rooms</a></li>
+                    <li>
+                        <a href="#AddingARoom">Adding Rooms</a>
+                        <ul>
+                            <li><a href="#AddingARoomCats">By Category</a></li>
+                            <li><a href="#AddingARoomSearch">By Search</a></li>
+                            <li><a href="#AddingARoomOther">Duplicating</a></li>
+                            <li><a href="#AddingARoomCanceling">Canceling</a></li>
+                            
+                        </ul>
+                    </li>
                     <li><a href="#MovingARoom">Moving Rooms</a></li>
                     <li><a href="#RotatingARoom">Rotating Rooms</a></li>
                     <li><a href="#ChangingARoomsFloor">Changing an Elevator's Floor</a></li>
@@ -389,10 +398,23 @@
         <h2 id="AddingARoom">Adding Rooms</h2>
         <p>
             Click the <span class="docImgButton"><img src="icons/icon-add.png" srcset="icons2x/icon-add.png 2x" title="Add Room"/></span>
-            button to show a menu of room categories.  Click one of these categories to show a menu of rooms.
-            Click one of those rooms to add one under your cursor.  Drag and drop the room to where you want to
-            place it.
+            button to show a menu of room categories.
         </p>
+
+        <h3 id="AddingARoomCats">By Category</h3>
+        <p>
+            Click one of the categories in the 
+            <span class="docImgButton"><img src="icons/icon-add.png" srcset="icons2x/icon-add.png 2x" title="Add Room"/></span>
+            menu to show a menu of rooms. Click one of those rooms to add one under your cursor.  Drag and drop the 
+            room to where you want to place it.
+        </p>
+        <h3 id="AddingARoomSearch">By Search</h3>
+        <p>
+            You can also use the <span class="docImgButton"><img src="icons/icon-search.png" srcset="icons2x/icon-search.png 2x" title="Search"/></span>
+            search bar at the top of the <span class="docImgButton"><img src="icons/icon-add.png" srcset="icons2x/icon-add.png 2x" title="Add Room"/></span>
+            menu to search for a room by name.
+        </p>
+        <h3 id="AddingARoomOther">Duplicating</h3>
         <p>
             If you have already added a room once, then the
             <span class="docImgButton"><img src="icons/icon-add.png" srcset="icons2x/icon-add.png 2x" title="Add Room"/></span>
@@ -403,9 +425,10 @@
             <span class="docButton">Duplicate</span> to create a copy of the room or rooms to place somewhere else.
         </p>
         <p>
-            Hitting the <strong>D</strong> key when a room or rooms are selected will duplicate the without having
-            to bring up the menu.
+            Hitting the <strong>D</strong> key when a room or rooms are selected will duplicate the room or rooms
+            without having to bring up the menu.
         </p>
+        <h3 id="AddingARoomCanceling">Canceling</h3>
         <p>
             Hitting <strong>Escape</strong> while dragging a newly created room or rooms for the first time will
             cancel the add operation and remove the room or rooms.
@@ -1629,6 +1652,10 @@
                 instead of doing a page reload (thanks <strong>Naviture</strong>)</li>
             <li>Added extra bounding box under the Dry Dock, where the sky box is (thanks <strong>Ervin53</strong>, also sorry)</li>
         </ul>
+        <h3 id="UpdateNotes3.2">v3.2: 2025-05-12</h3>
+        <ul>
+            <li>Added a search bar to the Add Rooms menu because clicking around in the menu was annoying me</li>
+        </ul>
 
         <h2 id="#TranslationHelp">Translation Help</h2>
         <p>Thanks:</p>
@@ -1644,9 +1671,6 @@
 
         <h1 id="ToDo">To Do</h1>
         <ul>
-            <li>
-                Search function for the Add Room menu
-            </li>
             <li>
                 Smaller, binary layout format for links
             </li>
@@ -1664,7 +1688,6 @@
             <li>
                 More metadata
                 <ul>
-                    <li>Maybe find some place to cram in decoration capacity</li>
                     <li>Maybe think about possibly considering throwing clan research data in here in some way perhaps</li>
                 </ul>
             </li>
@@ -1716,10 +1739,6 @@
             </li>
             <li>
                 You can't click anywhere on the color slider to select a color, you have to drag the button.
-            </li>
-            <li>
-                The Local Storage listing doesn't have a scrollbar, so you can add more entries than the screen can
-                contain.
             </li>
             <li>
                 There's some rare bug with connecting rooms where it doesn't register that it's connected, but I

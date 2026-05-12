@@ -95,6 +95,7 @@
     "menu.local.storage.save": "Enregistrer sur le stockage local",
     "menu.name": "Nom",
     "menu.label.and.count": "{0} ({1})",
+    "menu.search": "Recherche",
 
     "menu.door": "Porte",
     "menu.door.looping": "Porte dans une boucle",

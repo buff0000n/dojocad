@@ -93,6 +93,7 @@
   "menu.local.storage.save": "Avesay otay Ocallay Oragestay",
   "menu.name": "Amenay",
   "menu.label.and.count": "{0} ({1})",
+  "menu.search": "Earchsay",
   "menu.door": "Oorday",
   "menu.door.looping": "Oopinglay Oorday",
   "menu.door.cross.branch": "Osscray Anchbray Oorday",

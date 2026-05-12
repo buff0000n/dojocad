@@ -95,6 +95,7 @@
     "menu.local.storage.save": "Save to Local Storage",
     "menu.name": "Name",
     "menu.label.and.count": "{0} ({1})",
+    "menu.search": "Search",
 
     "menu.door": "Door",
     "menu.door.looping": "Looping Door",

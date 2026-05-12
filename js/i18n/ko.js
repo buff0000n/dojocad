@@ -95,6 +95,7 @@
     "menu.local.storage.save": "로컬 저장소에 저장",
     "menu.name": "이름",
     "menu.label.and.count": "{0} ({1})",
+    "menu.search": "찾다",
 
     "menu.door": "문",
     "menu.door.looping": "루프되는 문",

@@ -95,6 +95,7 @@
     "menu.local.storage.save": "ローカル ストレージに保存",
     "menu.name": "名前",
     "menu.label.and.count": "{0} ({1})",
+    "menu.search": "検索",
 
     "menu.door": "ドア",
     "menu.door.looping": "ループドア",

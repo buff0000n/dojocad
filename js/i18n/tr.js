@@ -95,6 +95,7 @@
     "menu.local.storage.save": "Yerel Depolamaya Kaydet",
     "menu.name": "Ad",
     "menu.label.and.count": "{0} ({1})",
+    "menu.search": "Aramak",
 
     "menu.door": "Kapı",
     "menu.door.looping": "Döngü Kapı",

@@ -112,6 +112,8 @@ function buildBlank(colSpan = 1) {
 
 function buildIconCell(icon, alttext) {
     var iconTd = document.createElement("td");
+    // hack so the icon column doesn't expand
+    iconTd.style.width = "0%";
 	if (icon) {
 		iconTd.innerHTML = `<img src="icons/${icon}.png" srcset="icons2x/${icon}.png 2x" title="${alttext}"/>`;
 	}
@@ -121,9 +123,9 @@ function buildIconCell(icon, alttext) {
 
 function buildMenuHeaderLine(title, colSpan, icon = null, className = "menu-button") {
 	var tr = document.createElement("tr");
-    tr.appendChild(buildIconCell(icon, title));
-	tr.appendChild(buildMenuLabel(title, colSpan - 2));
 	tr.appendChild(buildCloseMenuButton());
+    // tr.appendChild(buildIconCell(icon, title));
+	tr.appendChild(buildMenuLabel(title, colSpan - 1));
     return tr;
 }
 
@@ -136,7 +138,7 @@ function buildCloseMenuButton() {
     // todo: there are some weird cases where the right hand column is wider than
     // the icon for no apparent reason, just right-justify the button so it
     // doesn't look dumb
-    buttonDiv.style = "text-align: right";
+    buttonDiv.style = "text-align: left; width: 0%";
 //    buttonDiv.className = "field";
     buttonDiv.innerHTML = `<img class="imgButton closeMenuButton" src="icons/icon-close.png" srcset="icons2x/icon-close.png 2x" title="${i18n.str("menu.close")}"}"/>`;
     buttonDiv.onclick = doCloseMenu;
@@ -295,7 +297,7 @@ function getMenuTarget() {
     return element;
 }
 
-function showMenuAt(menuDiv, left, top) {
+function showMenuAt(menuDiv, left, top, forceScrollBars=false) {
     if (menuDiv.nodeName != "DIV") {
         var container = document.createElement("div");
         container.className = "menu-container";
@@ -330,7 +332,7 @@ function showMenuAt(menuDiv, left, top) {
     // set a click  handled on the top-level element
     menuDiv.onclick = menuDivClick;
 
-	setTimeout(function() { menuPlacementHack1(menuDiv) }, 100);
+	setTimeout(function() { menuPlacementHack1(menuDiv, forceScrollBars) }, 100);
 
    // HACK: get the last event
    var e = window.event;
@@ -348,36 +350,10 @@ function menuDivClick(e) {
     }
 }
 
-//function menuPlacementHack1(menuDiv) {
-//    var bcr = menuDiv.getBoundingClientRect();
-//    // pulled from events.js
-////	var windowWidth;
-////	var windowHeight;
-//
-//    if (bcr.right > windowWidth) {
-//        menuDiv.style.left = "";
-//        menuDiv.style.right = "0px";
-//    }
-//
-//	setTimeout(function() { menuPlacementHack2(menuDiv) }, 100);
-//}
-//
-//function menuPlacementHack2(menuDiv) {
-//    var bcr = menuDiv.getBoundingClientRect();
-//    // pulled from events.js
-////	var windowWidth;
-////	var windowHeight;
-//
-//    if (bcr.bottom > windowHeight) {
-//        menuDiv.style.top = "";
-//        menuDiv.style.bottom = "0px";
-//    }
-//}
-
 // arbitrary margin between the window border and the menu container
 var placementMargin = 10;
 
-function menuPlacementHack1(menuDiv) {
+function menuPlacementHack1(menuDiv, forceScrollBars) {
     // we're gong to need the scroll status of the main document
     var se = document.scrollingElement;
 
@@ -421,16 +397,17 @@ function menuPlacementHack1(menuDiv) {
     }
 
     // check if we have to make changes
-    if (mTop != bcr.top || mLeft != bcr.left || mHeight != bcr.height || mWidth != bcr.width) {
+    if (forceScrollBars || (mTop != bcr.top || mLeft != bcr.left || mHeight != bcr.height || mWidth != bcr.width)) {
         //console.log(`Moved menu from ${bcr.left + se.scrollLeft}, ${bcr.top + se.scrollTop} (${bcr.width} x ${bcr.height}) to ${mLeft}, ${mTop} (${mWidth} x ${mHeight})`);
         // apply position changes
         menuDiv.style.top = mTop + "px";
         menuDiv.style.left = mLeft + "px";
         menuDiv.style.height = mHeight + "px";
-        menuDiv.style.width = mWidth + "px";
+        menuDiv.style.width = (mWidth + (forceScrollBars ? getScrollBarWidth() : 0)) + "px";
         // If we're reducing the dimensions of the element, add scrollbars
-        if (mHeight < bcr.height || mWidth < bcr.width) {
+        if (forceScrollBars || (mHeight < bcr.height || mWidth < bcr.width)) {
             menuDiv.style.overflow = "auto";
+            console.log("FORCE");
         }
     }
 }
@@ -448,10 +425,46 @@ function getMenuCoordsFromElement(element, fullWidth = false) {
 	return [left, top];
 }
 
-function showMenu(menuDiv, element, fullWidth = false) {
+function showMenu(menuDiv, element, fullWidth = false, forceScrollBars = false) {
     var [left, top] = getMenuCoordsFromElement(element, fullWidth)
-	showMenuAt(menuDiv, left, top);
+	showMenuAt(menuDiv, left, top, forceScrollBars);
 }
+
+var scrollBarWidth = null;
+function getScrollBarWidth () {
+    // I can't believe this works or how hard this is
+    // Source - https://stackoverflow.com/a/986977
+    if (scrollBarWidth != null) return scrollBarWidth;
+
+    var inner = document.createElement('p');
+    inner.style.width = "100%";
+    inner.style.height = "200px";
+
+    var outer = document.createElement('div');
+    outer.style.position = "absolute";
+    outer.style.top = "0px";
+    outer.style.left = "0px";
+    outer.style.visibility = "hidden";
+    outer.style.width = "200px";
+    outer.style.height = "150px";
+    outer.style.overflow = "hidden";
+    outer.appendChild (inner);
+
+    document.body.appendChild (outer);
+    var w1 = inner.offsetWidth;
+    outer.style.overflow = 'scroll';
+    var w2 = inner.offsetWidth;
+    if (w1 == w2) w2 = outer.clientWidth;
+
+    document.body.removeChild (outer);
+
+    scrollBarWidth = (w1 - w2);
+    return scrollBarWidth;
+};
+
+//==============================================================
+// app menus
+//==============================================================
 
 function doBurgerMenu() {
 	var element = getMenuTarget();
@@ -485,39 +498,183 @@ function doBurgerMenu() {
     showMenu(menuDiv, element);
 }
 
+function buildTextBoxLine(alt, id, colSpan, icon = null, className = "menu-button") {
+	var tr = document.createElement("tr");
+    tr.appendChild(buildIconCell(icon, alt));
+	tr.appendChild(buildMenuLabel(`<input type="text" size="30" id="${id}"/>`, colSpan - 1));
+    return tr;
+}
+
 function doAddMenu() {
 	var element = getMenuTarget();
 
     var rmd = getRoomMenuData();
     var menuDiv = buildMenu();
+    // hack so the main room menu popup has enough room for the search to work
+    menuDiv.style.width="400px";
+    menuDiv.style.maxHeight="600px";
 
+    // main menu header
 	menuDiv.appendChild(buildMenuHeaderLine(i18n.str("menu.categories"), 6));
 
+    var searchLine = buildTextBoxLine(i18n.str("menu.search"), "roomSearch", 6, "icon-search");
+	menuDiv.appendChild(searchLine);
+	// meh
+	var searchInput = searchLine.children[1].children[0];
+
+    // list of table entries in the default menu, with no search
+	var defaultMenuItems = [];
+
+    // build category menu items
     for (var cat in rmd) {
         var catCount = roomCounter.getCategoryCount(cat);
         var title = catCount > 0 ? i18n.str("menu.label.and.count", i18n.str(cat), catCount) : i18n.str(cat);
-        var catButtonDiv = buildMenuButton(title, doAddCategoryMenu, icon="icon-room-" + rmd[cat][0].image);
+        var catButtonDiv = buildMenuButton(title, doAddCategoryMenu, icon="icon-room-" + rmd[cat][0].image, className = "menu-button", span=4);
         for (var i = 0; i < catButtonDiv.children.length; i++) {
-	        catButtonDiv.children[i].category = cat;
-	        catButtonDiv.children[i].roomList = rmd[cat];
+            catButtonDiv.children[i].category = cat;
+            catButtonDiv.children[i].roomList = rmd[cat];
         }
+        defaultMenuItems.push(catButtonDiv);
         menuDiv.appendChild(catButtonDiv);
     }
 
+    // if there's a previously added room or rooms on the clipboard
     if (lastAddedRoomMetadata || copiedRooms) {
-        menuDiv.appendChild(buildMenuDivider(6));
+        // add a divider
+        var divider = buildMenuDivider(6);
+        menuDiv.appendChild(divider);
+        defaultMenuItems.push(divider);
+        // add paste menu if there are rooms on the clipboard
         if (copiedRooms) {
             // paste menu, yummy delicious paste
-            menuDiv.appendChild(buildAddRoomButton(null, copiedRooms));
+            var pasteButtonDiv = buildAddRoomButton(null, copiedRooms);
+            defaultMenuItems.push(pasteButtonDiv);
+            menuDiv.appendChild(pasteButtonDiv);
         }
 
+        // add the last added room as a quick option
         if (lastAddedRoomMetadata) {
             var roomButtonDiv = buildAddRoomButton(lastAddedRoomMetadata);
+            defaultMenuItems.push(roomButtonDiv);
             menuDiv.appendChild(roomButtonDiv);
         }
     }
 
-    showMenu(menuDiv, element);
+    // build a search index, each element is an array of:
+    // [search terms, menu row, metadata entry]
+	var searchIndex = [];
+    for (var r = 0; r < roomMetadata.rooms.length; r++) {
+        var rmd = roomMetadata.rooms[r];
+        // build search terms from the i18n'd category and room name, all lowercased
+        var name = i18n.str(rmd.category).toLowerCase() + " " + i18n.str(rmd.name).toLowerCase();
+        // menu row
+        var roomButtonDiv = buildAddRoomButton(rmd);
+        // hide by default
+        roomButtonDiv.style.display = "none";
+        // add to menu and search index
+        menuDiv.appendChild(roomButtonDiv);
+        searchIndex.push([name, roomButtonDiv, rmd]);
+    }
+
+    // search for terms inside a string of keywords
+    function search(string, terms) {
+        // loop over the terms
+        for (var i = 0; i < terms.length; i++) {
+            // AND logic, if any of the terms are not found in the keywords then it's not a match
+            if (string.indexOf(terms[i]) < 0) return false;
+        }
+        // found all keywords, it's a match
+        return true;
+    }
+
+    // state for whether there is an active search or not
+    var searchActive = false;
+
+    // key release handler for the search box
+	function keyUp() {
+	    // get the search terms and lowercase immediately
+	    var term = searchInput.value.toLowerCase();
+	    // if there is no search
+	    if (term == "") {
+	        // if there was a search active, then reset the state to show the default menu and hide search results
+	        if (searchActive) {
+                for (var i = 0; i < searchIndex.length; i++) {
+                    searchIndex[i][1].style.display = "none";
+                }
+                for (var i = 0; i < defaultMenuItems.length; i++) {
+                    defaultMenuItems[i].style.display = "";
+                }
+                // reset state
+                searchActive = false;
+	        }
+	    } else {
+	        // if there was no search active, then hide the default menu items
+	        if (!searchActive) {
+                for (var i = 0; i < defaultMenuItems.length; i++) {
+                    defaultMenuItems[i].style.display = "none";
+                }
+                // set state
+                searchActive = true;
+	        }
+
+            // split the search string by spaces into search terms
+	        var terms = term.toLowerCase().split(" ").filter(s => s.length > 0);
+
+            // go over the index
+    	    for (var i = 0; i < searchIndex.length; i++) {
+    	        // calculate a new style display value for the menu item
+    	        var display;
+    	        // search the keywords
+    	        if (search(searchIndex[i][0], terms)) {
+    	            // passed the search criteria
+    	            display = "";
+    	        } else {
+    	            // did not pass the search criteria
+    	            display = "none";
+    	        }
+    	        // switch the menu item's style display if it doesn't match the new value
+    	        if (searchIndex[i][1].style.display != display) {
+    	            searchIndex[i][1].style.display = display;
+    	        }
+    	    }
+	    }
+	}
+
+    // key press handler for the search box
+	function keyDown(e) {
+        switch (e.code) {
+            case "Escape" :
+                // escape closes the menu
+                // by default, hitting escape in a text box bypasses the     normal menu escape handler
+                clearLastMenu();
+                break;
+            case "Enter" :
+                // if the search is active, select the topmost result
+                if (searchActive) {
+                    // find the first search menu item that is visible
+                    for (var i = 0; i < searchIndex.length; i++) {
+                        if (searchIndex[i][1].style.display == "") {
+                            // run the add room function directly
+                            // use the last mouse/touch event, the search item's metadata, and no base room
+                            doDoAddRoomButton(lastMTEvent, searchIndex[i][2], null);
+                            // only do the first result
+                            break;
+                        }
+                    }
+                }
+                // no displayed search result, ignore
+                break;
+        }
+	}
+
+    // register key listeners on the search box
+	searchInput.addEventListener("keyup", keyUp);
+	searchInput.addEventListener("keydown", keyDown);
+
+    // show the menu
+    showMenu(menuDiv, element, fullWidth = false, forceScrollBars = true);
+    // auto-focus on the search text box
+    searchInput.focus();
 }
 
 function doAddCategoryMenu() {
@@ -712,11 +869,14 @@ function doAddRoomButton() {
     // relatively simple for adding a single room
     var e = window.event;
     e.preventDefault();
-    clearMenus();
-
     var roomButton = e.currentTarget;
     var roomMetadata = roomButton.roomMetadata;
     var baseRoom = roomButton.room
+    doDoAddRoomButton(e, roomMetadata, baseRoom);
+}
+
+function doDoAddRoomButton(e, roomMetadata, baseRoom) {
+    clearMenus();
 
 	lastAddedRoomMetadata = roomMetadata;
 
@@ -1871,7 +2031,7 @@ function doSettingsMenu() {
 
     var menuDiv = buildMenu();
 
-	menuDiv.appendChild(buildMenuHeaderLine(i18n.str("menu.settings"), 4, "icon-settings"));
+	menuDiv.appendChild(buildMenuHeaderLine(i18n.str("menu.settings"), 2, "icon-settings"));
 
     // checkbox settings
 
@@ -1885,7 +2045,7 @@ function doSettingsMenu() {
 
     menuDiv.appendChild(buildCheckbox("rulesEnabled", i18n.str("menu.settings.rules"), settings.rulesEnabled, (value) => { setRulesEnabled(value); }));
 
-    menuDiv.appendChild(buildMenuDivider(4));
+    menuDiv.appendChild(buildMenuDivider(2));
 
     menuDiv.appendChild(buildCheckbox("autosave", i18n.str("menu.settings.autosave"), settings.autosave, (value) => { setAutosave(value); }));
 

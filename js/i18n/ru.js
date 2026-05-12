@@ -95,6 +95,7 @@
     "menu.local.storage.save": "Сохранить в локальном хранилище",
     "menu.name": "Имя",
     "menu.label.and.count": "{0} ({1})",
+    "menu.search": "Поиск",
 
     "menu.door": "Дверь",
     "menu.door.looping": "Петля двери",

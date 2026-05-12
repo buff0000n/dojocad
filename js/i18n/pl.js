@@ -95,6 +95,7 @@
     "menu.local.storage.save": "Zapisz w pamięci lokalnej",
     "menu.name": "Nazwa",
     "menu.label.and.count": "{0} ({1})",
+    "menu.search": "Szukaj",
 
     "menu.door": "Drzwi",
     "menu.door.looping": "Zapętlone drzwi",

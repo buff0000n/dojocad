@@ -95,6 +95,7 @@
     "menu.local.storage.save": "Зберегти в локальну пам'ять",
     "menu.name": "Ім'я",
     "menu.label.and.count": "{0} ({1})",
+    "menu.search": "Пошук",
 
     "menu.door": "Двері",
     "menu.door.looping": "Зациклені двері",

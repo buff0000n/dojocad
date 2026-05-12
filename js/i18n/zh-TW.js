@@ -95,6 +95,7 @@
     "menu.local.storage.save": "儲存到本地儲存",
     "menu.name": "名稱",
     "menu.label.and.count": "{0} ({1})",
+    "menu.search": "搜尋",
 
     "menu.door": "門",
     "menu.door.looping": "循環門",
