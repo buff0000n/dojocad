@@ -14,7 +14,7 @@
         <p style="text-align: center;">
             <span class="title">DojoCAD</span>
             <br/>
-            v3.2.0: 2026-05-12
+            v3.3.0: 2027-10-27
             <br/>
             <a target="_blank" href="https://github.com/buff0000n/dojoarch">Source</a>
             &bull;
@@ -787,16 +787,10 @@
         </p>
         <ul>
             <li>
-                You need at least one <strong>Spawn Room</strong>.  These are marked in the room menus with
+                You need exactly one <strong>Spawn Room</strong>.  These are marked in the room menus with
                 a <span class="docImgButton-clear"><img src="icons/icon-spawn-supported.png" srcset="icons2x/icon-spawn-supported.png 2x" title="Spawn Supported"/></span>
-                icon.  Possible spawn rooms are:
-                <ul>
-                    <li>Any of the Classic <strong>Clan Halls</strong></li>
-                    <li><strong>Inspiration Hall</strong></li>
-                    <li><strong>Entrati Audience Chamber</strong></li>
-                    <li><strong>Infested Chamber</strong></li>
-                </ul>
-                See below for more on <a href="#SpawnRoom">Spawn Rooms</a>.
+                icon.  Any of the rooms in the <strong>Classic Halls</strong> or <strong>Theme Halls</strong> categories
+                can be the spawn room.  See below for more on <a href="#SpawnRoom">Spawn Rooms</a>.
             </li>
             <li>An <strong>Oracle</strong> is the prequisite for all the Labs</li>
             <li>You can only have one of each classic <strong>Clan Hall</strong></li>
@@ -1028,7 +1022,7 @@
             On rooms that support being a spawn room, click on the room menu and select
             <span class="docImgButton"><img src="icons/icon-spawn.png" srcset="icons2x/icon-spawn.png 2x" title="Spawn Room"/></span>
             <strong>Set Spawn Room</strong> to designate that room as the spawn room.  If another room is already
-            designaged as the spawn room then the spawn room will be moved.
+            designated as the spawn room then the spawn room will be moved.
         </p>
         <p>
             <strong class="warn">Note: The Spawn Room is different from the <a href="#ArrivalGate">Arrival Gate</a>.</strong>
@@ -1046,10 +1040,10 @@
         <h3 id="Connectedness">Connectedness</h3>
         <p>
             When a spawn room is designated the dojo will be checked to make sure every room is connected to the
-            spawn room room, either directly or indirectly through other rooms.
+            spawn room, either directly or indirectly through other rooms.
         </p>
         <p>
-            Rooms that are not connected to the spawn room room will be highlighted in yellow and show up as
+            Rooms that are not connected to the spawn room will be highlighted in yellow and show up as
             <span class="docImgButton-clear"><img src="icons/icon-warn.png" srcset="icons2x/icon-warn.png 2x" title="Warning"/></span>
             warnings.
         </p>
@@ -1128,8 +1122,8 @@
         <p>
             If the spawn room is moved from one side of a room to the other along the tree, then the branch
             structure for that room changes. Its previous parent becomes one of its child branches, and one of
-            it's previous child rooms becomes its parent.  This is sometimes helpful in destroying a room while
-            preserving one of its previous child rooms, but it practice it's is pretty hard to avoid destroying
+            its previous child rooms becomes its parent.  This is sometimes helpful in destroying a room while
+            preserving one of its previous child rooms, but in practice it is pretty hard to avoid destroying
             tons of other rooms.
         </p>
 
@@ -1655,6 +1649,10 @@
         <h3 id="UpdateNotes3.2">v3.2: 2025-05-12</h3>
         <ul>
             <li>Added a search bar to the Add Rooms menu because clicking around in the menu was annoying me</li>
+        </ul>
+        <h3 id="UpdateNotes3.2">v3.3: 2026-10-27</h3>
+        <ul>
+            <li>Holy cow they finally allowed the rest of the halls to be the spawn room</li>
         </ul>
 
         <h2 id="#TranslationHelp">Translation Help</h2>
